@@ -560,6 +560,22 @@ c   fldtarg:   out: double complex(3,ntarget)
 c               gradient at the target locations
      
        implicit none
+cf2py   intent(out) ier
+cf2py   intent(in) iprec
+cf2py   intent(in) nsource, source
+cf2py   intent(in) ifcharge,charge
+cf2py   check(!ifcharge || (shape(charge,0) == nsource))  charge
+cf2py   depend(nsource)  charge
+cf2py   intent(in) ifdipole,dipvec,dipstr
+cf2py   check(!ifdipole || (shape(dipstr,0) == nsource))  dipstr
+cf2py   depend(nsource)  dipstr
+cf2py   intent(in) ifpot,iffld
+cf2py   intent(out) pot,fld
+cf2py   intent(in) ifpottarg, iffldtarg
+cf2py   intent(in) target
+cf2py   intent(in) ntarget
+cf2py   check((!ifpottarg && !iffldtarg) || (shape(target,0)==3 && shape(target,1) == ntarget))  target
+cf2py   check((!ifpottarg) || (shape(pottarg,0)==ntarget))  pottarg
        integer ier,iprec,ifcharge,ifdipole
        integer ifpot,iffld,ifpottarg,iffldtarg
 
