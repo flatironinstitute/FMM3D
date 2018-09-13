@@ -2,8 +2,9 @@
 EXEC = int2
 
 #HOST=macosx
-#HOST = linux-gfortran
-HOST= linux-gfortran-openmp
+HOST = linux-gfortran
+#HOST= linux-gfortran-openmp
+#HOST = linux-ifort
 
 ifeq ($(HOST),macosx)
 FC = gfortran
@@ -23,10 +24,19 @@ endif
 ifeq ($(HOST),linux-gfortran)
 				
 FC = gfortran
-FFLAGS = -O3 -c -w  
+FFLAGS = -O3 -c -w  -march=native
 FLINK = gfortran -w -o $(EXEC)
 
 endif
+
+ifeq ($(HOST),linux-ifort)
+				
+FC = ifort
+FFLAGS = -O3 -c -w  -xHost
+FLINK = ifort -w -o $(EXEC)
+
+endif
+
 
 SRC = ../src
 LAP = ../src/Laplace
@@ -44,7 +54,6 @@ SOURCES =  lfmm3dpart_dr.f \
   dlaran.f \
   hkrand.f \
   prini.f \
-  prinm.f \
   rotgen.f \
   rotgen2.f \
   legeexps.f \

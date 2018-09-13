@@ -16,6 +16,7 @@ c
         parameter(nsmax=1 000 000)
         parameter(ntmax=8 000 000)
         parameter(ntest = 1000)
+        double precision xtmp(nsmax),ytmp(nsmax)
 
         dimension source(3,nsmax)
         double complex charge(nsmax)
@@ -31,6 +32,7 @@ c
 
         double complex potex(ntest),fldex(3,ntest)
         double complex pottargex(ntest),fldtargex(3,ntest)
+
 c
 c
         double complex ima
@@ -66,11 +68,11 @@ c
         ifcharge = 1
         ifdipole = 0
 
-        ifpot = 1
-        iffld = 1
+        ifpot = 0
+        iffld = 0
 
         ifpottarg = 1
-        iffldtarg = 1
+        iffldtarg = 0
 
 
 c
@@ -100,7 +102,7 @@ c       ... construct randomly located charge distribution on
 c             surface of sphere
 c
 
-           nsource = icase*10000
+           nsource = icase*100000
 
            ntarget = nsource
            r = 0.5d0

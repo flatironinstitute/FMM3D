@@ -630,7 +630,7 @@ c        not used in particle code
 c
 cc         other temporary variables
 c
-        integer i,iert,time1,time2,ifprint,ilev,omp_get_wtime
+        integer i,iert,time1,time2,ifprint,ilev,omp_get_wtime,second
 
 c
 cc        figure out tree structure
@@ -639,7 +639,7 @@ c
 cc         set criterion for box subdivision
 c 
        if(iprec.eq.1) ndiv = 100
-       if(iprec.eq.2) ndiv = 100
+       if(iprec.eq.2) ndiv = 200
        if(iprec.eq.3) ndiv = 100
        if(iprec.eq.4) ndiv = 100
 
