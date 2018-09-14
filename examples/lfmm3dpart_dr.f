@@ -82,8 +82,8 @@ c
 c       ... construct randomly located charge distribution on a unit 
 c            cube
 c
-           nsource = icase*100000
-           ntarget = nsource
+           nsource = icase*10000
+           ntarget = 2*nsource
            do i=1,nsource
 
               source(1,i)=hkrand(0)-0.5d0
@@ -93,6 +93,11 @@ c
               target(1,i) = hkrand(0)-0.5d0
               target(2,i) = hkrand(0)-0.5d0
               target(3,i) = hkrand(0)-0.5d0
+
+              ii = i +nsource
+              target(1,ii) = hkrand(0)-0.5d0
+              target(2,ii) = hkrand(0)-0.5d0
+              target(3,ii) = hkrand(0)-0.5d0
            enddo
         endif
 c
@@ -103,8 +108,9 @@ c             surface of sphere
 c
 
            nsource = icase*100000
+           nsource = 100000
 
-           ntarget = nsource
+           ntarget = 2*nsource
            r = 0.5d0
            do i=1,nsource
               thet = hkrand(0)*pi
@@ -120,6 +126,15 @@ c
               target(1,i) = r*cos(thet)*cos(phi)
               target(2,i) = r*cos(thet)*sin(phi)
               target(3,i) = r*sin(thet)
+
+              ii = i + nsource
+              thet = hkrand(0)*pi
+              phi = hkrand(0)*2*pi
+
+              target(1,ii) = r*cos(thet)*cos(phi)
+              target(2,ii) = r*cos(thet)*sin(phi)
+              target(3,ii) = r*sin(thet)
+
 
            enddo
         endif

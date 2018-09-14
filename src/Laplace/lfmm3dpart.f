@@ -639,7 +639,7 @@ c
 cc         set criterion for box subdivision
 c 
        if(iprec.eq.1) ndiv = 100
-       if(iprec.eq.2) ndiv = 200
+       if(iprec.eq.2) ndiv = 100
        if(iprec.eq.3) ndiv = 100
        if(iprec.eq.4) ndiv = 100
 
@@ -709,6 +709,8 @@ c       Call tree code
      1               nexpc,radexp,idivflag,ndiv,isep,mhung,mnbors,
      2               mnlist1,mnlist2,mnlist3,mnlist4,nlevels,
      2               nboxes,treecenters,boxsize,itree,ltree,ipointer)
+
+       call prinf('nboxes=*',nboxes,1)
 
 c
 c
@@ -1234,7 +1236,7 @@ C$OMP$PRIVATE(ibox,istart,iend,npts,nchild)
                if(ifcharge.eq.1) then
                   call l3dformmp_add_trunc(ier,scales(ilev),
      1            sourcesort(1,istart),chargesort(istart),npts,
-     2            centers(1,ibox),nterms(ilev), nterms(ilev),
+     2            centers(1,ibox),nterms(ilev), nterms_eval(1,ilev),
      3            rmlexp(iaddr(1,ibox)),wlege,nlege)          
                endif
                if(ifdipole.eq.1) then
@@ -1242,7 +1244,7 @@ C$OMP$PRIVATE(ibox,istart,iend,npts,nchild)
      1            sourcesort(1,istart),dipstrsort(istart),
      2            dipvecsort(1,istart),          
      3            npts,centers(1,ibox),
-     4            nterms(ilev),nterms(ilev),
+     4            nterms(ilev),nterms_eval(1,ilev),
      5            rmlexp(iaddr(1,ibox)),wlege,nlege)
                endif
 
@@ -1283,14 +1285,14 @@ c              of the current box
                if(ifcharge.eq.1.and.npts.gt.0) then
                   call l3dformta_add_trunc(ier,scales(ilev),
      1            sourcesort(1,istart),chargesort(istart),npts,
-     2            centers(1,ibox),nterms(ilev),nterms(ilev),
+     2            centers(1,ibox),nterms(ilev),nterms_eval(1,ilev),
      3            rmlexp(iaddr(2,ibox)),wlege,nlege)
                endif
                if(ifdipole.eq.1.and.npts.gt.0) then
                   call l3dformta_dp_add_trunc(ier,scales(ilev),
      1            sourcesort(1,istart),dipstrsort(istart),
      2            dipvecsort(1,istart),npts,
-     2            centers(1,ibox),nterms(ilev),nterms(ilev),
+     2            centers(1,ibox),nterms(ilev),nterms_eval(1,ilev),
      3            rmlexp(iaddr(2,ibox)),wlege,nlege)
                endif
             enddo
@@ -1615,7 +1617,7 @@ c
 
                    call l3dmpevalall_trunc(scales(ilev+1),
      $               centers(1,jbox),rmlexp(iaddr(1,jbox)),
-     $               nterms(ilev+1),nterms(ilev+1),
+     $               nterms(ilev+1),nterms_eval(1,ilev+1),
      $               sourcesort(1,j),npts,ifpot,
      $               pottmp,iffld,fldtmp,wlege,nlege,ier)
 
@@ -1646,7 +1648,7 @@ c
 
                       call l3dmpevalall_trunc(scales(ilev+1),
      $                  centers(1,jbox),rmlexp(iaddr(1,jbox)),
-     $                  nterms(ilev+1),nterms(ilev+1),
+     $                  nterms(ilev+1),nterms_eval(1,ilev+1),
      $                  targetsort(1,j),npts,ifpottarg,
      $                  pottmp,iffldtarg,fldtmp,wlege,nlege,ier)
 
@@ -1715,7 +1717,8 @@ c
                   fldtmp(3) = 0.0d0
                   call l3dtaevalall_trunc(scales(ilev),
      1                centers(1,ibox),rmlexp(iaddr(2,ibox)),
-     2                nterms(ilev),nterms(ilev),sourcesort(1,i),          
+     2                nterms(ilev),nterms_eval(1,ilev),
+     3                sourcesort(1,i),          
      3                npts,ifpot,pottmp,iffld,fldtmp,
      3                wlege,nlege,ier)
 
@@ -1741,7 +1744,8 @@ c
                      fldtmp(3) = 0.0d0
                      call l3dtaevalall_trunc(scales(ilev),
      1                   centers(1,ibox),rmlexp(iaddr(2,ibox)),
-     2                   nterms(ilev),nterms(ilev),targetsort(1,i),          
+     2                   nterms(ilev),nterms_eval(1,ilev),
+     3                   targetsort(1,i),          
      3                   npts,ifpottarg,pottmp,iffldtarg,fldtmp,
      3                   wlege,nlege,ier)
 

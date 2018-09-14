@@ -1,16 +1,16 @@
 
 EXEC = int2
 
-#HOST=macosx
-HOST = linux-gfortran
+HOST=macosx
+#HOST = linux-gfortran
 #HOST= linux-gfortran-openmp
 #HOST = linux-ifort
 
 ifeq ($(HOST),macosx)
 FC = gfortran
-FFLAGS = -O2 -c -w 
+FFLAGS = -O3 -c -w -march=native -pg 
 FLINK = gfortran -w -o $(EXEC)
-FEND = -lblas -llapack
+FEND =  
 endif
 
 ifeq ($(HOST),linux-gfortran-openmp)
