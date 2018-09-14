@@ -61,7 +61,7 @@ c
         call prin2('Enter n*',i,0)
         read *, n
 
-        icase = 2
+        icase = 1
         idist= 2
         iprec = 2
 
@@ -83,7 +83,9 @@ c       ... construct randomly located charge distribution on a unit
 c            cube
 c
            nsource = icase*10000
-           ntarget = 2*nsource
+
+           nsource = 200000
+           ntarget = nsource
            do i=1,nsource
 
               source(1,i)=hkrand(0)-0.5d0
@@ -108,9 +110,8 @@ c             surface of sphere
 c
 
            nsource = icase*100000
-           nsource = 100000
 
-           ntarget = 2*nsource
+           ntarget = nsource
            r = 0.5d0
            do i=1,nsource
               thet = hkrand(0)*pi

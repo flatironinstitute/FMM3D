@@ -639,7 +639,7 @@ c
 cc         set criterion for box subdivision
 c 
        if(iprec.eq.1) ndiv = 100
-       if(iprec.eq.2) ndiv = 100
+       if(iprec.eq.2) ndiv = 200
        if(iprec.eq.3) ndiv = 100
        if(iprec.eq.4) ndiv = 100
 
@@ -1266,6 +1266,8 @@ C$    time2=omp_get_wtime()
       time1=second()
 C$    time1=omp_get_wtime()
 
+
+      if(ifcharge.eq.1) then
       do ilev=2,nlevels
 C$OMP PARALLEL DO DEFAULT(SHARED)
 C$OMP$PRIVATE(ibox,jbox,nlist4,istart,iend,npts,i)
@@ -1282,13 +1284,36 @@ c              of the current box
                istart = itree(ipointer(10)+jbox-1)
                iend = itree(ipointer(11)+jbox-1)
                npts = iend-istart+1
-               if(ifcharge.eq.1.and.npts.gt.0) then
+               if(npts.gt.0) then
                   call l3dformta_add_trunc(ier,scales(ilev),
      1            sourcesort(1,istart),chargesort(istart),npts,
      2            centers(1,ibox),nterms(ilev),nterms_eval(1,ilev),
      3            rmlexp(iaddr(2,ibox)),wlege,nlege)
                endif
-               if(ifdipole.eq.1.and.npts.gt.0) then
+            enddo
+         enddo
+C$OMP END PARALLEL DO         
+      enddo
+
+      endif
+
+      if(ifdipole.eq.1) then
+      do ilev=2,nlevels
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(ibox,jbox,nlist4,istart,iend,npts,i)
+C$OMP$SCHEDULE(DYNAMIC)
+         do ibox=laddr(1,ilev),laddr(2,ilev)
+            nlist4 = itree(ipointer(26)+ibox-1)
+            do i=1,nlist4
+               jbox = itree(ipointer(27)+(ibox-1)*mnlist4+i-1)
+
+c              Form local expansion for all boxes in list3
+c              of the current box
+
+               istart = itree(ipointer(10)+jbox-1)
+               iend = itree(ipointer(11)+jbox-1)
+               npts = iend-istart+1
+               if(npts.gt.0) then
                   call l3dformta_dp_add_trunc(ier,scales(ilev),
      1            sourcesort(1,istart),dipstrsort(istart),
      2            dipvecsort(1,istart),npts,
@@ -1299,6 +1324,10 @@ c              of the current box
          enddo
 C$OMP END PARALLEL DO         
       enddo
+
+      endif
+
+
       time2=second()
 C$    time2=omp_get_wtime()
       timeinfo(2)=time2-time1
@@ -1570,7 +1599,7 @@ C$        time1=omp_get_wtime()
       do ilev=1,nlevels
 C$OMP PARALLEL DO DEFAULT(SHARED)
 C$OMP$PRIVATE(ibox,nlist3,istart,iend,npts,j,i,jbox)
-C$OMP$PRIVATE(mptemp,pottmp,fldtmp)
+C$OMP$PRIVATE(mptemp)
          do ibox = laddr(1,ilev),laddr(2,ilev)
             nlist3 = itree(ipointer(24)+ibox-1)
 
@@ -1600,10 +1629,20 @@ c
                     call l3dadd(mptemp,tsort(0,-ntj,j),ntj)
                enddo
             enddo
-           
+         enddo
+C$OMP END PARALLEL DO         
+      enddo
+
 c
 cc           evaluate multipole expansion at source locations
 c
+      if(ifpot.eq.1.or.iffld.eq.1) then
+      do ilev=1,nlevels
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(ibox,nlist3,istart,iend,npts,j,i,jbox)
+C$OMP$PRIVATE(pottmp,fldtmp)
+         do ibox = laddr(1,ilev),laddr(2,ilev)
+            nlist3 = itree(ipointer(24)+ibox-1)
             istart = itree(ipointer(10)+ibox-1)
             iend = itree(ipointer(11)+ibox-1)
 
@@ -1629,9 +1668,20 @@ c
                    endif
                 enddo
             enddo
+         enddo
+C$OMP END PARALLEL DO         
+      enddo
+      endif
 c
 cc           evaluate multipole expansion at target locations
 c
+      if(ifpottarg.eq.1.or.iffldtarg.eq.1) then
+      do ilev=1,nlevels
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(ibox,nlist3,istart,iend,npts,j,i,jbox)
+C$OMP$PRIVATE(pottmp,fldtmp)
+         do ibox = laddr(1,ilev),laddr(2,ilev)
+            nlist3 = itree(ipointer(24)+ibox-1)
 
             istart = itree(ipointer(12)+ibox-1)
             iend = itree(ipointer(13)+ibox-1)
@@ -1664,6 +1714,7 @@ c
          enddo
 C$OMP END PARALLEL DO         
       enddo
+      endif
 
       time2 = second()
 C$        time2=omp_get_wtime()
@@ -1678,8 +1729,7 @@ C$        time1=omp_get_wtime()
 
       do ilev=0,nlevels
 C$OMP PARALLEL DO DEFAULT(SHARED)
-C$OMP$PRIVATE(ibox,nchild,i,istart,iend,mptemp,npts,pottmp,fldtmp)
-C$OMP$SCHEDULE(DYNAMIC)
+C$OMP$PRIVATE(ibox,nchild,i,istart,iend,mptemp,npts)
          do ibox = laddr(1,ilev),laddr(2,ilev)
             nchild = itree(ipointer(3)+ibox-1)
             if(nchild.eq.0) then
@@ -1702,10 +1752,21 @@ c
 
                     call l3dadd(mptemp,tsort(0,-ntj,i),ntj)
                enddo
+            endif
+         enddo
+C$OMP END PARALLEL DO         
+      enddo
 
 c
 cc              evaluate local expansion at source locations
 c
+      if(ifpot.eq.1.or.iffld.eq.1) then
+      do ilev=0,nlevels
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(ibox,nchild,i,istart,iend,pottmp,fldtmp,npts)
+         do ibox = laddr(1,ilev),laddr(2,ilev)
+            nchild = itree(ipointer(3)+ibox-1)
+            if(nchild.eq.0) then
 
                istart = itree(ipointer(10)+ibox-1)
                iend = itree(ipointer(11)+ibox-1)
@@ -1729,9 +1790,21 @@ c
                      fld(3,i) = fld(3,i)+fldtmp(3)
                   endif
               enddo
+           endif
+        enddo
+C$OMP END PARALLEL DO         
+      enddo
+      endif
 c
 cc              evaluate local expansion at target locations
 c
+      if(ifpottarg.eq.1.or.iffldtarg.eq.1) then
+      do ilev=0,nlevels
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(ibox,nchild,i,istart,iend,pottmp,fldtmp,npts)
+         do ibox = laddr(1,ilev),laddr(2,ilev)
+            nchild = itree(ipointer(3)+ibox-1)
+            if(nchild.eq.0) then
 
                istart = itree(ipointer(12)+ibox-1)
                iend = itree(ipointer(13)+ibox-1)
@@ -1760,7 +1833,8 @@ c
             endif
          enddo
 C$OMP END PARALLEL DO      
-      enddo
+       enddo
+       endif
 
       time2 = second()
 C$        time2=omp_get_wtime()
@@ -1773,17 +1847,11 @@ C$        time1=omp_get_wtime()
 
       do ilev=0,nlevels
 C$OMP PARALLEL DO DEFAULT(SHARED)     
-C$OMP$PRIVATE(ibox,istartt,iendt,istarte,iende,nlist1,i,jbox)
-C$OMP$PRIVATE(jstart,jend,istarts,iends)
+C$OMP$PRIVATE(ibox,istarte,iende,nlist1,i,jbox)
+C$OMP$PRIVATE(jstart,jend)
          do ibox = laddr(1,ilev),laddr(2,ilev)
             istarte = itree(ipointer(16)+ibox-1)
             iende = itree(ipointer(17)+ibox-1)
-
-            istarts = itree(ipointer(10)+ibox-1)
-            iends = itree(ipointer(11)+ibox-1)
-
-            istartt = itree(ipointer(12)+ibox-1)
-            iendt = itree(ipointer(13)+ibox-1)
 
             nlist1 = itree(ipointer(20)+ibox-1)
             do i =1,nlist1
@@ -1803,18 +1871,61 @@ c
      1             istarte,iende,scjsort,sourcesort, 
      2             ifcharge,chargesort,ifdipole,dipstrsort,
      3             dipvecsort,expcsort,tsort,ntj,wlege,nlege)
+
+            enddo
+         enddo
+C$OMP END PARALLEL DO      
+      enddo
 c
 cc               directly evaluate potential at
 c                sources due to sources in the near-field
 c
+      if(ifpot.eq.1.or.iffld.eq.1) then
+      do ilev=0,nlevels
+C$OMP PARALLEL DO DEFAULT(SHARED)     
+C$OMP$PRIVATE(ibox,istarts,iends,nlist1,i,jbox)
+C$OMP$PRIVATE(jstart,jend)
+         do ibox = laddr(1,ilev),laddr(2,ilev)
+
+            istarts = itree(ipointer(10)+ibox-1)
+            iends = itree(ipointer(11)+ibox-1)
+
+            nlist1 = itree(ipointer(20)+ibox-1)
+            do i =1,nlist1
+               jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+
+               jstart = itree(ipointer(10)+jbox-1)
+               jend = itree(ipointer(11)+jbox-1)
+
                call lfmm3dsrc_direct(jstart,jend,
      1          istarts,iends,sourcesort,ifcharge,chargesort,
      2          ifdipole,dipstrsort,dipvecsort,ifpot,
      3          pot,iffld,fld)
+            enddo
+         enddo
+      enddo
+      endif
 
 c
 cc                directly evaluate potential at targets
 c                 due to sources in the near-field
+      if(ifpottarg.eq.1.or.iffldtarg.eq.1) then
+      do ilev=0,nlevels
+C$OMP PARALLEL DO DEFAULT(SHARED)     
+C$OMP$PRIVATE(ibox,istartt,iendt,nlist1,i,jbox)
+C$OMP$PRIVATE(jstart,jend)
+         do ibox = laddr(1,ilev),laddr(2,ilev)
+
+            istartt= itree(ipointer(12)+ibox-1)
+            iendt = itree(ipointer(13)+ibox-1)
+
+            nlist1 = itree(ipointer(20)+ibox-1)
+            do i =1,nlist1
+               jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+
+               jstart = itree(ipointer(10)+jbox-1)
+               jend = itree(ipointer(11)+jbox-1)
+
 
                call lfmm3dtarg_direct(jstart,jend,
      1          istartt,iendt,sourcesort,ifcharge,chargesort,
@@ -1825,6 +1936,7 @@ c                 due to sources in the near-field
          enddo
 C$OMP END PARALLEL DO      
       enddo
+      endif
 
       time2 = second()
 C$        time2=omp_get_wtime()
@@ -2168,9 +2280,6 @@ c
         do j=jstart,jend
            if(flagsort(j).eq.-1) then
               do i=istart,iend
-                 if((targ(1,j)-source(1,i))**2 +
-     1              (targ(2,j)-source(2,i))**2 + 
-     2              (targ(3,j)-source(3,i))**2.gt.1.0d-28) then
                     if(ifcharge.eq.1) then
                        call lpotfld3d(ifgradtarg,source(1,i),
      1                 charge(i),targ(1,j),pottmp,gradtmp)
@@ -2193,7 +2302,6 @@ c
                           gradtarg(3,j) = gradtarg(3,j)+gradtmp(3)
                        endif
                     endif
-                 endif
               enddo
            endif
         enddo

@@ -1,10 +1,10 @@
 
 EXEC = int2
 
-HOST=macosx
+#HOST=macosx
 #HOST = linux-gfortran
 #HOST= linux-gfortran-openmp
-#HOST = linux-ifort
+HOST = linux-ifort
 
 ifeq ($(HOST),macosx)
 FC = gfortran
@@ -24,15 +24,15 @@ endif
 ifeq ($(HOST),linux-gfortran)
 				
 FC = gfortran
-FFLAGS = -O3 -c -w  -march=native
-FLINK = gfortran -w -o $(EXEC)
+FFLAGS = -O3 -c -w  -march=native -pg -ffast-math -ftree-vectorize -funroll-loops
+FLINK = gfortran -w -o $(EXEC) -pg 
 
 endif
 
 ifeq ($(HOST),linux-ifort)
 				
 FC = ifort
-FFLAGS = -O3 -c -w  -xHost
+FFLAGS = -O3 -c -w  -xW -ip -xHost
 FLINK = ifort -w -o $(EXEC)
 
 endif
@@ -67,6 +67,7 @@ SOURCES =  lfmm3dpart_dr.f \
   lwtsexp_sep1.f \
   lwtsexp_sep2.f \
   fmmcommon.f \
+  second-r8.f \
 
 OBJECTS = $(patsubst %.f,$(OBJ_DIR)/%.o,$(SOURCES))
 
