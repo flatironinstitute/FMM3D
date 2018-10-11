@@ -1,4 +1,4 @@
-c
+1
 c    Adaptive PTree - generate quad tree refined to finest level pruning
 c    empty boxes. Features include 
 c
@@ -834,9 +834,10 @@ c        irefinebox = 1
          irefinebox = 0
          if((idivflag.eq.0).and.(nss.gt.ndiv)) irefinebox=1
          if((idivflag.eq.1).and.(ntt.gt.ndiv)) irefinebox=1
-         if((idivflag.eq.2).and.(nss+ntt.gt.ndiv)) irefinebox=1
-         if((idivflag.eq.3).and.(nss+ntt+nee.gt.ndiv))
-     1       irefinebox=1
+         if((idivflag.eq.2).and.(nss.gt.ndiv.or.ntt.gt.ndiv)) 
+     1        irefinebox=1
+         if((idivflag.eq.3).and.(nss.gt.ndiv.or.
+     1       ntt.gt.ndiv.or.nee.gt.ndiv)) irefinebox=1
          if(irefinebox.eq.1) then
 c            Based on the subdivision criterion, the current
 c            box needs to be divided
@@ -1395,12 +1396,12 @@ c                 Update arrays ihefirst,ihelast,iefirst,ielast
                   nss = islast(nboxes) - isfirst(nboxes)+1
                   nee = ielast(nboxes) - iefirst(nboxes)+1 
 c                 Check if further refinement required
-                  if ((idivflag .eq.0).and.(nss.gt.ndiv)) irefine=1
-                  if ((idivflag .eq.1).and.(ntc(i).gt.ndiv)) irefine=1
-                  if ((idivflag .eq.2).and.(nss+ntc(i).gt.ndiv)) 
-     1                             irefine=1
-                  if ((idivflag .eq.3).and.(nss+ntc(i)+nee.gt.
-     1                                    ndiv)) irefine=1  
+                  if ((idivflag.eq.0).and.(nss.gt.ndiv)) irefine=1
+                  if ((idivflag.eq.1).and.(ntc(i).gt.ndiv)) irefine=1
+                  if ((idivflag.eq.2).and.(nss.gt.ndiv.or.
+     1                     ntc(i).gt.ndiv))  irefine=1
+                  if ((idivflag.eq.3).and.(nss.gt.ndiv.or.
+     1                      ntc(i).gt.ndiv.or.nee.gt.ndiv)) irefine=1  
                endif
                istart = istart + nsc(i)
                jstart = jstart + ntc(i)
