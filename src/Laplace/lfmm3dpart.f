@@ -29,12 +29,12 @@ c                    and fields
 c
 c        lfmm3dpartstot - Laplace FMM in R^{3}: evaluate all 
 c                    pairwise particle interactions between sources
-c                    and targets; complex charges, dipoles, potentials,
+c                    and targs; complex charges, dipoles, potentials,
 c                    and fields
 c 
 c        lfmm3dpartstost - Laplace FMM in R^{3}: evaluate all pairwise
 c                    particle interactions (ignoring self-interaction)
-c                    + interaction with targets; complex charges,
+c                    + interaction with targs; complex charges,
 c                    dipoles, potentials, and fields
 c     
 c        rfmm3dpartstos - Laplace FMM in R^{3}: evaluate all
@@ -44,12 +44,12 @@ c                    and fields
 c
 c        rfmm3dpartstot - Laplace FMM in R^{3}: evaluate all 
 c                    pairwise particle interactions between sources
-c                    and targets; real charges, dipoles, potentials,
+c                    and targs; real charges, dipoles, potentials,
 c                    and fields
 c 
 c        rfmm3dpartstost - Laplace FMM in R^{3}: evaluate all pairwise
 c                    particle interactions (ignoring self-interaction)
-c                    + interaction with targets; real charges,
+c                    + interaction with targs; real charges,
 c                    dipoles, potentials, and fields
 c     
 c-----------------------------------------------------------
@@ -68,9 +68,9 @@ c         and on output, the potentials and the field strengths
 c         are all double precision
 c
 c         The main FMM routine permits both evaluation at
-c         sources and at a collection of targets.
+c         sources and at a collection of targs.
 c         This subroutine is used to simply the user interface
-c         by setting the number of targets to zero and calling
+c         by setting the number of targs to zero and calling
 c         the more general FMM
 c
 c         See lfmm3dpartstost for explanation of calling sequence
@@ -85,7 +85,7 @@ c
         double complex, allocatable :: ccharge(:),cdipstr(:)
         double complex, allocatable :: cpot(:),cfld(:,:)
 
-        dimension target(3,1)
+        dimension targ(3,1)
         double complex pottarg(1)
         double complex fldtarg(3,1)
 
@@ -123,14 +123,14 @@ C$OMP END PARALLEL DO
         if(iffld.eq.1) allocate(cfld(3,nsource))
         if(iffld.ne.1) allocate(cfld(3,1))
 
-        ntarget = 0
+        ntarg = 0
         ifpottarg = 0
         iffldtarg = 0
         
 
         call lfmm3dpartstost(ier,iprec,nsource,source,ifcharge,ccharge,
-     $         ifdipole,cdipstr,dipvec,ifpot,cpot,iffld,cfld,ntarget,
-     $         target,ifpottarg,pottarg,iffldtarg,fldtarg)
+     $         ifdipole,cdipstr,dipvec,ifpot,cpot,iffld,cfld,ntarg,
+     $         targ,ifpottarg,pottarg,iffldtarg,fldtarg)
 
         if(ifpot.eq.1) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)           
@@ -155,11 +155,11 @@ C$OMP END PARALLEL DO
 c--------------------------------------------------------
 
         subroutine rfmm3dpartstot(ier,iprec,nsource,source,ifcharge,
-     $     charge,ifdipole,dipstr,dipvec,ntarget,ifpottarg,pottarg,
+     $     charge,ifdipole,dipstr,dipvec,ntarg,targ,ifpottarg,pottarg,
      $     iffldtarg,fldtarg)
 c
 c         Laplace FMM in R^{3}: evaluate all pairwise particle
-c         interactions at a given collection of targets. 
+c         interactions at a given collection of targs. 
 c         We use (1/r) for the Green's function, without the 
 c         1/(4 \pi) scaling.
 c
@@ -168,9 +168,9 @@ c         and on output, the potentials and the field strengths
 c         are all double precision
 c
 c         The main FMM routine permits both evaluation at
-c         sources and at a collection of targets.
+c         sources and at a collection of targs.
 c         This subroutine is used to simply the user interface
-c         by setting the number of targets to zero and calling
+c         by setting the number of targs to zero and calling
 c         the more general FMM
 c
 c         See lfmm3dpartstost for explanation of calling sequence
@@ -184,7 +184,7 @@ c
 
         double complex, allocatable :: ccharge(:),cdipstr(:)
 
-        dimension target(3,1)
+        dimension targ(3,1)
         double precision pottarg(1)
         double precision fldtarg(3,1)
         double complex, allocatable :: cpottarg(:),cfldtarg(:,:)
@@ -217,22 +217,22 @@ C$OMP END PARALLEL DO
             cdipstr(1) = 0
         endif
 
-        if(ifpottarg.eq.1) allocate(cpottarg(ntarget))
+        if(ifpottarg.eq.1) allocate(cpottarg(ntarg))
         if(ifpottarg.ne.1) allocate(cpottarg(1))
 
-        if(iffldtarg.eq.1) allocate(cfldtarg(3,ntarget))
+        if(iffldtarg.eq.1) allocate(cfldtarg(3,ntarg))
         if(iffldtarg.ne.1) allocate(cfldtarg(3,1))
 
         ifpot = 0
         iffld = 0
 
         call lfmm3dpartstost(ier,iprec,nsource,source,ifcharge,ccharge,
-     $         ifdipole,cdipstr,dipvec,ifpot,pot,iffld,fld,ntarget,
-     $         target,ifpottarg,cpottarg,iffldtarg,cfldtarg)
+     $         ifdipole,cdipstr,dipvec,ifpot,pot,iffld,fld,ntarg,
+     $         targ,ifpottarg,cpottarg,iffldtarg,cfldtarg)
 
         if(ifpottarg.eq.1) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)           
-           do i=1,ntarget
+           do i=1,ntarg
               pottarg(i) = real(cpottarg(i))
            enddo
 C$OMP END PARALLEL DO           
@@ -240,7 +240,7 @@ C$OMP END PARALLEL DO
 
         if(iffldtarg.eq.1) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)           
-           do i=1,ntarget
+           do i=1,ntarg
               fldtarg(1,i) = real(cfldtarg(1,i))
               fldtarg(2,i) = real(cfldtarg(2,i))
               fldtarg(3,i) = real(cfldtarg(3,i))
@@ -253,12 +253,12 @@ C$OMP END PARALLEL DO
 c-------------------------------------------------------------        
 
         subroutine rfmm3dpartstost(ier,iprec,nsource,source,ifcharge,
-     $     charge,ifdipole,dipstr,dipvec,ntarget,target,ifpot,pot,
-     $     iffld,fld,ifpottarg,pottarg,iffldtarg,fldtarg)
+     $     charge,ifdipole,dipstr,dipvec,ifpot,pot,
+     $     iffld,fld,ntarg,targ,ifpottarg,pottarg,iffldtarg,fldtarg)
 c
 c         Laplace FMM in R^{3}: evaluate all pairwise particle
 c         interactions (ignoring self-interactions) and interactions
-c         with targets.
+c         with targs.
 c
 c         We use (1/r) for the Green's function, without the 
 c         1/(4 \pi) scaling. 
@@ -269,9 +269,9 @@ c         are all double precision.
 c
 c
 c         The main FMM routine permits both evaluation at
-c         sources and at a collection of targets.
+c         sources and at a collection of targs.
 c         This subroutine is used to simply the user interface
-c         by setting the number of targets to zero and calling
+c         by setting the number of targs to zero and calling
 c         the more general FMM
 c
 c         See lfmm3dpartstost for explanation of calling sequence
@@ -286,7 +286,7 @@ c
         double complex, allocatable :: ccharge(:),cdipstr(:)
         double complex, allocatable :: cpot(:),cfld(:,:)
 
-        dimension target(3,1)
+        dimension targ(3,1)
         double precision pottarg(1)
         double precision fldtarg(3,1)
         double complex, allocatable :: cpottarg(:),cfldtarg(:,:)
@@ -325,15 +325,16 @@ C$OMP END PARALLEL DO
         if(iffld.eq.1) allocate(cfld(3,nsource))
         if(iffld.ne.1) allocate(cfld(3,1))
 
-        if(ifpottarg.eq.1) allocate(cpottarg(ntarget))
+        if(ifpottarg.eq.1) allocate(cpottarg(ntarg))
         if(ifpottarg.ne.1) allocate(cpottarg(1))
 
-        if(iffldtarg.eq.1) allocate(cfldtarg(3,ntarget))
+        if(iffldtarg.eq.1) allocate(cfldtarg(3,ntarg))
         if(iffldtarg.ne.1) allocate(cfldtarg(3,1))
 
         call lfmm3dpartstost(ier,iprec,nsource,source,ifcharge,ccharge,
-     $         ifdipole,cdipstr,dipvec,ifpot,cpot,iffld,cfld,ntarget,
-     $         target,ifpottarg,cpottarg,iffldtarg,cfldtarg)
+     $         ifdipole,cdipstr,dipvec,ifpot,cpot,iffld,cfld,ntarg,
+     $         targ,ifpottarg,cpottarg,iffldtarg,cfldtarg)
+
 
         if(ifpot.eq.1) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)           
@@ -356,7 +357,7 @@ C$OMP END PARALLEL DO
 
         if(ifpottarg.eq.1) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)           
-           do i=1,ntarget
+           do i=1,ntarg
               pottarg(i) = real(cpottarg(i))
            enddo
 C$OMP END PARALLEL DO           
@@ -364,7 +365,7 @@ C$OMP END PARALLEL DO
 
         if(iffldtarg.eq.1) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)           
-           do i=1,ntarget
+           do i=1,ntarg
               fldtarg(1,i) = real(cfldtarg(1,i))
               fldtarg(2,i) = real(cfldtarg(2,i))
               fldtarg(3,i) = real(cfldtarg(3,i))
@@ -388,9 +389,9 @@ c         and on output, the potentials and the field strengths
 c         are all double complex.
 c
 c         The main FMM routine permits both evaluation at
-c         sources and at a collection of targets.
+c         sources and at a collection of targs.
 c         This subroutine is used to simply the user interface
-c         by setting the number of targets to zero and calling
+c         by setting the number of targs to zero and calling
 c         the more general FMM
 c
 c         See lfmm3dpartstost for explanation of calling sequence
@@ -402,28 +403,28 @@ c
         dimension dipvec(3,1)
         double complex pot(1), fld(3,1)
 
-        dimension target(3,1)
+        dimension targ(3,1)
         double complex pottarg(1)
         double complex fldtarg(3,1)
 
-        ntarget = 0
+        ntarg = 0
         ifpottarg = 0
         iffldtarg = 0
         
 
         call lfmm3dpartstost(ier,iprec,nsource,source,ifcharge,charge,
-     $         ifdipole,dipstr,dipvec,ifpot,pot,iffld,fld,ntarget,
-     $         target,ifpottarg,pottarg,iffldtarg,fldtarg)
+     $         ifdipole,dipstr,dipvec,ifpot,pot,iffld,fld,ntarg,
+     $         targ,ifpottarg,pottarg,iffldtarg,fldtarg)
 
         return
         end
 c--------------------------------------------------
         subroutine lfmm3dpartstot(ier,iprec,nsource,source,ifcharge,
-     $     charge,ifdipole,dipstr,dipvec,ntarget,target,
+     $     charge,ifdipole,dipstr,dipvec,ntarg,targ,
      $     ifpottarg,pottarg,iffldtarg,fldtarg)
 c
 c         Laplace FMM in R^{3}: evaluate all pairwise particle
-c         interactions at a given collection of targets. 
+c         interactions at a given collection of targs. 
 c         We use (1/r) for the Green's function, without the 
 c         1/(4 \pi) scaling.
 c
@@ -432,9 +433,9 @@ c         and on output, the potentials and the field strengths
 c         are all double complex
 c
 c         The main FMM routine permits both evaluation at
-c         sources and at a collection of targets.
+c         sources and at a collection of targs.
 c         This subroutine is used to simply the user interface
-c         by setting the number of targets to zero and calling
+c         by setting the number of targs to zero and calling
 c         the more general FMM
 c
 c         See lfmm3dpartstost for explanation of calling sequence
@@ -446,7 +447,7 @@ c
         dimension dipvec(3,1)
         double complex pot(1), fld(3,1)
 
-        dimension target(3,1)
+        dimension targ(3,1)
         double complex pottarg(1)
         double complex fldtarg(3,1)
 
@@ -455,8 +456,8 @@ c
         
 
         call lfmm3dpartstost(ier,iprec,nsource,source,ifcharge,charge,
-     $         ifdipole,dipstr,dipvec,ifpot,pot,iffld,fld,ntarget,
-     $         target,ifpottarg,pottarg,iffldtarg,fldtarg)
+     $         ifdipole,dipstr,dipvec,ifpot,pot,iffld,fld,ntarg,
+     $         targ,ifpottarg,pottarg,iffldtarg,fldtarg)
 
         return
         end
@@ -464,12 +465,12 @@ c
 c-----------------------------------------------
 c
        subroutine lfmm3dpartstost(ier,iprec,nsource,source,ifcharge,
-     $    charge,ifdipole,dipstr,dipvec,ifpot,pot,iffld,fld,ntarget,
-     $    target,ifpottarg,pottarg,iffldtarg,fldtarg)
+     $    charge,ifdipole,dipstr,dipvec,ifpot,pot,iffld,fld,ntarg,
+     $    targ,ifpottarg,pottarg,iffldtarg,fldtarg)
 c
 c        Laplace FMM in R^{3}: evaluate all pairwise particle
 c        interactions (ignoring self-interactions) and interactions
-c        with targets.
+c        with targs.
 c
 c        We use (1/r) for the Green's function, without the
 c        1/(4 \pi) scaling.
@@ -520,23 +521,23 @@ c              The potential will be evaluated if ifpot = 1
 c
 c   iffld   in:integer
 c                flag for evaluating the gradient at the sources
-c                gradient will be evaluated at the targets if
+c                gradient will be evaluated at the targs if
 c                iffldtarg = 1
 c
-c   ntarget  in: integer  
-c                 number of targets 
+c   ntarg  in: integer  
+c                 number of targs 
 c
-c   target  in: double precision (3,ntarget)
-c               target(k,j) is the kth component of the jth
-c               target location
+c   targ  in: double precision (3,ntarg)
+c               targ(k,j) is the kth component of the jth
+c               targ location
 c
 c   ifpottarg   in: integer
-c              flag for evaluating potential at the targets
+c              flag for evaluating potential at the targs
 c              The potential will be evaluated if ifpottarg = 1
 c
 c   iffldtarg   in:integer
-c                flag for evaluating the gradient at the targets
-c                gradient will be evaluated at the targets if
+c                flag for evaluating the gradient at the targs
+c                gradient will be evaluated at the targs if
 c                iffldtarg = 1
 c
 c     OUTPUT parameters:
@@ -553,11 +554,11 @@ c
 c   fld:   out: double complex(3,nsource)
 c               gradient at the source locations
 c
-c   pottarg:    out: double complex(ntarget) 
-c               potential at the target locations
+c   pottarg:    out: double complex(ntarg) 
+c               potential at the targ locations
 c
-c   fldtarg:   out: double complex(3,ntarget)
-c               gradient at the target locations
+c   fldtarg:   out: double complex(3,ntarg)
+c               gradient at the targ locations
      
        implicit none
 cf2py   intent(out) ier
@@ -572,17 +573,17 @@ cf2py   depend(nsource)  dipstr
 cf2py   intent(in) ifpot,iffld
 cf2py   intent(out) pot,fld
 cf2py   intent(in) ifpottarg, iffldtarg
-cf2py   intent(in) target
-cf2py   intent(in) ntarget
-cf2py   check((!ifpottarg && !iffldtarg) || (shape(target,0)==3 && shape(target,1) == ntarget))  target
-cf2py   check((!ifpottarg) || (shape(pottarg,0)==ntarget))  pottarg
+cf2py   intent(in) targ
+cf2py   intent(in) ntarg
+cf2py   check((!ifpottarg && !iffldtarg) || (shape(targ,0)==3 && shape(targ,1) == ntarg))  targ
+cf2py   check((!ifpottarg) || (shape(pottarg,0)==ntarg))  pottarg
        integer ier,iprec,ifcharge,ifdipole
        integer ifpot,iffld,ifpottarg,iffldtarg
 
-       integer ntarget,nsource
+       integer ntarg,nsource
 
 
-       double precision source(3,1),target(3,1)
+       double precision source(3,1),targ(3,1)
        double complex charge(1),dipstr(1)
        double precision dipvec(3,1)
 
@@ -601,7 +602,7 @@ c
 c
 cc       temporary sorted arrays
 c
-       double precision, allocatable :: sourcesort(:,:),targetsort(:,:)
+       double precision, allocatable :: sourcesort(:,:),targsort(:,:)
        double precision, allocatable :: radsrc(:)
        double complex, allocatable :: chargesort(:),dipstrsort(:)
        double precision, allocatable :: dipvecsort(:,:)
@@ -639,7 +640,7 @@ c
 cc         set criterion for box subdivision
 c 
        if(iprec.eq.1) ndiv = 100
-       if(iprec.eq.2) ndiv = 200
+       if(iprec.eq.2) ndiv = 100
        if(iprec.eq.3) ndiv = 100
        if(iprec.eq.4) ndiv = 100
 
@@ -675,9 +676,9 @@ C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
 C$OMP END PARALLEL DO  
 
 
-       allocate(flagsort(ntarget))
+       allocate(flagsort(ntarg))
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
-       do i=1,ntarget
+       do i=1,ntarg
           flagsort(i) = -1
        enddo
 C$OMP END PARALLEL DO
@@ -687,7 +688,7 @@ C$OMP END PARALLEL DO
 c
 cc     memory management code for contructing level restricted tree
         iert = 0
-        call mklraptreemem(iert,source,nsource,radsrc,target,ntarget,
+        call mklraptreemem(iert,source,nsource,radsrc,targ,ntarg,
      1        expc,nexpc,radexp,idivflag,ndiv,isep,nlmax,nbmax,
      2        nlevels,nboxes,mnbors,mnlist1,mnlist2,mnlist3,
      3        mnlist4,mhung,ltree)
@@ -705,7 +706,7 @@ cc     memory management code for contructing level restricted tree
         allocate(treecenters(3,nboxes))
 
 c       Call tree code
-        call mklraptree(source,nsource,radsrc,target,ntarget,expc,
+        call mklraptree(source,nsource,radsrc,targ,ntarg,expc,
      1               nexpc,radexp,idivflag,ndiv,isep,mhung,mnbors,
      2               mnlist1,mnlist2,mnlist3,mnlist4,nlevels,
      2               nboxes,treecenters,boxsize,itree,ltree,ipointer)
@@ -729,10 +730,10 @@ c
 c      
       if(ifprint .eq. 1) call prin2('epsfmm=*',epsfmm,1)
 
-c     Allocate sorted source and target arrays      
+c     Allocate sorted source and targ arrays      
 
       allocate(sourcesort(3,nsource))
-      allocate(targetsort(3,ntarget))
+      allocate(targsort(3,ntarg))
       if(ifcharge.eq.1) allocate(chargesort(nsource))
 
       if(ifdipole.eq.1) then
@@ -743,8 +744,8 @@ c     Allocate sorted source and target arrays
       if(ifpot.eq.1) allocate(potsort(nsource))
       if(iffld.eq.1) allocate(fldsort(3,nsource))
       
-      if(ifpottarg.eq.1) allocate(pottargsort(ntarget))
-      if(iffldtarg.eq.1) allocate(fldtargsort(3,ntarget))
+      if(ifpottarg.eq.1) allocate(pottargsort(ntarg))
+      if(iffldtarg.eq.1) allocate(fldtargsort(3,ntarg))
 
 
 c     scaling factor for multipole and local expansions at all levels
@@ -779,13 +780,13 @@ C$OMP END PARALLEL DO
 
 
 c
-cc       initialize potential and field at target
+cc       initialize potential and field at targ
 c        locations
 c
 
       if(ifpottarg.eq.1) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
-      do i=1,ntarget
+      do i=1,ntarg
          pottargsort(i) = 0.0d0
       enddo
 C$OMP END PARALLEL DO
@@ -793,7 +794,7 @@ C$OMP END PARALLEL DO
 
       if(iffldtarg.eq.1) then 
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
-      do i=1,ntarget
+      do i=1,ntarg
          fldtargsort(1,i) = 0.0d0
          fldtargsort(2,i) = 0.0d0
          fldtargsort(3,i) = 0.0d0
@@ -835,9 +836,9 @@ c
       endif
 
 c
-cc      reorder targets
+cc      reorder targs
 c
-      call dreorderf(3,ntarget,target,targetsort,itree(ipointer(6)))
+      call dreorderf(3,ntarg,targ,targsort,itree(ipointer(6)))
 c
 c     allocate memory need by multipole, local expansions at all
 c     levels
@@ -865,7 +866,7 @@ C$      time1=omp_get_wtime()
      $   nsource,sourcesort,
      $   ifcharge,chargesort,
      $   ifdipole,dipstrsort,dipvecsort,
-     $   ntarget,targetsort,nexpc,expcsort,
+     $   ntarg,targsort,nexpc,expcsort,
      $   epsfmm,iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp,
      $   itree,ltree,ipointer,isep,ndiv,nlevels,
      $   nboxes,boxsize,mnbors,mnlist1,mnlist2,mnlist3,mnlist4,
@@ -889,9 +890,9 @@ c     meaningless, reset to 0
       if(iffld.eq.1) call dreorderi(6,nsource,fldsort,fld,
      1                 itree(ipointer(5)))
 
-      if(ifpottarg.eq.1) call dreorderi(2,ntarget,pottargsort,pottarg,
+      if(ifpottarg.eq.1) call dreorderi(2,ntarg,pottargsort,pottarg,
      1                 itree(ipointer(6)))
-      if(iffldtarg.eq.1) call dreorderi(6,ntarget,fldtargsort,fldtarg,
+      if(iffldtarg.eq.1) call dreorderi(6,ntarg,fldtargsort,fldtarg,
      1                 itree(ipointer(6)))
 
    
@@ -905,7 +906,7 @@ c
      $     nsource,sourcesort,
      $     ifcharge,chargesort,
      $     ifdipole,dipstrsort,dipvecsort,
-     $     ntarget,targetsort,nexpc,expcsort,
+     $     ntarg,targsort,nexpc,expcsort,
      $     epsfmm,iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp,
      $     itree,ltree,ipointer,isep,ndiv,nlevels, 
      $     nboxes,boxsize,mnbors,mnlist1,mnlist2,mnlist3,mnlist4,
@@ -916,7 +917,7 @@ c
       implicit none
 
       integer ier,iprec
-      integer nsource,ntarget,nexpc
+      integer nsource,ntarg,nexpc
       integer ndiv,nlevels
 
       integer ifcharge,ifdipole
@@ -930,8 +931,8 @@ c
       double complex dipstrsort(1)
       double precision dipvecsort(3,1)
 
-      double precision targetsort(3,ntarget)
-      integer flagsort(ntarget)
+      double precision targsort(3,ntarg)
+      integer flagsort(ntarg)
 
       double complex pot(1)
       double complex fld(3,1)
@@ -1646,6 +1647,7 @@ C$OMP$PRIVATE(pottmp,fldtmp)
             istart = itree(ipointer(10)+ibox-1)
             iend = itree(ipointer(11)+ibox-1)
 
+            npts = 1
             do j=istart,iend
                 do i=1,nlist3
                    jbox = itree(ipointer(25)+(ibox-1)*mnlist3+i-1)
@@ -1673,7 +1675,7 @@ C$OMP END PARALLEL DO
       enddo
       endif
 c
-cc           evaluate multipole expansion at target locations
+cc           evaluate multipole expansion at targ locations
 c
       if(ifpottarg.eq.1.or.iffldtarg.eq.1) then
       do ilev=1,nlevels
@@ -1699,7 +1701,7 @@ C$OMP$PRIVATE(pottmp,fldtmp)
                       call l3dmpevalall_trunc(scales(ilev+1),
      $                  centers(1,jbox),rmlexp(iaddr(1,jbox)),
      $                  nterms(ilev+1),nterms_eval(1,ilev+1),
-     $                  targetsort(1,j),npts,ifpottarg,
+     $                  targsort(1,j),npts,ifpottarg,
      $                  pottmp,iffldtarg,fldtmp,wlege,nlege,ier)
 
                       if(ifpottarg.eq.1) pottarg(j) = pottarg(j)+pottmp
@@ -1796,7 +1798,7 @@ C$OMP END PARALLEL DO
       enddo
       endif
 c
-cc              evaluate local expansion at target locations
+cc              evaluate local expansion at targ locations
 c
       if(ifpottarg.eq.1.or.iffldtarg.eq.1) then
       do ilev=0,nlevels
@@ -1818,7 +1820,7 @@ C$OMP$PRIVATE(ibox,nchild,i,istart,iend,pottmp,fldtmp,npts)
                      call l3dtaevalall_trunc(scales(ilev),
      1                   centers(1,ibox),rmlexp(iaddr(2,ibox)),
      2                   nterms(ilev),nterms_eval(1,ilev),
-     3                   targetsort(1,i),          
+     3                   targsort(1,i),          
      3                   npts,ifpottarg,pottmp,iffldtarg,fldtmp,
      3                   wlege,nlege,ier)
 
@@ -1907,7 +1909,7 @@ C$OMP$PRIVATE(jstart,jend)
       endif
 
 c
-cc                directly evaluate potential at targets
+cc                directly evaluate potential at targs
 c                 due to sources in the near-field
       if(ifpottarg.eq.1.or.iffldtarg.eq.1) then
       do ilev=0,nlevels
@@ -1929,7 +1931,7 @@ C$OMP$PRIVATE(jstart,jend)
 
                call lfmm3dtarg_direct(jstart,jend,
      1          istartt,iendt,sourcesort,ifcharge,chargesort,
-     2          ifdipole,dipstrsort,dipvecsort,targetsort,ifpottarg,
+     2          ifdipole,dipstrsort,dipvecsort,targsort,ifpottarg,
      3          pottarg,iffldtarg,fldtarg,flagsort)
 
             enddo   
@@ -2020,7 +2022,7 @@ c                 dimension parameter for wlege
 c------------------------------------------------------------
 c     OUTPUT
 c
-c   Updated expansions at the targets
+c   Updated expansions at the targs
 c   texps       out: double complex(0:ntj,-ntj:ntj,expc) 
 c                 coeffs for local expansions
 c-------------------------------------------------------               
@@ -2082,11 +2084,11 @@ c                  Last index in source array whose expansions
 c                  we wish to add
 c
 c     jstart       in: Integer
-c                  First index in target array at which we
+c                  First index in targ array at which we
 c                  wish to update the potential and gradients
 c 
 c     jend         in:Integer
-c                  Last index in target array at which we wish
+c                  Last index in targ array at which we wish
 c                  to update the potential and gradients
 c
 c     source       in: double precision(3,ns)
@@ -2121,10 +2123,10 @@ c     OUTPUT
 c
 c   Updated potential and field strengths at the sources
 c   pot :     out: double complex(*)
-c             potential at the targets
+c             potential at the targs
 c
 c   grad:     out: double complex(3,*)
-c             field strength at the targets
+c             field strength at the targs
 c-------------------------------------------------------               
         implicit none
 c
@@ -2186,7 +2188,7 @@ c------------------------------------------------------------------
 c--------------------------------------------------------------------
 c     This subroutine adds the contribuition due to sources
 c     istart to iend in the source array at the expansion centers
-c     jstart to jend in the target array to the computed potential
+c     jstart to jend in the targ array to the computed potential
 c     and field strengths
 c
 c     INPUT arguments
@@ -2200,11 +2202,11 @@ c                  Last index in source array whose expansions
 c                  we wish to add
 c
 c     jstart       in: Integer
-c                  First index in target array at which we
+c                  First index in targ array at which we
 c                  wish to update the potential and gradients
 c 
 c     jend         in:Integer
-c                  Last index in target array at which we wish
+c                  Last index in targ array at which we wish
 c                  to update the potential and gradients
 c
 c     source       in: double precision(3,ns)
@@ -2227,7 +2229,7 @@ c     dipstr        in: double complex(ns)
 c                 dipole strengths at the source locations
 c
 c     targ        in: double precision(3,nt)
-c                 target locations
+c                 targ locations
 c
 c     ifpottarg    in: Integer
 c                  Flag for computing the potential. The potential
@@ -2240,19 +2242,19 @@ c                  ifgradtarg == 1
 c
 c     flagsort     in: Integer
 c                  Flag for computing velocities and gradients
-c                  at targets using point fmm. The potential/
-c                  gradient at target i will be evaluated if 
+c                  at targs using point fmm. The potential/
+c                  gradient at targ i will be evaluated if 
 c                  flagsort(i) = -1
 c
 c
 c------------------------------------------------------------
 c     OUTPUT
 c
-c   Updated potential and field at the targets
+c   Updated potential and field at the targs
 c   pottarg     out: double complex(*)
-c               potential at the targets
+c               potential at the targs
 c   gradtarg    out: double complex (3,*)
-c               field at the targets
+c               field at the targs
 c-------------------------------------------------------               
         implicit none
 c

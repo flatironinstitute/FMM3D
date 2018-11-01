@@ -2,9 +2,9 @@
 EXEC = int2
 
 #HOST=macosx
-#HOST = linux-gfortran
+HOST = linux-gfortran
 #HOST= linux-gfortran-openmp
-HOST = linux-ifort
+#HOST = linux-ifort
 
 ifeq ($(HOST),macosx)
 FC = gfortran
@@ -49,7 +49,7 @@ vpath %.f = .:../src:../src/Laplace:../src/Common
 
 .PHONY: all clean list
 
-SOURCES =  lfmm3dpart_dr.f \
+SOURCES =  rfmm3dstost_dr.f \
   d3hplratree.f \
   dlaran.f \
   hkrand.f \
@@ -67,7 +67,6 @@ SOURCES =  lfmm3dpart_dr.f \
   lwtsexp_sep1.f \
   lwtsexp_sep2.f \
   fmmcommon.f \
-  second-r8.f \
 
 OBJECTS = $(patsubst %.f,$(OBJ_DIR)/%.o,$(SOURCES))
 

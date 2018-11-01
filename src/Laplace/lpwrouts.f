@@ -415,7 +415,7 @@ c        Add contributions to local expansion
       do nm=0,nterms
          do mth = 0,nm
             local(nm,mth) = local(nm,mth)*zeye(mth)
-            if(mth.gt.0) local(nm,-mth) = dconjg(local(nm,mth))
+            if(mth.gt.0) local(nm,-mth) = conjg(local(nm,mth))
          enddo
       enddo
 
@@ -564,7 +564,7 @@ c
            do 200 mm = 2,numfour(i),2
               rt1 = dimag(fexpe(nexte))*dreal(mexpf(nftot+mm))
               rt2 = dreal(fexpe(nexte))*dimag(mexpf(nftot+mm))
-	      rtmp = 2*(rt1+rt2)
+	          rtmp = 2*(rt1+rt2)
               nexte = nexte + 1
               mexpphys(nptot+ival) = mexpphys(nptot+ival) +
      1                dcmplx(0.0d0,rtmp)
@@ -572,10 +572,10 @@ c
            do 400 mm = 3,numfour(i),2
               rt1 = dreal(fexpo(nexto))*dreal(mexpf(nftot+mm))
               rt2 = dimag(fexpo(nexto))*dimag(mexpf(nftot+mm))
-	      rtmp = 2*(rt1-rt2)
+	          rtmp = 2*(rt1-rt2)
               nexto = nexto + 1
               mexpphys(nptot+ival) = mexpphys(nptot+ival) +
-     1                dcmplx(rtmp,0.0d0)
+     1                rtmp
 400        continue
  1200   continue
         nftot = nftot+numfour(i)
