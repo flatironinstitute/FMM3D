@@ -1,5 +1,5 @@
 
-      subroutine mpalloc(laddr,iaddr,nlevels,lmptot,nterms)
+      subroutine mpalloc(nd,laddr,iaddr,nlevels,lmptot,nterms)
 c     This subroutine determines the size of the array
 c     to be allocated for the multipole expansions
 c     iaddr(1,i) points to the starting location of the multipole
@@ -7,6 +7,9 @@ c     expansion of box i and iaddr(2,i) points to the local
 c     expansion of box i
 c  
 c     Input arguments
+c     nd          in: Integer
+c                 number of expansions per box            
+c 
 c     laddr       in: Integer(2,0:nlevels)
 c                 indexing array provinding access to boxes at each
 c                 level
@@ -28,14 +31,14 @@ c                 Total length of expansions array required
 c------------------------------------------------------------------
 
       implicit none
-      integer nlevels,nterms(0:nlevels)
+      integer nlevels,nterms(0:nlevels),nd
       integer iaddr(2,1), lmptot, laddr(2,0:nlevels)
       integer ibox,i,iptr,istart,nn,itmp
 
       istart = 1
       do i = 0,nlevels
 
-        nn = (2*nterms(i)+1)*2*(nterms(i)+1) 
+        nn = (2*nterms(i)+1)*2*(nterms(i)+1)*nd 
 C$OMP PARALLEL DO DEFAULT(SHARED)
 C$OMP$PRIVATE(ibox,itmp)
 
@@ -113,3 +116,76 @@ C$OMP END PARALLEL DO
       return
       end
 c----------------------------------------------------------      
+
+
+      subroutine mpzero(nd,mpole,nterms)
+c
+cc      this subroutine zeros out a collection of 
+c       multipole expansions
+c
+c       input:
+c       nd     in:integer
+c              number of expansions
+c
+c       nterms in:integer
+c              number of terms in the expansions
+c
+c       inout:
+c       mpole  inout: double complex(nd,0:nterms,-nterms:nterms)
+c              multipole expansions to be zeroed out
+c
+      implicit none
+      integer nd, i,j,nterms,idim
+      double complex mpole(nd,0:nterms,-nterms:nterms)
+
+      do i=-nterms,nterms
+        do j=0,nterms
+          do idim=1,nd
+            mpole(idim,j,i) = 0
+          enddo
+        enddo
+      enddo
+
+      return
+      end
+
+c----------------------------------------------------------------
+
+      subroutine mpscale(nd,nterms,mpolein,rsc,mpoleout)
+c
+cc      this subroutine rescales a multipole 
+c       expansion where mpoleout(i,j) = mpolein(i,j)*rscalepow(i)
+c
+c       input
+c       nd      in: integer
+c               number of multipole expansions
+c
+c       nterms  in: integer
+c               number of terms in the expansion
+c    
+c       rsc     in: double precision(0:nterms)
+c               scaling factor for the multipole expansions            
+c
+c       mpolein   in: double complex(nd,0:nterms,-nterms:nterms)
+c                input multipole expansions
+c
+c       output
+c       mpoleout  out: double complex(nd,0:nterms,-nterms:nterms)
+c                output multipole expansions
+c
+      implicit none
+      integer nd,nterms,i,j,idim
+      double precision rsc(0:nterms)
+      double complex mpolein(nd,0:nterms,-nterms:nterms)
+      double complex mpoleout(nd,0:nterms,-nterms:nterms)
+
+      do i=0,nterms
+        do j=-i,i
+          do idim=1,nd
+            mpoleout(idim,i,j) = mpolein(idim,i,j)*rsc(i)
+          enddo
+        enddo
+     enddo
+
+      return
+      end

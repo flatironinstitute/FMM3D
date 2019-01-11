@@ -1,16 +1,13 @@
-        subroutine lreadall(iprec,zk,nquad,cxs,cws,nfour,nphys,lw,ier)
+        subroutine lreadall(eps,zk,nquad,cxs,cws,nfour,nphys,lw,ier)
 c
 cc        this subroutine computes lambda quadrature nodes and weights
 c         for given helmholtz parameter and the number of terms
 c         per lambda required in fourier and physical domains
 c
 c         input:
-c         iprec:    precision parameter
-c                   iprec = 1, eps = 0.5d-3
-c                   iprec = 2, eps = 0.5d-6
-c                   iprec = 3, eps = 0.5d-9
+c         eps:   precision requested 
+c                  min precision possible is 0.5d-12
 c
-c                   Currently, the code works for iprec = 2
 c
 c         zk -      Helmholtz parameter
 c                   currently code works for zk in
@@ -41,7 +38,7 @@ c
        
         implicit real *8 (a-h,o-z)
         complex *16 cxs(*),cws(*),zk
-        real *8 cx(100),cy(100)
+        real *8 cx(100),cy(100),eps
         integer nfour(*),nphys(*)
 
         done = 1
@@ -107,6 +104,11 @@ c
         ier = 0
 
         call hwts3getd(ier,zk,nnx,nny,cx,cy,iquad,ix,iy)
+
+        iprec = 1
+        if(eps.lt.0.5d-3) iprec = 2
+        if(eps.lt.0.5d-6) iprec = 3
+        if(eps.lt.0.5d-9) iprec = 4
 
         call hwts3(ier,iprec,zk,cxs,cws,nquad)
         

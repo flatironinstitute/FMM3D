@@ -2,7 +2,7 @@ c     This file contains all the relevant rotation subroutines
 c     for the 3D code.
 c
 c  
-      subroutine rotztoy(nterms,mpole,mrotate,rdminus)
+      subroutine rotztoy(nd,nterms,mpole,mrotate,rdminus)
 
 c     Compute multipole expansions in the new frame of
 c     reference given by
@@ -16,10 +16,12 @@ c     followed by a rotation of -pi/2 radians about the y'
 c     axis in the rotated frame of refernce
 c 
 c     INPUT arguments:
+c     nd           in: integer
+c                  number of expansions
 c     nterms       in: integer
 c                  number of terms in the multipole expansion
 c
-c     mpole        in: double complex (0:nterms,-nterms:nterms)
+c     mpole        in: double complex (nd,0:nterms,-nterms:nterms)
 c                  The multipole expansion to be rotated
 c
 c     rdminus      in: double complex (0:nterms,0:nterms,-nterms:nterms)
@@ -28,17 +30,20 @@ c                  expansion corresponds to a rotation of -pi/2
 c                  about the y axis
 c
 c     OUTPUT
-c     mrotate      out: double complex (0:nterms,-nterms:nterms)
+c     mrotate      out: double complex (nd,0:nterms,-nterms:nterms)
 c                  rotated multipole expansion  
 c                   
       implicit none
-      integer nterms
-      double precision rdminus(0:nterms,0:nterms,-nterms:nterms)
-      double complex mpole(0:nterms,-nterms:nterms)
-      double complex mptemp(0:nterms,-nterms:nterms)
-      double complex mrotate(0:nterms,-nterms:nterms)
+      integer nterms,nd
+      double precision rdminus(0:nterms,0:nterms,-nterms:nterms),rr
+      double complex mpole(nd,0:nterms,-nterms:nterms)
+      double complex, allocatable :: mptemp(:,:,:)
+      double complex mrotate(nd,0:nterms,-nterms:nterms)
       double complex ephi(-nterms:nterms), eyem, eye
+      integer idim
       integer l,m,mp
+
+      allocate(mptemp(nd,0:nterms,-nterms:nterms))
 
 c     First rotate by -pi/2 radians about the z axis 
 c     in the original coordinate system
@@ -52,7 +57,9 @@ c     in the original coordinate system
 
       do l=0,nterms
          do m=-l,l
-            mptemp(l,m) = ephi(m)*mpole(l,m)
+            do idim=1,nd
+               mptemp(idim,l,m) = ephi(m)*mpole(idim,l,m)
+            enddo
          enddo
       enddo
 
@@ -61,14 +68,20 @@ c     the new co-ordinate system
 
       do l=0,nterms
          do m=-l,l
-            mrotate(l,m) = 0.0d0
+            do idim=1,nd
+               mrotate(idim,l,m) = 0.0d0
+            enddo
             do mp=-l,l
                if(mp.ge.0) then
-                  mrotate(l,m) = mrotate(l,m) +
-     1            mptemp(l,mp)*rdminus(l,mp,m)
+                  do idim=1,nd
+                     mrotate(idim,l,m) = mrotate(idim,l,m) +
+     1               mptemp(idim,l,mp)*rdminus(l,mp,m)
+                  enddo
                else
-                  mrotate(l,m) = mrotate(l,m) +
-     1            mptemp(l,mp)*rdminus(l,-mp,-m)
+                  do idim=1,nd
+                     mrotate(idim,l,m) = mrotate(idim,l,m) +
+     1               mptemp(idim,l,mp)*rdminus(l,-mp,-m)
+                  enddo
                endif
             enddo
          enddo
@@ -77,7 +90,7 @@ c     the new co-ordinate system
       return
       end
 c---------------------------------------------------------------  
-      subroutine rotytoz(nterms,mpole,mrotate,rdplus)
+      subroutine rotytoz(nd,nterms,mpole,mrotate,rdplus)
 
 c     Compute multipole expansions in the new frame of
 c     reference given by
@@ -88,10 +101,12 @@ c     followed by a rotation of pi/2 radians about the z
 c     axis to bring back to original frame of reference
 c 
 c     INPUT arguments:
+c     nd           in: integer
+c                  number of expansions
 c     nterms       in: integer
 c                  number of terms in the multipole expansion
 c
-c     mpole        in: double complex (0:nterms,-nterms:nterms)
+c     mpole        in: double complex (nd,0:nterms,-nterms:nterms)
 c                  The multipole expansion to be rotated
 c
 c     rdplus       in: double complex (0:nterms,0:nterms,-nterms:nterms)
@@ -100,31 +115,39 @@ c                  expansion corresponds to a rotation of -pi/2
 c                  about the y axis
 c
 c     OUTPUT
-c     mrotate      out: double complex (0:nterms,-nterms:nterms)
+c     mrotate      out: double complex (nd,0:nterms,-nterms:nterms)
 c                  rotated multipole expansion  
 c                   
       implicit none
-      integer nterms
+      integer nterms,nd
       double precision rdplus(0:nterms,0:nterms,-nterms:nterms)
-      double complex mpole(0:nterms,-nterms:nterms)
-      double complex mptemp(0:nterms,-nterms:nterms)
-      double complex mrotate(0:nterms,-nterms:nterms)
+      double complex mpole(nd,0:nterms,-nterms:nterms)
+      double complex, allocatable :: mptemp(:,:,:)
+      double complex mrotate(nd,0:nterms,-nterms:nterms)
       double complex ephi(-nterms:nterms), eyem, eye
-      integer l,m,mp
+      integer l,m,mp,idim
+
+      allocate(mptemp(nd,0:nterms,-nterms:nterms))
 
 c     Now rotate by pi/2 radians about the y' axis in
 c     the new co-ordinate system
 
       do l=0,nterms
          do m=-l,l
-            mptemp(l,m) = 0.0d0
+            do idim=1,nd
+               mptemp(idim,l,m) = 0.0d0
+            enddo
             do mp=-l,l
                if(mp.ge.0) then
-                  mptemp(l,m) = mptemp(l,m) +
-     1             mpole(l,mp)*rdplus(l,mp,m)
+                  do idim=1,nd
+                     mptemp(idim,l,m) = mptemp(idim,l,m) +
+     1               mpole(idim,l,mp)*rdplus(l,mp,m)
+                  enddo
                else
-                  mptemp(l,m) = mptemp(l,m) +
-     1            mpole(l,mp)*rdplus(l,-mp,-m)
+                  do idim=1,nd
+                     mptemp(idim,l,m) = mptemp(idim,l,m) +
+     1              mpole(idim,l,mp)*rdplus(l,-mp,-m)
+                  enddo
                endif
             enddo
          enddo
@@ -141,14 +164,16 @@ c     in the original coordinate system
 
       do l=0,nterms
          do m=-l,l
-            mrotate(l,m) = ephi(m)*mptemp(l,m)
+            do idim=1,nd
+               mrotate(idim,l,m) = ephi(m)*mptemp(idim,l,m)
+            enddo
          enddo
       enddo
 
       return
       end
 c--------------------------------------------------------      
-      subroutine rotztox(nterms,mpole,mrotate,rdplus)
+      subroutine rotztox(nd,nterms,mpole,mrotate,rdplus)
 
 c     Compute multipole expansions in the new frame of
 c     reference given by
@@ -160,10 +185,13 @@ c     This is achieved by first rotating by pi/2 about
 c     the y-axis in the original co-ordinate system
 c 
 c     INPUT arguments:
+c     nd           in: integer
+c                  number of expansions
+c
 c     nterms       in: integer
 c                  number of terms in the multipole expansion
 c
-c     mpole        in: double complex (0:nterms,-nterms:nterms)
+c     mpole        in: double complex (nd,0:nterms,-nterms:nterms)
 c                  The multipole expansion to be rotated
 c
 c     rdplus       in: double complex (0:nterms,0:nterms,-nterms:nterms)
@@ -172,29 +200,35 @@ c                  expansion corresponds to a rotation of pi/2
 c                  about the y axis
 c
 c     OUTPUT
-c     mrotate      out: double complex (0:nterms,-nterms:nterms)
+c     mrotate      out: double complex (nd,0:nterms,-nterms:nterms)
 c                  rotated multipole expansion  
 c                   
       implicit none
-      integer nterms
+      integer nterms,nd
       double precision rdplus(0:nterms,0:nterms,-nterms:nterms)
-      double complex mpole(0:nterms,-nterms:nterms)
-      double complex mrotate(0:nterms,-nterms:nterms)
-      integer l,m,mp
+      double complex mpole(nd,0:nterms,-nterms:nterms)
+      double complex mrotate(nd,0:nterms,-nterms:nterms)
+      integer l,m,mp,idim
 
 c     rotate by pi/2 radians about the y' axis in
 c     the new co-ordinate system
 
       do l=0,nterms
          do m=-l,l
-            mrotate(l,m) = 0.0d0
+            do idim=1,nd
+              mrotate(idim,l,m) = 0.0d0
+            enddo
             do mp=-l,l
                if(mp.ge.0) then
-                  mrotate(l,m) = mrotate(l,m) +
-     1             mpole(l,mp)*rdplus(l,mp,m)
+                  do idim=1,nd
+                     mrotate(idim,l,m) = mrotate(idim,l,m) +
+     1               mpole(idim,l,mp)*rdplus(l,mp,m)
+                  enddo
                else
-                  mrotate(l,m) = mrotate(l,m) +
-     1             mpole(l,mp)*rdplus(l,-mp,-m)
+                  do idim=1,nd
+                    mrotate(idim,l,m) = mrotate(idim,l,m) +
+     1               mpole(idim,l,mp)*rdplus(l,-mp,-m)
+                  enddo
                endif
             enddo
          enddo
