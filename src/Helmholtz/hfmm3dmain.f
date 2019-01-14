@@ -93,7 +93,8 @@ c
       double complex, allocatable :: mexp(:,:,:,:)
       double complex, allocatable :: tmp(:,:,:)
       double complex, allocatable :: mexpf1(:,:),mexpf2(:,:)
-      double complex, allocatable :: mexpp1(:,:),mexpp2(:,:),mexppall(:,:,:)
+      double complex, allocatable :: mexpp1(:,:),mexpp2(:,:),
+     1    mexppall(:,:,:)
 
       double precision, allocatable :: rsc(:)
       double precision r1
@@ -102,7 +103,7 @@ c
 
 c     temp variables
       integer i,j,k,l,ii,jj,kk,ll,idim
-      integer ibox,jbox,ilev,npts
+      integer ibox,jbox,ilev,npts,npts0
       integer nchild,nlist1,nlist2,nlist3,nlist4
 
       integer istart,iend,istartt,iendt,istarte,iende
@@ -141,7 +142,7 @@ c     temp variables
       double complex ima
       data ima/(0.0d0,1.0d0)/
 
-      integer nlfbox
+      integer nlfbox,ier
 
 
       pi = 4.0d0*atan(1.0d0)
@@ -456,16 +457,17 @@ c
             allocate(yshift(-5:5,nexptotp))
             allocate(zshift(5,nexptotp))
             allocate(rlsc(0:nterms(ilev),0:nterms(ilev),nlams))
-            allocate(tmp(0:nterms(ilev),-nterms(ilev):nterms(ilev)))
+            allocate(tmp(nd,0:nterms(ilev),-nterms(ilev):nterms(ilev)))
  
-            allocate(mexpf1(nexptot),mexpf2(nexptot),mexpp1(nexptotp))
-            allocate(mexpp2(nexptotp),mexppall(nexptotp,16))
+            allocate(mexpf1(nd,nexptot),mexpf2(nd,nexptot),
+     1          mexpp1(nd,nexptotp))
+            allocate(mexpp2(nd,nexptotp),mexppall(nd,nexptotp,16))
 
 
 c
 cc      NOTE: there can be some memory savings here
 c
-            allocate(mexp(nexptotp,nboxes,6))
+            allocate(mexp(nd,nexptotp,nboxes,6))
 
             nn = nterms(ilev)
             allocate(carray(4*nn+1,4*nn+1))
@@ -531,10 +533,10 @@ c           rescale multipole expansion
      1                  nlams,nfourier,nexptot,mexpf1,mexpf2,rlsc) 
 
                   call ftophys(nd,mexpf1,nlams,nfourier,nphysical,
-     1                 mexp(1,ibox,1),fexp)           
+     1                 mexp(1,1,ibox,1),fexp)           
 
                   call ftophys(nd,mexpf2,nlams,nfourier,nphysical,
-     1                 mexp(1,ibox,2),fexp)
+     1                 mexp(1,1,ibox,2),fexp)
 
 
 c             form mexpnorth, mexpsouth for current box
@@ -548,10 +550,10 @@ c             mexpsouth
      1                  nfourier,nexptot,mexpf1,mexpf2,rlsc)
 
                   call ftophys(nd,mexpf1,nlams,nfourier,
-     1                 nphysical,mexp(1,ibox,3),fexp)           
+     1                 nphysical,mexp(1,1,ibox,3),fexp)           
 
                   call ftophys(nd,mexpf2,nlams,nfourier,
-     1                 nphysical,mexp(1,ibox,4),fexp)   
+     1                 nphysical,mexp(1,1,ibox,4),fexp)   
 
 
 c             Rotate mpole for computing mexpeast, mexpwest
@@ -561,10 +563,10 @@ c             Rotate mpole for computing mexpeast, mexpwest
      1                  nfourier,nexptot,mexpf1,mexpf2,rlsc)
 
                   call ftophys(nd,mexpf1,nlams,nfourier,
-     1                 nphysical,mexp(1,ibox,5),fexp)
+     1                 nphysical,mexp(1,1,ibox,5),fexp)
 
                   call ftophys(nd,mexpf2,nlams,nfourier,
-     1                 nphysical,mexp(1,ibox,6),fexp)           
+     1                 nphysical,mexp(1,1,ibox,6),fexp)           
 
                endif
             enddo
@@ -635,9 +637,9 @@ C$OMP$PRIVATE(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
      2            iaddr,rmlexp,rlams,whts,
      3            nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,
      4            nuall,uall,nu1234,u1234,ndall,dall,nd5678,d5678,
-     5            mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1),
-     6            mexppall(1,2),mexppall(1,3),mexppall(1,4),xshift,
-     7            yshift,zshift,fexpback,rlsc)
+     5            mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1,1),
+     6            mexppall(1,1,2),mexppall(1,1,3),mexppall(1,1,4),
+     7            xshift,yshift,zshift,fexpback,rlsc)
 
 
                   call processnsexp(nd,zk2,ibox,ilev,nboxes,centers,
@@ -646,10 +648,10 @@ C$OMP$PRIVATE(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
      3            nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,
      4            nnall,nall,nn1256,n1256,nn12,n12,nn56,n56,nsall,sall,
      5            ns3478,s3478,ns34,s34,ns78,s78,
-     6            mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1),
-     7            mexppall(1,2),mexppall(1,3),mexppall(1,4),
-     8            mexppall(1,5),mexppall(1,6),mexppall(1,7),
-     9            mexppall(1,8),rdplus,xshift,yshift,zshift,
+     6            mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1,1),
+     7            mexppall(1,1,2),mexppall(1,1,3),mexppall(1,1,4),
+     8            mexppall(1,1,5),mexppall(1,1,6),mexppall(1,1,7),
+     9            mexppall(1,1,8),rdplus,xshift,yshift,zshift,
      9            fexpback,rlsc)
 
                   call processewexp(nd,zk2,ibox,ilev,nboxes,centers,
@@ -660,13 +662,13 @@ C$OMP$PRIVATE(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
      5            ne3,e3,ne5,e5,ne7,e7,nwall,wall,
      5            nw2468,w2468,nw24,w24,nw68,w68,
      5            nw2,w2,nw4,w4,nw6,w6,nw8,w8,
-     6            mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1),
-     7            mexppall(1,2),mexppall(1,3),mexppall(1,4),
-     8            mexppall(1,5),mexppall(1,6),
-     8            mexppall(1,7),mexppall(1,8),mexppall(1,9),
-     9            mexppall(1,10),mexppall(1,11),mexppall(1,12),
-     9            mexppall(1,13),mexppall(1,14),mexppall(1,15),
-     9            mexppall(1,16),rdminus,xshift,yshift,zshift,
+     6            mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1,1),
+     7            mexppall(1,1,2),mexppall(1,1,3),mexppall(1,1,4),
+     8            mexppall(1,1,5),mexppall(1,1,6),
+     8            mexppall(1,1,7),mexppall(1,1,8),mexppall(1,1,9),
+     9            mexppall(1,1,10),mexppall(1,1,11),mexppall(1,1,12),
+     9            mexppall(1,1,13),mexppall(1,1,14),mexppall(1,1,15),
+     9            mexppall(1,1,16),rdminus,xshift,yshift,zshift,
      9            fexpback,rlsc)
                endif
             enddo
@@ -1094,7 +1096,7 @@ c
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectcp(nd,zk,sourcesort(jstart),
+                call h3ddirectcp(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),thresh)          
               enddo
@@ -1112,7 +1114,7 @@ c
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectcdp(nd,zk,sourcesort(jstart),
+                call h3ddirectcdp(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),dipstrsort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),thresh)          
@@ -1134,7 +1136,7 @@ c
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectcg(nd,zk,sourcesort(jstart),
+                call h3ddirectcg(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)   
               enddo
@@ -1152,7 +1154,7 @@ c
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectcdg(nd,zk,sourcesort(jstart),
+                call h3ddirectcdg(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),dipstrsort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)          
@@ -1174,7 +1176,7 @@ c
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectcp(nd,zk,sourcesort(jstart),
+                call h3ddirectcp(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),thresh)          
               enddo
@@ -1192,7 +1194,7 @@ c
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectcdp(nd,zk,sourcesort(jstart),
+                call h3ddirectcdp(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),dipstrsort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),thresh)          
@@ -1214,7 +1216,7 @@ c
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectcg(nd,zk,sourcesort(jstart),
+                call h3ddirectcg(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),npts,targsort(1,istartt),
      2             npts0,pot(1,istartt),grad(1,1,istartt),thresh)   
               enddo
@@ -1232,7 +1234,7 @@ c
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectcdg(nd,zk,sourcesort(jstart),
+                call h3ddirectcdg(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),dipstrsort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,targsort(1,istartt),
      2             npts0,pot(1,istartt),grad(1,1,istartt),thresh)          

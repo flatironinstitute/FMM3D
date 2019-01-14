@@ -22,10 +22,8 @@ c
       theta = -pi/2.0d0
       call fstrtn(nterms,rdmpi2,dc,theta)
       theta = dacos(dsqrt(3.0d0)/3.0d0)
-      call prin2(' theta = *',theta,1)
       call fstrtn(nterms,rdsq3,dc,theta)
       theta = dacos(-dsqrt(3.0d0)/3.0d0)
-      call prin2(' theta = *',theta,1)
       call fstrtn(nterms,rdmsq3,dc,theta)
       return
       end

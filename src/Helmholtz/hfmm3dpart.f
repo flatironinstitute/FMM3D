@@ -54,7 +54,7 @@ c
       ifpghtarg = 2
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,ntarg,targ
+     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg)
 
       return
@@ -128,18 +128,20 @@ c
 c   pot:    out: double complex(nsource) 
 c               potential at the source locations
 c
-c   fld:   out: double complex(3,nsource)
+c   grad:   out: double complex(3,nsource)
 c               gradient at the source locations
 c
 c   pottarg:    out: double complex(ntarg) 
 c               potential at the targ locations
 c
-c   fldtarg:   out: double complex(3,ntarg)
+c   gradtarg:   out: double complex(3,ntarg)
 c               gradient at the targ locations
      
 c------------------------------------------------------------------
 
       implicit none
+
+      integer nd
 
       double complex zk
       double precision eps
@@ -198,7 +200,7 @@ c
 c
 cc        other temporary variables
 c
-       integer i,iert,ifprint,ilev
+       integer i,iert,ifprint,ilev,idim,ier
        double precision time1,time2,omp_get_wtime,second
 
 c
@@ -208,11 +210,7 @@ c
 c
 cc        set criterion for box subdivision
 c
-       if(iprec.eq.1) ndiv = 100
-       if(iprec.eq.2) ndiv = 100
-       if(iprec.eq.3) ndiv = 100
-       if(iprec.eq.4) ndiv = 100
-
+       ndiv = 100
 c
 cc         set tree flags
 c
@@ -364,7 +362,7 @@ C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
         do i=1,ntarg
           do idim=1,nd
             pottargsort(idim,i) = 0
-            gratargdsort(idim,1,i) = 0
+            gradtargsort(idim,1,i) = 0
             gradtargsort(idim,2,i) = 0
             gradtargsort(idim,3,i) = 0
           enddo
@@ -401,8 +399,10 @@ c
      1                     itree(ipointer(5)))
 
       if(ifdipole.eq.1) then
-         call dreorderf(2*nd,nsource,dipstr,dipstrsort,itree(ipointer(5)))
-         call dreorderf(3*nd,nsource,dipvec,dipvecsort,itree(ipointer(5)))
+         call dreorderf(2*nd,nsource,dipstr,dipstrsort,
+     1       itree(ipointer(5)))
+         call dreorderf(3*nd,nsource,dipvec,dipvecsort,
+     1       itree(ipointer(5)))
       endif
 
 c
@@ -459,23 +459,23 @@ c     meaningless, reset to 0
         call dreorderi(2*nd,nsource,potsort,pot,
      1                 itree(ipointer(5)))
       endif
-      if(ifpgh.eq.2) 
+      if(ifpgh.eq.2) then 
         call dreorderi(2*nd,nsource,potsort,pot,
      1                 itree(ipointer(5)))
-        call dreorderi(6*nd,nsource,fldsort,fld,
+        call dreorderi(6*nd,nsource,gradsort,grad,
      1                 itree(ipointer(5)))
       endif
 
       if(ifpghtarg.eq.1) then
         call dreorderi(2*nd,ntarg,pottargsort,pottarg,
-     1     itree(ipointer(6))
+     1     itree(ipointer(6)))
       endif
 
       if(ifpghtarg.eq.2) then
         call dreorderi(2*nd,ntarg,pottargsort,pottarg,
-     1     itree(ipointer(6))
+     1     itree(ipointer(6)))
         call dreorderi(6*nd,ntarg,gradtargsort,gradtarg,
-     1     itree(ipointer(6))
+     1     itree(ipointer(6)))
       endif
 
       return

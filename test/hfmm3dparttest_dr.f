@@ -8,7 +8,10 @@
 
       double precision eps
       double complex eye,zk
-      integer i,j,k
+      integer i,j,k,ntest
+      integer ifcharge,ifdipole,ifpgh,ifpghtarg
+      double precision err,hkrand
+      
 
       data eye/(0.0d0,1.0d0)/
 
@@ -17,7 +20,7 @@ cc      initialize printing routine
 c
       call prini(6,13)
 
-      zk = 1.2d0 + eye*0.2d0
+      zk = 1.2d0 + eye*0.02d0
 
       ns = 10000
       nt = 10000
@@ -42,8 +45,8 @@ c
         source(2,i) = hkrand(0)
         source(3,i) = hkrand(0)
 
-        charge(i) = hkrand(0) + ima*hkrand(0)
-        dipstr(i) = hkrand(0) + ima*hkrand(0)
+        charge(i) = hkrand(0) + eye*hkrand(0)
+        dipstr(i) = hkrand(0) + eye*hkrand(0)
 
         dipvec(1,i) = hkrand(0)
         dipvec(2,i) = hkrand(0)
@@ -80,7 +83,7 @@ c
 
        eps = 0.5d-6
        call hfmm3dpartstostcdg(eps,zk,ns,source,charge,dipstr,dipvec,
-      1      pot,grad,nt,targ,pottarg,gradtarg)
+     1      pot,grad,nt,targ,pottarg,gradtarg)
 
        ifcharge = 1
        ifdipole = 1
@@ -88,8 +91,8 @@ c
        ifpghtarg = 2
        
        call comperr(zk,ns,source,charge,ifcharge,ifdipole,dipstr,
-      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-      2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -125,6 +128,8 @@ c
       
       double complex potex(ntest),gradex(3,ntest),pottargex(ntest),
      1                  gradtargex(3,ntest)
+
+      double precision thresh
 
       nd = 1
       err = 0 
@@ -202,10 +207,10 @@ c
           ra = ra + abs(gradex(2,i))**2
           ra = ra + abs(gradex(3,i))**2
 
-          erra = erra + abs(pot(i)-potex(i))**2
-          erra = erra + abs(grad(1,i)-gradex(1,i))**2
-          erra = erra + abs(grad(2,i)-gradex(2,i))**2
-          erra = erra + abs(grad(3,i)-gradex(3,i))**2
+          err = err + abs(pot(i)-potex(i))**2
+          err = err + abs(grad(1,i)-gradex(1,i))**2
+          err = err + abs(grad(2,i)-gradex(2,i))**2
+          err = err + abs(grad(3,i)-gradex(3,i))**2
         enddo
       endif
 
@@ -224,10 +229,10 @@ c
           ra = ra + abs(gradtargex(2,i))**2
           ra = ra + abs(gradtargex(3,i))**2
 
-          erra = erra + abs(pottarg(i)-pottargex(i))**2
-          erra = erra + abs(gradtarg(1,i)-gradtargex(1,i))**2
-          erra = erra + abs(gradtarg(2,i)-gradtargex(2,i))**2
-          erra = erra + abs(gradtarg(3,i)-gradtargex(3,i))**2
+          err = err + abs(pottarg(i)-pottargex(i))**2
+          err = err + abs(gradtarg(1,i)-gradtargex(1,i))**2
+          err = err + abs(gradtarg(2,i)-gradtargex(2,i))**2
+          err = err + abs(gradtarg(3,i)-gradtargex(3,i))**2
         enddo
       endif
 

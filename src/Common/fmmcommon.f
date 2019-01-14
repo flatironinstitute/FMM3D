@@ -185,7 +185,7 @@ c
             mpoleout(idim,i,j) = mpolein(idim,i,j)*rsc(i)
           enddo
         enddo
-     enddo
+      enddo
 
       return
       end
