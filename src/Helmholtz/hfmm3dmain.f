@@ -40,8 +40,8 @@ c
 
       integer iaddr(2,nboxes), lmptot, lmptemp
       double precision rmlexp(lmptot)
-      double precision mptemp(nd,lmptemp)
-      double precision mptemp2(nd,lmptemp)
+      double precision mptemp(lmptemp)
+      double precision mptemp2(lmptemp)
        
       double precision timeinfo(10)
       double precision centers(3,nboxes)
@@ -202,9 +202,14 @@ C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j,k,idim)
 C$OMP END PARALLEL DO
 
 c       
-        do i=1,10
-          timeinfo(i)=0
-        enddo
+      do i=1,10
+        timeinfo(i)=0
+      enddo
+        
+      max_nodes = 10000
+      allocate(xnodes(max_nodes))
+      allocate(wts(max_nodes))
+
 
 c
 c       ... set all multipole and local expansions to zero
@@ -382,9 +387,6 @@ c
 C$    time1=omp_get_wtime()
 c
 
-      max_nodes = 10000
-      allocate(xnodes(max_nodes))
-      allocate(wts(max_nodes))
 
       do ilev=nlevels-1,0,-1
          nquad2 = nterms(ilev)*2.5
@@ -440,6 +442,10 @@ c
          if(real(zk2).le.pi.and.imag(zk2).le.0.02d0) then
             call lreadall(eps,zk2,nlams,rlams,whts,nfourier,
      1           nphysical,ntmax,ier)
+
+            call prinf('nlams=*',nlams,1)
+            call prinf('nfourier=*',nfourier,nlams)
+            call prinf('nphysical=*',nphysical,nlams)
 
 
             nphmax = 0
@@ -508,10 +514,11 @@ c          for rescaling the multipole expansions
 c
           
            r1 = rscales(ilev)
-           rsc(0) = 0
+           rsc(0) = 1.0d0
            do i=1,nterms(ilev)
              rsc(i) = rsc(i-1)*r1
            enddo
+           call prin2('rsc=*',rsc,nterms(ilev)+1)
 
 c
 cc         create multipole to plane wave expansion for
@@ -527,7 +534,8 @@ C$OMP$PRIVATE(ii,jj)
                if(npts.gt.0) then
 
 c           rescale multipole expansion
-                  call mpscale(nd,nterms,rmlexp(iaddr(1,ibox)),rsc,tmp)
+                  call mpscale(nd,nterms(ilev),rmlexp(iaddr(1,ibox)),
+     1               rsc,tmp)
 
                   call mpoletoexp(nd,tmp,nterms(ilev),
      1                  nlams,nfourier,nexptot,mexpf1,mexpf2,rlsc) 
@@ -683,7 +691,7 @@ C$OMP END PARALLEL DO
 
          if(real(zk2).ge.pi.or.imag(zk2).ge.0.02d0) then
 
-            nquad2 = nterms(ilev)*1.2
+            nquad2 = nterms(ilev)*2.2
             nquad2 = max(6,nquad2)
             ifinit2 = 1
             ier = 0
@@ -801,13 +809,18 @@ C$        time2=omp_get_wtime()
       time1 = second()
 C$        time1=omp_get_wtime()
 
+   
 c
 cc       shift mutlipole expansions to expansion center
 c        (Note: this part is not relevant for particle codes.
 c         It is relevant only for QBX codes)
 
-
-      nquad2 = 2*ntj
+ 1000 continue
+      nquad2 = max(6,2*ntj)
+      print *, size(xnodes)
+      print *,size(wts)
+      call prinf('ntj=*',ntj,1)
+      ifinit2 = 1
       call legewhts(nquad2,xnodes,wts,ifinit2)
       do ilev=1,nlevels
 C$OMP PARALLEL DO DEFAULT(SHARED)
@@ -841,6 +854,8 @@ C$OMP END PARALLEL DO
 c
 cc       evaluate multipole expansions at source locations
 c
+
+      call prin2('thresh=*',thresh,1)
 
       do ilev=1,nlevels
 C$OMP PARALLEL DO DEFAULT(SHARED)
@@ -931,6 +946,9 @@ c     ... step 7, evaluate all local expansions
 c
 
       nquad2 = 2*ntj
+      nquad2 = max(6,nquad2)
+      ifinit2 = 1
+
       call legewhts(nquad2,xnodes,wts,ifinit2)
       time1 = second()
 C$        time1=omp_get_wtime()
@@ -1020,6 +1038,7 @@ C$OMP$SCHEDULE(DYNAMIC)
               istart = itree(ipointer(12)+ibox-1)
               iend = itree(ipointer(13)+ibox-1)
               npts = iend-istart+1
+
               call h3dtaevalg(nd,zk,rscales(ilev),centers(1,ibox),
      1         rmlexp(iaddr(2,ibox)),nterms(ilev),targsort(1,istart),
      2         npts,pottarg(1,istart),gradtarg(1,1,istart),wlege,nlege)
@@ -1028,10 +1047,14 @@ C$OMP$SCHEDULE(DYNAMIC)
         endif
 C$OMP END PARALLEL DO         
       enddo
+
     
       time2 = second()
 C$        time2=omp_get_wtime()
       timeinfo(7) = time2 - time1
+
+      call prin2('pot=*',pot,12)
+      call prin2('pottarg=*',pottarg,12)
 
       if(ifprint .ge. 1)
      $     call prinf('=== STEP 8 (direct) =====*',i,0)
@@ -1144,6 +1167,7 @@ c
           endif
 
           if(ifcharge.eq.1.and.ifdipole.eq.1) then
+
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istarts = itree(ipointer(10)+ibox-1)
               iends = itree(ipointer(11)+ibox-1)
@@ -1168,7 +1192,7 @@ c
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istartt = itree(ipointer(12)+ibox-1)
               iendt = itree(ipointer(13)+ibox-1)
-              npts0 = iends-istarts+1
+              npts0 = iendt-istartt+1
               nlist1 = itree(ipointer(20)+ibox-1)
 
               do i=1,nlist1
@@ -1187,7 +1211,7 @@ c
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istartt = itree(ipointer(12)+ibox-1)
               iendt = itree(ipointer(13)+ibox-1)
-              npts0 = iends-istarts+1
+              npts0 = iendt-istartt+1
               nlist1 = itree(ipointer(20)+ibox-1)
               do i=1,nlist1
                 jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
@@ -1203,12 +1227,12 @@ c
           endif
         endif
 
-        if(ifpgh.eq.2) then
+        if(ifpghtarg.eq.2) then
           if(ifcharge.eq.1.and.ifdipole.eq.0) then
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istartt = itree(ipointer(12)+ibox-1)
               iendt = itree(ipointer(13)+ibox-1)
-              npts0 = iends-istarts+1
+              npts0 = iendt-istartt+1
               nlist1 = itree(ipointer(20)+ibox-1)
 
               do i=1,nlist1
@@ -1218,7 +1242,8 @@ c
                 npts = jend-jstart+1
                 call h3ddirectcg(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),npts,targsort(1,istartt),
-     2             npts0,pot(1,istartt),grad(1,1,istartt),thresh)   
+     2             npts0,pottarg(1,istartt),gradtarg(1,1,istartt),
+     3             thresh)   
               enddo
             enddo
           endif
@@ -1227,7 +1252,7 @@ c
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istartt = itree(ipointer(12)+ibox-1)
               iendt = itree(ipointer(13)+ibox-1)
-              npts0 = iends-istarts+1
+              npts0 = iendt-istartt+1
               nlist1 = itree(ipointer(20)+ibox-1)
               do i=1,nlist1
                 jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
@@ -1237,7 +1262,8 @@ c
                 call h3ddirectcdg(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),dipstrsort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,targsort(1,istartt),
-     2             npts0,pot(1,istartt),grad(1,1,istartt),thresh)          
+     2             npts0,pottarg(1,istartt),gradtarg(1,1,istartt),
+     3             thresh)          
               enddo
             enddo
           endif

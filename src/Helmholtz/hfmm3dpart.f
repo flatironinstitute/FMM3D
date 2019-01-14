@@ -46,6 +46,8 @@ c
       double complex pot(nsource),grad(3,nsource)
       double complex pottarg(ntarg),gradtarg(3,ntarg)
 
+      double complex hess(6),hesstarg(6)
+
       nd = 1
       ifcharge = 1
       ifdipole = 1
@@ -54,8 +56,8 @@ c
       ifpghtarg = 2
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg)
+     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return
       end
@@ -66,8 +68,8 @@ c
 c
 c-----------------------------------------------------------
         subroutine hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,
-     $    charge,ifdipole,dipstr,dipvec,ifpgh,pot,grad,ntarg,
-     $    targ,ifpghtarg,pottarg,gradtarg)
+     $    charge,ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,
+     $    targ,ifpghtarg,pottarg,gradtarg,hesstarg)
 c-----------------------------------------------------------------------
 c   INPUT PARAMETERS:
 c
@@ -125,17 +127,23 @@ c
 c
 c     OUTPUT parameters:
 c
-c   pot:    out: double complex(nsource) 
+c   pot:    out: double complex(nd,nsource) 
 c               potential at the source locations
 c
-c   grad:   out: double complex(3,nsource)
+c   grad:   out: double complex(nd,3,nsource)
 c               gradient at the source locations
 c
-c   pottarg:    out: double complex(ntarg) 
+c   hess    out: double complex(nd,6,nsource)
+c               hessian at the source locations
+c
+c   pottarg:    out: double complex(nd,ntarg) 
 c               potential at the targ locations
 c
-c   gradtarg:   out: double complex(3,ntarg)
+c   gradtarg:   out: double complex(nd,3,ntarg)
 c               gradient at the targ locations
+c
+c   hesstarg    out: double complex(nd,6,ntarg)
+c                hessian at the target locations
      
 c------------------------------------------------------------------
 
@@ -152,12 +160,13 @@ c------------------------------------------------------------------
       integer nsource,ntarg
 
       double precision source(3,*),targ(3,*)
-      double complex charge(*)
+      double complex charge(nd,*)
 
-      double complex dipstr(*)
+      double complex dipstr(nd,*)
       double precision dipvec(3,*)
 
-      double complex pot(*),grad(3,*),pottarg(3,*),gradtarg(3,*)
+      double complex pot(nd,*),grad(nd,3,*),pottarg(nd,3,*),
+     1     gradtarg(nd,3,*),hess(nd,6,*),hesstarg(nd,6,*)
 
 c       Tree variables
       integer ltree,mhung,idivflag,ndiv,isep,nboxes,nbmax,nlevels
@@ -175,9 +184,10 @@ c
       double complex, allocatable :: chargesort(:,:),dipstrsort(:,:)
       double precision, allocatable :: dipvecsort(:,:,:)
 
-      double complex, allocatable :: potsort(:,:),gradsort(:,:,:)
+      double complex, allocatable :: potsort(:,:),gradsort(:,:,:),
+     1       hesssort(:,:,:)
       double complex, allocatable :: pottargsort(:,:),
-     1    gradtargsort(:,:,:)
+     1    gradtargsort(:,:,:),hesstargsort(:,:,:)
 
 c
 cc       temporary fmm arrays
@@ -270,6 +280,7 @@ c       Call tree code
      2               mnlist1,mnlist2,mnlist3,mnlist4,nlevels,
      2               nboxes,treecenters,boxsize,itree,ltree,ipointer)
 
+
        call prinf('nboxes=*',nboxes,1)
 
 c
@@ -290,19 +301,29 @@ c     Allocate sorted source and target arrays
       endif
 
       if(ifpgh.eq.1) then 
-        allocate(potsort(nd,nsource),gradsort(nd,3,1))
+        allocate(potsort(nd,nsource),gradsort(nd,3,1),hesssort(nd,6,1))
       else if(ifpgh.eq.2) then
-        allocate(potsort(nd,nsource),gradsort(nd,3,nsource))
+        allocate(potsort(nd,nsource),gradsort(nd,3,nsource),
+     1       hesssort(nd,6,1))
+      else if(ifpgh.eq.3) then
+        allocate(potsort(nd,nsource),gradsort(nd,3,nsource),
+     1       hesssort(nd,6,nsource))
       else
-        allocate(potsort(nd,1),gradsort(nd,3,1))
+        allocate(potsort(nd,1),gradsort(nd,3,1),hesssort(nd,6,1))
       endif
 
       if(ifpghtarg.eq.1) then
-        allocate(pottargsort(nd,nsource),gradtargsort(nd,3,1))
+        allocate(pottargsort(nd,ntarg),gradtargsort(nd,3,1),
+     1      hesstargsort(nd,6,1))
       else if(ifpghtarg.eq.2) then
-        allocate(pottargsort(nd,nsource),gradtargsort(nd,3,nsource))
+        allocate(pottargsort(nd,ntarg),gradtargsort(nd,3,ntarg),
+     1        hesstargsort(nd,6,1))
+      else if(ifpghtarg.eq.3) then
+        allocate(pottargsort(nd,ntarg),gradtargsort(nd,3,ntarg),
+     1        hesstargsort(nd,6,ntarg))
       else
-        allocate(pottargsort(nd,1),gradtargsort(nd,3,1))
+        allocate(pottargsort(nd,1),gradtargsort(nd,3,1),
+     1     hesstargsort(nd,6,1))
       endif
 
       
@@ -330,6 +351,7 @@ C$OMP END PARALLEL DO
 
       if(ifpgh.eq.2) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
+
         do i=1,nsource
           do idim=1,nd
             potsort(idim,i) = 0
@@ -342,12 +364,32 @@ C$OMP END PARALLEL DO
       endif
 
 
+      if(ifpgh.eq.3) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
+        do i=1,nsource
+          do idim=1,nd
+            potsort(idim,i) = 0
+            gradsort(idim,1,i) = 0
+            gradsort(idim,2,i) = 0
+            gradsort(idim,3,i) = 0
+            hesssort(idim,1,i) = 0
+            hesssort(idim,2,i) = 0
+            hesssort(idim,3,i) = 0
+            hesssort(idim,4,i) = 0
+            hesssort(idim,5,i) = 0
+            hesssort(idim,6,i) = 0
+          enddo
+        enddo
+C$OMP END PARALLEL DO
+      endif
+
+
 
 c
 cc       initialize potential and gradient  at targ
 c        locations
 c
-      if(ifpgh.eq.1) then
+      if(ifpghtarg.eq.1) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
         do i=1,ntarg
           do idim=1,nd
@@ -357,7 +399,7 @@ C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
 C$OMP END PARALLEL DO
       endif
 
-      if(ifpgh.eq.2) then
+      if(ifpghtarg.eq.2) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
         do i=1,ntarg
           do idim=1,nd
@@ -365,6 +407,25 @@ C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
             gradtargsort(idim,1,i) = 0
             gradtargsort(idim,2,i) = 0
             gradtargsort(idim,3,i) = 0
+          enddo
+        enddo
+C$OMP END PARALLEL DO
+      endif
+
+      if(ifpghtarg.eq.3) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
+        do i=1,ntarg
+          do idim=1,nd
+            pottargsort(idim,i) = 0
+            gradtargsort(idim,1,i) = 0
+            gradtargsort(idim,2,i) = 0
+            gradtargsort(idim,3,i) = 0
+            hesstargsort(idim,1,i) = 0
+            hesstargsort(idim,2,i) = 0
+            hesstargsort(idim,3,i) = 0
+            hesstargsort(idim,4,i) = 0
+            hesstargsort(idim,5,i) = 0
+            hesstargsort(idim,6,i) = 0
           enddo
         enddo
 C$OMP END PARALLEL DO
@@ -419,12 +480,18 @@ c
 
 
       allocate(rmlexp(lmptot),stat=iert)
-      if(ier.ne.0) then
+      if(iert.ne.0) then
          call prinf('Cannot allocate mpole expansion workspace,
      1              lmptot is *', lmptot,1)
          stop
       endif
-      
+     
+      call prinf('ifpghtarg=*',ifpghtarg,1)
+      call prinf('mnlist3=*',mnlist3,1)
+      call prinf('ntarg=*',ntarg,1)
+      call prin2('targsort=*',targsort,24)
+      call prinf('nlevels=*',nlevels,1)
+
 
 
 c     Memory allocation is complete. 
@@ -441,18 +508,18 @@ C$      time1=omp_get_wtime()
      $   itree,ltree,ipointer,isep,ndiv,nlevels,
      $   nboxes,boxsize,mnbors,mnlist1,mnlist2,mnlist3,mnlist4,
      $   scales,treecenters,itree(ipointer(1)),nterms,
-     $   ifpgh,potsort,gradsort,ifpghtarg,pottargsort,
-     $   gradtargsort,ntj,texpssort,scjsort)
+     $   ifpgh,potsort,gradsort,hesssort,ifpghtarg,pottargsort,
+     $   gradtargsort,hesstargsort,ntj,texpssort,scjsort)
+
+      call prin2('potsort=*',potsort,24)
+      call prin2('pottargsort=*',pottargsort,24)
+      call prin2('gradsort=*',gradsort,24)
+      call prin2('gradtargsort=*',gradtargsort,24)
 
       time2=second()
 C$        time2=omp_get_wtime()
       if( ifprint .eq. 1 ) call prin2('time in fmm main=*',
      1   time2-time1,1)
-
-c
-c     parameter ier from targmain routine is currently 
-c     meaningless, reset to 0
-      if( ier .ne. 0 ) ier = 0
 
 
       if(ifpgh.eq.1) then
@@ -466,6 +533,16 @@ c     meaningless, reset to 0
      1                 itree(ipointer(5)))
       endif
 
+      if(ifpgh.eq.3) then 
+        call dreorderi(2*nd,nsource,potsort,pot,
+     1                 itree(ipointer(5)))
+        call dreorderi(6*nd,nsource,gradsort,grad,
+     1                 itree(ipointer(5)))
+        call dreorderi(12*nd,nsource,hesssort,hess,
+     1                 itree(ipointer(5)))
+      endif
+
+
       if(ifpghtarg.eq.1) then
         call dreorderi(2*nd,ntarg,pottargsort,pottarg,
      1     itree(ipointer(6)))
@@ -477,6 +554,16 @@ c     meaningless, reset to 0
         call dreorderi(6*nd,ntarg,gradtargsort,gradtarg,
      1     itree(ipointer(6)))
       endif
+
+      if(ifpghtarg.eq.3) then
+        call dreorderi(2*nd,ntarg,pottargsort,pottarg,
+     1     itree(ipointer(6)))
+        call dreorderi(6*nd,ntarg,gradtargsort,gradtarg,
+     1     itree(ipointer(6)))
+        call dreorderi(12*nd,ntarg,hesstargsort,hesstarg,
+     1     itree(ipointer(6)))
+      endif
+
 
       return
       end

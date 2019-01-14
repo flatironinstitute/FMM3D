@@ -89,8 +89,9 @@ c
        ifdipole = 1
        ifpgh = 2
        ifpghtarg = 2
+
        
-       call comperr(zk,ns,source,charge,ifcharge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -108,7 +109,8 @@ cc
 c
 c
 c
-      subroutine comperr(zk,ns,source,charge,ifcharge,ifdipole,dipstr,
+
+      subroutine comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -145,6 +147,8 @@ c
         gradtargex(2,i) = 0
         gradtargex(3,i) = 0
       enddo
+
+      thresh = 1.0d-16
 
       if(ifcharge.eq.1.and.ifdipole.eq.0) then
         if(ifpgh.eq.1) then
@@ -189,6 +193,14 @@ c
      1       ns,targ,ntest,pottargex,gradtargex,thresh)
         endif
       endif
+
+      call prin2('potex=*',potex,2*ntest)
+      call prin2('pot=*',pot,2*ntest)
+      call prin2('gradex=*',gradex,6*ntest)
+      call prin2('grad=*',grad,6*ntest)
+
+      call prin2('pottarg=*',pottarg,2*ntest)
+      call prin2('pottargex=*',pottargex,2*ntest)
 
       err = 0
       ra = 0

@@ -204,19 +204,22 @@ c
 c
 c
 c**********************************************************************
-      subroutine h3dadd(mpole,mpole2,nterms)
+      subroutine h3dadd(nd,mpole,mpole2,nterms)
 c**********************************************************************
 c
 c     add mpole to mpole2
 c
 c----------------------------------------------------------------------
       implicit real *8 (a-h,o-z)
-      complex *16 mpole(0:nterms,-nterms:nterms)
-      complex *16 mpole2(0:nterms,-nterms:nterms)
+      integer nd
+      complex *16 mpole(nd,0:nterms,-nterms:nterms)
+      complex *16 mpole2(nd,0:nterms,-nterms:nterms)
 c
       do i = 0,nterms
          do j = -i,i
-	    mpole2(i,j) = mpole2(i,j)+mpole(i,j)
+           do idim=1,nd
+     	    mpole2(idim,i,j) = mpole2(idim,i,j)+mpole(idim,i,j)
+           enddo
 	 enddo
       enddo
       return

@@ -295,7 +295,7 @@ c
 c
         subroutine legewhts(n,ts,whts,ifwhts)
         implicit double precision (a-h,o-z)
-        dimension ts(1),whts(1),ws2(1000),rats(1000)
+        dimension ts(*),whts(*),ws2(1000),rats(1000)
 c
 c        this subroutine constructs the nodes and the
 c        weights of the n-point gaussian quadrature on 
@@ -314,14 +314,16 @@ c       . . . construct the array of initial approximations
 c             to the roots of the n-th legendre polynomial
 c
         eps=1.0d-14
-        ZERO=0
-        DONE=1
+        done = 1
         pi=datan(done)*4
-        h=pi/(2*n) 
-        do 1200 i=1,n
-        t=(2*i-1)*h
-        ts(n-i+1)=dcos(t)
-1200  CONTINUE
+        h=pi/(2.0d0*n)
+
+
+        do i=1,n
+          t=(2*i-1)*h
+          ts(n-i+1)=cos(t)
+        enddo
+
 c
 c         use newton to find all roots of the legendre polynomial
 c

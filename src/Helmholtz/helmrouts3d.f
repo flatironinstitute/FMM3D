@@ -1012,9 +1012,6 @@ c
         cphi = dcos(phi)
         sphi = dsin(phi)
         ephi1 = dcmplx(cphi,sphi)
-        if (abs(zk*r).lt.thresh) then
-          goto 1000
-        endif
 c
 c     compute exp(eye*m*phi) array
 c
@@ -1108,7 +1105,6 @@ c
      1          utheta(idim)*thetaz + uphi(idim)*phiz
 
         enddo
- 1000 continue        
       enddo
 
       return
@@ -1819,7 +1815,7 @@ c
 
           dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
           d = sqrt(dd)
-          if(d.lt.thresh) goto 1000
+          if(abs(zk*d).lt.thresh) goto 1000
 
           dinv = 1/d
           dinv2 = dinv**2
