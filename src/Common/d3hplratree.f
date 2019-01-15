@@ -1,4 +1,4 @@
-1
+c
 c    Adaptive PTree - generate quad tree refined to finest level pruning
 c    empty boxes. Features include 
 c
@@ -560,7 +560,6 @@ c     Reset nlevels, nboxes
             exit
          endif
       enddo
-      call prinf('At the end of main tree code=*',i,0)
 c     Set up computation of list1 and list2     
 
       do i=1,nboxes
@@ -1932,7 +1931,6 @@ c
             exit
          endif
       enddo
-      call prinf('At end of refining in memory allocation code=*',i,0)
 c     Set up computation of list1 and list2      
       allocate(nnbors(nbmax))
       allocate(nbors(mnbors,nbmax))
