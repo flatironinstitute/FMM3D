@@ -28,6 +28,8 @@ c
       ifpgh = 1
       ifpghtarg = 0
 
+      ntarg = 0
+
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
      1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
@@ -64,6 +66,8 @@ c
       
       ifpgh = 2
       ifpghtarg = 0
+
+      ntarg = 0
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
      1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
@@ -105,6 +109,8 @@ c
       ifpgh = 1
       ifpghtarg = 0
 
+      ntarg = 0
+
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
      1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
@@ -143,6 +149,8 @@ c
       ifpgh = 2
       ifpghtarg = 0
 
+      ntarg = 0
+
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
      1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
@@ -180,6 +188,8 @@ c
       
       ifpgh = 1
       ifpghtarg = 0
+
+      ntarg = 0
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
      1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
@@ -222,6 +232,8 @@ c
       
       ifpgh = 2
       ifpghtarg = 0
+
+      ntarg = 0
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
      1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,

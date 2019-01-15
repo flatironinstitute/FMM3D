@@ -72,16 +72,500 @@ c
         gradtarg(3,i) = 0 
       enddo
 
- 1000 format(3(2x,d22.16)) 
-      do i=1,ns
-        write(17,1000) source(1,i),source(2,i),source(3,i)
-      enddo
+      eps = 0.5d-4
+c
+cc     now test source to source, charge, 
+c      with potentials
+c
+       write(6,*) 'testing source to source'
+       write(6,*) 'interaction: charges'
+       write(6,*) 'output: potentials'
+       write(6,*) 
+       write(6,*) 
 
-      do i=1,nt
-        write(18,1000) targ(1,i),targ(2,i),targ(3,i)
-      enddo
+       call hfmm3dpartstoscp(eps,zk,ns,source,charge,
+     1      pot)
 
+       ifcharge = 1
+       ifdipole = 0
+       ifpgh = 1
+       ifpghtarg = 0
+
+       
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+
+
+c
+
+c
+cc     now test source to source, charge, 
+c      with potentials and gradients
+c
+       write(6,*) 'testing source to source'
+       write(6,*) 'interaction: charges'
+       write(6,*) 'output: potentials + gradients'
+       write(6,*) 
+       write(6,*) 
+
+       call hfmm3dpartstoscg(eps,zk,ns,source,charge,
+     1      pot,grad)
+
+       ifcharge = 1
+       ifdipole = 0
+       ifpgh = 2
+       ifpghtarg = 0
+
+       
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
       
+
+
+c
+cc     now test source to source, dipole, 
+c      with potentials
+c
+       write(6,*) 'testing source to source'
+       write(6,*) 'interaction: dipoles'
+       write(6,*) 'output: potentials'
+       write(6,*) 
+       write(6,*) 
+
+       call hfmm3dpartstosdp(eps,zk,ns,source,dipstr,dipvec,
+     1      pot)
+
+       ifcharge = 0
+       ifdipole = 1
+       ifpgh = 1
+       ifpghtarg = 0
+
+       
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+
+
+c
+cc     now test source to source, dipole, 
+c      with potentials and gradients
+c
+       write(6,*) 'testing source to source'
+       write(6,*) 'interaction: dipoles'
+       write(6,*) 'output: potentials + gradients'
+       write(6,*) 
+       write(6,*) 
+
+       call hfmm3dpartstosdg(eps,zk,ns,source,dipstr,dipvec,
+     1      pot,grad)
+
+       ifcharge = 0
+       ifdipole = 1
+       ifpgh = 2
+       ifpghtarg = 0
+
+       
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+
+c
+cc     now test source to source, charge + dipole, 
+c      with potentials
+c
+       write(6,*) 'testing source to source'
+       write(6,*) 'interaction: charges + dipoles'
+       write(6,*) 'output: potentials'
+       write(6,*) 
+       write(6,*) 
+
+       call hfmm3dpartstoscdp(eps,zk,ns,source,charge,dipstr,dipvec,
+     1      pot)
+
+       ifcharge = 1
+       ifdipole = 1
+       ifpgh = 1
+       ifpghtarg = 0 
+
+       
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+
+
+c
+cc     now test source to source, charge + dipole, 
+c      with potentials and gradients
+c
+       write(6,*) 'testing source to source'
+       write(6,*) 'interaction: charges + dipoles'
+       write(6,*) 'output: potentials + gradients'
+       write(6,*) 
+       write(6,*) 
+
+       call hfmm3dpartstoscdg(eps,zk,ns,source,charge,dipstr,dipvec,
+     1      pot,grad)
+
+       ifcharge = 1
+       ifdipole = 1
+       ifpgh = 2
+       ifpghtarg = 0
+
+       
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+
+
+
+c
+cc     now test source to target, charge, 
+c      with potentials
+c
+       write(6,*) 'testing source to target'
+       write(6,*) 'interaction: charges'
+       write(6,*) 'output: potentials'
+       write(6,*) 
+       write(6,*) 
+
+       call hfmm3dpartstotcp(eps,zk,ns,source,charge,
+     1      nt,targ,pottarg)
+
+       ifcharge = 1
+       ifdipole = 0
+       ifpgh = 0
+       ifpghtarg = 1
+
+       
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+
+
+c
+cc     now test source to target, charge, 
+c      with potentials and gradients
+c
+       write(6,*) 'testing source to target'
+       write(6,*) 'interaction: charges'
+       write(6,*) 'output: potentials + gradients'
+       write(6,*) 
+       write(6,*) 
+
+       call hfmm3dpartstotcg(eps,zk,ns,source,charge,
+     1      nt,targ,pottarg,gradtarg)
+
+       ifcharge = 1
+       ifdipole = 0
+       ifpgh = 0
+       ifpghtarg = 2
+
+       
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+      
+
+
+c
+cc     now test source to target, dipole, 
+c      with potentials
+c
+       write(6,*) 'testing source to target'
+       write(6,*) 'interaction: dipoles'
+       write(6,*) 'output: potentials'
+       write(6,*) 
+       write(6,*) 
+
+       call hfmm3dpartstotdp(eps,zk,ns,source,dipstr,dipvec,
+     1      nt,targ,pottarg)
+
+       ifcharge = 0
+       ifdipole = 1
+       ifpgh = 0
+       ifpghtarg = 1
+
+       
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+
+
+c
+cc     now test source to target, dipole, 
+c      with potentials and gradients
+c
+       write(6,*) 'testing source to target'
+       write(6,*) 'interaction: dipoles'
+       write(6,*) 'output: potentials + gradients'
+       write(6,*) 
+       write(6,*) 
+
+       call hfmm3dpartstotdg(eps,zk,ns,source,dipstr,dipvec,
+     1      nt,targ,pottarg,gradtarg)
+
+       ifcharge = 0
+       ifdipole = 1
+       ifpgh = 0
+       ifpghtarg = 2
+
+       
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+
+c
+cc     now test source to target, charge + dipole, 
+c      with potentials
+c
+       write(6,*) 'testing source to target'
+       write(6,*) 'interaction: charges + dipoles'
+       write(6,*) 'output: potentials'
+       write(6,*) 
+       write(6,*) 
+
+       call hfmm3dpartstotcdp(eps,zk,ns,source,charge,dipstr,dipvec,
+     1      nt,targ,pottarg)
+
+       ifcharge = 1
+       ifdipole = 1
+       ifpgh = 0
+       ifpghtarg = 1
+
+       
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+
+
+c
+cc     now test source to target, charge + dipole, 
+c      with potentials and gradients
+c
+       write(6,*) 'testing source to target'
+       write(6,*) 'interaction: charges + dipoles'
+       write(6,*) 'output: potentials + gradients'
+       write(6,*) 
+       write(6,*) 
+
+       call hfmm3dpartstotcdg(eps,zk,ns,source,charge,dipstr,dipvec,
+     1      nt,targ,pottarg,gradtarg)
+
+       ifcharge = 1
+       ifdipole = 1
+       ifpgh = 0
+       ifpghtarg = 2
+
+       
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+
+c
+cc     now test source to source + target, charge, 
+c      with potentials
+c
+       write(6,*) 'testing source to source and target'
+       write(6,*) 'interaction: charges'
+       write(6,*) 'output: potentials'
+       write(6,*) 
+       write(6,*) 
+
+       call hfmm3dpartstostcp(eps,zk,ns,source,charge,
+     1      pot,nt,targ,pottarg)
+
+       ifcharge = 1
+       ifdipole = 0
+       ifpgh = 1
+       ifpghtarg = 1
+
+       
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+
+
+c
+cc     now test source to source + target, charge, 
+c      with potentials and gradients
+c
+       write(6,*) 'testing source to source and target'
+       write(6,*) 'interaction: charges + dipoles'
+       write(6,*) 'output: potentials + gradients'
+       write(6,*) 
+       write(6,*) 
+
+       call hfmm3dpartstostcg(eps,zk,ns,source,charge,
+     1      pot,grad,nt,targ,pottarg,gradtarg)
+
+       ifcharge = 1
+       ifdipole = 0
+       ifpgh = 2
+       ifpghtarg = 2
+
+       
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+      
+
+
+c
+cc     now test source to source + target, dipole, 
+c      with potentials
+c
+       write(6,*) 'testing source to source and target'
+       write(6,*) 'interaction: dipoles'
+       write(6,*) 'output: potentials'
+       write(6,*) 
+       write(6,*) 
+
+       call hfmm3dpartstostdp(eps,zk,ns,source,dipstr,dipvec,
+     1      pot,nt,targ,pottarg)
+
+       ifcharge = 0
+       ifdipole = 1
+       ifpgh = 1
+       ifpghtarg = 1
+
+       
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+
+
+c
+cc     now test source to source + target, dipole, 
+c      with potentials and gradients
+c
+       write(6,*) 'testing source to source and target'
+       write(6,*) 'interaction: dipoles'
+       write(6,*) 'output: potentials + gradients'
+       write(6,*) 
+       write(6,*) 
+
+       call hfmm3dpartstostdg(eps,zk,ns,source,dipstr,dipvec,
+     1      pot,grad,nt,targ,pottarg,gradtarg)
+
+       ifcharge = 0
+       ifdipole = 1
+       ifpgh = 2
+       ifpghtarg = 2
+
+       
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+
+c
+cc     now test source to source + target, charge + dipole, 
+c      with potentials
+c
+       write(6,*) 'testing source to source and target'
+       write(6,*) 'interaction: charges + dipoles'
+       write(6,*) 'output: potentials'
+       write(6,*) 
+       write(6,*) 
+
+       call hfmm3dpartstostcdp(eps,zk,ns,source,charge,dipstr,dipvec,
+     1      pot,nt,targ,pottarg)
+
+       ifcharge = 1
+       ifdipole = 1
+       ifpgh = 1
+       ifpghtarg = 1
+
+       
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
 
 
 c
@@ -94,7 +578,6 @@ c
        write(6,*) 
        write(6,*) 
 
-       eps = 0.5d-6
        call hfmm3dpartstostcdg(eps,zk,ns,source,charge,dipstr,dipvec,
      1      pot,grad,nt,targ,pottarg,gradtarg)
 
@@ -116,13 +599,13 @@ c
 
       stop
       end
-
+c----------------------------------------------------------
 c
 cc
 c
 c
 c
-
+c
       subroutine comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
@@ -182,6 +665,28 @@ c
         if(ifpghtarg.eq.2) then
           call h3ddirectcg(nd,zk,source,charge,ns,targ,ntest,
      1       pottargex,gradtargex,thresh)
+        endif
+      endif
+
+      if(ifcharge.eq.0.and.ifdipole.eq.1) then
+        if(ifpgh.eq.1) then
+          call h3ddirectdp(nd,zk,source,dipstr,dipvec,
+     1      ns,source,ntest,potex,thresh)
+        endif
+
+        if(ifpgh.eq.2) then
+          call h3ddirectdg(nd,zk,source,dipstr,dipvec,
+     1       ns,source,ntest,potex,gradex,thresh)
+        endif
+
+        if(ifpghtarg.eq.1) then
+          call h3ddirectdp(nd,zk,source,dipstr,dipvec,
+     1       ns,targ,ntest,pottargex,thresh)
+        endif
+
+        if(ifpghtarg.eq.2) then
+          call h3ddirectdg(nd,zk,source,dipstr,dipvec,
+     1       ns,targ,ntest,pottargex,gradtargex,thresh)
         endif
       endif
 
