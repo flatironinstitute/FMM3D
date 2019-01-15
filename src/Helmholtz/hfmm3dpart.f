@@ -1,4 +1,4 @@
-cc Copyright (C) 2017-2018: Leslie Greengard and
+cc Copyright (C) 2017-2018: Leslie Greengard, Zydrunas Gimbutas, 
 cc and Manas Rachh
 cc Contact: greengard@cims.nyu.edu
 cc 
@@ -26,46 +26,6 @@ c       We use exp(ikr)/r for the Green's function., without
 c       the 1/(4\pi ) scaling.
 c
 c   
-
-
-
-      subroutine hfmm3dpartstostcdg(eps,zk,nsource,source,
-     1    charge,dipstr,dipvec,pot,grad,ntarg,targ,pottarg,
-     2    gradtarg)
-      implicit none
-      double precision eps
-      double complex zk
-
-      integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
-      
-      double precision source(3,nsource),targ(3,ntarg)
-      double complex charge(nsource),dipstr(nsource)
-      double complex dipvec(3,nsource)
-
-      double complex pot(nsource),grad(3,nsource)
-      double complex pottarg(ntarg),gradtarg(3,ntarg)
-
-      double complex hess(6),hesstarg(6)
-
-      nd = 1
-      ifcharge = 1
-      ifdipole = 1
-      
-      ifpgh = 2
-      ifpghtarg = 2
-
-      call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
-
-      return
-      end
-c
-c
-c
-c
-c
 c-----------------------------------------------------------
         subroutine hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,
      $    charge,ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,
@@ -281,15 +241,13 @@ c       Call tree code
      2               nboxes,treecenters,boxsize,itree,ltree,ipointer)
 
 
-       call prinf('nboxes=*',nboxes,1)
-
 c
 c
 c     ifprint is an internal information printing flag. 
 c     Suppressed if ifprint=0.
 c     Prints timing breakdown and other things if ifprint=1.
 c      
-      ifprint=1
+      ifprint=0
 
 c     Allocate sorted source and target arrays      
 
@@ -486,13 +444,6 @@ c
          stop
       endif
      
-      call prinf('ifpghtarg=*',ifpghtarg,1)
-      call prinf('mnlist3=*',mnlist3,1)
-      call prinf('ntarg=*',ntarg,1)
-      call prin2('targsort=*',targsort,24)
-      call prinf('nlevels=*',nlevels,1)
-
-
 
 c     Memory allocation is complete. 
 c     Call main fmm routine
@@ -510,11 +461,6 @@ C$      time1=omp_get_wtime()
      $   scales,treecenters,itree(ipointer(1)),nterms,
      $   ifpgh,potsort,gradsort,hesssort,ifpghtarg,pottargsort,
      $   gradtargsort,hesstargsort,ntj,texpssort,scjsort)
-
-      call prin2('potsort=*',potsort,24)
-      call prin2('pottargsort=*',pottargsort,24)
-      call prin2('gradsort=*',gradsort,24)
-      call prin2('gradtargsort=*',gradtargsort,24)
 
       time2=second()
 C$        time2=omp_get_wtime()

@@ -22,8 +22,8 @@ c
 
       zk = 1.2d0 + eye*0.02d0
 
-      ns = 10000
-      nt = 10000
+      ns = 2000
+      nt = 2000
       
       ntest = 10
 
@@ -41,9 +41,9 @@ cc      generate sources uniformly in the unit cube
 c
 c
       do i=1,ns
-        source(1,i) = hkrand(0)
-        source(2,i) = hkrand(0)
-        source(3,i) = hkrand(0)
+        source(1,i) = hkrand(0)**2
+        source(2,i) = hkrand(0)**2
+        source(3,i) = hkrand(0)**2
 
         charge(i) = hkrand(0) + eye*hkrand(0)
         dipstr(i) = hkrand(0) + eye*hkrand(0)
@@ -72,6 +72,17 @@ c
         gradtarg(3,i) = 0 
       enddo
 
+ 1000 format(3(2x,d22.16)) 
+      do i=1,ns
+        write(17,1000) source(1,i),source(2,i),source(3,i)
+      enddo
+
+      do i=1,nt
+        write(18,1000) targ(1,i),targ(2,i),targ(3,i)
+      enddo
+
+      
+
 
 c
 cc     now test source to source + target, charge + dipole, 
@@ -80,6 +91,8 @@ c
        write(6,*) 'testing source to source and target'
        write(6,*) 'interaction: charges + dipoles'
        write(6,*) 'output: potentials + gradients'
+       write(6,*) 
+       write(6,*) 
 
        eps = 0.5d-6
        call hfmm3dpartstostcdg(eps,zk,ns,source,charge,dipstr,dipvec,
@@ -193,14 +206,6 @@ c
      1       ns,targ,ntest,pottargex,gradtargex,thresh)
         endif
       endif
-
-      call prin2('potex=*',potex,2*ntest)
-      call prin2('pot=*',pot,2*ntest)
-      call prin2('gradex=*',gradex,6*ntest)
-      call prin2('grad=*',grad,6*ntest)
-
-      call prin2('pottarg=*',pottarg,2*ntest)
-      call prin2('pottargex=*',pottargex,2*ntest)
 
       err = 0
       ra = 0

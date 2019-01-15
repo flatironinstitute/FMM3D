@@ -73,6 +73,9 @@ c
 c      h3dformmpc: creates multipole expansion due to 
 c                 a collection of charges
 c
+c      h3dformmpd: creates multipole expansion due to 
+c                 a collection of dipoles
+c
 c      h3dformmpcd: creates multipole expansion due
 c                                to a collection of charges
 c                                and dipoles
@@ -88,6 +91,9 @@ c
 c      h3dformtac: creates local expansion due to 
 c                 a collection of charges
 c
+c      h3dformtad: creates local expansion due to 
+c                 a collection of dipoles
+c
 c      h3dformtacd: creates local expansion due
 c                                to a collection of charges
 c                                and dipoles
@@ -97,6 +103,13 @@ c                         of charge sources at a collection of targets
 c
 c      h3ddirectcg:  direct calculation of potential and gradient 
 c                         for a collection of charge sources at a 
+c                         collection of targets
+c
+c      h3ddirectdp:  direct calculation of potential for a collection 
+c                         of dipole sources at a collection of targets
+c
+c      h3ddirectdg:  direct calculation of potential and gradient 
+c                         for a collection of dipole sources at a 
 c                         collection of targets
 c
 c      h3ddirectcdp:  direct calculation of potential for a 
@@ -578,6 +591,223 @@ c
       return
       end
 c
+c
+c
+c
+c
+c
+C***********************************************************************
+      subroutine h3dformmpd(nd,zk,rscale,sources,
+     1            dipstr,dipvec,ns,center,nterms,mpole,wlege,nlege)
+C***********************************************************************
+C
+C     Adds to multipole (h) expansion about CENTER due to NS sources 
+C     located at SOURCES(3,*) 
+C
+c-----------------------------------------------------------------------
+C     INPUT:
+c
+c     nd              : number of multipole expansions
+C     zk              : Helmholtz parameter 
+C     rscale          : the scaling factor.
+C     sources(3,ns)   : coordinates of sources
+C     dipstr(ns)      : dipole strengths
+C     dipvec(3,ns)    : dipole orientation vectors
+C     ns              : number of sources
+C     center(3)       : expansion center
+C     nterms          : order of multipole expansion
+c     wlege           : precomputed array of scaling coeffs for Pnm
+c     nlege           : dimension parameter for wlege
+c-----------------------------------------------------------------------
+C     OUTPUT:
+C
+c     mpole           : coeffs of the h-expansion
+c
+c-----------------------------------------------------------------------
+      implicit none
+      integer ns,nterms,nlege,nd
+      complex *16 zk
+      real *8 rscale,sources(3,ns),center(3),wlege(*)
+      complex *16 dipstr(nd,ns)
+      real *8 dipvec(nd,3,ns)
+      complex *16 mpole(nd,0:nterms,-nterms:nterms)
+c
+cc      temporary variables
+c
+c
+      real *8 zdiff(3)
+      real *8, allocatable :: ynm(:,:),ynmd(:,:)
+      complex *16, allocatable :: ephi(:),fjs(:),fjder(:)
+      complex *16 ephi1,ephi1inv
+      complex *16 z,ztmp,zkeye,eye,ztmp1
+      complex *16 fjsuse
+      real *8 r,theta,phi
+      real *8 ctheta,stheta,cphi,sphi
+      real *8 rx,thetax,phix,ry,thetay,phiy,rz,thetaz,phiz
+      complex *16 ux,uy,uz,ur,utheta,uphi,zzz
+      data eye/(0.0d0,1.0d0)/
+
+      integer isrc,i,m,n,ifder,idim
+
+      ifder=1
+
+      allocate(fjs(0:nterms+1),fjder(0:nterms+1),ephi(-nterms:nterms))
+      allocate(ynm(0:nterms,0:nterms),ynmd(0:nterms,0:nterms))
+
+      zkeye = eye*zk
+
+
+      do isrc=1,ns
+        zdiff(1)=sources(1,isrc)-center(1)
+        zdiff(2)=sources(2,isrc)-center(2)
+        zdiff(3)=sources(3,isrc)-center(3)
+
+        call cart2polar(zdiff,r,theta,phi)
+        ctheta = dcos(theta)
+        stheta = dsin(theta)
+        cphi = dcos(phi)
+        sphi = dsin(phi)
+
+c
+c     compute coefficients in change of variables from spherical
+c     to Cartesian gradients. In phix, phiy, we leave out the 
+c     1/sin(theta) contribution, since we use values of Ynm (which
+c     multiplies phix and phiy) that are scaled by 
+c     1/sin(theta).
+c
+c     In thetax, thetaty, phix, phiy we leave out the 1/r factors in the 
+c     change of variables to avoid blow-up at the origin.
+c     For the n=0 mode, it is not relevant. For n>0 modes,
+c     we use the recurrence relation 
+c
+c     (2n+1)fjs_n(kr)/(kr) = fjs(n+1)*rscale + fjs(n-1)/rscale
+c
+c     to avoid division by r. The variable fjsuse is set to fjs(n)/r:
+c
+c           fjsuse = fjs(n+1)*rscale + fjs(n-1)/rscale
+c	    fjsuse = wavek*fjsuse/(2*n+1.0d0)
+c
+
+        rx = stheta*cphi
+        thetax = ctheta*cphi
+        phix = -sphi
+
+        ry = stheta*sphi
+        thetay = ctheta*sphi
+        phiy = cphi
+
+        rz = ctheta
+        thetaz = -stheta
+        phiz = 0.0d0
+        
+        
+        ephi1 = dcmplx(cphi,sphi)
+c
+c     compute exp(eye*m*phi) array
+c
+        ephi(0)=1.0d0
+        ephi(1)=ephi1
+        ephi(-1)=dconjg(ephi1)
+        do i=2,nterms
+          ephi(i)=ephi(i-1)*ephi1
+          ephi(-i)=ephi(-i+1)*ephi(-1)
+        enddo
+c
+c     get the associated Legendre functions
+c
+        call ylgndr2sfw(nterms,ctheta,ynm,ynmd,wlege,nlege)
+c
+c     get Bessel functions:
+c
+        z=zk*r
+        call besseljs3d(nterms+1,z,rscale,fjs,ifder,fjder)
+c
+c
+c     multiply all jn by  (i*k).
+c
+        do n = 0,nterms
+          fjs(n) = fjs(n)*zkeye
+          fjder(n) = fjder(n)*zkeye*zk
+        enddo
+c
+c
+c     Compute contribution to mpole coefficients.
+c
+c     Recall that there are multiple definitions of scaling for
+c     Ylm. Using our standard definition, 
+c     the addition theorem takes the simple form 
+c
+c        e^( i k r}/r = 
+c         (ik) \sum_n \sum_m  j_n(k|S|) Ylm*(S) h_n(k|T|)Ylm(T)
+c
+c     so contribution is j_n(k|S|) times
+c   
+c       Ylm*(S)  = P_l,m * dconjg(ephi(m))               for m > 0   
+c       Yl,m*(S)  = P_l,|m| * dconjg(ephi(m))            for m < 0
+c                   
+c       where P_l,m is the scaled associated Legendre function.
+c
+c     The factor (i*k) is taken care of already above
+c
+
+        ur = ynm(0,0)*fjder(0)
+        do idim=1,nd
+          zzz = ur*(dipvec(idim,1,isrc)*rx + dipvec(idim,2,isrc)*ry +
+     1          dipvec(idim,3,isrc)*rz)
+          mpole(idim,0,0)= mpole(idim,0,0)+ zzz*dipstr(idim,isrc)
+        enddo
+        do n=1,nterms
+          fjsuse = fjs(n+1)*rscale + fjs(n-1)/rscale
+          fjsuse = fjsuse*zk/(2*n+1.0d0)
+          ur = ynm(n,0)*fjder(n)
+          utheta = -fjsuse*ynmd(n,0)*stheta
+          ux = ur*rx + utheta*thetax
+          uy = ur*ry + utheta*thetay
+          uz = ur*rz + utheta*thetaz
+          do idim=1,nd
+            zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy +
+     1               dipvec(idim,3,isrc)*uz
+            mpole(idim,n,0)= mpole(idim,n,0) + 
+     1                    dipstr(idim,isrc)*zzz       
+          enddo
+          do m=1,n
+            ur = fjder(n)*ynm(n,m)*stheta*ephi(-m)
+            utheta = -ephi(-m)*fjsuse*ynmd(n,m)
+            uphi = -eye*m*ephi(-m)*fjsuse*ynm(n,m)
+            ux = ur*rx + utheta*thetax + uphi*phix
+            uy = ur*ry + utheta*thetay + uphi*phiy
+            uz = ur*rz + utheta*thetaz + uphi*phiz
+            do idim=1,nd
+              zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
+     1             dipvec(idim,3,isrc)*uz
+              mpole(idim,n, m)= mpole(idim,n, m) +
+     1        zzz*dipstr(idim,isrc)
+            enddo
+
+            ur = fjder(n)*ynm(n,m)*stheta*ephi(m)
+            utheta = -ephi(m)*fjsuse*ynmd(n,m)
+            uphi = eye*m*ephi(m)*fjsuse*ynm(n,m)
+            ux = ur*rx + utheta*thetax + uphi*phix
+            uy = ur*ry + utheta*thetay + uphi*phiy
+            uz = ur*rz + utheta*thetaz + uphi*phiz
+            do idim=1,nd
+              zzz = dipvec(idim,1,isrc)*ux+dipvec(idim,2,isrc)*uy + 
+     1           dipvec(idim,3,isrc)*uz
+              mpole(idim,n,-m)= mpole(idim,n,-m) + 
+     1           zzz*dipstr(idim,isrc)
+            enddo
+          enddo
+        enddo
+      enddo
+
+      return
+      end
+c
+c
+c
+c
+c
+c**********************************************************************
 c
 c
 c
@@ -1240,6 +1470,206 @@ c
 c
 c
 c
+c
+C***********************************************************************
+      subroutine h3dformtad(nd,zk,rscale,sources,
+     1            dipstr,dipvec,ns,center,nterms,locexp,wlege,nlege)
+C***********************************************************************
+C
+C     Adds to multipole (h) expansion about CENTER due to NS sources 
+C     located at SOURCES(3,*) 
+C
+c-----------------------------------------------------------------------
+C     INPUT:
+c
+c     nd              : number of local expansions
+C     zk              : Helmholtz parameter 
+C     rscale          : the scaling factor.
+C     sources(3,ns)   : coordinates of sources
+C     dipstr(ns)      : dipole strengths
+C     dipvec(3,ns)    : dipole orientation vectors
+C     ns              : number of sources
+C     center(3)       : expansion center
+C     nterms          : order of multipole expansion
+c     wlege           : precomputed array of scaling coeffs for Pnm
+c     nlege           : dimension parameter for wlege
+c-----------------------------------------------------------------------
+C     OUTPUT:
+C
+c     locexp          : coeffs of the h-expansion
+c
+c-----------------------------------------------------------------------
+      implicit none
+      integer ns,nterms,nlege,nd
+      complex *16 zk
+      real *8 rscale,sources(3,ns),center(3),wlege(*)
+      complex *16 dipstr(nd,ns)
+      real *8 dipvec(nd,3,ns)
+      complex *16 locexp(nd,0:nterms,-nterms:nterms)
+c
+cc      temporary variables
+c
+c
+      real *8 zdiff(3)
+      real *8, allocatable :: ynm(:,:),ynmd(:,:)
+      complex *16, allocatable :: ephi(:),fhs(:),fhder(:)
+      complex *16 ephi1,ephi1inv
+      complex *16 z,ztmp,zkeye,eye,ztmp1
+      real *8 r,theta,phi
+      real *8 ctheta,stheta,cphi,sphi
+      real *8 rx,thetax,phix,ry,thetay,phiy,rz,thetaz,phiz
+      complex *16 ux,uy,uz,ur,utheta,uphi,zzz
+      integer idim
+      data eye/(0.0d0,1.0d0)/
+
+      integer isrc,i,m,n,ifder
+
+      ifder=1
+
+      allocate(fhs(0:nterms),fhder(0:nterms),ephi(-nterms:nterms))
+      allocate(ynm(0:nterms,0:nterms),ynmd(0:nterms,0:nterms))
+
+      zkeye = eye*zk
+
+
+      do isrc=1,ns
+        zdiff(1)=sources(1,isrc)-center(1)
+        zdiff(2)=sources(2,isrc)-center(2)
+        zdiff(3)=sources(3,isrc)-center(3)
+
+        call cart2polar(zdiff,r,theta,phi)
+        ctheta = dcos(theta)
+        stheta = dsin(theta)
+        cphi = dcos(phi)
+        sphi = dsin(phi)
+
+c
+c     compute coefficients in change of variables from spherical
+c     to Cartesian gradients. In phix, phiy, we leave out the 
+c     1/sin(theta) contribution, since we use values of Ynm (which
+c     multiplies phix and phiy) that are scaled by 
+c     1/sin(theta).
+c
+c
+
+        rx = stheta*cphi
+        thetax = ctheta*cphi/r
+        phix = -sphi/r
+
+        ry = stheta*sphi
+        thetay = ctheta*sphi/r
+        phiy = cphi/r
+
+        rz = ctheta
+        thetaz = -stheta/r
+        phiz = 0.0d0
+        
+        
+        ephi1 = dcmplx(cphi,sphi)
+c
+c     compute exp(eye*m*phi) array
+c
+        ephi(0)=1.0d0
+        ephi(1)=ephi1
+        ephi(-1)=dconjg(ephi1)
+        do i=2,nterms
+          ephi(i)=ephi(i-1)*ephi1
+          ephi(-i)=ephi(-i+1)*ephi(-1)
+        enddo
+c
+c     get the associated Legendre functions
+c
+        call ylgndr2sfw(nterms,ctheta,ynm,ynmd,wlege,nlege)
+c
+c     get Hankel functions:
+c
+        z=zk*r
+        call h3dall(nterms,z,rscale,fhs,ifder,fhder)
+c
+c
+c     multiply all hn by  (i*k).
+c
+        do n = 0,nterms
+          fhs(n) = fhs(n)*zkeye
+          fhder(n) = fhder(n)*zkeye*zk
+        enddo
+c
+c
+c     Compute contribution to locexp coefficients.
+c
+c     Recall that there are multiple definitions of scaling for
+c     Ylm. Using our standard definition, 
+c     the addition theorem takes the simple form 
+c
+c        e^( i k r}/r = 
+c         (ik) \sum_n \sum_m  j_n(k|T|) Ylm*(T) h_n(k|S|)Ylm(S)
+c
+c     so contribution is j_n(k|S|) times
+c   
+c       Ylm*(S)  = P_l,m * dconjg(ephi(m))               for m > 0   
+c       Yl,m*(S)  = P_l,|m| * dconjg(ephi(m))            for m < 0
+c                   
+c       where P_l,m is the scaled associated Legendre function.
+c
+c     The factor (i*k) is taken care of already above
+c
+
+        ur = ynm(0,0)*fhder(0)
+        do idim=1,nd
+          zzz = ur*(dipvec(idim,1,isrc)*rx + dipvec(idim,2,isrc)*ry +
+     1          dipvec(idim,3,isrc)*rz)
+          locexp(idim,0,0)= locexp(idim,0,0)+zzz*dipstr(idim,isrc)
+        enddo
+        do n=1,nterms
+          ur = ynm(n,0)*fhder(n)
+          utheta = -fhs(n)*ynmd(n,0)*stheta
+          ux = ur*rx + utheta*thetax
+          uy = ur*ry + utheta*thetay
+          uz = ur*rz + utheta*thetaz
+
+          do idim=1,nd
+            zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy +
+     1             dipvec(idim,3,isrc)*uz
+            locexp(idim,n,0)= locexp(idim,n,0)+dipstr(idim,isrc)*zzz   
+          enddo
+          do m=1,n
+            ur = fhder(n)*ynm(n,m)*stheta*ephi(-m)
+            utheta = -ephi(-m)*fhs(n)*ynmd(n,m)
+            uphi = -eye*m*ephi(-m)*fhs(n)*ynm(n,m)
+            ux = ur*rx + utheta*thetax + uphi*phix
+            uy = ur*ry + utheta*thetay + uphi*phiy
+            uz = ur*rz + utheta*thetaz + uphi*phiz
+            do idim=1,nd
+              zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
+     1             dipvec(idim,3,isrc)*uz
+              locexp(idim,n,m)= locexp(idim,n,m)+zzz*dipstr(idim,isrc)
+            enddo
+
+            ur = fhder(n)*ynm(n,m)*stheta*ephi(m)
+            utheta = -ephi(m)*fhs(n)*ynmd(n,m)
+            uphi = eye*m*ephi(m)*fhs(n)*ynm(n,m)
+            ux = ur*rx + utheta*thetax + uphi*phix
+            uy = ur*ry + utheta*thetay + uphi*phiy
+            uz = ur*rz + utheta*thetaz + uphi*phiz
+            do idim=1,nd
+              zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
+     1             dipvec(idim,3,isrc)*uz
+              locexp(idim,n,-m)= locexp(idim,n,-m)+
+     1            zzz*dipstr(idim,isrc)
+            enddo
+          enddo
+        enddo
+      enddo
+
+      return
+      end
+c
+c
+c
+c
+c
+c
+c
 C***********************************************************************
       subroutine h3dformtacd(nd,zk,rscale,sources,charge,
      1            dipstr,dipvec,ns,center,nterms,locexp,wlege,nlege)
@@ -1515,7 +1945,7 @@ c
 
           dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
           d = sqrt(dd)
-          if(d.lt.thresh) goto 1000
+          if(abs(zk*d).lt.thresh) goto 1000
 
           ztmp = exp(zkeye*d)/d
           do idim=1,nd
@@ -1605,7 +2035,7 @@ c
 
           dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
           d = sqrt(dd)
-          if(d.lt.thresh) goto 1000
+          if(abs(zk*d).lt.thresh) goto 1000
           cd = exp(zkeye*d)/d
           cd1 = (zkeye*d-1)*cd/dd
           ztmp1 = cd1*zdiff(1)
@@ -1626,6 +2056,222 @@ c
       end
 c
 c
+c
+c
+c
+c
+c
+C***********************************************************************
+      subroutine h3ddirectdp(nd,zk,sources,dipstr,
+     1            dipvec,ns,ztarg,nt,pot,thresh)
+c**********************************************************************
+c
+c     This subroutine evaluates the potential due to a collection
+c     of sources and adds to existing
+c     quantities.
+c
+c     pot(x) = pot(x) + sum   d_{j} \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j} 
+c                        j
+c
+c                            
+c   
+c      where d_{j} is the dipole strength
+c      and v_{j} is the dipole orientation vector, 
+c      \nabla denotes the gradient is with respect to the x_{j} 
+c      variable 
+c      If |zk*r| < thresh 
+c          then the subroutine does not update the potential
+c          (recommended value = |zk*boxsize(0)|*machine precision
+c           for boxsize(0) is the size of the computational domain) 
+c
+c
+c-----------------------------------------------------------------------
+c     INPUT:
+c
+c     nd     :    number of charge and dipole densities
+c     zk     :    Helmholtz parameter
+c     sources:    source locations
+C     dipstr :    dipole strengths
+C     dipvec :    dipole orientation vectors
+C     ns     :    number of sources
+c     ztarg  :    target locations
+c     ntarg  :    number of targets
+c     thresh :    threshold for updating potential,
+c                 potential at target won't be updated if
+c                 |zk|*|t - s| <= thresh, where t is the target
+c                 location and, and s is the source location 
+c                 
+c-----------------------------------------------------------------------
+c     OUTPUT:
+c
+c     pot    :    updated potential at ztarg 
+c
+c-----------------------------------------------------------------------
+      implicit none
+c
+cc      calling sequence variables
+c  
+      integer ns,nt,nd
+      complex *16 zk
+      real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
+      complex *16 dipstr(nd,ns),pot(nd,nt)
+      real *8 thresh
+      
+c
+cc     temporary variables
+c
+      real *8 zdiff(3),dd,d,dinv,dotprod
+      complex *16 zkeye,eye,cd,cd1
+      integer i,j,idim
+      data eye/(0.0d0,1.0d0)/
+
+      zkeye = zk*eye
+
+      do i=1,nt
+        do j=1,ns
+          zdiff(1) = ztarg(1,i)-sources(1,j)
+          zdiff(2) = ztarg(2,i)-sources(2,j)
+          zdiff(3) = ztarg(3,i)-sources(3,j)
+
+          dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
+          d = sqrt(dd)
+          if(abs(zk*d).lt.thresh) goto 1000
+
+          dinv = 1/d
+          cd = exp(zkeye*d)*dinv
+          cd1 = (1-zkeye*d)*cd/dd
+
+          do idim=1,nd
+            dotprod = zdiff(1)*dipvec(idim,1,j) + 
+     1          zdiff(2)*dipvec(idim,2,j)+
+     1          zdiff(3)*dipvec(idim,3,j)
+            pot(idim,i) = pot(idim,i) + dipstr(idim,j)*cd1*dotprod
+          enddo
+
+ 1000     continue
+        enddo
+      enddo
+
+
+      return
+      end
+c
+c
+c
+c
+c
+c
+C***********************************************************************
+      subroutine h3ddirectdg(nd,zk,sources,dipstr,
+     1            dipvec,ns,ztarg,nt,pot,grad,thresh)
+c**********************************************************************
+c
+c     This subroutine evaluates the potential and gradient due to a 
+c     collection of sources and adds to existing quantities.
+c
+c     pot(x) = pot(x) + sum  d_{j} \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
+c                        j
+c
+c                            
+c   
+c     grad(x) = grad(x) + Gradient( sum  
+c                                    j
+c
+c                            d_{j} \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
+c                            )
+c                                   
+c      where d_{j} is the dipole strength
+c      and v_{j} is the dipole orientation vector, 
+c      \nabla denotes the gradient is with respect to the x_{j} 
+c      variable, and Gradient denotes the gradient with respect to
+c      the x variable
+c      If |zk*r| < thresh 
+c          then the subroutine does not update the potential
+c          (recommended value = |zk*boxsize(0)|*machine precision
+c           for boxsize(0) is the size of the computational domain) 
+c
+c
+c-----------------------------------------------------------------------
+c     INPUT:
+c
+c     nd     :    number of charge and dipole densities
+c     zk     :    Helmholtz parameter
+c     sources:    source locations
+C     dipstr :    dipole strengths
+C     dipvec :    dipole orientation vector
+C     ns     :    number of sources
+c     ztarg  :    target locations
+c     ntarg  :    number of targets
+c     thresh :    threshold for updating potential,
+c                 potential at target won't be updated if
+c                 |zk|*|t - s| <= thresh, where t is the target
+c                 location and, and s is the source location 
+c                 
+c-----------------------------------------------------------------------
+c     OUTPUT:
+c
+c     pot    :    updated potential at ztarg 
+c     grad   :    updated gradient at ztarg 
+c
+c-----------------------------------------------------------------------
+      implicit none
+c
+cc      calling sequence variables
+c  
+      integer ns,nt,nd
+      complex *16 zk
+      real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
+      complex *16 dipstr(nd,ns),pot(nd,nt),grad(nd,3,nt)
+      real *8 thresh
+      
+c
+cc     temporary variables
+c
+      real *8 zdiff(3),dd,d,dinv,dinv2,dotprod
+      complex *16 zkeye,eye,cd,cd2,cd3,cd4
+      integer i,j,idim
+      data eye/(0.0d0,1.0d0)/
+
+      zkeye = zk*eye
+
+      do i=1,nt
+        do j=1,ns
+          zdiff(1) = ztarg(1,i)-sources(1,j)
+          zdiff(2) = ztarg(2,i)-sources(2,j)
+          zdiff(3) = ztarg(3,i)-sources(3,j)
+
+          dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
+          d = sqrt(dd)
+          if(abs(zk*d).lt.thresh) goto 1000
+
+          dinv = 1/d
+          dinv2 = dinv**2
+          cd = exp(zkeye*d)*dinv
+          cd2 = (zkeye*d-1)*cd*dinv2
+          cd3 = cd*dinv2*(-zkeye*zkeye-3*dinv2+3*zkeye*dinv)
+
+          do idim=1,nd
+          
+            dotprod = zdiff(1)*dipvec(idim,1,j)+
+     1               zdiff(2)*dipvec(idim,2,j)+
+     1               zdiff(3)*dipvec(idim,3,j)
+            cd4 = cd3*dotprod
+
+            pot(idim,i) = pot(idim,i) - cd2*dotprod*dipstr(idim,j)
+            grad(idim,1,i) = grad(idim,1,i) + (cd4*zdiff(1) - 
+     1         cd2*dipvec(idim,1,j))*dipstr(idim,j) 
+            grad(idim,2,i) = grad(idim,2,i) + (cd4*zdiff(2) - 
+     1         cd2*dipvec(idim,2,j))*dipstr(idim,j) 
+            grad(idim,3,i) = grad(idim,3,i) + (cd4*zdiff(3) - 
+     1         cd2*dipvec(idim,3,j))*dipstr(idim,j) 
+          enddo
+ 1000     continue
+        enddo
+      enddo
+
+
+      return
+      end
 c
 c
 c
@@ -1705,7 +2351,7 @@ c
 
           dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
           d = sqrt(dd)
-          if(d.lt.thresh) goto 1000
+          if(abs(zk*d).lt.thresh) goto 1000
 
           dinv = 1/d
           cd = exp(zkeye*d)*dinv

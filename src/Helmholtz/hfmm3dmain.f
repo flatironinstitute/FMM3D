@@ -184,7 +184,7 @@ c     Suppressed if ifprint=0.
 c     Prints timing breakdown and other things if ifprint=1.
 c     Prints timing breakdown, list information, and other things if ifprint=2.
 c       
-        ifprint=1
+        ifprint=0
 c
 c
 c     ... set the expansion coefficients to zero
@@ -285,6 +285,26 @@ C
                endif
             enddo
          endif
+
+         if(ifcharge.eq.0.and.ifdipole.eq.1) then
+            do ibox=laddr(1,ilev),laddr(2,ilev)
+
+               istart = itree(ipointer(10)+ibox-1)
+               iend = itree(ipointer(11)+ibox-1)
+               npts = iend-istart+1
+
+               nchild = itree(ipointer(3)+ibox-1)
+
+               if(npts.gt.0.and.nchild.eq.0) then
+                  call h3dformmpd(nd,zk,rscales(ilev),
+     1            sourcesort(1,istart),dipstrsort(1,istart),
+     2            dipvecsort(1,1,istart),npts,
+     2            centers(1,ibox),nterms(ilev),
+     3            rmlexp(iaddr(1,ibox)),wlege,nlege)          
+               endif
+            enddo
+         endif
+
          if(ifdipole.eq.1.and.ifcharge.eq.1) then
             do ibox=laddr(1,ilev),laddr(2,ilev)
 
@@ -345,6 +365,36 @@ C$OMP END PARALLEL DO
       enddo
       endif
 
+
+      if(ifcharge.eq.0.and.ifdipole.eq.1) then
+      do ilev=2,nlevels
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(ibox,jbox,nlist4,istart,iend,npts,i)
+C$OMP$SCHEDULE(DYNAMIC)
+         do ibox=laddr(1,ilev),laddr(2,ilev)
+            nlist4 = itree(ipointer(26)+ibox-1)
+            do i=1,nlist4
+               jbox = itree(ipointer(27)+(ibox-1)*mnlist4+i-1)
+
+c              Form local expansion for all boxes in list3
+c              of the current box
+
+
+               istart = itree(ipointer(10)+jbox-1)
+               iend = itree(ipointer(11)+jbox-1)
+               npts = iend-istart+1
+               if(npts.gt.0) then
+                   call h3dformtad(nd,zk,rscales(ilev),
+     1              sourcesort(1,istart),
+     2              dipstrsort(1,istart),
+     3              dipvecsort(1,1,istart),npts,centers(1,ibox),
+     4              nterms(ilev),rmlexp(iaddr(2,ibox)),wlege,nlege)
+               endif
+            enddo
+         enddo
+C$OMP END PARALLEL DO         
+      enddo
+      endif
 
       if(ifcharge.eq.1.and.ifdipole.eq.1) then
       do ilev=2,nlevels
@@ -423,8 +473,6 @@ C$    time2=omp_get_wtime()
       timeinfo(3)=time2-time1
 
 
-      nd = 1
-
       if(ifprint.ge.1)
      $    call prinf('=== Step 4 (mp to loc) ===*',i,0)
 c      ... step 3, convert multipole expansions into local
@@ -442,11 +490,6 @@ c
          if(real(zk2).le.pi.and.imag(zk2).le.0.02d0) then
             call lreadall(eps,zk2,nlams,rlams,whts,nfourier,
      1           nphysical,ntmax,ier)
-
-            call prinf('nlams=*',nlams,1)
-            call prinf('nfourier=*',nfourier,nlams)
-            call prinf('nphysical=*',nphysical,nlams)
-
 
             nphmax = 0
             nthmax = 0
@@ -518,7 +561,6 @@ c
            do i=1,nterms(ilev)
              rsc(i) = rsc(i-1)*r1
            enddo
-           call prin2('rsc=*',rsc,nterms(ilev)+1)
 
 c
 cc         create multipole to plane wave expansion for
@@ -817,9 +859,6 @@ c         It is relevant only for QBX codes)
 
  1000 continue
       nquad2 = max(6,2*ntj)
-      print *, size(xnodes)
-      print *,size(wts)
-      call prinf('ntj=*',ntj,1)
       ifinit2 = 1
       call legewhts(nquad2,xnodes,wts,ifinit2)
       do ilev=1,nlevels
@@ -854,8 +893,6 @@ C$OMP END PARALLEL DO
 c
 cc       evaluate multipole expansions at source locations
 c
-
-      call prin2('thresh=*',thresh,1)
 
       do ilev=1,nlevels
 C$OMP PARALLEL DO DEFAULT(SHARED)
@@ -1053,8 +1090,6 @@ C$OMP END PARALLEL DO
 C$        time2=omp_get_wtime()
       timeinfo(7) = time2 - time1
 
-      call prin2('pot=*',pot,12)
-      call prin2('pottarg=*',pottarg,12)
 
       if(ifprint .ge. 1)
      $     call prinf('=== STEP 8 (direct) =====*',i,0)
@@ -1126,6 +1161,25 @@ c
             enddo
           endif
 
+          if(ifcharge.eq.0.and.ifdipole.eq.1) then
+            do ibox = laddr(1,ilev),laddr(2,ilev)
+              istarts = itree(ipointer(10)+ibox-1)
+              iends = itree(ipointer(11)+ibox-1)
+              npts0 = iends-istarts+1
+              nlist1 = itree(ipointer(20)+ibox-1)
+              do i=1,nlist1
+                jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+                jstart = itree(ipointer(10)+jbox-1)
+                jend = itree(ipointer(11)+jbox-1)
+                npts = jend-jstart+1
+                call h3ddirectdp(nd,zk,sourcesort(1,jstart),
+     1             dipstrsort(1,jstart),
+     2             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts),
+     2             npts0,pot(1,istarts),thresh)          
+              enddo
+            enddo
+          endif
+
           if(ifcharge.eq.1.and.ifdipole.eq.1) then
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istarts = itree(ipointer(10)+ibox-1)
@@ -1162,6 +1216,26 @@ c
                 call h3ddirectcg(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)   
+              enddo
+            enddo
+          endif
+
+          if(ifcharge.eq.0.and.ifdipole.eq.1) then
+
+            do ibox = laddr(1,ilev),laddr(2,ilev)
+              istarts = itree(ipointer(10)+ibox-1)
+              iends = itree(ipointer(11)+ibox-1)
+              npts0 = iends-istarts+1
+              nlist1 = itree(ipointer(20)+ibox-1)
+              do i=1,nlist1
+                jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+                jstart = itree(ipointer(10)+jbox-1)
+                jend = itree(ipointer(11)+jbox-1)
+                npts = jend-jstart+1
+                call h3ddirectdg(nd,zk,sourcesort(1,jstart),
+     1             dipstrsort(1,jstart),
+     2             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts),
+     2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)          
               enddo
             enddo
           endif
@@ -1207,6 +1281,25 @@ c
             enddo
           endif
 
+          if(ifcharge.eq.0.and.ifdipole.eq.1) then
+            do ibox = laddr(1,ilev),laddr(2,ilev)
+              istartt = itree(ipointer(12)+ibox-1)
+              iendt = itree(ipointer(13)+ibox-1)
+              npts0 = iendt-istartt+1
+              nlist1 = itree(ipointer(20)+ibox-1)
+              do i=1,nlist1
+                jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+                jstart = itree(ipointer(10)+jbox-1)
+                jend = itree(ipointer(11)+jbox-1)
+                npts = jend-jstart+1
+                call h3ddirectdp(nd,zk,sourcesort(1,jstart),
+     1             dipstrsort(1,jstart),
+     2             dipvecsort(1,1,jstart),npts,targsort(1,istartt),
+     2             npts0,pottarg(1,istartt),thresh)          
+              enddo
+            enddo
+          endif
+
           if(ifcharge.eq.1.and.ifdipole.eq.1) then
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istartt = itree(ipointer(12)+ibox-1)
@@ -1244,6 +1337,26 @@ c
      1             chargesort(1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),gradtarg(1,1,istartt),
      3             thresh)   
+              enddo
+            enddo
+          endif
+
+          if(ifcharge.eq.0.and.ifdipole.eq.1) then
+            do ibox = laddr(1,ilev),laddr(2,ilev)
+              istartt = itree(ipointer(12)+ibox-1)
+              iendt = itree(ipointer(13)+ibox-1)
+              npts0 = iendt-istartt+1
+              nlist1 = itree(ipointer(20)+ibox-1)
+              do i=1,nlist1
+                jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+                jstart = itree(ipointer(10)+jbox-1)
+                jend = itree(ipointer(11)+jbox-1)
+                npts = jend-jstart+1
+                call h3ddirectdg(nd,zk,sourcesort(1,jstart),
+     1             dipstrsort(1,jstart),
+     2             dipvecsort(1,1,jstart),npts,targsort(1,istartt),
+     2             npts0,pottarg(1,istartt),gradtarg(1,1,istartt),
+     3             thresh)          
               enddo
             enddo
           endif
