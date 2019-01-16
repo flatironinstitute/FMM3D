@@ -5,6 +5,12 @@ c
       subroutine hfmm3dpartstoscp(eps,zk,nsource,source,
      1    charge,pot)
       implicit none
+cf2py  intent(in) eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,charge
+cf2py  intent(out) pot
+
+
       double precision eps
       double complex zk
 
