@@ -73,6 +73,7 @@ SOURCES =  hfmm3dparttest_dr.f \
   rotproj.f \
   dfft.f \
   h3dcommon.f \
+  numphysfour.f \
 
 
 OBJECTS = $(patsubst %.f,$(OBJ_DIR)/%.o,$(SOURCES))

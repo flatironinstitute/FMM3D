@@ -20,7 +20,7 @@ cc      initialize printing routine
 c
       call prini(6,13)
 
-      zk = 1.2d0 + eye*0.02d0
+      zk = 48.0d0 + eye*0.002d0
 
       ns = 2000
       nt = 2000

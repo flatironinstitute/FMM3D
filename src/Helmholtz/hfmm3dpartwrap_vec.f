@@ -4,6 +4,10 @@ c
 
       subroutine hfmm3dpartstoscp_vec(nd,eps,zk,nsource,source,
      1    charge,pot)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,charge
+cf2py  intent(out) pot
       implicit none
       double precision eps
       double complex zk
@@ -43,6 +47,10 @@ c
 
       subroutine hfmm3dpartstoscg_vec(nd,eps,zk,nsource,source,
      1    charge,pot,grad)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,charge
+cf2py  intent(out) pot,grad
       implicit none
       double precision eps
       double complex zk
@@ -83,6 +91,10 @@ c
 
       subroutine hfmm3dpartstosdp_vec(nd,eps,zk,nsource,source,
      1    dipstr,dipvec,pot)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,dipstr,dipvec
+cf2py  intent(out) pot
       implicit none
       double precision eps
       double complex zk
@@ -124,6 +136,10 @@ c
 
       subroutine hfmm3dpartstosdg_vec(nd,eps,zk,nsource,source,
      1    dipstr,dipvec,pot,grad)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,dipstr,dipvec
+cf2py  intent(out) pot,grad
       implicit none
       double precision eps
       double complex zk
@@ -164,6 +180,10 @@ c
 
       subroutine hfmm3dpartstoscdp_vec(nd,eps,zk,nsource,source,
      1    charge,dipstr,dipvec,pot)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,dipstr,dipvec,charge
+cf2py  intent(out) pot
       implicit none
       double precision eps
       double complex zk
@@ -209,6 +229,10 @@ c
 
       subroutine hfmm3dpartstoscdg_vec(nd,eps,zk,nsource,source,
      1    charge,dipstr,dipvec,pot,grad)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,dipstr,dipvec,charge
+cf2py  intent(out) pot,grad
       implicit none
       double precision eps
       double complex zk
@@ -249,6 +273,11 @@ c
 
       subroutine hfmm3dpartstotcp_vec(nd,eps,zk,nsource,source,
      1    charge,ntarg,targ,pottarg)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,charge
+cf2py  intent(in) ntarg,targ
+cf2py  intent(out) pottarg
       implicit none
       double precision eps
       double complex zk
@@ -289,6 +318,11 @@ c
       subroutine hfmm3dpartstotcg_vec(nd,eps,zk,nsource,source,
      1    charge,ntarg,targ,pottarg,
      2    gradtarg)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,charge
+cf2py  intent(in) ntarg,targ
+cf2py  intent(out) pottarg,gradtarg
       implicit none
       double precision eps
       double complex zk
@@ -326,6 +360,11 @@ c
 
       subroutine hfmm3dpartstotdp_vec(nd,eps,zk,nsource,source,
      1    dipstr,dipvec,ntarg,targ,pottarg)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,dipstr,dipvec
+cf2py  intent(in) ntarg,targ
+cf2py  intent(out) pottarg
       implicit none
       double precision eps
       double complex zk
@@ -366,6 +405,11 @@ c
       subroutine hfmm3dpartstotdg_vec(nd,eps,zk,nsource,source,
      1    dipstr,dipvec,ntarg,targ,pottarg,
      2    gradtarg)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,dipstr,dipvec
+cf2py  intent(in) ntarg,targ
+cf2py  intent(out) pottarg,gradtarg
       implicit none
       double precision eps
       double complex zk
@@ -404,6 +448,11 @@ c
 
       subroutine hfmm3dpartstotcdp_vec(nd,eps,zk,nsource,source,
      1    charge,dipstr,dipvec,ntarg,targ,pottarg)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,dipstr,dipvec,charge
+cf2py  intent(in) ntarg,targ
+cf2py  intent(out) pottarg
       implicit none
       double precision eps
       double complex zk
@@ -444,6 +493,11 @@ c
       subroutine hfmm3dpartstotcdg_vec(nd,eps,zk,nsource,source,
      1    charge,dipstr,dipvec,ntarg,targ,pottarg,
      2    gradtarg)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,dipstr,dipvec,charge
+cf2py  intent(in) ntarg,targ
+cf2py  intent(out) pottarg,gradtarg
       implicit none
       double precision eps
       double complex zk
@@ -481,6 +535,12 @@ c
 
       subroutine hfmm3dpartstostcp_vec(nd,eps,zk,nsource,source,
      1    charge,pot,ntarg,targ,pottarg)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,charge
+cf2py  intent(in) ntarg,targ
+cf2py  intent(out) pot
+cf2py  intent(out) pottarg
       implicit none
       double precision eps
       double complex zk
@@ -520,6 +580,12 @@ c
       subroutine hfmm3dpartstostcg_vec(nd,eps,zk,nsource,source,
      1    charge,pot,grad,ntarg,targ,pottarg,
      2    gradtarg)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,charge
+cf2py  intent(in) ntarg,targ
+cf2py  intent(out) pot,grad
+cf2py  intent(out) pottarg,gradtarg
       implicit none
       double precision eps
       double complex zk
@@ -558,6 +624,12 @@ c
 
       subroutine hfmm3dpartstostdp_vec(nd,eps,zk,nsource,source,
      1    dipstr,dipvec,pot,ntarg,targ,pottarg)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,dipstr,dipvec
+cf2py  intent(in) ntarg,targ
+cf2py  intent(out) pot
+cf2py  intent(out) pottarg
       implicit none
       double precision eps
       double complex zk
@@ -598,6 +670,12 @@ c
       subroutine hfmm3dpartstostdg_vec(nd,eps,zk,nsource,source,
      1    dipstr,dipvec,pot,grad,ntarg,targ,pottarg,
      2    gradtarg)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,dipstr,dipvec
+cf2py  intent(in) ntarg,targ
+cf2py  intent(out) pot,grad
+cf2py  intent(out) pottarg,gradtarg
       implicit none
       double precision eps
       double complex zk
@@ -636,6 +714,12 @@ c
 
       subroutine hfmm3dpartstostcdp_vec(nd,eps,zk,nsource,source,
      1    charge,dipstr,dipvec,pot,ntarg,targ,pottarg)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,dipstr,dipvec,charge
+cf2py  intent(in) ntarg,targ
+cf2py  intent(out) pot
+cf2py  intent(out) pottarg
       implicit none
       double precision eps
       double complex zk
@@ -675,6 +759,12 @@ c
       subroutine hfmm3dpartstostcdg_vec(nd,eps,zk,nsource,source,
      1    charge,dipstr,dipvec,pot,grad,ntarg,targ,pottarg,
      2    gradtarg)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) zk
+cf2py  intent(in) nsource,source,dipstr,dipvec,charge
+cf2py  intent(in) ntarg,targ
+cf2py  intent(out) pot,grad
+cf2py  intent(out) pottarg,gradtarg
       implicit none
       double precision eps
       double complex zk
