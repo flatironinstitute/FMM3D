@@ -85,7 +85,7 @@ c            cube
 c
            nsource = icase*10000
 
-           nsource = 200000
+           nsource = 20000
            ntarg = nsource
            do i=1,nsource
 
@@ -110,7 +110,7 @@ c       ... construct randomly located charge distribution on
 c             surface of sphere
 c
 
-           nsource = icase*100000
+           nsource = icase*10000
 
            ntarg = nsource
            r = 0.5d0
