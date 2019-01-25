@@ -21,17 +21,16 @@ def hfmm3d(*,eps,zk,sources,charges=None,dipoles=None,dipvec=None,
     if charges is not None:
         assert charges.size == ns, "Charges must be same length as second dimension of sources"
         ifcharge = 1
-    if(dipoles != None or dipvec != None):
-        assert dipoles != None, "Dipole vectors set but no dipole strength set"
-        assert dipvec != None, "Dipole strengths set but no dipole vectors set"
+    if(dipoles is not None or dipvec is not None):
+        assert dipoles is not None, "Dipole vectors set but no dipole strength set"
+        assert dipvec is not None, "Dipole strengths set but no dipole vectors set"
         assert dipoles.size == ns, "Dipoles must be of same length as second dimension of sources"
         assert dipvec.shape[0] == 3 and dipvec.shape[1] == ns, "dipole vectors must be of shape [3,number of sources]"
         ifdipole = 1
-    if(targets != None):
+    if(targets is not None):
         assert targets.shape[0] == 3, "The first dimension of targets must be 3"
     if(targets == None or pgt != 1 or pgt !=2):
         if(pg == 1 and ifcharge == 1 and ifdipole == 0):
-            print("Here")
             out.pot = hfmm.hfmm3dpartstoscp(eps,zk,sources,charges)
         if(pg == 2 and ifcharge == 1 and ifdipole == 0):
             out.pot,out.grad = hfmm.hfmm3dpartstoscg(eps,zk,sources,charges)
@@ -44,7 +43,7 @@ def hfmm3d(*,eps,zk,sources,charges=None,dipoles=None,dipvec=None,
         if(pg == 2 and ifcharge == 1 and ifdipole == 1):
             out.pot,out.grad = hfmm.hfmm3dpartstoscdg(eps,zk,sources,charges,dipoles,dipvec)
     
-    if(pg !=1 or pg !=2 and targets != None):
+    if((pg !=1 or pg !=2) and targets is not None):
         if(pgt == 1 and ifcharge == 1 and ifdipole == 0):
             out.pottarg = hfmm.hfmm3dpartstotcp(eps,zk,sources,charges)
         if(pgt == 2 and ifcharge == 1 and ifdipole == 0):
@@ -59,7 +58,7 @@ def hfmm3d(*,eps,zk,sources,charges=None,dipoles=None,dipvec=None,
             out.pottarg,out.gradtarg = hfmm.hfmm3dpartstotcdg(eps,zk,sources,charges,dipoles,dipvec)
     
 
-    if((pg == 1 or pg == 2) and targets != None):
+    if((pg == 1 or pg == 2) and targets is not None):
         assert pg == pgt, "if both potential or potential at gradient are requested at sources and targets, then the same pg must be equal to pgt"
         if(pgt == 1 and ifcharge == 1 and ifdipole == 0):
             out.pot,out.pottarg = hfmm.hfmm3dpartstostcp(eps,zk,sources,charges)
