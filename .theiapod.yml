@@ -1,3 +1,4 @@
-image: "magland/gitpod_gfortran"
+image: "magland/theiapod_gfortran"
 tasks:
+  - command: pip install numpy
   - command: cd python && python setup.py develop && python hfmmtest.py
