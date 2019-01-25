@@ -1,3 +1,4 @@
 image: "magland/gitpod_gfortran"
 tasks:
   - command: cd python && python setup.py develop
+  - command: cd python && python hfmmtest.py
