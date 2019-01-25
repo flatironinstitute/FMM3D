@@ -1,0 +1,3 @@
+image: "magland/gitpod_gfortran"
+tasks:
+  - command: cd python && python setup.py develop
