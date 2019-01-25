@@ -26,7 +26,7 @@ for st in st_opts:
             list_int_vec.append('hfmm3dpart'+st+cd+pg+'_vec')
 
 ext1 = Extension(
-    name='fmm3d_fortran',
+    name='hfmm3d_fortran',
     sources=['src/Helmholtz/'+item for item in list1]+['src/Common/'+item for item in list2],
     f2py_options=['only:']+list_int+list_int_vec+[':']
 )
