@@ -1,6 +1,6 @@
 tasks:
 - command: pip install numpy
-- command: sudo apt-get update
-- command: sudo apt-get install -y build-essential
-- command: sudo apt-get install -y gfortran
+- command: apt-get update
+- command: apt-get install -y build-essential
+- command: apt-get install -y gfortran
 - command: cd python && python setup.py develop
