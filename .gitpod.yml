@@ -1,6 +1,3 @@
+image: magland/gitpod_gfotran
 tasks:
-- command: pip install numpy
-- command: apt-get update
-- command: apt-get install -y build-essential
-- command: apt-get install -y gfortran
 - command: cd python && python setup.py develop
