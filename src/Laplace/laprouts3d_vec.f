@@ -1789,17 +1789,17 @@ c
         ephi(0)=1.0d0
         ephi(1)=ephi1
         ephi(-1)=dconjg(ephi1)
-        fr(0) = 1.0d0
-        d = r*rscale
-        fr(1) = d
+        d = 1.0d0/r
+        fr(0) = d
+        d = d/rscale
+        fr(1) = fr(0)*d
         do i=2,nterms+1
           fr(i) = fr(i-1)*d
           ephi(i)=ephi(i-1)*ephi1
           ephi(-i)=ephi(-i+1)*ephi(-1)
         enddo
-        frder(0) = 0.0d0
-        do i=1,nterms
-          frder(i) = i*fr(i-1)*rscale
+        do i=0,nterms
+          frder(i) = -(i+1.0d0)*fr(i+1)*rscale
         enddo
 c
 c     compute coefficients in change of variables from spherical
@@ -1816,13 +1816,13 @@ c
 c     
 c
         rx = stheta*cphi
-        thetax = ctheta*cphi
-        phix = -sphi
+        thetax = ctheta*cphi/r
+        phix = -sphi/r
         ry = stheta*sphi
-        thetay = ctheta*sphi
-        phiy = cphi
+        thetay = ctheta*sphi/r
+        phiy = cphi/r
         rz = ctheta
-        thetaz = -stheta
+        thetaz = -stheta/r
         phiz = 0.0d0
 c
 c     get the associated Legendre functions and rescale by
@@ -1866,9 +1866,8 @@ c
         enddo
 
         do n=1,nterms
-          fruse = fr(n-1)*rscale
           ur = ynm(n,0)*frder(n)
-          utheta = -fruse*ynmd(n,0)*stheta
+          utheta = -fr(n)*ynmd(n,0)*stheta
           ux = ur*rx + utheta*thetax 
           uy = ur*ry + utheta*thetay 
           uz = ur*rz + utheta*thetaz
@@ -1881,8 +1880,8 @@ c
           enddo
           do m=1,n
             ur = frder(n)*ynm(n,m)*stheta*ephi(-m)
-            utheta = -ephi(-m)*fruse*ynmd(n,m)
-            uphi = -eye*m*ephi(-m)*fruse*ynm(n,m)
+            utheta = -ephi(-m)*fr(n)*ynmd(n,m)
+            uphi = -eye*m*ephi(-m)*fr(n)*ynm(n,m)
             ux = ur*rx + utheta*thetax + uphi*phix
             uy = ur*ry + utheta*thetay + uphi*phiy
             uz = ur*rz + utheta*thetaz + uphi*phiz
@@ -1895,8 +1894,8 @@ c
             enddo
 c
             ur = frder(n)*ynm(n,m)*stheta*ephi(m)
-            utheta = -ephi(m)*fruse*ynmd(n,m)
-            uphi = eye*m*ephi(m)*fruse*ynm(n,m)
+            utheta = -ephi(m)*fr(n)*ynmd(n,m)
+            uphi = eye*m*ephi(m)*fr(n)*ynm(n,m)
             ux = ur*rx + utheta*thetax + uphi*phix
             uy = ur*ry + utheta*thetay + uphi*phiy
             uz = ur*rz + utheta*thetaz + uphi*phiz

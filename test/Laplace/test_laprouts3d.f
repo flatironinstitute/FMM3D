@@ -51,8 +51,8 @@ c
       rscale1 = bsize/4
       rscale2 = bsize/2
 
-      rscale1 = 1
-      rscale2 = 1
+cc      rscale1 = 1
+cc      rscale2 = 1
 c
 c       set center for original multipole expansion
 c
@@ -111,10 +111,10 @@ c
       ofld(3) = 0
       thresh = 1.0d-15
       nd = 1
-      call l3ddirectdg(nd,sources,dipstr,dipvec,ns,ztrg,
+      call l3ddirectcdg(nd,sources,charge,dipstr,dipvec,ns,ztrg,
      1    nt,opot,ofld,thresh)
 
-      eps = 0.5d-12
+      eps = 0.5d-6
       call l3dterms(eps, nterms,ier)
       call l3dterms(eps, nterms2,ier)
       call l3dterms(eps, nterms3,ier)
@@ -136,7 +136,7 @@ c
 
       nd = 1
       call mpzero(nd,mpole1,nterms)
-      call l3dformmpd(nd,rscale1,sources,dipstr,dipvec,
+      call l3dformmpcd(nd,rscale1,sources,charge,dipstr,dipvec,
      1       ns,c0,nterms,mpole1,wlege,nlege)
 
 
@@ -227,7 +227,7 @@ c    create local exp from sources
 
       nd = 1
       call mpzero(nd,locexp1,nterms3)
-      call l3dformtad(nd,rscale1,sources,dipstr,dipvec,
+      call l3dformtacd(nd,rscale1,sources,charge,dipstr,dipvec,
      1       ns,c3,nterms3,locexp1,wlege,nlege)
 
       pot = 0
