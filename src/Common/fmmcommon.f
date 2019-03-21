@@ -189,3 +189,46 @@ c
 
       return
       end
+c
+c
+c
+c
+c**********************************************************************
+      subroutine cart2polar(zat,r,theta,phi)
+c**********************************************************************
+c
+c     Convert from Cartesian to polar coordinates.
+c
+c-----------------------------------------------------------------------
+c     INPUT:
+c
+c	zat   :  Cartesian vector
+c
+c-----------------------------------------------------------------------
+c     OUTPUT:
+c
+c	r     :  |zat|
+c	theta : angle subtended with respect to z-axis
+c	phi   : angle of (zat(1),zat(2)) subtended with 
+c               respect to x-axis
+c
+c-----------------------------------------------------------------------
+      implicit real *8 (a-h,o-z)
+      real *8 zat(3)
+      complex *16 ephi,eye
+      data eye/(0.0d0,1.0d0)/
+c
+c 
+      r= sqrt(zat(1)**2+zat(2)**2+zat(3)**2)
+      proj = sqrt(zat(1)**2+zat(2)**2)
+c
+      theta = datan2(proj,zat(3))
+      if( abs(zat(1)) .eq. 0 .and. abs(zat(2)) .eq. 0 ) then
+      phi = 0
+      else
+      phi = datan2(zat(2),zat(1))
+      endif
+      return
+      end
+c
+c

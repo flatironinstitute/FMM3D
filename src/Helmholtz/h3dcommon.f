@@ -3,10 +3,6 @@ c
 c      this file contains some common routines for helmrouts3d
 c      and helmrouts3d_vec
 c
-c      cart2polar: utility function.
-c                  converts Cartesian coordinates into polar
-c                  representation needed by other routines.
-c
 c      h3d01: computes h0, h1 (first two spherical Hankel fns.)
 c      h3dall: computes Hankel functions of all orders and scales them
 c
@@ -14,45 +10,6 @@ c      h3dadd: adds one expansion to another
 c
 c      h3dadd_trunc: adds one expansion to another
 c                 allowing for different spherical harmonic array dimensions  
-c
-c
-c**********************************************************************
-      subroutine cart2polar(zat,r,theta,phi)
-c**********************************************************************
-c
-c     Convert from Cartesian to polar coordinates.
-c
-c-----------------------------------------------------------------------
-c     INPUT:
-c
-c	zat   :  Cartesian vector
-c
-c-----------------------------------------------------------------------
-c     OUTPUT:
-c
-c	r     :  |zat|
-c	theta : angle subtended with respect to z-axis
-c	phi   : angle of (zat(1),zat(2)) subtended with 
-c               respect to x-axis
-c
-c-----------------------------------------------------------------------
-      implicit real *8 (a-h,o-z)
-      real *8 zat(3)
-      complex *16 ephi,eye
-      data eye/(0.0d0,1.0d0)/
-c
-c 
-      r= sqrt(zat(1)**2+zat(2)**2+zat(3)**2)
-      proj = sqrt(zat(1)**2+zat(2)**2)
-c
-      theta = datan2(proj,zat(3))
-      if( abs(zat(1)) .eq. 0 .and. abs(zat(2)) .eq. 0 ) then
-      phi = 0
-      else
-      phi = datan2(zat(2),zat(1))
-      endif
-      return
-      end
 c
 c
 c**********************************************************************
@@ -243,25 +200,6 @@ c
 	    mpole2(i,j) = mpole2(i,j)+mpole(i,j)
 	 enddo
       enddo
-      return
-      end
-c
-c
-c
-c
-c 
-      subroutine h3dzero(mpole,nterms)
-      implicit real *8 (a-h,o-z)
-      complex *16 mpole(0:nterms,-nterms:nterms)
-      
-      do i=0,nterms
-        do j=-i,i
-          mpole(i,j) = 0
-        enddo
-      enddo
-
-
-
       return
       end
 

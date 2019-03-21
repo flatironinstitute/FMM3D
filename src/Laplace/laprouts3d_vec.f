@@ -188,14 +188,15 @@ c
 c
 cc     temporary variables
 c
+
+      integer idim
       real *8, allocatable :: ynm(:,:),fr(:)
       complex *16, allocatable :: ephi(:)
       integer i,j,k,l,m,n,itarg
       real *8 done,r,theta,phi,zdiff(3)
       real *8 ctheta,stheta,cphi,sphi
-      real *8 d,rs
+      real *8 d,rs,rtmp1
       complex *16 ephi1
-      complex *16 mpole(0:nterms,-nterms:nterms)
 c
       complex *16 eye
       complex *16 ztmp1,ztmp2,ztmp3,ztmpsum,z
@@ -209,9 +210,9 @@ c
       allocate(ynm(0:nterms,0:nterms))
 
       do itarg=1,ntarg
-        zdiff(1)=ztarg(1)-center(1)
-        zdiff(2)=ztarg(2)-center(2)
-        zdiff(3)=ztarg(3)-center(3)
+        zdiff(1)=ztarg(1,itarg)-center(1)
+        zdiff(2)=ztarg(2,itarg)-center(2)
+        zdiff(3)=ztarg(3,itarg)-center(3)
 c
         call cart2polarl(zdiff,r,theta,phi)
 
@@ -252,7 +253,7 @@ c
         enddo
 
         do idim=1,nd
-          pot(idim,itarg) = pot(idim,itart) + mpole(idim,0,0)*fr(0)
+          pot(idim,itarg) = pot(idim,itarg) + mpole(idim,0,0)*fr(0)
         enddo
         do n=1,nterms
           rtmp1 = fr(n)*ynm(n,0)
@@ -333,14 +334,16 @@ c
 c
 cc     temporary variables
 c
+      integer idim
       real *8, allocatable :: ynm(:,:),ynmd(:,:),fr(:),frder(:)
       complex *16, allocatable :: ephi(:)
       integer i,j,k,l,m,n,itarg
       real *8 done,r,theta,phi,zdiff(3)
       real *8 ctheta,stheta,cphi,sphi
       real *8 d,rx,ry,rz,thetax,thetay,thetaz,phix,phiy,phiz,rs
+      real *8 rtmp1,rtmp2,rtmp3,rtmp4,rtmp5
+      complex *16 ztmp6
       complex *16 ephi1,ur(nd),utheta(nd),uphi(nd)
-      complex *16 mpole(0:nterms,-nterms:nterms)
 c
       complex *16 eye
       complex *16 ztmp1,ztmp2,ztmp3,ztmpsum,z
@@ -355,9 +358,9 @@ c
       allocate(ynmd(0:nterms,0:nterms))
 
       do itarg=1,ntarg
-        zdiff(1)=ztarg(1)-center(1)
-        zdiff(2)=ztarg(2)-center(2)
-        zdiff(3)=ztarg(3)-center(3)
+        zdiff(1)=ztarg(1,itarg)-center(1)
+        zdiff(2)=ztarg(2,itarg)-center(2)
+        zdiff(3)=ztarg(3,itarg)-center(3)
 c
         call cart2polarl(zdiff,r,theta,phi)
 
@@ -422,7 +425,7 @@ c
           ur(idim) = mpole(idim,0,0)*frder(0)
           utheta(idim) = 0.0d0
           uphi(idim) = 0.0d0
-          pot(idim,itarg) = pot(idim,itart) + mpole(idim,0,0)*fr(0)
+          pot(idim,itarg) = pot(idim,itarg) + mpole(idim,0,0)*fr(0)
         enddo
 
         do n=1,nterms
@@ -517,10 +520,12 @@ c
 cc       temporary variables
 c
 
-      integer i,j,k,l,m,n,isrc
+      integer i,j,k,l,m,n,isrc,idim
       real *8 zdiff(3)
       real *8, allocatable :: ynm(:,:),fr(:),rfac(:)
+      real *8 theta,stheta,ctheta,phi,sphi,cphi,dtmp,d,r
       complex *16, allocatable :: ephi(:)
+      complex *16 ephi1
       complex *16 eye
       data eye/(0.0d0,1.0d0)/
 
@@ -533,9 +538,9 @@ c
       enddo
 
       do isrc = 1,ns
-        zdiff(1)=sources(1)-center(1)
-        zdiff(2)=sources(2)-center(2)
-        zdiff(3)=sources(3)-center(3)
+        zdiff(1)=sources(1,isrc)-center(1)
+        zdiff(2)=sources(2,isrc)-center(2)
+        zdiff(3)=sources(3,isrc)-center(3)
 c
         call cart2polarl(zdiff,r,theta,phi)
         ctheta = dcos(theta)
@@ -659,12 +664,17 @@ c
 cc       temporary variables
 c
 
-      integer i,j,k,l,m,n,isrc
+      integer i,j,k,l,m,n,isrc,idim
       real *8 zdiff(3)
       real *8, allocatable :: ynm(:,:),fr(:),rfac(:),frder(:),ynmd(:,:)
+      real *8 thetaz,thetay,thetax, theta
+      real *8 stheta,sphi,rx,ry,rz,r
+      real *8 ctheta,cphi
+      real *8 phix,phiy,phiz,phi,fruse,d
+
       complex *16 ur,utheta,uphi,ux,uy,uz,zzz
       complex *16, allocatable :: ephi(:)
-      complex *16 eye
+      complex *16 eye,ephi1
       data eye/(0.0d0,1.0d0)/
 
       allocate(ynm(0:nterms,0:nterms),fr(0:nterms+1))
@@ -677,9 +687,9 @@ c
       enddo
 
       do isrc = 1,ns
-        zdiff(1)=sources(1)-center(1)
-        zdiff(2)=sources(2)-center(2)
-        zdiff(3)=sources(3)-center(3)
+        zdiff(1)=sources(1,isrc)-center(1)
+        zdiff(2)=sources(2,isrc)-center(2)
+        zdiff(3)=sources(3,isrc)-center(3)
 c
         call cart2polarl(zdiff,r,theta,phi)
         ctheta = dcos(theta)

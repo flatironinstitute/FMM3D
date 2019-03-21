@@ -180,7 +180,7 @@ c
 c
 cc        set criterion for box subdivision
 c
-       ndiv = 100
+       ndiv = 400
 c
 cc         set tree flags
 c
@@ -626,7 +626,7 @@ c     temp variables
       integer istarts,iends
       integer jstart,jend
 
-      integer ifprint
+      integer ifprint,ifwrite
 
       integer ifhesstarg
       double precision d,time1,time2,omp_get_wtime
@@ -1903,13 +1903,21 @@ C$OMP END PARALLEL DO
       time2 = second()
 C$        time2=omp_get_wtime()
       timeinfo(8) = time2-time1
-      if(ifprint.ge.1) call prin2('timeinfo=*',timeinfo,6)
+      if(ifprint.ge.1) call prin2('timeinfo=*',timeinfo,8)
       d = 0
       do i = 1,8
          d = d + timeinfo(i)
       enddo
 
       if(ifprint.ge.1) call prin2('sum(timeinfo)=*',d,1)
+
+      ifwrite = 0
+      if(ifwrite.eq.1) then
+ 1100 format(2(2x,i6),e11.5)
+        open(unit=33,file='../../res/restmp.txt',access='append')
+        write(33,*) nsource,ntarg,d
+        close(33)
+      endif
 
       return
       end
