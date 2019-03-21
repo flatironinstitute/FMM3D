@@ -38,14 +38,10 @@ FLINK = ifort -w -o $(EXEC)
 endif
 
 
-SRC = ../src
-LAP = ../src/Laplace
-COM = ../src/Common
-TREE = ../../../TreeCodes
-OBJ_DIR = ../build
+OBJ_DIR = ../../build
 
 
-vpath %.f = .:../src:../src/Helmholtz:../src/Common
+vpath %.f = .:../../src:../../src/Helmholtz:../../src/Common
 
 .PHONY: all clean list
 
