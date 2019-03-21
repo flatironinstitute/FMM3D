@@ -37,15 +37,19 @@ FLINK = ifort -w -o $(EXEC)
 
 endif
 
-OBJ_DIR = ../../build
+
+SRC = ../src
+LAP = ../src/Laplace
+COM = ../src/Common
+TREE = ../../../TreeCodes
+OBJ_DIR = ../build
 
 
-vpath %.f = .:../../src:../../src/Helmholtz:../../src/Common
+vpath %.f = .:../src:../src/Helmholtz:../src/Common
 
 .PHONY: all clean list
 
-SOURCES =  test_hfmm3dpart.f \
-  tree_lr_3d.f \
+SOURCES =  test_helmrouts3d.f \
   dlaran.f \
   hkrand.f \
   prini.f \
@@ -57,18 +61,12 @@ SOURCES =  test_hfmm3dpart.f \
   h3dterms.f \
   h3dtrans.f \
   helmrouts3d.f \
-  hfmm3dpart.f \
-  hfmm3dpartwrap.f \
-  hpwrouts.f \
-  hwts3.f \
-  fmmcommon.f \
   besseljs3d.f \
   projections.f \
   rotproj.f \
   dfft.f \
   h3dcommon.f \
-  numphysfour.f \
-  quadread.f \
+  fmmcommon.f \
 
 
 OBJECTS = $(patsubst %.f,$(OBJ_DIR)/%.o,$(SOURCES))
