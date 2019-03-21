@@ -1217,7 +1217,7 @@ c
       real *8 rscale,center(3),ztarg(3,ntarg)
       complex *16 pot(nd,ntarg),grad(nd,3,ntarg)
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
-      real *8 wlege(0:nlege,0:nlege), thresh
+      real *8 wlege(0:nlege,0:nlege)
 
 c
 cc     temporary variables
@@ -1262,8 +1262,6 @@ c     compute exp(eye*m*phi) array
 c
         ephi(0)=done
         ephi(1)=ephi1
-        cphi = dreal(ephi1)
-        sphi = dimag(ephi1)
         ephi(-1)=dconjg(ephi1)
         d = r*rscale
         fr(0) = 1.0d0
@@ -1271,9 +1269,9 @@ c
         do i=2,nterms+1
           fr(i) = fr(i-1)*d
           ephi(i)=ephi(i-1)*ephi1
-          ephi(-i)=conjg(ephi(i))
+          ephi(-i)=dconjg(ephi(i))
         enddo
-        frder(i) = 0
+        frder(0) = 0
         do i=1,nterms
           frder(i) = i*fr(i-1)*rscale
         enddo
