@@ -4,3 +4,5 @@ dist
 *.so
 *.egg-info
 *.o
+fort.*
+int2
