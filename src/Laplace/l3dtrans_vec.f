@@ -527,6 +527,7 @@ C
       rvec(1) = xnynzn(1) - x0y0z0(1)
       rvec(2) = xnynzn(2) - x0y0z0(2)
       rvec(3) = xnynzn(3) - x0y0z0(3)
+
       call cart2polar(rvec,d,theta,phi)
 
       ldc = max(nterms,nterms2)
@@ -559,6 +560,7 @@ c
         enddo
       enddo
 
+
       if(nterms.ge.30) then
         call rotviaproj(nd,theta,nterms,nterms,nterms,marray1,
      1     ldc,marray,ldc)
@@ -572,7 +574,7 @@ c      the Z-axis.
 c
       rshift = d
        call l3dlocloczshift(nd,sc1,marray,ldc,nterms,sc2,marray1,
-     1           nterms2,nterms2,rshift,dc,lda) 
+     1           nterms2,nterms2,rshift,dc,lda)
 c
 c     reverse THETA rotation. 
 c     I.e. rotation of -THETA radians about the Yprime axis.
@@ -675,7 +677,7 @@ c
         enddo
       enddo
 
-      do jnew = 0,nterms2
+      do jnew = 1,nterms2
         do knew = -jnew,jnew
           do idim=1,nd
             local(idim,jnew,knew)=local(idim,jnew,knew)*rscpow(jnew)
