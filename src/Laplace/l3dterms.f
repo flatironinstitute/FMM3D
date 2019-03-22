@@ -38,7 +38,7 @@ c
 c
 c
 c***********************************************************************
-      subroutine l3dterms(eps, nterms, ier)
+      subroutine l3dterms(eps, nterms)
 c***********************************************************************
 c
 c     Determine number of terms in mpole expansions.
@@ -53,16 +53,12 @@ c
 c     OUTPUT:
 c
 c     nterms  required expansion order
-c     ier     error flag (0 means correct execution).
-c                        (1 means 1000 terms is insufficient).
 c-----------------------------------------------------------------------
 c
       implicit none
-      integer ier,j,nterms
+      integer j,nterms
       real *8 xtemp1,eps
       real *8 z1,z2,hfun,jfun
-c
-      ier = 0
 c
       z1 = 1.5d0
       z2 = dsqrt(3d0)/2.d0
@@ -79,7 +75,6 @@ c
           return
         endif
       enddo
-      ier = 1
       return
       end
 c
@@ -87,7 +82,7 @@ c
 c
 c
 c***********************************************************************
-      subroutine l3dterms_far(eps, nterms, ier)
+      subroutine l3dterms_far(eps, nterms)
 c***********************************************************************
 c
 c     Determine number of terms in mpole expansions for box of size
@@ -106,8 +101,6 @@ c
 c     OUTPUT:
 c
 c     nterms  required expansion order
-c     ier     error flag (0 means correct execution).
-c                        (1 means 1000 terms is insufficient).
 c-----------------------------------------------------------------------------
 c
       implicit none
@@ -131,7 +124,6 @@ c
           return
         endif
       enddo
-      ier = 1
       return
       end
 c

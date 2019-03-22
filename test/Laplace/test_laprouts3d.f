@@ -30,6 +30,7 @@ c
       real *8 ztrg(3),sources(3,10)
 	  real *8 c0(3),c1(3),c2(3),c3(3)
       real *8 xnodes(2000),wts(2000)
+      real *8, allocatable :: dc(:,:)
 c
       complex *16 pot,fld(3),opot,ofld(3)
       complex *16, allocatable :: mpole1(:,:),mpole2(:,:)
@@ -114,10 +115,10 @@ c
       call l3ddirectcdg(nd,sources,charge,dipstr,dipvec,ns,ztrg,
      1    nt,opot,ofld,thresh)
 
-      eps = 0.5d-6
-      call l3dterms(eps, nterms,ier)
-      call l3dterms(eps, nterms2,ier)
-      call l3dterms(eps, nterms3,ier)
+      eps = 0.5d-12
+      call l3dterms(eps, nterms)
+      call l3dterms(eps, nterms2)
+      call l3dterms(eps, nterms3)
 
       call prinf('nterms=*',nterms,1)
       call prinf('nterms2=*',nterms2,1)
@@ -157,67 +158,73 @@ c
 c
 c    mpmp shift
 c
-      call prinf('calling mpmp and mpeval *',nterms,0)
-c      allocate(mpole2(0:nterms2,-nterms2:nterms2))
-c      call l3dzero(mpole2,nterms2)
-c      call l3dmpmp(nd,rscale1,c0,mpole1,nterms,
-c     1       rscale2,c1,mpole2,nterms2)
 
-c      pot = 0
-c      fld(1) = 0
-c      fld(2) = 0
-c      fld(3) = 0
-c      nd = 1
-c      call h3dmpevalg(nd,zk,rscale2,c1,mpole2,nterms,ztrg,nt,pot,
-c     1      fld,wlege,nlege,thresh)
-c       call errprint(pot,opot,fld,ofld)
+
+      nn = nterms
+      nn = max(nn,nterms2)
+      nn = max(nn,nterms3)
+      nn = 2*nn + 10
+      allocate(dc(0:nn,0:nn))
+      call getsqrtbinomialcoeffs(nn,dc)
+
+      call prinf('calling mpmp and mpeval *',nterms,0)
+      allocate(mpole2(0:nterms2,-nterms2:nterms2))
+      call mpzero(nd,mpole2,nterms2)
+      call l3dmpmp(nd,rscale1,c0,mpole1,nterms,
+     1       rscale2,c1,mpole2,nterms2,dc,nn)
+
+      pot = 0
+      fld(1) = 0
+      fld(2) = 0
+      fld(3) = 0
+      nd = 1
+      call l3dmpevalg(nd,rscale2,c1,mpole2,nterms,ztrg,nt,pot,
+     1      fld,wlege,nlege,thresh)
+       call errprint(pot,opot,fld,ofld)
 c
 cc    convert to local
 c
-c      radius = sqrt(3.0d0)/2.0d0
-c      call prin2('calling mploc and taeval *',wavek,0)
-c      nquad = 2.2*nterms2
-c      call legewhts(nquad,xnodes,wts,ifinit)
-c
-c      allocate(locexp2(0:nterms2,-nterms2:nterms2))
-c      call h3dzero(locexp2,nterms2)
-c      call h3dmploc(nd,zk,rscale2,c1,mpole2,nterms2,
-c     1      rscale2,c2,locexp2,nterms2,radius,xnodes,wts,nquad)
-c
-ccc      call prinm(locexp2,nterms2)
-c
-c      pot = 0
-c      fld(1) = 0
-c      fld(2) = 0
-c      fld(3) = 0
-c      nd = 1
-c      call h3dtaevalg(nd,zk,rscale2,c2,locexp2,nterms2,ztrg,nt,
-c     1      pot,fld,wlege,nlege)
-c
-c      call errprint(pot,opot,fld,ofld)
-c
+      call prinf('calling mploc and taeval*',i,0)
+
+      allocate(locexp2(0:nterms2,-nterms2:nterms2))
+      call mpzero(nd,locexp2,nterms2)
+      call l3dmploc(nd,rscale2,c1,mpole2,nterms2,
+     1      rscale2,c2,locexp2,nterms2,dc,nn)
+
+
+      pot = 0
+      fld(1) = 0
+      fld(2) = 0
+      fld(3) = 0
+      nd = 1
+      call l3dtaevalg(nd,rscale2,c2,locexp2,nterms2,ztrg,nt,
+     1      pot,fld,wlege,nlege)
+
+      call errprint(pot,opot,fld,ofld)
+
 c
 cc    shift local 
-cc
-c      radius = sqrt(3.0d0)/4.0d0
-c      call prinf('calling locloc and taeval *',nterms3,0)
+      call prinf('calling locloc and taeval *',nterms3,0)
 c
       allocate(locexp1(0:nterms3,-nterms3:nterms3))
-c      call h3dzero(locexp1,nterms3)
-c
-c      call h3dlocloc(nd,zk,rscale2,c2,locexp2,nterms2,
-c     1      rscale1,c3,locexp1,nterms3,radius,xnodes,wts,nquad)
-c
-c
-c      pot = 0
-c      fld(1) = 0
-c      fld(2) = 0
-c      fld(3) = 0
-c      nd = 1
-c      call h3dtaevalg(nd,zk,rscale1,c3,locexp1,nterms3,ztrg,nt,
-c     1      pot,fld,wlege,nlege)
-c
-c      call errprint(pot,opot,fld,ofld)
+      nd = 1
+      call mpzero(nd,locexp1,nterms3)
+
+      call prinf('nterms3=*',nterms3,1)
+      call prinf('nn=*',nn,1)
+
+      call l3dlocloc(nd,rscale2,c2,locexp2,nterms2,
+     1      rscale1,c3,locexp1,nterms3,dc,nn)
+
+
+      pot = 0
+      fld(1) = 0
+      fld(2) = 0
+      fld(3) = 0
+      call l3dtaevalg(nd,rscale1,c3,locexp1,nterms3,ztrg,nt,
+     1      pot,fld,wlege,nlege)
+
+      call errprint(pot,opot,fld,ofld)
 c
 cc
 cc

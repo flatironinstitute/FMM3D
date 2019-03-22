@@ -55,6 +55,7 @@ SOURCES =  test_laprouts3d.f \
   rotviarecur.f \
   yrecursion.f \
   l3dterms.f \
+  l3dtrans_vec.f \
   laprouts3d_vec.f \
   rotproj.f \
   dfft.f \
