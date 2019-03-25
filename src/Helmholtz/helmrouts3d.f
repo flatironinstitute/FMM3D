@@ -629,7 +629,7 @@ c-----------------------------------------------------------------------
       complex *16 zk
       real *8 rscale,sources(3,ns),center(3),wlege(*)
       complex *16 dipstr(nd,ns)
-      real *8 dipvec(nd,3,ns)
+      complex *16 dipvec(nd,3,ns)
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
 c
 cc      temporary variables
@@ -846,7 +846,7 @@ c-----------------------------------------------------------------------
       complex *16 zk
       real *8 rscale,sources(3,ns),center(3),wlege(*)
       complex *16 charge(nd,ns),dipstr(nd,ns)
-      real *8 dipvec(nd,3,ns)
+      complex *16 dipvec(nd,3,ns)
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
 c
 cc      temporary variables
@@ -1504,7 +1504,7 @@ c-----------------------------------------------------------------------
       complex *16 zk
       real *8 rscale,sources(3,ns),center(3),wlege(*)
       complex *16 dipstr(nd,ns)
-      real *8 dipvec(nd,3,ns)
+      complex *16 dipvec(nd,3,ns)
       complex *16 locexp(nd,0:nterms,-nterms:nterms)
 c
 cc      temporary variables
@@ -1704,7 +1704,7 @@ c-----------------------------------------------------------------------
       complex *16 zk
       real *8 rscale,sources(3,ns),center(3),wlege(*)
       complex *16 charge(nd,ns),dipstr(nd,ns)
-      real *8 dipvec(nd,3,ns)
+      complex *16 dipvec(nd,3,ns)
       complex *16 locexp(nd,0:nterms,-nterms:nterms)
 c
 cc      temporary variables
@@ -2113,7 +2113,8 @@ cc      calling sequence variables
 c  
       integer ns,nt,nd
       complex *16 zk
-      real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
+      real *8 sources(3,ns),ztarg(3,nt)
+      complex *16 dipvec(nd,3,ns)
       complex *16 dipstr(nd,ns),pot(nd,nt)
       real *8 thresh
       
@@ -2220,7 +2221,8 @@ cc      calling sequence variables
 c  
       integer ns,nt,nd
       complex *16 zk
-      real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
+      real *8 sources(3,ns),ztarg(3,nt)
+      complex *16 dipvec(nd,3,ns)
       complex *16 dipstr(nd,ns),pot(nd,nt),grad(nd,3,nt)
       real *8 thresh
       
@@ -2329,7 +2331,8 @@ cc      calling sequence variables
 c  
       integer ns,nt,nd
       complex *16 zk
-      real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
+      real *8 sources(3,ns),ztarg(3,nt)
+      complex *16 dipvec(nd,3,ns)
       complex *16 charge(nd,ns),dipstr(nd,ns),pot(nd,nt)
       real *8 thresh
       
@@ -2439,7 +2442,8 @@ cc      calling sequence variables
 c  
       integer ns,nt,nd
       complex *16 zk
-      real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
+      real *8 sources(3,ns),ztarg(3,nt)
+      complex *16 dipvec(nd,3,ns)
       complex *16 charge(nd,ns),dipstr(nd,ns),pot(nd,nt),grad(nd,3,nt)
       real *8 thresh
       

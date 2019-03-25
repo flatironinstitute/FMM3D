@@ -148,7 +148,44 @@ c
 
       return
       end
+c
+c
+c
+c
+c
+      subroutine mpadd(nd,mpolein,mpoleout,nterms)
+c
+cc      this subroutine add mpolein to mpoleout 
+c
+c       input:
+c       nd     in:integer
+c              number of expansions
+c
+c       nterms in:integer
+c              number of terms in the expansions
+c
+c       mpolein in: complex *16(nd,0;nterms,-nterms:nterms)
+c               multipole expansion to be added
+c
+c       inout:
+c       mpoleout  inout: double complex(nd,0:nterms,-nterms:nterms)
+c              multipole expansions to which mpolein is to be added
+c
+      implicit none
+      integer nd, i,j,nterms,idim
+      double complex mpolein(nd,0:nterms,-nterms:nterms)
+      double complex mpoleout(nd,0:nterms,-nterms:nterms)
 
+      do i=-nterms,nterms
+        do j=0,nterms
+          do idim=1,nd
+            mpoleout(idim,j,i) = mpoleout(idim,j,i) + mpolein(idim,j,i)
+          enddo
+        enddo
+      enddo
+
+      return
+      end
 c----------------------------------------------------------------
 
       subroutine mpscale(nd,nterms,mpolein,rsc,mpoleout)

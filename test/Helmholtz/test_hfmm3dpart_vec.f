@@ -2,7 +2,7 @@
       integer ns,nt
       double precision, allocatable :: source(:,:),targ(:,:)
       double complex, allocatable :: charge(:,:),dipstr(:,:)
-      double precision, allocatable :: dipvec(:,:,:)
+      double complex, allocatable :: dipvec(:,:,:)
       double complex, allocatable :: pot(:,:),pottarg(:,:)
       double complex, allocatable :: grad(:,:,:),gradtarg(:,:,:)
 
@@ -623,7 +623,7 @@ c
       integer ns,nt,ifcharge,ifdipole,ifpgh,ifpghtarg
       
       double precision source(3,*),targ(3,*)
-      double precision dipvec(nd,3,*)
+      double complex dipvec(nd,3,*)
       double complex dipstr(nd,*),charge(nd,*)
 
       double complex pot(nd,*),pottarg(nd,*),grad(nd,3,*),

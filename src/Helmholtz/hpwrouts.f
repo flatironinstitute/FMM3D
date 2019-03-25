@@ -917,7 +917,7 @@ c      add contributions due to child 1
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
-        call h3dadd(nd,tloc,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -944,7 +944,7 @@ c      add contributions due to child 2
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
-        call h3dadd(nd,tloc,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
   
@@ -970,7 +970,7 @@ c      add contributions due to child 3
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
-        call h3dadd(nd,tloc,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -998,7 +998,7 @@ c      add contributions due to child 4
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
-        call h3dadd(nd,tloc,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -1026,7 +1026,7 @@ c      add contributions due to child 5
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
-        call h3dadd(nd,tloc,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -1056,7 +1056,7 @@ c      add contributions due to child 6
      2         rscale,rlsc)
 
 
-        call h3dadd(nd,tloc,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -1086,7 +1086,7 @@ c      add contributions due to child 7
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
-        call h3dadd(nd,tloc,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -1114,7 +1114,7 @@ c      add contributions due to child 8
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
-        call h3dadd(nd,tloc,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -1344,7 +1344,7 @@ c      add contributions due to child 1
 
         call rotytoz(nd,nterms,tloc,tloc2,rdplus)
 
-        call h3dadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -1373,7 +1373,7 @@ c      add contributions due to child 2
 
         call rotytoz(nd,nterms,tloc,tloc2,rdplus)
 
-        call h3dadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
   
@@ -1402,7 +1402,7 @@ c      add contributions due to child 3
 
         call rotytoz(nd,nterms,tloc,tloc2,rdplus)
 
-        call h3dadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -1432,7 +1432,7 @@ c      add contributions due to child 4
      2         rscale,rlsc)
 
         call rotytoz(nd,nterms,tloc,tloc2,rdplus)
-        call h3dadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -1460,7 +1460,7 @@ c      add contributions due to child 5
      2         rscale,rlsc)
 
         call rotytoz(nd,nterms,tloc,tloc2,rdplus)
-        call h3dadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -1489,7 +1489,7 @@ c      add contributions due to child 6
      2         rscale,rlsc)
 
         call rotytoz(nd,nterms,tloc,tloc2,rdplus)
-        call h3dadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -1519,7 +1519,7 @@ c      add contributions due to child 7
      2         rscale,rlsc)
 
         call rotytoz(nd,nterms,tloc,tloc2,rdplus)
-        call h3dadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -1549,7 +1549,7 @@ c      add contributions due to child 8
 
         call rotytoz(nd,nterms,tloc,tloc2,rdplus)
 
-        call h3dadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -1920,7 +1920,7 @@ c      add contributions due to child 1
 
         call rotztox(nd,nterms,tloc,tloc2,rdminus)
 
-        call h3dadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -1952,7 +1952,7 @@ c      add contributions due to child 2
 
         call rotztox(nd,nterms,tloc,tloc2,rdminus)
 
-        call h3dadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
   
@@ -1980,7 +1980,7 @@ c      add contributions due to child 3
 
         call rotztox(nd,nterms,tloc,tloc2,rdminus)
 
-        call h3dadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -2009,7 +2009,7 @@ c      add contributions due to child 4
      2         rscale,rlsc)
 
         call rotztox(nd,nterms,tloc,tloc2,rdminus)
-        call h3dadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -2036,7 +2036,7 @@ c      add contributions due to child 5
      2         rscale,rlsc)
 
         call rotztox(nd,nterms,tloc,tloc2,rdminus)
-        call h3dadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -2065,7 +2065,7 @@ c      add contributions due to child 6
      2         rscale,rlsc)
 
         call rotztox(nd,nterms,tloc,tloc2,rdminus)
-        call h3dadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -2097,7 +2097,7 @@ c      add contributions due to child 7
 
         call rotztox(nd,nterms,tloc,tloc2,rdminus)
 
-        call h3dadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 
@@ -2127,7 +2127,7 @@ c      add contributions due to child 8
 
         call rotztox(nd,nterms,tloc,tloc2,rdminus)
 
-        call h3dadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
+        call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
        endif
 

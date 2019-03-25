@@ -123,7 +123,7 @@ c------------------------------------------------------------------
       double complex charge(nd,*)
 
       double complex dipstr(nd,*)
-      double precision dipvec(3,*)
+      double complex dipvec(nd,3,*)
 
       double complex pot(nd,*),grad(nd,3,*),pottarg(nd,3,*),
      1     gradtarg(nd,3,*),hess(nd,6,*),hesstarg(nd,6,*)
@@ -142,7 +142,7 @@ c
       double precision, allocatable :: sourcesort(:,:),targsort(:,:)
       double precision, allocatable :: radsrc(:)
       double complex, allocatable :: chargesort(:,:),dipstrsort(:,:)
-      double precision, allocatable :: dipvecsort(:,:,:)
+      double complex, allocatable :: dipvecsort(:,:,:)
 
       double complex, allocatable :: potsort(:,:),gradsort(:,:,:),
      1       hesssort(:,:,:)
@@ -420,7 +420,7 @@ c
       if(ifdipole.eq.1) then
          call dreorderf(2*nd,nsource,dipstr,dipstrsort,
      1       itree(ipointer(5)))
-         call dreorderf(3*nd,nsource,dipvec,dipvecsort,
+         call dreorderf(6*nd,nsource,dipvec,dipvecsort,
      1       itree(ipointer(5)))
       endif
 
@@ -542,7 +542,7 @@ c
 
       double complex chargesort(nd,*)
       double complex dipstrsort(nd,*)
-      double precision dipvecsort(nd,3,*)
+      double complex dipvecsort(nd,3,*)
 
       double precision targsort(3,ntarg)
 
@@ -2009,7 +2009,7 @@ c
         double precision source(3,*)
         double precision wlege(0:nlege,0:nlege)
         double complex charge(nd,*),dipstr(nd,*)
-        double precision dipvec(nd,3,*)
+        double complex dipvec(nd,3,*)
         double precision targ(3,*),scj(*)
 
         integer nlevels,ntj
@@ -2023,6 +2023,15 @@ c
             call h3dformtac(nd,zk,scj(j),
      1        source(1,istart),charge(1,istart),ns,
      2        targ(1,j),ntj,texps(1,0,-ntj,j),wlege,nlege)
+           enddo
+         endif
+
+         if(ifcharge.eq.0.and.ifdipole.eq.1) then
+          do j=jstart,jend
+            call h3dformtad(nd,zk,scj(j),
+     1        source(1,istart),dipstr(1,istart),
+     2        dipvec(1,1,istart),ns,targ(1,j),ntj,texps(1,0,-ntj,j),
+     3        wlege,nlege)
            enddo
          endif
 

@@ -94,8 +94,8 @@ c
       double precision sqc(0:nterms,0:nterms)
 c
       do 100 n=0,nterms
-            c(n,0)=1.0d0
-            sqc(n,0)=1.0d0
+        c(n,0)=1.0d0
+        sqc(n,0)=1.0d0
 100   continue
       do 300 m=1,nterms
          c(m,m)=1.0d0
