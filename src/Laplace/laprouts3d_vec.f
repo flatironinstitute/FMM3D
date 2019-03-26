@@ -177,7 +177,7 @@ c
 
       integer nterms,nlege,ntarg,nd
       real *8 rscale,center(3),ztarg(3,ntarg)
-      complex *16 pot(nd,ntarg)
+      real *8 pot(nd,ntarg)
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
       real *8 wlege(0:nlege,0:nlege), thresh
 
@@ -191,17 +191,16 @@ c
       integer i,j,k,l,m,n,itarg
       real *8 done,r,theta,phi,zdiff(3)
       real *8 ctheta,stheta,cphi,sphi
-      real *8 d,rs,rtmp1
+      real *8 d,rs,rtmp1,rtmp2
       complex *16 ephi1
 c
       complex *16 eye
-      complex *16 ztmp1,ztmp2,ztmp3,ztmpsum,z
 c
       data eye/(0.0d0,1.0d0)/
 c
       done=1.0d0
 
-      allocate(ephi(-nterms-1:nterms+1))
+      allocate(ephi(0:nterms+1))
       allocate(fr(0:nterms+1))
       allocate(ynm(0:nterms,0:nterms))
 
@@ -224,9 +223,6 @@ c     compute exp(eye*m*phi) array
 c
         ephi(0)=done
         ephi(1)=ephi1
-        cphi = dreal(ephi1)
-        sphi = dimag(ephi1)
-        ephi(-1)=dconjg(ephi1)
         d = 1.0d0/r
         fr(0) = d
         d = d/rscale
@@ -234,7 +230,6 @@ c
         do i=2,nterms+1
           fr(i) = fr(i-1)*d
           ephi(i)=ephi(i-1)*ephi1
-          ephi(-i)=conjg(ephi(i))
         enddo
 c
 c    get the associated Legendre functions:
@@ -249,21 +244,19 @@ c
         enddo
 
         do idim=1,nd
-          pot(idim,itarg) = pot(idim,itarg) + mpole(idim,0,0)*fr(0)
+          pot(idim,itarg) = pot(idim,itarg) +
+     1                 real(mpole(idim,0,0))*fr(0)
         enddo
         do n=1,nterms
           rtmp1 = fr(n)*ynm(n,0)
           do idim=1,nd
-            pot(idim,itarg)=pot(idim,itarg)+mpole(idim,n,0)*rtmp1
+            pot(idim,itarg)=pot(idim,itarg)+real(mpole(idim,n,0))*rtmp1
           enddo
 	      do m=1,n
             rtmp1 = fr(n)*ynm(n,m)
             do idim=1,nd
-              ztmp2 = mpole(idim,n,m)*ephi(m) 
-              ztmp3 = mpole(idim,n,-m)*ephi(-m)
-              ztmpsum = ztmp2+ztmp3
-
-              pot(idim,itarg)=pot(idim,itarg)+rtmp1*ztmpsum
+              rtmp2 = 2*real(mpole(idim,n,m)*ephi(m)) 
+              pot(idim,itarg)=pot(idim,itarg)+rtmp1*rtmp2
             enddo
           enddo
         enddo
@@ -323,7 +316,7 @@ c
 
       integer nterms,nlege,ntarg,nd
       real *8 rscale,center(3),ztarg(3,ntarg)
-      complex *16 pot(nd,ntarg),grad(nd,3,ntarg)
+      real *8 pot(nd,ntarg),grad(nd,3,ntarg)
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
       real *8 wlege(0:nlege,0:nlege), thresh
 
@@ -337,18 +330,17 @@ c
       real *8 done,r,theta,phi,zdiff(3)
       real *8 ctheta,stheta,cphi,sphi
       real *8 d,rx,ry,rz,thetax,thetay,thetaz,phix,phiy,phiz,rs
-      real *8 rtmp1,rtmp2,rtmp3,rtmp4,rtmp5
-      complex *16 ztmp6
-      complex *16 ephi1,ur(nd),utheta(nd),uphi(nd)
+      real *8 rtmp1,rtmp2,rtmp3,rtmp4,rtmp5,rtmp6
+      complex *16 ephi1
+      real *8 ur(nd),utheta(nd),uphi(nd)
 c
       complex *16 eye
-      complex *16 ztmp1,ztmp2,ztmp3,ztmpsum,z
 c
       data eye/(0.0d0,1.0d0)/
 c
       done=1.0d0
 
-      allocate(ephi(-nterms-1:nterms+1))
+      allocate(ephi(0:nterms+1))
       allocate(fr(0:nterms+1),frder(0:nterms))
       allocate(ynm(0:nterms,0:nterms))
       allocate(ynmd(0:nterms,0:nterms))
@@ -374,7 +366,6 @@ c
         ephi(1)=ephi1
         cphi = dreal(ephi1)
         sphi = dimag(ephi1)
-        ephi(-1)=dconjg(ephi1)
         d = 1.0d0/r
         fr(0) = d
         d = d/rscale
@@ -382,7 +373,6 @@ c
         do i=2,nterms+1
           fr(i) = fr(i-1)*d
           ephi(i)=ephi(i-1)*ephi1
-          ephi(-i)=conjg(ephi(i))
         enddo
         do i=0,nterms
           frder(i) = -(i+1.0d0)*fr(i+1)*rscale
@@ -418,10 +408,11 @@ c
         phiz = 0.0d0
 
         do idim=1,nd
-          ur(idim) = mpole(idim,0,0)*frder(0)
+          ur(idim) = real(mpole(idim,0,0))*frder(0)
           utheta(idim) = 0.0d0
           uphi(idim) = 0.0d0
-          pot(idim,itarg) = pot(idim,itarg) + mpole(idim,0,0)*fr(0)
+          pot(idim,itarg) = pot(idim,itarg) + 
+     1        real(mpole(idim,0,0))*fr(0)
         enddo
 
         do n=1,nterms
@@ -429,27 +420,25 @@ c
           rtmp2 = frder(n)*ynm(n,0)
           rtmp3 = -fr(n)*ynmd(n,0)*stheta
           do idim=1,nd
-            pot(idim,itarg)=pot(idim,itarg)+mpole(idim,n,0)*rtmp1
-            ur(idim)=ur(idim)+mpole(idim,n,0)*rtmp2
-            utheta(idim)=utheta(idim)+mpole(idim,n,0)*rtmp3
+            pot(idim,itarg)=pot(idim,itarg)+real(mpole(idim,n,0))*rtmp1
+            ur(idim)=ur(idim)+real(mpole(idim,n,0))*rtmp2
+            utheta(idim)=utheta(idim)+real(mpole(idim,n,0))*rtmp3
           enddo
 
 	      do m=1,n
             rtmp1 = fr(n)*ynm(n,m)*stheta
             rtmp4 = frder(n)*ynm(n,m)*stheta
             rtmp5 = -fr(n)*ynmd(n,m)
-            ztmp6 = eye*m*fr(n)*ynm(n,m)
+            rtmp6 = -m*fr(n)*ynm(n,m)
 
             do idim=1,nd
-              ztmp2 = mpole(idim,n,m)*ephi(m) 
-              ztmp3 = mpole(idim,n,-m)*ephi(-m)
-              ztmpsum = ztmp2+ztmp3
+              rtmp2 = 2*real(mpole(idim,n,m)*ephi(m)) 
 
-              pot(idim,itarg)=pot(idim,itarg)+rtmp1*ztmpsum
-              ur(idim) = ur(idim) + rtmp4*ztmpsum
-              utheta(idim) = utheta(idim)+rtmp5*ztmpsum
-              ztmpsum = ztmp2 - ztmp3
-              uphi(idim) = uphi(idim) + ztmp6*ztmpsum
+              pot(idim,itarg)=pot(idim,itarg)+rtmp1*rtmp2
+              ur(idim) = ur(idim) + rtmp4*rtmp2
+              utheta(idim) = utheta(idim)+rtmp5*rtmp2
+              rtmp2 = 2*imag(mpole(idim,n,m)*ephi(m))
+              uphi(idim) = uphi(idim) + rtmp6*rtmp2
             enddo
           enddo
         enddo
@@ -510,7 +499,7 @@ c
       real *8 wlege(0:nlege,0:nlege)
       real *8 rscale
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
-      complex *16 charge(nd,ns)
+      real *8 charge(nd,ns)
 
 c
 cc       temporary variables
@@ -654,7 +643,7 @@ c
       real *8 wlege(0:nlege,0:nlege)
       real *8 rscale
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
-      complex *16 dipstr(nd,ns)
+      real *8 dipstr(nd,ns)
       real *8 dipvec(nd,3,ns)
 
 c
@@ -862,7 +851,7 @@ c
       real *8 wlege(0:nlege,0:nlege)
       real *8 rscale
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
-      complex *16 charge(nd,ns),dipstr(nd,ns)
+      real *8 charge(nd,ns),dipstr(nd,ns)
       real *8 dipvec(nd,3,ns)
 
 c
@@ -1077,7 +1066,7 @@ c
 
       integer nterms,nlege,ntarg,nd
       real *8 rscale,center(3),ztarg(3,ntarg)
-      complex *16 pot(nd,ntarg)
+      real *8 pot(nd,ntarg)
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
       real *8 wlege(0:nlege,0:nlege), thresh
 
@@ -1091,17 +1080,16 @@ c
       integer i,j,k,l,m,n,itarg
       real *8 done,r,theta,phi,zdiff(3)
       real *8 ctheta,stheta,cphi,sphi
-      real *8 d,rs,rtmp1
+      real *8 d,rs,rtmp1,rtmp2
       complex *16 ephi1
 c
       complex *16 eye
-      complex *16 ztmp1,ztmp2,ztmp3,ztmpsum,z
 c
       data eye/(0.0d0,1.0d0)/
 c
       done=1.0d0
 
-      allocate(ephi(-nterms-1:nterms+1))
+      allocate(ephi(0:nterms+1))
       allocate(fr(0:nterms+1))
       allocate(ynm(0:nterms,0:nterms))
 
@@ -1124,14 +1112,12 @@ c
         ephi(1)=ephi1
         cphi = dreal(ephi1)
         sphi = dimag(ephi1)
-        ephi(-1)=dconjg(ephi1)
         fr(0) = 1.0d0
         d = r*rscale
         fr(1) = fr(0)*d
         do i=2,nterms+1
           fr(i) = fr(i-1)*d
           ephi(i)=ephi(i-1)*ephi1
-          ephi(-i)=conjg(ephi(i))
         enddo
 c
 c    get the associated Legendre functions:
@@ -1146,25 +1132,22 @@ c
         enddo
 
         do idim=1,nd
-          pot(idim,itarg) = pot(idim,itarg) + mpole(idim,0,0)*fr(0)
+          pot(idim,itarg) = pot(idim,itarg) + 
+     1        real(mpole(idim,0,0))*fr(0)
         enddo
         do n=1,nterms
           rtmp1 = fr(n)*ynm(n,0)
           do idim=1,nd
-            pot(idim,itarg)=pot(idim,itarg)+mpole(idim,n,0)*rtmp1
+            pot(idim,itarg)=pot(idim,itarg)+real(mpole(idim,n,0))*rtmp1
           enddo
 	      do m=1,n
             rtmp1 = fr(n)*ynm(n,m)
             do idim=1,nd
-              ztmp2 = mpole(idim,n,m)*ephi(m) 
-              ztmp3 = mpole(idim,n,-m)*ephi(-m)
-              ztmpsum = ztmp2+ztmp3
-
-              pot(idim,itarg)=pot(idim,itarg)+rtmp1*ztmpsum
+              rtmp2 = 2*real(mpole(idim,n,m)*ephi(m)) 
+              pot(idim,itarg)=pot(idim,itarg)+rtmp1*rtmp2
             enddo
           enddo
         enddo
- 1000 continue
       enddo
 
       return
@@ -1215,7 +1198,7 @@ c
 
       integer nterms,nlege,ntarg,nd
       real *8 rscale,center(3),ztarg(3,ntarg)
-      complex *16 pot(nd,ntarg),grad(nd,3,ntarg)
+      real *8 pot(nd,ntarg),grad(nd,3,ntarg)
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
       real *8 wlege(0:nlege,0:nlege)
 
@@ -1229,9 +1212,9 @@ c
       real *8 done,r,theta,phi,zdiff(3)
       real *8 ctheta,stheta,cphi,sphi
       real *8 d,rx,ry,rz,thetax,thetay,thetaz,phix,phiy,phiz,rs
-      real *8 rtmp1,rtmp2,rtmp3,rtmp4,rtmp5
-      complex *16 ztmp6
-      complex *16 ephi1,ur(nd),utheta(nd),uphi(nd)
+      real *8 rtmp1,rtmp2,rtmp3,rtmp4,rtmp5,rtmp6
+      complex *16 ephi1
+      real *8 ur(nd),utheta(nd),uphi(nd)
 c
       complex *16 eye
       complex *16 ztmp1,ztmp2,ztmp3,ztmpsum,z
@@ -1240,7 +1223,7 @@ c
 c
       done=1.0d0
 
-      allocate(ephi(-nterms-1:nterms+1))
+      allocate(ephi(0:nterms+1))
       allocate(fr(0:nterms+1),frder(0:nterms))
       allocate(ynm(0:nterms,0:nterms))
       allocate(ynmd(0:nterms,0:nterms))
@@ -1262,14 +1245,12 @@ c     compute exp(eye*m*phi) array
 c
         ephi(0)=done
         ephi(1)=ephi1
-        ephi(-1)=dconjg(ephi1)
         d = r*rscale
         fr(0) = 1.0d0
         fr(1) = fr(0)*d
         do i=2,nterms+1
           fr(i) = fr(i-1)*d
           ephi(i)=ephi(i-1)*ephi1
-          ephi(-i)=dconjg(ephi(i))
         enddo
         frder(0) = 0
         do i=1,nterms
@@ -1306,10 +1287,10 @@ c
         phiz = 0.0d0
 
         do idim=1,nd
-          ur(idim) = mpole(idim,0,0)*frder(0)
+          ur(idim) = real(mpole(idim,0,0))*frder(0)
           utheta(idim) = 0.0d0
           uphi(idim) = 0.0d0
-          pot(idim,itarg) = pot(idim,itarg) + mpole(idim,0,0)*fr(0)
+          pot(idim,itarg) = pot(idim,itarg)+real(mpole(idim,0,0))*fr(0)
         enddo
 
         do n=1,nterms
@@ -1317,27 +1298,25 @@ c
           rtmp2 = frder(n)*ynm(n,0)
           rtmp3 = -fr(n)*ynmd(n,0)*stheta
           do idim=1,nd
-            pot(idim,itarg)=pot(idim,itarg)+mpole(idim,n,0)*rtmp1
-            ur(idim)=ur(idim)+mpole(idim,n,0)*rtmp2
-            utheta(idim)=utheta(idim)+mpole(idim,n,0)*rtmp3
+            pot(idim,itarg)=pot(idim,itarg)+real(mpole(idim,n,0))*rtmp1
+            ur(idim)=ur(idim)+real(mpole(idim,n,0))*rtmp2
+            utheta(idim)=utheta(idim)+real(mpole(idim,n,0))*rtmp3
           enddo
 
 	      do m=1,n
             rtmp1 = fr(n)*ynm(n,m)*stheta
             rtmp4 = frder(n)*ynm(n,m)*stheta
             rtmp5 = -fr(n)*ynmd(n,m)
-            ztmp6 = eye*m*fr(n)*ynm(n,m)
+            rtmp6 = -m*fr(n)*ynm(n,m)
 
             do idim=1,nd
-              ztmp2 = mpole(idim,n,m)*ephi(m) 
-              ztmp3 = mpole(idim,n,-m)*ephi(-m)
-              ztmpsum = ztmp2+ztmp3
+              rtmp2 = 2*real(mpole(idim,n,m)*ephi(m)) 
 
-              pot(idim,itarg)=pot(idim,itarg)+rtmp1*ztmpsum
-              ur(idim) = ur(idim) + rtmp4*ztmpsum
-              utheta(idim) = utheta(idim)+rtmp5*ztmpsum
-              ztmpsum = ztmp2 - ztmp3
-              uphi(idim) = uphi(idim) + ztmp6*ztmpsum
+              pot(idim,itarg)=pot(idim,itarg)+rtmp1*rtmp2
+              ur(idim) = ur(idim) + rtmp4*rtmp2
+              utheta(idim) = utheta(idim)+rtmp5*rtmp2
+              rtmp2 = 2*imag(mpole(idim,n,m)*ephi(m))
+              uphi(idim) = uphi(idim) + rtmp6*rtmp2
             enddo
           enddo
         enddo
@@ -1398,7 +1377,7 @@ c
       real *8 wlege(0:nlege,0:nlege)
       real *8 rscale
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
-      complex *16 charge(nd,ns)
+      real *8 charge(nd,ns)
 
 c
 cc       temporary variables
@@ -1543,7 +1522,7 @@ c
       real *8 wlege(0:nlege,0:nlege)
       real *8 rscale
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
-      complex *16 dipstr(nd,ns)
+      real *8 dipstr(nd,ns)
       real *8 dipvec(nd,3,ns)
 
 c
@@ -1743,7 +1722,7 @@ c
       real *8 wlege(0:nlege,0:nlege)
       real *8 rscale
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
-      complex *16 charge(nd,ns),dipstr(nd,ns)
+      real *8 charge(nd,ns),dipstr(nd,ns)
       real *8 dipvec(nd,3,ns)
 
 c
@@ -1962,7 +1941,7 @@ cc      calling sequence variables
 c  
       integer ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt)
-      complex *16 charge(nd,ns),pot(nd,nt)
+      real *8 charge(nd,ns),pot(nd,nt)
       real *8 thresh
       
 c
@@ -2046,7 +2025,7 @@ cc      calling sequence variables
 c  
       integer ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt)
-      complex *16 charge(nd,ns),pot(nd,nt),grad(nd,3,nt)
+      real *8 charge(nd,ns),pot(nd,nt),grad(nd,3,nt)
       real *8 thresh
       
 c
@@ -2139,7 +2118,7 @@ cc      calling sequence variables
 c  
       integer ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
-      complex *16 dipstr(nd,ns),pot(nd,nt)
+      real *8 dipstr(nd,ns),pot(nd,nt)
       real *8 thresh
       
 c
@@ -2238,7 +2217,7 @@ cc      calling sequence variables
 c  
       integer ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
-      complex *16 dipstr(nd,ns),pot(nd,nt),grad(nd,3,nt)
+      real *8 dipstr(nd,ns),pot(nd,nt),grad(nd,3,nt)
       real *8 thresh
       
 c
@@ -2344,7 +2323,7 @@ cc      calling sequence variables
 c  
       integer ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
-      complex *16 charge(nd,ns),dipstr(nd,ns),pot(nd,nt)
+      real *8 charge(nd,ns),dipstr(nd,ns),pot(nd,nt)
       real *8 thresh
       
 c
@@ -2450,7 +2429,7 @@ cc      calling sequence variables
 c  
       integer ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
-      complex *16 charge(nd,ns),dipstr(nd,ns),pot(nd,nt),grad(nd,3,nt)
+      real *8 charge(nd,ns),dipstr(nd,ns),pot(nd,nt),grad(nd,3,nt)
       real *8 thresh
       
 c

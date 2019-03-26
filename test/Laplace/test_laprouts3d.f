@@ -32,10 +32,10 @@ c
       real *8 xnodes(2000),wts(2000)
       real *8, allocatable :: dc(:,:)
 c
-      complex *16 pot,fld(3),opot,ofld(3)
+      real *8 pot,fld(3),opot,ofld(3)
       complex *16, allocatable :: mpole1(:,:),mpole2(:,:)
       complex *16, allocatable :: locexp1(:,:),locexp2(:,:)
-      complex *16 charge(100),dipstr(100)
+      real *8 charge(100),dipstr(100)
       real *8 dipvec(3,100),wlege(100000)
       complex *16 eye
 c
@@ -66,8 +66,8 @@ c
       sources(1,1)=c0(1)+0.24d0
       sources(2,1)=c0(2)+ 0.25d0
       sources(3,1)=c0(3)+ 0.25d0
-      charge(1)= 1.0d0 + eye*0.2d0
-      dipstr(1)= hkrand(0) + eye*hkrand(0)
+      charge(1)= 1.0d0 
+      dipstr(1)= hkrand(0) 
       dipvec(1,1) = hkrand(0)
       dipvec(2,1) = hkrand(0)
       dipvec(3,1) = hkrand(0)
@@ -77,8 +77,8 @@ c
       sources(1,2)=c0(1)+0.25d0
       sources(2,2)=c0(2)-0.25d0
       sources(3,2)=c0(3)-0.25d0
-      charge(2)= -1.0d0 + eye*0.1d0
-      dipstr(2) = hkrand(0) + eye*hkrand(0)
+      charge(2)= -1.0d0  
+      dipstr(2) = hkrand(0)
       dipvec(1,2) = hkrand(0)
       dipvec(2,2) = hkrand(0)
       dipvec(3,2) = hkrand(0)
@@ -318,7 +318,7 @@ c
 c
       subroutine errprint(pot,opot,fld,ofld)
       implicit real *8 (a-h,o-z)
-      complex *16 pot,opot,fld(3),ofld(3)
+      real *8 pot,opot,fld(3),ofld(3)
  1000  format(4D15.5) 
       err = 0
       ddd = 0
