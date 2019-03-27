@@ -162,11 +162,11 @@ c***********************************************************************
       enddo
 
       next = 1
-      do 1600 i=1,nlambs
+      do i=1,nlambs
 	    nalpha = numphys(i)
         halpha=2*pi/nalpha
-	    do 1400 mm = 2,numfour(i)
-          do 1200 j=1,nalpha
+	    do mm = 2,numfour(i)
+          do j=1,nalpha
             alpha=(j-1)*halpha
             fexpback(next)  = cdexp(-ima*(mm-1)*alpha)
 	        next = next + 1
@@ -441,21 +441,23 @@ c        Add contributions to local expansion
             dtmp = rlsc(nm,mth,nl)*whts(nl)
             do idim=1,nd
               local(idim,nm,mth) = local(idim,nm,mth)+
-     1          (lexp1f(ncurrent)+lexp2f(ncurrent))*dtmp
+     1          (lexp1f(idim,ncurrent)+lexp2f(idim,ncurrent))*dtmp
             enddo
-         enddo
-         do nm=1,nterms,2
-           mmax = numtets(nl) - 1
-           if(mmax.gt.nm) mmax = nm
-           do mth =0,mmax
-             ncurrent = ntot+mth
-             dtmp = -rlsc(nm,mth,nl)*whts(nl)
-             do idim=1,nd
-               local(idim,nm,mth) = local(idim,nm,mth)+
-     1          (lexp1f(ncurrent)-lexp2f(ncurrent))*dtmp
+          enddo
+        enddo
+        do nm=1,nterms,2
+          mmax = numtets(nl) - 1
+          if(mmax.gt.nm) mmax = nm
+          do mth =0,mmax
+            ncurrent = ntot+mth
+            dtmp = -rlsc(nm,mth,nl)*whts(nl)
+            do idim=1,nd
+              local(idim,nm,mth) = local(idim,nm,mth)+
+     1          (lexp1f(idim,ncurrent)-lexp2f(idim,ncurrent))*dtmp
             enddo
-         enddo
-         ntot = ntot + numtets(nl)
+          enddo
+        enddo
+        ntot = ntot + numtets(nl)
       enddo
 
       do nm=0,nterms
@@ -544,7 +546,7 @@ c
           mexpf(idim,nftot+1) = mexpf(idim,nftot+1)/nalpha
         enddo
         do mm = 2,numfour(i)
-          mexpf(nftot+mm) = 0.0d0
+          mexpf(idim,nftot+mm) = 0.0d0
           do ival=1,nalpha
             do idim=1,nd
               mexpf(idim,nftot+mm) = mexpf(idim,nftot+mm)+
@@ -640,7 +642,7 @@ c
           enddo
           do mm = 3,numfour(i),2
             do idim=1,nd
-              rtmp = 2*real(fexpo(nexto)*mexpf(nftot+mm))
+              rtmp = 2*real(fexpo(nexto)*mexpf(idim,nftot+mm))
               mexpphys(idim,nptot+ival) = mexpphys(idim,nptot+ival) +
      1                rtmp
             enddo
@@ -1279,7 +1281,7 @@ c      add contributions due to child 3
           rtmp = 1/zs(1,i)
           do idim=1,nd
             mexpupphys(idim,i)  = (mexpnall(idim,i)+mexpn34(idim,i)+
-               mexpn3478(idim,i))*zs(1,i)
+     1          mexpn3478(idim,i))*zs(1,i)
             mexpdownphys(idim,i) = mexpsall(idim,i)*rtmp
           enddo
         enddo
@@ -1310,7 +1312,7 @@ c      add contributions due to child 4
           ztmp2 = ys(-1,i)/zs(1,i)
           do idim=1,nd
             mexpupphys(idim,i)  = (mexpnall(idim,i)+mexpn34(idim,i)+
-              mexpn3478(idim,i))*ztmp
+     1         mexpn3478(idim,i))*ztmp
             mexpdownphys(idim,i) = mexpsall(idim,i)*ztmp2
           enddo
         enddo
@@ -1401,7 +1403,7 @@ c      add contributions due to child 7
           ztmp2 = xs(-1,i)/zs(1,i)
           do idim=1,nd
             mexpupphys(idim,i)  = (mexpnall(idim,i)+mexpn78(idim,i)+
-               mexpn3478(idim,i))*ztmp
+     1          mexpn3478(idim,i))*ztmp
             mexpdownphys(idim,i) = mexpsall(idim,i)*ztmp2      
           enddo
         enddo
@@ -1431,7 +1433,7 @@ c      add contributions due to child 8
           ztmp2 = ys(-1,i)*xs(-1,i)/zs(1,i)
           do idim=1,nd
             mexpupphys(idim,i)  = (mexpnall(idim,i)+mexpn78(idim,i)+
-              mexpn3478(idim,i))*ztmp
+     1         mexpn3478(idim,i))*ztmp
             mexpdownphys(idim,i) = mexpsall(idim,i)*ztmp2      
           enddo
         enddo
@@ -1790,7 +1792,7 @@ c      add contributions due to child 1
           do idim=1,nd
             mexpupphys(idim,i)  = mexpeall(idim,i)
             mexpdownphys(idim,i) = mexpwall(idim,i)+mexpw1357(idim,i)+
-              mexpw13(idim,i)+mexpw1(idim,i)
+     1         mexpw13(idim,i)+mexpw1(idim,i)
           enddo
         enddo
 
@@ -2004,7 +2006,7 @@ c      add contributions due to child 8
           ztmp2 = xs(1,i)*ys(-1,i)/zs(1,i)
           do idim=1,nd
             mexpupphys(idim,i)  = (mexpeall(idim,i)+mexpe2468(idim,i)+
-              mexpe68(idim,i)+mexpe8(idim,i))*ztmp      
+     1         mexpe68(idim,i)+mexpe8(idim,i))*ztmp      
             mexpdownphys(idim,i) = mexpwall(idim,i)*ztmp2
           enddo
         enddo
