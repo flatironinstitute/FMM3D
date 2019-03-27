@@ -572,12 +572,14 @@ c     Set up computation of list1 and list2
       call computecoll(nlevels,nboxes,laddr,boxsize,centers,
      1     iparenttemp,nchild,ichildtemp,mnbors,nnbors,nbors)
 
+      if(nlevels.ge.2) then
       call d3hpfixtree(src,ns,radsrc,trg,nt,expc,nexpc,radexp,
      1     nlevels,nboxes,centers,boxsize,nbmax,laddr,ilevel,
      2     iparenttemp,nchild,ichildtemp,mnbors,nnbors,nbors,
      3     isourcetemp,itargettemp,iexpctemp,ihsfirsttemp,ihslasttemp,
      4     isfirsttemp,islasttemp,itfirsttemp,itlasttemp,ihefirsttemp,
      5     ihelasttemp,iefirsttemp,ielasttemp,nhungsrc,nhungexp)
+      endif
  
       
 C$OMP PARALLEL DO DEFAULT(SHARED)
@@ -1945,12 +1947,14 @@ c     Set up computation of list1 and list2
       call computecoll(nlevels,nboxes,laddr,boxsize,centers,
      1     iparenttemp,nchild,ichildtemp,mnbors,nnbors,nbors)
 
+      if(nlevels.ge.2) then
       call d3hpfixtree(src,ns,radsrc,trg,nt,expc,nexpc,radexp,
      1     nlevels,nboxes,centers,boxsize,nbmax,laddr,ilevel,
      2     iparenttemp,nchild,ichildtemp,mnbors,nnbors,nbors,
      3     isourcetemp,itargettemp,iexpctemp,ihsfirsttemp,ihslasttemp,
      4     isfirsttemp,islasttemp,itfirsttemp,itlasttemp,ihefirsttemp,
      5     ihelasttemp,iefirsttemp,ielasttemp,nhungsrc,nhungexp)
+      endif
 
 
       do i=1,nboxes
