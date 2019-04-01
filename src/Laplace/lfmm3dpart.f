@@ -760,8 +760,6 @@ cc    compute array of factorials
 
       call prin2('end of generating plane wave info*',i,0)
 
-
-
       
 c     ifprint is an internal information printing flag. 
 c     Suppressed if ifprint=0.
