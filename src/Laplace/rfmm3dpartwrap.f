@@ -38,6 +38,7 @@ cf2py  intent(out) pot
       call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
+      call prin2('pot=*',pot,24)
 
       return
       end

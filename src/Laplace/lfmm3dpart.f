@@ -384,7 +384,7 @@ C$OMP END PARALLEL DO
 c     Compute length of expansions at each level      
       nmax = 0
       do i=0,nlevels
-         call l3dterms(epsfmm,nterms(i))
+         call l3dterms(eps,nterms(i))
          if(nterms(i).gt.nmax) nmax = nterms(i)
       enddo
 c       
@@ -454,6 +454,7 @@ C$      time1=omp_get_wtime()
      $   ifpgh,potsort,gradsort,hesssort,
      $   ifpghtarg,pottargsort,gradtargsort,hesstargsort,ntj,
      $   texpssort,scjsort)
+
 
       time2=second()
 C$        time2=omp_get_wtime()
@@ -1156,6 +1157,9 @@ c
          do i=1,nterms(ilev)
             rscpow(i) = rscpow(i-1)*rtmp
          enddo
+         call prinf('ilev=*',ilev,1)
+         call prin2('rscales=*',rscales,nlevels+1)
+         call prin2('rscpow=*',rscpow,nterms+1)
 
 C$OMP PARALLEL DO DEFAULT (SHARED)
 C$OMP$PRIVATE(ibox,istart,iend,npts,nchild)
@@ -1206,7 +1210,7 @@ C$OMP$PRIVATE(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
      5         mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1,1),
      6         mexppall(1,1,2),mexppall(1,1,3),mexppall(1,1,4),xshift,
      7         yshift,zshift,fexpback,rlsc,rscpow)
-
+               
                call processnsexp(nd,ibox,ilev,nboxes,centers,
      1         itree(ipointer(4)),rscales(ilev),nterms(ilev),
      2         iaddr,rmlexp,rlams,whts,
@@ -1352,6 +1356,7 @@ C$OMP$SCHEDULE(DYNAMIC)
 
             do i=1,nlist3
               jbox = itree(ipointer(25)+(ibox-1)*mnlist3+i-1)
+              call prinm(rmlexp(iaddr(1,jbox)),nterms(ilev+1))
               call l3dmpevalp(nd,rscales(ilev+1),centers(1,jbox),
      1          rmlexp(iaddr(1,jbox)),nterms(ilev+1),
      2          sourcesort(1,istart),npts,pot(1,istart),wlege,nlege,
@@ -1415,6 +1420,7 @@ C$OMP$SCHEDULE(DYNAMIC)
         endif
 C$OMP END PARALLEL DO
       enddo
+
 
       time2 = second()
 C$        time2=omp_get_wtime()
@@ -1558,6 +1564,8 @@ C$OMP$PRIVATE(jstart,jend)
 
                jstart = itree(ipointer(10)+jbox-1)
                jend = itree(ipointer(11)+jbox-1)
+
+               call prinf('nexpc=*',nexpc,1)
 
                call lfmm3dexpc_direct(nd,jstart,jend,istarte,
      1         iende,sourcesort,ifcharge,chargesort,ifdipole,
@@ -1928,6 +1936,7 @@ c
         
 c
         ns = iend - istart + 1
+        call prin2
         if(ifcharge.eq.1.and.ifdipole.eq.0) then
           do j=jstart,jend
             call l3dformtac(nd,scj(j),

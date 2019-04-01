@@ -20,8 +20,8 @@ cc      initialize printing routine
 c
       call prini(6,13)
 
-      ns = 2000
-      nt = 2000
+      ns = 200
+      nt = 200
       
       ntest = 10
 
@@ -81,8 +81,8 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstoscp(eps,ns,source,charge,
-     1      pot)
+       call rfmm3dpartstoscp(eps,ns,source,charge,pot)
+
 
        ifcharge = 1
        ifdipole = 0
@@ -159,6 +159,7 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+       stop
 
 
 c
