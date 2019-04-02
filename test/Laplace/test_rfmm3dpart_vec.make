@@ -55,8 +55,8 @@ SOURCES =  test_rfmm3dpart_vec.f \
   rotviarecur.f \
   yrecursion.f \
   l3dterms.f \
-  l3dtrans_vec.f \
-  laprouts3d_vec.f \
+  l3dtrans.f \
+  laprouts3d.f \
   lfmm3dpart.f \
   rfmm3dpartwrap_vec.f \
   lpwrouts.f \
