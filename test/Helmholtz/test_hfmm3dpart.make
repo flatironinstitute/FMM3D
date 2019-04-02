@@ -50,7 +50,6 @@ SOURCES =  test_hfmm3dpart.f \
   hkrand.f \
   prini.f \
   rotgen.f \
-  rotgen2.f \
   legeexps.f \
   rotviarecur.f \
   yrecursion.f \

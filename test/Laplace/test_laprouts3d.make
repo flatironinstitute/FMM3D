@@ -50,13 +50,12 @@ SOURCES =  test_laprouts3d.f \
   hkrand.f \
   prini.f \
   rotgen.f \
-  rotgen2.f \
   legeexps.f \
   rotviarecur.f \
   yrecursion.f \
   l3dterms.f \
-  l3dtrans_vec.f \
-  laprouts3d_vec.f \
+  l3dtrans.f \
+  laprouts3d.f \
   rotproj.f \
   dfft.f \
   fmmcommon.f \

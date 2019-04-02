@@ -676,7 +676,7 @@ c     Initialize routines for plane wave mp loc translation
 
 
 c     generate rotation matrices and carray
-      call rotgen(nmax,carray,rdplus,rdminus,rdsq3,rdmsq3,dc)
+      call getpwrotmat(nmax,carray,rdplus,rdminus,rdsq3,rdmsq3,dc)
 
 
 c     generate rlams and weights (these are the nodes

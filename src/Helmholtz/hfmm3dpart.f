@@ -1043,7 +1043,7 @@ c
             allocate(rdmsq3(0:nn,0:nn,-nn:nn))
 
 c     generate rotation matrices and carray
-            call rotgen(nn,carray,rdplus,rdminus,rdsq3,rdmsq3,dc)
+            call getpwrotmat(nn,carray,rdplus,rdminus,rdsq3,rdmsq3,dc)
 
 
             call rlscini(rlsc,nlams,rlams,zk2,nterms(ilev))
