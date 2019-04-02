@@ -26,7 +26,6 @@ cf2py  intent(out) pot
       double precision hess(nd,6),hesstarg(nd,6)
 
 
-      nd = 1
       ifcharge = 1
       ifdipole = 0
       
@@ -68,7 +67,6 @@ cf2py  intent(out) pot,grad
 
       double precision hess(nd,6),hesstarg(nd,6)
 
-      nd = 1
       ifcharge = 1
       ifdipole = 0
       
@@ -114,7 +112,6 @@ cf2py  intent(out) pot
       double precision grad(nd,3),gradtarg(nd,3)
       double precision hess(nd,6),hesstarg(nd,6)
 
-      nd = 1
       ifcharge = 0
       ifdipole = 1
       
@@ -157,7 +154,6 @@ cf2py  intent(out) pot,grad
 
       double precision hess(nd,6),hesstarg(nd,6)
 
-      nd = 1
       ifcharge = 0
       ifdipole = 1
       
@@ -200,7 +196,7 @@ cf2py  intent(out) pot
       double precision grad(nd,3),gradtarg(nd,3)
       double precision hess(nd,6),hesstarg(nd,6)
 
-      nd = 1
+      
       ifcharge = 1
       ifdipole = 1
       
@@ -246,7 +242,7 @@ cf2py  intent(out) pot,grad
 
       double precision hess(nd,6),hesstarg(nd,6)
 
-      nd = 1
+      
       ifcharge = 1
       ifdipole = 1
       
@@ -290,7 +286,7 @@ cf2py  intent(out) pottarg
       double precision grad(nd,3),gradtarg(nd,3)
       double precision hess(nd,6),hesstarg(nd,6)
 
-      nd = 1
+      
       ifcharge = 1
       ifdipole = 0
       
@@ -332,7 +328,7 @@ cf2py  intent(out) pottarg,gradtarg
 
       double precision hess(nd,6),hesstarg(nd,6)
 
-      nd = 1
+      
       ifcharge = 1
       ifdipole = 0
       
@@ -374,7 +370,7 @@ cf2py  intent(out) pottarg
       double precision grad(nd,3),gradtarg(nd,3)
       double precision hess(nd,6),hesstarg(nd,6)
 
-      nd = 1
+      
       ifcharge = 0
       ifdipole = 1
       
@@ -416,7 +412,7 @@ cf2py  intent(out) pottarg,gradtarg
 
       double precision hess(nd,6),hesstarg(nd,6)
 
-      nd = 1
+      
       ifcharge = 0
       ifdipole = 1
       
@@ -457,7 +453,7 @@ cf2py  intent(out) pottarg
       double precision grad(nd,3),gradtarg(nd,3)
       double precision hess(nd,6),hesstarg(nd,6)
 
-      nd = 1
+      
       ifcharge = 1
       ifdipole = 1
       
@@ -499,7 +495,7 @@ cf2py  intent(out) pottarg,gradtarg
 
       double precision hess(nd,6),hesstarg(nd,6)
 
-      nd = 1
+      
       ifcharge = 1
       ifdipole = 1
       
@@ -541,7 +537,7 @@ cf2py  intent(out) pottarg
       double precision grad(nd,3),gradtarg(nd,3)
       double precision hess(nd,6),hesstarg(nd,6)
 
-      nd = 1
+      
       ifcharge = 1
       ifdipole = 0
       
@@ -583,7 +579,7 @@ cf2py  intent(out) pottarg,gradtarg
 
       double precision hess(nd,6),hesstarg(nd,6)
 
-      nd = 1
+      
       ifcharge = 1
       ifdipole = 0
       
@@ -627,7 +623,7 @@ cf2py  intent(out) pottarg
       double precision grad(nd,3),gradtarg(nd,3)
       double precision hess(nd,6),hesstarg(nd,6)
 
-      nd = 1
+      
       ifcharge = 0
       ifdipole = 1
       
@@ -670,7 +666,7 @@ cf2py  intent(out) pottarg,gradtarg
 
       double precision hess(nd,6),hesstarg(nd,6)
 
-      nd = 1
+      
       ifcharge = 0
       ifdipole = 1
       
@@ -712,7 +708,7 @@ cf2py  intent(out) pottarg
       double precision grad(nd,3),gradtarg(nd,3)
       double precision hess(nd,6),hesstarg(nd,6)
 
-      nd = 1
+      
       ifcharge = 1
       ifdipole = 1
       
@@ -754,7 +750,7 @@ cf2py  intent(out) pottarg,gradtarg
 
       double precision hess(nd,6),hesstarg(nd,6)
 
-      nd = 1
+      
       ifcharge = 1
       ifdipole = 1
       

@@ -5,6 +5,7 @@ import numpy as np
 
 
 n = 2000
+nd = 1
 sources = np.random.uniform(0,1,(3,n))
 eps = 10**(-5)
 
