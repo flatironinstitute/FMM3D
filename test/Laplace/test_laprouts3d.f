@@ -52,6 +52,9 @@ c
       rscale1 = bsize/4
       rscale2 = bsize/2
 
+      rscale1 = hkrand(0)
+      rscale2 = rscale1*2
+
 cc      rscale1 = 1
 cc      rscale2 = 1
 c
@@ -213,6 +216,9 @@ c
       call prinf('nterms3=*',nterms3,1)
       call prinf('nn=*',nn,1)
 
+      call prin2('rscale2=*',rscale2,1)
+      call prin2('rscale1=*',rscale1,1)
+
       call l3dlocloc(nd,rscale2,c2,locexp2,nterms2,
      1      rscale1,c3,locexp1,nterms3,dc,nn)
 
@@ -250,67 +256,6 @@ c    create local exp from sources
       stop
       end
 c
-c
-c
-c
-c
-C
-C
-      SUBROUTINE PRINM(MPOLE,NTERMS)
-      implicit real *8 (a-h,o-z)
-      real *8 MPOLE0(0:NTERMS,-nterms:NTERMS)
-      real *8 MPOLE2(0:NTERMS,0:NTERMS)
-      COMPLEX *16 MPOLE(0:NTERMS,-nterms:NTERMS)
-      INTEGER NTERMS
-C
-C     print out coefficients of multipole expansion
-C
-1000  FORMAT(6E12.5)
-1001  FORMAT(/)
-      DO 100 L = 0,NTERMS
-         WRITE(6,1000)(MPOLE(L,M),M=-L,L)
-         WRITE(13,1000)(MPOLE(L,M),M=-L,L)
-         WRITE(6,1001)
-         WRITE(13,1001)
-100   CONTINUE
-        return
-C
-C
-C
-C
-      ENTRY PRINM_TRUNC(MPOLE,NTERMS,NP)
-      DO L = 0,NP
-         WRITE(6,1000)(MPOLE(L,M),M=-L,L)
-         WRITE(13,1000)(MPOLE(L,M),M=-L,L)
-         WRITE(6,1001)
-         WRITE(13,1001)
-      ENDDO
-      RETURN
-C
-C
-C
-C
-      ENTRY PRINM0(MPOLE0,NTERMS)
-      DO 200 L = 0,NTERMS
-         WRITE(6,1000)(MPOLE0(L,M),M=-L,L)
-         WRITE(13,1000)(MPOLE0(L,M),M=-L,L)
-         WRITE(6,1001)
-         WRITE(13,1001)
-200   CONTINUE
-      RETURN
-C
-C
-      ENTRY PRINM2(MPOLE2,NTERMS)
-      DO L = 0,NTERMS
-         WRITE(6,1000)(MPOLE2(L,M),M=0,L)
-         WRITE(13,1000)(MPOLE2(L,M),M=0,L)
-         WRITE(6,1001)
-         WRITE(13,1001)
-      ENDDO
-c
-c
-      RETURN
-      end
 c
 c
 c

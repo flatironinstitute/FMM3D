@@ -34,8 +34,8 @@ c
       complex *16 pot,fld(3),opot,ofld(3)
       complex *16, allocatable :: mpole1(:,:),mpole2(:,:)
       complex *16, allocatable :: locexp1(:,:),locexp2(:,:)
-      complex *16 charge(100),dipstr(100)
-      real *8 dipvec(3,100),wlege(100000)
+      complex *16 charge(100),dipstr(100),dipvec(3,100)
+      real *8 wlege(100000)
       complex *16 zk,eye
 c
       data eye/(0.0d0,1.0d0)/
@@ -254,62 +254,6 @@ c
 c
 C
 C
-      SUBROUTINE PRINM(MPOLE,NTERMS)
-      implicit real *8 (a-h,o-z)
-      real *8 MPOLE0(0:NTERMS,-nterms:NTERMS)
-      real *8 MPOLE2(0:NTERMS,0:NTERMS)
-      COMPLEX *16 MPOLE(0:NTERMS,-nterms:NTERMS)
-      INTEGER NTERMS
-C
-C     print out coefficients of multipole expansion
-C
-1000  FORMAT(6E12.5)
-1001  FORMAT(/)
-      DO 100 L = 0,NTERMS
-         WRITE(6,1000)(MPOLE(L,M),M=-L,L)
-         WRITE(13,1000)(MPOLE(L,M),M=-L,L)
-         WRITE(6,1001)
-         WRITE(13,1001)
-100   CONTINUE
-        return
-C
-C
-C
-C
-      ENTRY PRINM_TRUNC(MPOLE,NTERMS,NP)
-      DO L = 0,NP
-         WRITE(6,1000)(MPOLE(L,M),M=-L,L)
-         WRITE(13,1000)(MPOLE(L,M),M=-L,L)
-         WRITE(6,1001)
-         WRITE(13,1001)
-      ENDDO
-      RETURN
-C
-C
-C
-C
-      ENTRY PRINM0(MPOLE0,NTERMS)
-      DO 200 L = 0,NTERMS
-         WRITE(6,1000)(MPOLE0(L,M),M=-L,L)
-         WRITE(13,1000)(MPOLE0(L,M),M=-L,L)
-         WRITE(6,1001)
-         WRITE(13,1001)
-200   CONTINUE
-      RETURN
-C
-C
-      ENTRY PRINM2(MPOLE2,NTERMS)
-      DO L = 0,NTERMS
-         WRITE(6,1000)(MPOLE2(L,M),M=0,L)
-         WRITE(13,1000)(MPOLE2(L,M),M=0,L)
-         WRITE(6,1001)
-         WRITE(13,1001)
-      ENDDO
-c
-c
-      RETURN
-      end
-
       subroutine errprint(pot,opot,fld,ofld)
       implicit real *8 (a-h,o-z)
       complex *16 pot,opot,fld(3),ofld(3)

@@ -1903,6 +1903,16 @@ c     initialize itargettemp
       itfirsttemp(1) = 1
       itlasttemp(1) = nt
 
+      nchild(1) = 0
+      ichildtemp(1,1) = -1
+      ichildtemp(2,1) = -1
+      ichildtemp(3,1) = -1
+      ichildtemp(4,1) = -1
+      ichildtemp(5,1) = -1
+      ichildtemp(6,1) = -1
+      ichildtemp(7,1) = -1
+      ichildtemp(8,1) = -1
+c
       nlevels = 0
       nboxes = 1
 c

@@ -117,7 +117,9 @@ c
           ys(-4,ncurrent) = exp(-ima*rlams(nl)*4.0d0*sin(u))
           ys(-5,ncurrent) = exp(-ima*rlams(nl)*5.0d0*sin(u))
         enddo
+        ntot = ntot + numphys(nl)
       enddo
+
       return
       end
 c***********************************************************************
@@ -481,7 +483,7 @@ c------------------------------------------------
       double complex mexpf(nd,*)
       double complex mexpphys(nd,*),ima
       double complex fexpback(*)
-      double precision alphas(0:100)
+      double precision alphas(0:100),hh
       integer  nlambs,numfour(nlambs),numphys(nlambs),nthmax
       data ima/(0.0d0,1.0d0)/
 c
@@ -526,7 +528,8 @@ c
       next  = 1
       do i=1,nlambs
         nalpha = numphys(i)
-        halpha=2*pi/nalpha
+        hh = 1.0d0/nalpha
+        halpha=2*pi*hh
         do j=1,nalpha
           alphas(j)=(j-1)*halpha
         enddo
@@ -538,25 +541,20 @@ c
         do ival=1,nalpha
           do idim=1,nd
             mexpf(idim,nftot+1) = mexpf(idim,nftot+1) + 
-     1          mexpphys(idim,nptot+ival) 
+     1          mexpphys(idim,nptot+ival)*hh 
           enddo
         enddo
 
-        do idim=1,nd
-          mexpf(idim,nftot+1) = mexpf(idim,nftot+1)/nalpha
-        enddo
         do mm = 2,numfour(i)
-          mexpf(idim,nftot+mm) = 0.0d0
+          do idim=1,nd
+            mexpf(idim,nftot+mm) = 0.0d0 
+          enddo
           do ival=1,nalpha
             do idim=1,nd
               mexpf(idim,nftot+mm) = mexpf(idim,nftot+mm)+
-     1          fexpback(next)*mexpphys(idim,nptot+ival)
+     1          fexpback(next)*mexpphys(idim,nptot+ival)*hh
             enddo
             next = next+1
-          enddo
-
-          do idim=1,nd
-            mexpf(idim,nftot+mm) = mexpf(idim,nftot+mm)/nalpha
           enddo
         enddo
         nftot = nftot+numfour(i)
@@ -900,7 +898,7 @@ c      add contributions due to child 5
       if(jbox.gt.0) then
 
         do i=1,nexptotp
-          rtmp = 1/zs(1,i)
+          rtmp = 1.0d0/zs(1,i)
           do idim=1,nd
             mexpupphys(idim,i)  = (mexpuall(idim,i)+
      1           mexpu5678(idim,i))*zs(1,i)
@@ -1004,6 +1002,7 @@ c      add contributions due to child 8
  
         call phystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
+
 
         call exptolocal(nd,tloc,nterms,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
@@ -1237,7 +1236,7 @@ c      add contributions due to child 1
 
         call rotytoz(nd,nterms,tloc,tloc2,rdplus)
 
-        call mpscale(nd,nterms,tloc2,rscpow,tloc)
+        call mpscale(nd,nterms,tloc2,rscpow,tloc2)
         call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
       endif
@@ -1267,7 +1266,7 @@ c      add contributions due to child 2
 
         call rotytoz(nd,nterms,tloc,tloc2,rdplus)
 
-        call mpscale(nd,nterms,tloc2,rscpow,tloc)
+        call mpscale(nd,nterms,tloc2,rscpow,tloc2)
         call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
 
@@ -1298,7 +1297,7 @@ c      add contributions due to child 3
 
         call rotytoz(nd,nterms,tloc,tloc2,rdplus)
 
-        call mpscale(nd,nterms,tloc2,rscpow,tloc)
+        call mpscale(nd,nterms,tloc2,rscpow,tloc2)
         call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
       endif
@@ -1329,7 +1328,7 @@ c      add contributions due to child 4
 
         call rotytoz(nd,nterms,tloc,tloc2,rdplus)
 
-        call mpscale(nd,nterms,tloc2,rscpow,tloc)
+        call mpscale(nd,nterms,tloc2,rscpow,tloc2)
         call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
       endif
@@ -1358,7 +1357,7 @@ c      add contributions due to child 5
 
         call rotytoz(nd,nterms,tloc,tloc2,rdplus)
 
-        call mpscale(nd,nterms,tloc2,rscpow,tloc)
+        call mpscale(nd,nterms,tloc2,rscpow,tloc2)
         call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
       endif
@@ -1389,7 +1388,7 @@ c      add contributions due to child 6
 
         call rotytoz(nd,nterms,tloc,tloc2,rdplus)
 
-        call mpscale(nd,nterms,tloc2,rscpow,tloc)
+        call mpscale(nd,nterms,tloc2,rscpow,tloc2)
         call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
       endif
 
@@ -1420,7 +1419,7 @@ c      add contributions due to child 7
 
         call rotytoz(nd,nterms,tloc,tloc2,rdplus)
 
-        call mpscale(nd,nterms,tloc2,rscpow,tloc)
+        call mpscale(nd,nterms,tloc2,rscpow,tloc2)
         call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
       endif
 
@@ -1451,7 +1450,7 @@ c      add contributions due to child 8
         call rotytoz(nd,nterms,tloc,tloc2,rdplus)
 
 
-        call mpscale(nd,nterms,tloc2,rscpow,tloc)
+        call mpscale(nd,nterms,tloc2,rscpow,tloc2)
         call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
       endif
 
@@ -1809,7 +1808,7 @@ c      add contributions due to child 1
 
         call rotztox(nd,nterms,tloc,tloc2,rdminus)
 
-        call mpscale(nd,nterms,tloc2,rscpow,tloc)
+        call mpscale(nd,nterms,tloc2,rscpow,tloc2)
         call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
       endif
@@ -1842,7 +1841,7 @@ c      add contributions due to child 2
 
         call rotztox(nd,nterms,tloc,tloc2,rdminus)
 
-        call mpscale(nd,nterms,tloc2,rscpow,tloc)
+        call mpscale(nd,nterms,tloc2,rscpow,tloc2)
         call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
       endif
@@ -1871,7 +1870,7 @@ c      add contributions due to child 3
 
         call rotztox(nd,nterms,tloc,tloc2,rdminus)
 
-        call mpscale(nd,nterms,tloc2,rscpow,tloc)
+        call mpscale(nd,nterms,tloc2,rscpow,tloc2)
         call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
       endif
@@ -1902,7 +1901,7 @@ c      add contributions due to child 4
 
         call rotztox(nd,nterms,tloc,tloc2,rdminus)
 
-        call mpscale(nd,nterms,tloc2,rscpow,tloc)
+        call mpscale(nd,nterms,tloc2,rscpow,tloc2)
         call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
       endif
@@ -1931,7 +1930,7 @@ c      add contributions due to child 5
 
         call rotztox(nd,nterms,tloc,tloc2,rdminus)
 
-        call mpscale(nd,nterms,tloc2,rscpow,tloc)
+        call mpscale(nd,nterms,tloc2,rscpow,tloc2)
         call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
       endif
 
@@ -1961,7 +1960,7 @@ c      add contributions due to child 6
 
         call rotztox(nd,nterms,tloc,tloc2,rdminus)
 
-        call mpscale(nd,nterms,tloc2,rscpow,tloc)
+        call mpscale(nd,nterms,tloc2,rscpow,tloc2)
         call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
       endif
 
@@ -1992,7 +1991,7 @@ c      add contributions due to child 7
 
         call rotztox(nd,nterms,tloc,tloc2,rdminus)
 
-        call mpscale(nd,nterms,tloc2,rscpow,tloc)
+        call mpscale(nd,nterms,tloc2,rscpow,tloc2)
         call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
       endif
@@ -2023,7 +2022,7 @@ c      add contributions due to child 8
 
         call rotztox(nd,nterms,tloc,tloc2,rdminus)
 
-        call mpscale(nd,nterms,tloc2,rscpow,tloc)
+        call mpscale(nd,nterms,tloc2,rscpow,tloc2)
         call mpadd(nd,tloc2,rmlexp(iaddr(2,jbox)),nterms)
 
       endif

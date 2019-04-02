@@ -218,6 +218,7 @@ cc     memory management code for contructing level restricted tree
      3        mnlist4,mhung,ltree)
 
 
+
         if(iert.ne.0) then
            call prin2('Error in allocating tree memory, ier=*',ier,1)
            stop
@@ -439,7 +440,6 @@ c
 c     Memory allocation is complete. 
 c     Call main fmm routine
 
-
       time1=second()
 C$      time1=omp_get_wtime()
       call lfmm3dmain(nd,eps,
@@ -454,7 +454,6 @@ C$      time1=omp_get_wtime()
      $   ifpgh,potsort,gradsort,hesssort,
      $   ifpghtarg,pottargsort,gradtargsort,hesstargsort,ntj,
      $   texpssort,scjsort)
-
 
       time2=second()
 C$        time2=omp_get_wtime()
@@ -676,9 +675,8 @@ c     Initialize routines for plane wave mp loc translation
       allocate(rlsc(0:nmax,0:nmax,nlams))
 
 
-
 c     generate rotation matrices and carray
-      call rotgen(nterms,carray,rdplus,rdminus,rdsq3,rdmsq3,dc)
+      call rotgen(nmax,carray,rdplus,rdminus,rdsq3,rdmsq3,dc)
 
 
 c     generate rlams and weights (these are the nodes
@@ -743,23 +741,18 @@ cc    compute array of factorials
       d = 1
       fact(0) = d
       do i=1,nmax2
-
-      d=d*sqrt(i+0.0d0)
-      fact(i) = d
-
+        d=d*sqrt(i+0.0d0)
+        fact(i) = d
       enddo
 
       cs(0,0) = 1.0d0
       do l=1,nmax
-      do m=0,l
-
-      cs(l,m) = ((-1)**l)/(fact(l-m)*fact(l+m))
-      cs(l,-m) = cs(l,m)
-
-      enddo
+        do m=0,l
+          cs(l,m) = ((-1)**l)/(fact(l-m)*fact(l+m))
+          cs(l,-m) = cs(l,m)
+        enddo
       enddo
 
-      call prin2('end of generating plane wave info*',i,0)
 
       
 c     ifprint is an internal information printing flag. 
@@ -768,7 +761,9 @@ c     Prints timing breakdown and other things if ifprint=1.
 c     Prints timing breakdown, list information, 
 c     and other things if ifprint=2.
 c       
-        ifprint=1
+      ifprint=0
+      if(ifprint.ge.1) 
+     1   call prin2('end of generating plane wave info*',i,0)
 c
 c
 c     ... set the expansion coefficients to zero
@@ -1090,6 +1085,8 @@ C$OMP$PRIVATE(ii,jj)
 
             npts = iend-istart+1
 
+
+
             if(npts.gt.0) then
 c            rescale the multipole expansion
 
@@ -1157,10 +1154,6 @@ c
          do i=1,nterms(ilev)
             rscpow(i) = rscpow(i-1)*rtmp
          enddo
-         call prinf('ilev=*',ilev,1)
-         call prin2('rscales=*',rscales,nlevels+1)
-         call prin2('rscpow=*',rscpow,nterms+1)
-
 C$OMP PARALLEL DO DEFAULT (SHARED)
 C$OMP$PRIVATE(ibox,istart,iend,npts,nchild)
 C$OMP$PRIVATE(mexpf1,mexpf2,mexpp1,mexpp2,mexppall)
@@ -1356,7 +1349,7 @@ C$OMP$SCHEDULE(DYNAMIC)
 
             do i=1,nlist3
               jbox = itree(ipointer(25)+(ibox-1)*mnlist3+i-1)
-              call prinm(rmlexp(iaddr(1,jbox)),nterms(ilev+1))
+cc              call prinm(rmlexp(iaddr(1,jbox)),nterms(ilev+1))
               call l3dmpevalp(nd,rscales(ilev+1),centers(1,jbox),
      1          rmlexp(iaddr(1,jbox)),nterms(ilev+1),
      2          sourcesort(1,istart),npts,pot(1,istart),wlege,nlege,
@@ -1557,7 +1550,7 @@ C$OMP$PRIVATE(jstart,jend)
             iende = itree(ipointer(17)+ibox-1)
 
             nlist1 = itree(ipointer(20)+ibox-1)
-   
+
             do i =1,nlist1
                jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
 
@@ -1565,7 +1558,7 @@ C$OMP$PRIVATE(jstart,jend)
                jstart = itree(ipointer(10)+jbox-1)
                jend = itree(ipointer(11)+jbox-1)
 
-               call prinf('nexpc=*',nexpc,1)
+cc               call prinf('nexpc=*',nexpc,1)
 
                call lfmm3dexpc_direct(nd,jstart,jend,istarte,
      1         iende,sourcesort,ifcharge,chargesort,ifdipole,
@@ -1846,8 +1839,8 @@ C$        time2=omp_get_wtime()
       end
 c------------------------------------------------
       subroutine lfmm3dexpc_direct(nd,istart,iend,jstart,jend,
-     $     scj,source,ifcharge,charge,ifdipole,dipstr,
-     $     dipvec,expc,texps,ntj,wlege,nlege)
+     $     source,ifcharge,charge,ifdipole,dipstr,
+     $     dipvec,expc,texps,scj,ntj,wlege,nlege)
 c--------------------------------------------------------------------
 c     This subroutine adds the local expansions due to sources
 c     istart to iend in the source array at the expansion centers
@@ -1936,7 +1929,6 @@ c
         
 c
         ns = iend - istart + 1
-        call prin2
         if(ifcharge.eq.1.and.ifdipole.eq.0) then
           do j=jstart,jend
             call l3dformtac(nd,scj(j),

@@ -216,8 +216,8 @@ c
       double complex mpolein(nd,0:nterms,-nterms:nterms)
       double complex mpoleout(nd,0:nterms,-nterms:nterms)
 
-      do i=0,nterms
-        do j=-nterms,nterms
+      do j=-nterms,nterms
+        do i=0,nterms
           do idim=1,nd
             mpoleout(idim,i,j) = mpolein(idim,i,j)*rsc(i)
           enddo
