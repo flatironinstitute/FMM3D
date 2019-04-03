@@ -41,7 +41,7 @@ ext_helm = Extension(
 ext_lap = Extension(
     name='lfmm3d_fortran',
     sources=['../src/Laplace/'+item for item in list_lap]+['../src/Common/'+item for item in list_common],
-    f2py_options=['only:']+list_int_lap+list_int_lap_vec+[':']
+    f2py_options=['only:']+list_int_lap+list_int_lap_vec+[':'],
 )
 
 ## TODO: fill in the info below
@@ -55,7 +55,7 @@ setup(
     packages=setuptools.find_packages(),
     install_requires=[
     ],
-    ext_modules=[ext_helm],
+    ext_modules=[ext_helm,ext_lap],
     classifiers=(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: Apache Software License",
