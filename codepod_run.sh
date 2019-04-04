@@ -8,4 +8,4 @@ set -ex
 
 OPTS=""
 
-eval "codepod -g -w $PWD $OPTS $@"
+eval "codepod -g $PWD $OPTS $@"
