@@ -1,4 +1,4 @@
 image: "magland/codepod_gfortran"
 tasks:
   - command: pip install numpy
-  - command: cd python && python setup.py develop && python test/test_hfmm.py
+#  - command: cd python && python setup.py develop && python test/test_hfmm.py
