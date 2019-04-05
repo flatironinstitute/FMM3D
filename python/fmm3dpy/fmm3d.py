@@ -48,12 +48,12 @@ def hfmm3d(*,eps,zk,sources,charges=None,dipoles=None,dipvec=None,
                potenial and gradient at sources evaluated if pg=2
 
         pgt:  integer
-               source eval flag
+               target eval flag
                potential at targets evaluated if pgt = 1
                potenial and gradient at targets evaluated if pgt=2
         
         nd:   integer
-               number of charge densities
+               number of densities
 
         Returns:
           out.pot  - potential at source locations if requested
@@ -231,12 +231,12 @@ def lfmm3d(*,eps,sources,charges=None,dipoles=None,dipvec=None,
                potenial and gradient at sources evaluated if pg=2
 
         pgt:  integer
-               source eval flag
+               target eval flag
                potential at targets evaluated if pgt = 1
                potenial and gradient at targets evaluated if pgt=2
         
         nd:   integer
-               number of charge densities
+               number of densities
 
         Returns:
           out.pot  - potential at source locations if requested
