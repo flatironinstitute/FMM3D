@@ -35,13 +35,17 @@ for st in st_opts:
 ext_helm = Extension(
     name='hfmm3d_fortran',
     sources=['../src/Helmholtz/'+item for item in list_helm]+['../src/Common/'+item for item in list_common],
-    f2py_options=['only:']+list_int_helm+list_int_helm_vec+[':']
+    f2py_options=['only:']+list_int_helm+list_int_helm_vec+[':'],
+    extra_compile_args=['-O3', '-W'],
+    extra_link_args=['-O3']
 )
 
 ext_lap = Extension(
     name='lfmm3d_fortran',
     sources=['../src/Laplace/'+item for item in list_lap]+['../src/Common/'+item for item in list_common],
     f2py_options=['only:']+list_int_lap+list_int_lap_vec+[':'],
+    extra_compile_args=['-O3', '-W'],
+    extra_link_args=['-O3']
 )
 
 ## TODO: fill in the info below
