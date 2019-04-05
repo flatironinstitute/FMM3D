@@ -34,7 +34,7 @@ c
       complex *16 pot,fld(3),opot,ofld(3)
       complex *16, allocatable :: mpole1(:,:),mpole2(:,:)
       complex *16, allocatable :: locexp1(:,:),locexp2(:,:)
-      complex *16 charge(100),dipstr(100),dipvec(3,100)
+      complex *16 charge(100),dipvec(3,100)
       real *8 wlege(100000)
       complex *16 zk,eye
 c
@@ -67,10 +67,9 @@ c
       sources(2,1)=c0(2)+ 0.25d0
       sources(3,1)=c0(3)+ 0.25d0
       charge(1)= 1.0d0 + eye*0.2d0
-      dipstr(1)= hkrand(0) + eye*hkrand(0)
-      dipvec(1,1) = hkrand(0)
-      dipvec(2,1) = hkrand(0)
-      dipvec(3,1) = hkrand(0)
+      dipvec(1,1) = hkrand(0) + eye*hkrand(0)
+      dipvec(2,1) = hkrand(0) + eye*hkrand(0)
+      dipvec(3,1) = hkrand(0) + eye*hkrand(0)
 
 
       ns = 1
@@ -78,10 +77,9 @@ c
       sources(2,2)=c0(2)-0.25d0
       sources(3,2)=c0(3)-0.25d0
       charge(2)= -1.0d0 + eye*0.1d0
-      dipstr(2) = hkrand(0) + eye*hkrand(0)
-      dipvec(1,2) = hkrand(0)
-      dipvec(2,2) = hkrand(0)
-      dipvec(3,2) = hkrand(0)
+      dipvec(1,2) = hkrand(0) + eye*hkrand(0) 
+      dipvec(2,2) = hkrand(0) + eye*hkrand(0)
+      dipvec(3,2) = hkrand(0) + eye*hkrand(0)
       ns = 2
 c
 c       create center for shifted expansions
@@ -113,7 +111,7 @@ c
       thresh = 1.0d-15
       nd = 1
       call h3ddirectcdg(nd,zk,sources,charge,
-     1       dipstr,dipvec,ns,ztrg,nt,opot,
+     1       dipvec,ns,ztrg,nt,opot,
      1       ofld,thresh)
 
 
@@ -142,7 +140,7 @@ c
 
       nd = 1
       call mpzero(nd,mpole1,nterms)
-      call h3dformmpcd(nd,zk,rscale1,sources,charge,dipstr,
+      call h3dformmpcd(nd,zk,rscale1,sources,charge,
      1       dipvec,ns,c0,nterms,mpole1,wlege,nlege)
 
       pot = 0
@@ -232,7 +230,7 @@ c    create local exp from sources
       call mpzero(nd,locexp1,nterms3)
       nd = 1
       call h3dformtacd(nd,zk,rscale1,sources,charge,
-     1       dipstr,dipvec,ns,c3,nterms3,locexp1,wlege,nlege)
+     1       dipvec,ns,c3,nterms3,locexp1,wlege,nlege)
       call errprint(pot,opot,fld,ofld)
       pot = 0
       fld(1) = 0

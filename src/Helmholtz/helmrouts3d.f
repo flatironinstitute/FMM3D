@@ -598,7 +598,7 @@ c
 c
 C***********************************************************************
       subroutine h3dformmpd(nd,zk,rscale,sources,
-     1            dipstr,dipvec,ns,center,nterms,mpole,wlege,nlege)
+     1            dipvec,ns,center,nterms,mpole,wlege,nlege)
 C***********************************************************************
 C
 C     Adds to multipole (h) expansion about CENTER due to NS sources 
@@ -611,7 +611,6 @@ c     nd              : number of multipole expansions
 C     zk              : Helmholtz parameter 
 C     rscale          : the scaling factor.
 C     sources(3,ns)   : coordinates of sources
-C     dipstr(ns)      : dipole strengths
 C     dipvec(3,ns)    : dipole orientation vectors
 C     ns              : number of sources
 C     center(3)       : expansion center
@@ -628,7 +627,6 @@ c-----------------------------------------------------------------------
       integer ns,nterms,nlege,nd
       complex *16 zk
       real *8 rscale,sources(3,ns),center(3),wlege(*)
-      complex *16 dipstr(nd,ns)
       complex *16 dipvec(nd,3,ns)
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
 c
@@ -754,7 +752,7 @@ c
         do idim=1,nd
           zzz = ur*(dipvec(idim,1,isrc)*rx + dipvec(idim,2,isrc)*ry +
      1          dipvec(idim,3,isrc)*rz)
-          mpole(idim,0,0)= mpole(idim,0,0)+ zzz*dipstr(idim,isrc)
+          mpole(idim,0,0)= mpole(idim,0,0)+ zzz
         enddo
         do n=1,nterms
           fjsuse = fjs(n+1)*rscale + fjs(n-1)/rscale
@@ -767,8 +765,7 @@ c
           do idim=1,nd
             zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy +
      1               dipvec(idim,3,isrc)*uz
-            mpole(idim,n,0)= mpole(idim,n,0) + 
-     1                    dipstr(idim,isrc)*zzz       
+            mpole(idim,n,0)= mpole(idim,n,0) + zzz 
           enddo
           do m=1,n
             ur = fjder(n)*ynm(n,m)*stheta*ephi(-m)
@@ -780,8 +777,7 @@ c
             do idim=1,nd
               zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1             dipvec(idim,3,isrc)*uz
-              mpole(idim,n, m)= mpole(idim,n, m) +
-     1        zzz*dipstr(idim,isrc)
+              mpole(idim,n, m)= mpole(idim,n, m) + zzz
             enddo
 
             ur = fjder(n)*ynm(n,m)*stheta*ephi(m)
@@ -794,7 +790,7 @@ c
               zzz = dipvec(idim,1,isrc)*ux+dipvec(idim,2,isrc)*uy + 
      1           dipvec(idim,3,isrc)*uz
               mpole(idim,n,-m)= mpole(idim,n,-m) + 
-     1           zzz*dipstr(idim,isrc)
+     1           zzz
             enddo
           enddo
         enddo
@@ -814,7 +810,7 @@ c
 c
 C***********************************************************************
       subroutine h3dformmpcd(nd,zk,rscale,sources,charge,
-     1            dipstr,dipvec,ns,center,nterms,mpole,wlege,nlege)
+     1            dipvec,ns,center,nterms,mpole,wlege,nlege)
 C***********************************************************************
 C
 C     Adds to multipole (h) expansion about CENTER due to NS sources 
@@ -828,7 +824,6 @@ C     zk              : Helmholtz parameter
 C     rscale          : the scaling factor.
 C     sources(3,ns)   : coordinates of sources
 C     charge(ns)      : charge strengths
-C     dipstr(ns)      : dipole strengths
 C     dipvec(3,ns)    : dipole orientation vectors
 C     ns              : number of sources
 C     center(3)       : expansion center
@@ -845,7 +840,7 @@ c-----------------------------------------------------------------------
       integer ns,nterms,nlege,nd
       complex *16 zk
       real *8 rscale,sources(3,ns),center(3),wlege(*)
-      complex *16 charge(nd,ns),dipstr(nd,ns)
+      complex *16 charge(nd,ns)
       complex *16 dipvec(nd,3,ns)
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
 c
@@ -972,7 +967,7 @@ c
           zzz = ur*(dipvec(idim,1,isrc)*rx + dipvec(idim,2,isrc)*ry +
      1          dipvec(idim,3,isrc)*rz)
           mpole(idim,0,0)= mpole(idim,0,0) + 
-     1        fjs(0)*charge(idim,isrc) + zzz*dipstr(idim,isrc)
+     1        fjs(0)*charge(idim,isrc) + zzz
         enddo
         do n=1,nterms
           fjsuse = fjs(n+1)*rscale + fjs(n-1)/rscale
@@ -987,7 +982,7 @@ c
             zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy +
      1               dipvec(idim,3,isrc)*uz
             mpole(idim,n,0)= mpole(idim,n,0) + ztmp*charge(idim,isrc)+
-     1                    dipstr(idim,isrc)*zzz       
+     1                    zzz       
           enddo
           do m=1,n
             ztmp=ynm(n,m)*stheta*fjs(n)
@@ -1002,7 +997,7 @@ c
               zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1             dipvec(idim,3,isrc)*uz
               mpole(idim,n, m)= mpole(idim,n, m) +
-     1        ztmp1*charge(idim,isrc) + zzz*dipstr(idim,isrc)
+     1        ztmp1*charge(idim,isrc) + zzz
             enddo
 
             ztmp1=ztmp*ephi(m)
@@ -1016,7 +1011,7 @@ c
               zzz = dipvec(idim,1,isrc)*ux+dipvec(idim,2,isrc)*uy + 
      1           dipvec(idim,3,isrc)*uz
               mpole(idim,n,-m)= mpole(idim,n,-m) + 
-     1           ztmp1*charge(idim,isrc) + zzz*dipstr(idim,isrc)
+     1           ztmp1*charge(idim,isrc) + zzz
             enddo
           enddo
         enddo
@@ -1473,7 +1468,7 @@ c
 c
 C***********************************************************************
       subroutine h3dformtad(nd,zk,rscale,sources,
-     1            dipstr,dipvec,ns,center,nterms,locexp,wlege,nlege)
+     1            dipvec,ns,center,nterms,locexp,wlege,nlege)
 C***********************************************************************
 C
 C     Adds to multipole (h) expansion about CENTER due to NS sources 
@@ -1486,7 +1481,6 @@ c     nd              : number of local expansions
 C     zk              : Helmholtz parameter 
 C     rscale          : the scaling factor.
 C     sources(3,ns)   : coordinates of sources
-C     dipstr(ns)      : dipole strengths
 C     dipvec(3,ns)    : dipole orientation vectors
 C     ns              : number of sources
 C     center(3)       : expansion center
@@ -1503,7 +1497,6 @@ c-----------------------------------------------------------------------
       integer ns,nterms,nlege,nd
       complex *16 zk
       real *8 rscale,sources(3,ns),center(3),wlege(*)
-      complex *16 dipstr(nd,ns)
       complex *16 dipvec(nd,3,ns)
       complex *16 locexp(nd,0:nterms,-nterms:nterms)
 c
@@ -1618,7 +1611,7 @@ c
         do idim=1,nd
           zzz = ur*(dipvec(idim,1,isrc)*rx + dipvec(idim,2,isrc)*ry +
      1          dipvec(idim,3,isrc)*rz)
-          locexp(idim,0,0)= locexp(idim,0,0)+zzz*dipstr(idim,isrc)
+          locexp(idim,0,0)= locexp(idim,0,0)+zzz
         enddo
         do n=1,nterms
           ur = ynm(n,0)*fhder(n)
@@ -1630,7 +1623,7 @@ c
           do idim=1,nd
             zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy +
      1             dipvec(idim,3,isrc)*uz
-            locexp(idim,n,0)= locexp(idim,n,0)+dipstr(idim,isrc)*zzz   
+            locexp(idim,n,0)= locexp(idim,n,0)+zzz   
           enddo
           do m=1,n
             ur = fhder(n)*ynm(n,m)*stheta*ephi(-m)
@@ -1642,7 +1635,7 @@ c
             do idim=1,nd
               zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1             dipvec(idim,3,isrc)*uz
-              locexp(idim,n,m)= locexp(idim,n,m)+zzz*dipstr(idim,isrc)
+              locexp(idim,n,m)= locexp(idim,n,m)+zzz
             enddo
 
             ur = fhder(n)*ynm(n,m)*stheta*ephi(m)
@@ -1655,7 +1648,7 @@ c
               zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1             dipvec(idim,3,isrc)*uz
               locexp(idim,n,-m)= locexp(idim,n,-m)+
-     1            zzz*dipstr(idim,isrc)
+     1            zzz
             enddo
           enddo
         enddo
@@ -1672,7 +1665,7 @@ c
 c
 C***********************************************************************
       subroutine h3dformtacd(nd,zk,rscale,sources,charge,
-     1            dipstr,dipvec,ns,center,nterms,locexp,wlege,nlege)
+     1            dipvec,ns,center,nterms,locexp,wlege,nlege)
 C***********************************************************************
 C
 C     Adds to multipole (h) expansion about CENTER due to NS sources 
@@ -1686,7 +1679,6 @@ C     zk              : Helmholtz parameter
 C     rscale          : the scaling factor.
 C     sources(3,ns)   : coordinates of sources
 C     charge(ns)      : charge strengths
-C     dipstr(ns)      : dipole strengths
 C     dipvec(3,ns)    : dipole orientation vectors
 C     ns              : number of sources
 C     center(3)       : expansion center
@@ -1703,7 +1695,7 @@ c-----------------------------------------------------------------------
       integer ns,nterms,nlege,nd
       complex *16 zk
       real *8 rscale,sources(3,ns),center(3),wlege(*)
-      complex *16 charge(nd,ns),dipstr(nd,ns)
+      complex *16 charge(nd,ns)
       complex *16 dipvec(nd,3,ns)
       complex *16 locexp(nd,0:nterms,-nterms:nterms)
 c
@@ -1819,7 +1811,7 @@ c
           zzz = ur*(dipvec(idim,1,isrc)*rx + dipvec(idim,2,isrc)*ry +
      1          dipvec(idim,3,isrc)*rz)
           locexp(idim,0,0)= locexp(idim,0,0)+fhs(0)*charge(idim,isrc)+
-     1       zzz*dipstr(idim,isrc)
+     1       zzz
         enddo
         do n=1,nterms
           ur = ynm(n,0)*fhder(n)
@@ -1833,7 +1825,7 @@ c
             zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy +
      1             dipvec(idim,3,isrc)*uz
             locexp(idim,n,0)= locexp(idim,n,0) + 
-     1             ztmp*charge(idim,isrc) + dipstr(idim,isrc)*zzz       
+     1             ztmp*charge(idim,isrc) + zzz       
           enddo
           do m=1,n
             ztmp=ynm(n,m)*stheta*fhs(n)
@@ -1849,7 +1841,7 @@ c
               zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1             dipvec(idim,3,isrc)*uz
               locexp(idim,n,m)= locexp(idim,n,m) + 
-     1           ztmp1*charge(idim,isrc) + zzz*dipstr(idim,isrc)
+     1           ztmp1*charge(idim,isrc) + zzz
             enddo
 
             ztmp1 = ztmp*ephi(m)
@@ -1863,7 +1855,7 @@ c
               zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1             dipvec(idim,3,isrc)*uz
               locexp(idim,n,-m)= locexp(idim,n,-m) + 
-     1             ztmp1*charge(idim,isrc) +  zzz*dipstr(idim,isrc)
+     1             ztmp1*charge(idim,isrc) +  zzz
             enddo
           enddo
         enddo
@@ -2062,7 +2054,7 @@ c
 c
 c
 C***********************************************************************
-      subroutine h3ddirectdp(nd,zk,sources,dipstr,
+      subroutine h3ddirectdp(nd,zk,sources,
      1            dipvec,ns,ztarg,nt,pot,thresh)
 c**********************************************************************
 c
@@ -2070,13 +2062,12 @@ c     This subroutine evaluates the potential due to a collection
 c     of sources and adds to existing
 c     quantities.
 c
-c     pot(x) = pot(x) + sum   d_{j} \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j} 
+c     pot(x) = pot(x) + sum   \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j} 
 c                        j
 c
 c                            
 c   
-c      where d_{j} is the dipole strength
-c      and v_{j} is the dipole orientation vector, 
+c      where v_{j} is the dipole orientation vector, 
 c      \nabla denotes the gradient is with respect to the x_{j} 
 c      variable 
 c      If |zk*r| < thresh 
@@ -2091,7 +2082,6 @@ c
 c     nd     :    number of charge and dipole densities
 c     zk     :    Helmholtz parameter
 c     sources:    source locations
-C     dipstr :    dipole strengths
 C     dipvec :    dipole orientation vectors
 C     ns     :    number of sources
 c     ztarg  :    target locations
@@ -2115,14 +2105,14 @@ c
       complex *16 zk
       real *8 sources(3,ns),ztarg(3,nt)
       complex *16 dipvec(nd,3,ns)
-      complex *16 dipstr(nd,ns),pot(nd,nt)
+      complex *16 pot(nd,nt)
       real *8 thresh
       
 c
 cc     temporary variables
 c
-      real *8 zdiff(3),dd,d,dinv,dotprod
-      complex *16 zkeye,eye,cd,cd1
+      real *8 zdiff(3),dd,d,dinv
+      complex *16 zkeye,eye,cd,cd1,dotprod
       integer i,j,idim
       data eye/(0.0d0,1.0d0)/
 
@@ -2146,7 +2136,7 @@ c
             dotprod = zdiff(1)*dipvec(idim,1,j) + 
      1          zdiff(2)*dipvec(idim,2,j)+
      1          zdiff(3)*dipvec(idim,3,j)
-            pot(idim,i) = pot(idim,i) + dipstr(idim,j)*cd1*dotprod
+            pot(idim,i) = pot(idim,i) + cd1*dotprod
           enddo
 
  1000     continue
@@ -2163,8 +2153,8 @@ c
 c
 c
 C***********************************************************************
-      subroutine h3ddirectdg(nd,zk,sources,dipstr,
-     1            dipvec,ns,ztarg,nt,pot,grad,thresh)
+      subroutine h3ddirectdg(nd,zk,sources,dipvec,ns,ztarg,nt,pot,
+     1   grad,thresh)
 c**********************************************************************
 c
 c     This subroutine evaluates the potential and gradient due to a 
@@ -2178,11 +2168,10 @@ c
 c     grad(x) = grad(x) + Gradient( sum  
 c                                    j
 c
-c                            d_{j} \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
+c                            \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
 c                            )
 c                                   
-c      where d_{j} is the dipole strength
-c      and v_{j} is the dipole orientation vector, 
+c      where v_{j} is the dipole orientation vector, 
 c      \nabla denotes the gradient is with respect to the x_{j} 
 c      variable, and Gradient denotes the gradient with respect to
 c      the x variable
@@ -2198,7 +2187,6 @@ c
 c     nd     :    number of charge and dipole densities
 c     zk     :    Helmholtz parameter
 c     sources:    source locations
-C     dipstr :    dipole strengths
 C     dipvec :    dipole orientation vector
 C     ns     :    number of sources
 c     ztarg  :    target locations
@@ -2223,14 +2211,14 @@ c
       complex *16 zk
       real *8 sources(3,ns),ztarg(3,nt)
       complex *16 dipvec(nd,3,ns)
-      complex *16 dipstr(nd,ns),pot(nd,nt),grad(nd,3,nt)
+      complex *16 pot(nd,nt),grad(nd,3,nt)
       real *8 thresh
       
 c
 cc     temporary variables
 c
-      real *8 zdiff(3),dd,d,dinv,dinv2,dotprod
-      complex *16 zkeye,eye,cd,cd2,cd3,cd4
+      real *8 zdiff(3),dd,d,dinv,dinv2
+      complex *16 zkeye,eye,cd,cd2,cd3,cd4,dotprod
       integer i,j,idim
       data eye/(0.0d0,1.0d0)/
 
@@ -2259,13 +2247,13 @@ c
      1               zdiff(3)*dipvec(idim,3,j)
             cd4 = cd3*dotprod
 
-            pot(idim,i) = pot(idim,i) - cd2*dotprod*dipstr(idim,j)
+            pot(idim,i) = pot(idim,i) - cd2*dotprod
             grad(idim,1,i) = grad(idim,1,i) + (cd4*zdiff(1) - 
-     1         cd2*dipvec(idim,1,j))*dipstr(idim,j) 
+     1         cd2*dipvec(idim,1,j)) 
             grad(idim,2,i) = grad(idim,2,i) + (cd4*zdiff(2) - 
-     1         cd2*dipvec(idim,2,j))*dipstr(idim,j) 
+     1         cd2*dipvec(idim,2,j))
             grad(idim,3,i) = grad(idim,3,i) + (cd4*zdiff(3) - 
-     1         cd2*dipvec(idim,3,j))*dipstr(idim,j) 
+     1         cd2*dipvec(idim,3,j))
           enddo
  1000     continue
         enddo
@@ -2279,7 +2267,7 @@ c
 c
 c
 C***********************************************************************
-      subroutine h3ddirectcdp(nd,zk,sources,charge,dipstr,
+      subroutine h3ddirectcdp(nd,zk,sources,charge,
      1            dipvec,ns,ztarg,nt,pot,thresh)
 c**********************************************************************
 c
@@ -2290,9 +2278,9 @@ c
 c     pot(x) = pot(x) + sum  q_{j} e^{i k |x-x_{j}|}/|x-x_{j}| +  
 c                        j
 c
-c                            d_{j} \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
+c                            \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
 c   
-c      where q_{j} is the charge strength, d_{j} is the dipole strength
+c      where q_{j} is the charge strength, 
 c      and v_{j} is the dipole orientation vector, 
 c      \nabla denotes the gradient is with respect to the x_{j} 
 c      variable 
@@ -2309,7 +2297,6 @@ c     nd     :    number of charge and dipole densities
 c     zk     :    Helmholtz parameter
 c     sources:    source locations
 C     charge :    charge strengths
-C     dipstr :    dipole strengths
 C     dipvec :    dipole orientation vectors
 C     ns     :    number of sources
 c     ztarg  :    target locations
@@ -2333,14 +2320,14 @@ c
       complex *16 zk
       real *8 sources(3,ns),ztarg(3,nt)
       complex *16 dipvec(nd,3,ns)
-      complex *16 charge(nd,ns),dipstr(nd,ns),pot(nd,nt)
+      complex *16 charge(nd,ns),pot(nd,nt)
       real *8 thresh
       
 c
 cc     temporary variables
 c
-      real *8 zdiff(3),dd,d,dinv,dotprod
-      complex *16 zkeye,eye,cd,cd1
+      real *8 zdiff(3),dd,d,dinv
+      complex *16 zkeye,eye,cd,cd1,dotprod
       integer i,j,idim
       data eye/(0.0d0,1.0d0)/
 
@@ -2366,7 +2353,7 @@ c
             dotprod = zdiff(1)*dipvec(idim,1,j) + 
      1          zdiff(2)*dipvec(idim,2,j)+
      1          zdiff(3)*dipvec(idim,3,j)
-            pot(idim,i) = pot(idim,i) + dipstr(idim,j)*cd1*dotprod
+            pot(idim,i) = pot(idim,i) + cd1*dotprod
           enddo
 
  1000     continue
@@ -2383,7 +2370,7 @@ c
 c
 c
 C***********************************************************************
-      subroutine h3ddirectcdg(nd,zk,sources,charge,dipstr,
+      subroutine h3ddirectcdg(nd,zk,sources,charge,
      1            dipvec,ns,ztarg,nt,pot,grad,thresh)
 c**********************************************************************
 c
@@ -2393,7 +2380,7 @@ c
 c     pot(x) = pot(x) + sum  q_{j} e^{i k |x-x_{j}|}/|x-x_{j}| +  
 c                        j
 c
-c                            d_{j} \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
+c                            \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
 c   
 c     grad(x) = grad(x) + Gradient( sum  q_{j} e^{i k |x-x_{j}|}/|x-x_{j}| +  
 c                                    j
@@ -2401,7 +2388,7 @@ c
 c                            d_{j} \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
 c                            )
 c                                   
-c      where q_{j} is the charge strength, d_{j} is the dipole strength
+c      where q_{j} is the charge strength
 c      and v_{j} is the dipole orientation vector, 
 c      \nabla denotes the gradient is with respect to the x_{j} 
 c      variable, and Gradient denotes the gradient with respect to
@@ -2419,7 +2406,6 @@ c     nd     :    number of charge and dipole densities
 c     zk     :    Helmholtz parameter
 c     sources:    source locations
 C     charge :    charge strengths
-C     dipstr :    dipole strengths
 C     dipvec :    dipole orientation vector
 C     ns     :    number of sources
 c     ztarg  :    target locations
@@ -2444,14 +2430,14 @@ c
       complex *16 zk
       real *8 sources(3,ns),ztarg(3,nt)
       complex *16 dipvec(nd,3,ns)
-      complex *16 charge(nd,ns),dipstr(nd,ns),pot(nd,nt),grad(nd,3,nt)
+      complex *16 charge(nd,ns),pot(nd,nt),grad(nd,3,nt)
       real *8 thresh
       
 c
 cc     temporary variables
 c
-      real *8 zdiff(3),dd,d,dinv,dinv2,dotprod
-      complex *16 zkeye,eye,cd,cd2,cd3,cd4
+      real *8 zdiff(3),dd,d,dinv,dinv2
+      complex *16 zkeye,eye,cd,cd2,cd3,cd4,dotprod
       integer i,j,idim
       data eye/(0.0d0,1.0d0)/
 
@@ -2481,15 +2467,15 @@ c
      1               zdiff(3)*dipvec(idim,3,j)
             cd4 = cd3*dotprod
 
-            pot(idim,i) = pot(idim,i) - cd2*dotprod*dipstr(idim,j)
+            pot(idim,i) = pot(idim,i) - cd2*dotprod
             grad(idim,1,i) = grad(idim,1,i) + (cd4*zdiff(1) - 
-     1         cd2*dipvec(idim,1,j))*dipstr(idim,j) 
+     1         cd2*dipvec(idim,1,j))
      2         + cd2*charge(idim,j)*zdiff(1) 
             grad(idim,2,i) = grad(idim,2,i) + (cd4*zdiff(2) - 
-     1         cd2*dipvec(idim,2,j))*dipstr(idim,j) 
+     1         cd2*dipvec(idim,2,j))
      2         + cd2*charge(idim,j)*zdiff(2) 
             grad(idim,3,i) = grad(idim,3,i) + (cd4*zdiff(3) - 
-     1         cd2*dipvec(idim,3,j))*dipstr(idim,j) 
+     1         cd2*dipvec(idim,3,j))
      2         + cd2*charge(idim,j)*zdiff(3)
           enddo
  1000     continue
