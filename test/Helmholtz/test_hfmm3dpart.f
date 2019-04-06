@@ -1,7 +1,7 @@
       implicit none
       integer ns,nt
       double precision, allocatable :: source(:,:),targ(:,:)
-      double complex, allocatable :: charge(:),dipstr(:)
+      double complex, allocatable :: charge(:)
       double complex, allocatable :: dipvec(:,:)
       double complex, allocatable :: pot(:),pottarg(:)
       double complex, allocatable :: grad(:,:),gradtarg(:,:)
@@ -29,7 +29,7 @@ c
       ntest = 10
 
       allocate(source(3,ns),targ(3,nt))
-      allocate(charge(ns),dipstr(ns),dipvec(3,ns))
+      allocate(charge(ns),dipvec(3,ns))
       allocate(pot(ns))
       allocate(grad(3,ns))
 
@@ -47,7 +47,6 @@ c
         source(3,i) = hkrand(0)**2
 
         charge(i) = hkrand(0) + eye*hkrand(0)
-        dipstr(i) = hkrand(0) + eye*hkrand(0)
 
         dipvec(1,i) = hkrand(0) 
         dipvec(2,i) = hkrand(0)
@@ -93,7 +92,7 @@ c
        ifpghtarg = 0
 
        
-       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -124,7 +123,7 @@ c
        ifpghtarg = 0
 
        
-       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -145,7 +144,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call hfmm3dpartstosdp(eps,zk,ns,source,dipstr,dipvec,
+       call hfmm3dpartstosdp(eps,zk,ns,source,dipvec,
      1      pot)
 
        ifcharge = 0
@@ -154,7 +153,7 @@ c
        ifpghtarg = 0
 
        
-       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -174,7 +173,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call hfmm3dpartstosdg(eps,zk,ns,source,dipstr,dipvec,
+       call hfmm3dpartstosdg(eps,zk,ns,source,dipvec,
      1      pot,grad)
 
        ifcharge = 0
@@ -183,7 +182,7 @@ c
        ifpghtarg = 0
 
        
-       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -202,7 +201,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call hfmm3dpartstoscdp(eps,zk,ns,source,charge,dipstr,dipvec,
+       call hfmm3dpartstoscdp(eps,zk,ns,source,charge,dipvec,
      1      pot)
 
        ifcharge = 1
@@ -211,7 +210,7 @@ c
        ifpghtarg = 0 
 
        
-       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -231,7 +230,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call hfmm3dpartstoscdg(eps,zk,ns,source,charge,dipstr,dipvec,
+       call hfmm3dpartstoscdg(eps,zk,ns,source,charge,dipvec,
      1      pot,grad)
 
        ifcharge = 1
@@ -240,7 +239,7 @@ c
        ifpghtarg = 0
 
        
-       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -270,7 +269,7 @@ c
        ifpghtarg = 1
 
        
-       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -299,7 +298,7 @@ c
        ifpghtarg = 2
 
        
-       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -320,7 +319,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call hfmm3dpartstotdp(eps,zk,ns,source,dipstr,dipvec,
+       call hfmm3dpartstotdp(eps,zk,ns,source,dipvec,
      1      nt,targ,pottarg)
 
        ifcharge = 0
@@ -329,7 +328,7 @@ c
        ifpghtarg = 1
 
        
-       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -349,7 +348,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call hfmm3dpartstotdg(eps,zk,ns,source,dipstr,dipvec,
+       call hfmm3dpartstotdg(eps,zk,ns,source,dipvec,
      1      nt,targ,pottarg,gradtarg)
 
        ifcharge = 0
@@ -358,7 +357,7 @@ c
        ifpghtarg = 2
 
        
-       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -377,7 +376,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call hfmm3dpartstotcdp(eps,zk,ns,source,charge,dipstr,dipvec,
+       call hfmm3dpartstotcdp(eps,zk,ns,source,charge,dipvec,
      1      nt,targ,pottarg)
 
        ifcharge = 1
@@ -386,7 +385,7 @@ c
        ifpghtarg = 1
 
        
-       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -406,7 +405,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call hfmm3dpartstotcdg(eps,zk,ns,source,charge,dipstr,dipvec,
+       call hfmm3dpartstotcdg(eps,zk,ns,source,charge,dipvec,
      1      nt,targ,pottarg,gradtarg)
 
        ifcharge = 1
@@ -415,7 +414,7 @@ c
        ifpghtarg = 2
 
        
-       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -443,7 +442,7 @@ c
        ifpghtarg = 1
 
        
-       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -472,7 +471,7 @@ c
        ifpghtarg = 2
 
        
-       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -493,7 +492,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call hfmm3dpartstostdp(eps,zk,ns,source,dipstr,dipvec,
+       call hfmm3dpartstostdp(eps,zk,ns,source,dipvec,
      1      pot,nt,targ,pottarg)
 
        ifcharge = 0
@@ -502,7 +501,7 @@ c
        ifpghtarg = 1
 
        
-       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -522,7 +521,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call hfmm3dpartstostdg(eps,zk,ns,source,dipstr,dipvec,
+       call hfmm3dpartstostdg(eps,zk,ns,source,dipvec,
      1      pot,grad,nt,targ,pottarg,gradtarg)
 
        ifcharge = 0
@@ -531,7 +530,7 @@ c
        ifpghtarg = 2
 
        
-       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -550,7 +549,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call hfmm3dpartstostcdp(eps,zk,ns,source,charge,dipstr,dipvec,
+       call hfmm3dpartstostcdp(eps,zk,ns,source,charge,dipvec,
      1      pot,nt,targ,pottarg)
 
        ifcharge = 1
@@ -559,7 +558,7 @@ c
        ifpghtarg = 1
 
        
-       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -579,7 +578,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call hfmm3dpartstostcdg(eps,zk,ns,source,charge,dipstr,dipvec,
+       call hfmm3dpartstostcdg(eps,zk,ns,source,charge,dipvec,
      1      pot,grad,nt,targ,pottarg,gradtarg)
 
        ifcharge = 1
@@ -588,7 +587,7 @@ c
        ifpghtarg = 2
 
        
-       call comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -607,7 +606,7 @@ c
 c
 c
 c
-      subroutine comperr(zk,ns,source,ifcharge,charge,ifdipole,dipstr,
+      subroutine comperr(zk,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -617,7 +616,7 @@ c
       
       double precision source(3,*),targ(3,*)
       double complex dipvec(3,*)
-      double complex dipstr(*),charge(*)
+      double complex charge(*)
 
       double complex pot(*),pottarg(*),grad(3,*),gradtarg(3,*)
 
@@ -671,44 +670,44 @@ c
 
       if(ifcharge.eq.0.and.ifdipole.eq.1) then
         if(ifpgh.eq.1) then
-          call h3ddirectdp(nd,zk,source,dipstr,dipvec,
+          call h3ddirectdp(nd,zk,source,dipvec,
      1      ns,source,ntest,potex,thresh)
         endif
 
         if(ifpgh.eq.2) then
-          call h3ddirectdg(nd,zk,source,dipstr,dipvec,
+          call h3ddirectdg(nd,zk,source,dipvec,
      1       ns,source,ntest,potex,gradex,thresh)
         endif
 
         if(ifpghtarg.eq.1) then
-          call h3ddirectdp(nd,zk,source,dipstr,dipvec,
+          call h3ddirectdp(nd,zk,source,dipvec,
      1       ns,targ,ntest,pottargex,thresh)
         endif
 
         if(ifpghtarg.eq.2) then
-          call h3ddirectdg(nd,zk,source,dipstr,dipvec,
+          call h3ddirectdg(nd,zk,source,dipvec,
      1       ns,targ,ntest,pottargex,gradtargex,thresh)
         endif
       endif
 
       if(ifcharge.eq.1.and.ifdipole.eq.1) then
         if(ifpgh.eq.1) then
-          call h3ddirectcdp(nd,zk,source,charge,dipstr,dipvec,
+          call h3ddirectcdp(nd,zk,source,charge,dipvec,
      1      ns,source,ntest,potex,thresh)
         endif
 
         if(ifpgh.eq.2) then
-          call h3ddirectcdg(nd,zk,source,charge,dipstr,dipvec,
+          call h3ddirectcdg(nd,zk,source,charge,dipvec,
      1       ns,source,ntest,potex,gradex,thresh)
         endif
 
         if(ifpghtarg.eq.1) then
-          call h3ddirectcdp(nd,zk,source,charge,dipstr,dipvec,
+          call h3ddirectcdp(nd,zk,source,charge,dipvec,
      1       ns,targ,ntest,pottargex,thresh)
         endif
 
         if(ifpghtarg.eq.2) then
-          call h3ddirectcdg(nd,zk,source,charge,dipstr,dipvec,
+          call h3ddirectcdg(nd,zk,source,charge,dipvec,
      1       ns,targ,ntest,pottargex,gradtargex,thresh)
         endif
       endif

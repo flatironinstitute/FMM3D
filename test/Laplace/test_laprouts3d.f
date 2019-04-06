@@ -35,7 +35,7 @@ c
       real *8 pot,fld(3),opot,ofld(3)
       complex *16, allocatable :: mpole1(:,:),mpole2(:,:)
       complex *16, allocatable :: locexp1(:,:),locexp2(:,:)
-      real *8 charge(100),dipstr(100)
+      real *8 charge(100)
       real *8 dipvec(3,100),wlege(100000)
       complex *16 eye
 c
@@ -70,7 +70,6 @@ c
       sources(2,1)=c0(2)+ 0.25d0
       sources(3,1)=c0(3)+ 0.25d0
       charge(1)= 1.0d0 
-      dipstr(1)= hkrand(0) 
       dipvec(1,1) = hkrand(0)
       dipvec(2,1) = hkrand(0)
       dipvec(3,1) = hkrand(0)
@@ -81,7 +80,6 @@ c
       sources(2,2)=c0(2)-0.25d0
       sources(3,2)=c0(3)-0.25d0
       charge(2)= -1.0d0  
-      dipstr(2) = hkrand(0)
       dipvec(1,2) = hkrand(0)
       dipvec(2,2) = hkrand(0)
       dipvec(3,2) = hkrand(0)
@@ -115,7 +113,7 @@ c
       ofld(3) = 0
       thresh = 1.0d-15
       nd = 1
-      call l3ddirectcdg(nd,sources,charge,dipstr,dipvec,ns,ztrg,
+      call l3ddirectcdg(nd,sources,charge,dipvec,ns,ztrg,
      1    nt,opot,ofld,thresh)
 
       eps = 0.5d-12
@@ -140,7 +138,7 @@ c
 
       nd = 1
       call mpzero(nd,mpole1,nterms)
-      call l3dformmpcd(nd,rscale1,sources,charge,dipstr,dipvec,
+      call l3dformmpcd(nd,rscale1,sources,charge,dipvec,
      1       ns,c0,nterms,mpole1,wlege,nlege)
 
 
@@ -240,7 +238,7 @@ c    create local exp from sources
 
       nd = 1
       call mpzero(nd,locexp1,nterms3)
-      call l3dformtacd(nd,rscale1,sources,charge,dipstr,dipvec,
+      call l3dformtacd(nd,rscale1,sources,charge,dipvec,
      1       ns,c3,nterms3,locexp1,wlege,nlege)
 
       pot = 0

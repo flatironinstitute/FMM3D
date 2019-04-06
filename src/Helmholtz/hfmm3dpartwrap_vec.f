@@ -16,7 +16,7 @@ cf2py  intent(out) pot
       integer nd
       
       double precision source(3,nsource),targ(3,1)
-      double complex charge(nd,nsource),dipstr(nd,1)
+      double complex charge(nd,nsource)
       double complex dipvec(nd,3,1)
 
       double complex pot(nd,nsource)
@@ -34,7 +34,7 @@ cf2py  intent(out) pot
       ntarg = 0
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return
@@ -59,7 +59,7 @@ cf2py  intent(out) pot,grad
       integer nd
       
       double precision source(3,nsource),targ(3,1)
-      double complex charge(nd,nsource),dipstr(nd,1)
+      double complex charge(nd,nsource)
       double complex dipvec(nd,3,1)
 
       double complex pot(nd,nsource),grad(nd,3,nsource)
@@ -77,7 +77,7 @@ cf2py  intent(out) pot,grad
       ntarg = 0
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return
@@ -90,10 +90,10 @@ c
 c
 
       subroutine hfmm3dpartstosdp_vec(nd,eps,zk,nsource,source,
-     1    dipstr,dipvec,pot)
+     1    dipvec,pot)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
-cf2py  intent(in) nsource,source,dipstr,dipvec
+cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(out) pot
       implicit none
       double precision eps
@@ -104,7 +104,7 @@ cf2py  intent(out) pot
       
       double precision source(3,nsource),targ(3,1)
       double complex charge(nd,1)
-      double complex dipstr(nd,nsource)
+      
       double complex dipvec(nd,3,nsource)
 
       double complex pot(nd,nsource)
@@ -123,7 +123,7 @@ cf2py  intent(out) pot
       ntarg = 0
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return
@@ -135,10 +135,10 @@ c
 c
 
       subroutine hfmm3dpartstosdg_vec(nd,eps,zk,nsource,source,
-     1    dipstr,dipvec,pot,grad)
+     1    dipvec,pot,grad)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
-cf2py  intent(in) nsource,source,dipstr,dipvec
+cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(out) pot,grad
       implicit none
       double precision eps
@@ -149,7 +149,7 @@ cf2py  intent(out) pot,grad
       
       double precision source(3,nsource),targ(3,1)
       double complex charge(nd,1)
-      double complex dipstr(nd,nsource)
+      
       double complex dipvec(nd,3,nsource)
 
       double complex pot(nd,nsource),grad(nd,3,nsource)
@@ -167,7 +167,7 @@ cf2py  intent(out) pot,grad
       ntarg = 0
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return
@@ -179,10 +179,10 @@ c
 c
 
       subroutine hfmm3dpartstoscdp_vec(nd,eps,zk,nsource,source,
-     1    charge,dipstr,dipvec,pot)
+     1    charge,dipvec,pot)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
-cf2py  intent(in) nsource,source,dipstr,dipvec,charge
+cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(out) pot
       implicit none
       double precision eps
@@ -192,7 +192,7 @@ cf2py  intent(out) pot
       integer nd
       
       double precision source(3,nsource),targ(3,1)
-      double complex charge(nd,nsource),dipstr(nd,nsource)
+      double complex charge(nd,nsource)
       double complex dipvec(nd,3,nsource)
 
       double complex pot(nd,nsource)
@@ -211,7 +211,7 @@ cf2py  intent(out) pot
       ntarg = 0
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return
@@ -228,10 +228,10 @@ c
 c
 
       subroutine hfmm3dpartstoscdg_vec(nd,eps,zk,nsource,source,
-     1    charge,dipstr,dipvec,pot,grad)
+     1    charge,dipvec,pot,grad)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
-cf2py  intent(in) nsource,source,dipstr,dipvec,charge
+cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(out) pot,grad
       implicit none
       double precision eps
@@ -241,7 +241,7 @@ cf2py  intent(out) pot,grad
       integer nd
       
       double precision source(3,nsource),targ(3,1)
-      double complex charge(nd,nsource),dipstr(nd,nsource)
+      double complex charge(nd,nsource)
       double complex dipvec(nd,3,nsource)
 
       double complex pot(nd,nsource),grad(nd,3,nsource)
@@ -259,7 +259,7 @@ cf2py  intent(out) pot,grad
       ntarg = 0
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return
@@ -286,7 +286,7 @@ cf2py  intent(out) pottarg
       integer nd
       
       double precision source(3,nsource),targ(3,ntarg)
-      double complex charge(nd,nsource),dipstr(nd,1)
+      double complex charge(nd,nsource)
       double complex dipvec(nd,3,1)
 
       double complex pot(nd,1)
@@ -303,7 +303,7 @@ cf2py  intent(out) pottarg
       ifpghtarg = 1
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return
@@ -331,7 +331,7 @@ cf2py  intent(out) pottarg,gradtarg
       integer nd
       
       double precision source(3,nsource),targ(3,ntarg)
-      double complex charge(nd,nsource),dipstr(nd,1)
+      double complex charge(nd,nsource)
       double complex dipvec(nd,3,1)
 
       double complex pot(nd,1),grad(nd,3,1)
@@ -347,7 +347,7 @@ cf2py  intent(out) pottarg,gradtarg
       ifpghtarg = 2
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return
@@ -359,10 +359,10 @@ c
 c
 
       subroutine hfmm3dpartstotdp_vec(nd,eps,zk,nsource,source,
-     1    dipstr,dipvec,ntarg,targ,pottarg)
+     1    dipvec,ntarg,targ,pottarg)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
-cf2py  intent(in) nsource,source,dipstr,dipvec
+cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg
       implicit none
@@ -374,7 +374,7 @@ cf2py  intent(out) pottarg
       
       double precision source(3,nsource),targ(3,ntarg)
       double complex charge(nd,1)
-      double complex dipstr(nd,nsource)
+      
       double complex dipvec(nd,3,nsource)
 
       double complex pot(nd,1)
@@ -391,7 +391,7 @@ cf2py  intent(out) pottarg
       ifpghtarg = 1
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return
@@ -403,11 +403,11 @@ c
 c
 
       subroutine hfmm3dpartstotdg_vec(nd,eps,zk,nsource,source,
-     1    dipstr,dipvec,ntarg,targ,pottarg,
+     1    dipvec,ntarg,targ,pottarg,
      2    gradtarg)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
-cf2py  intent(in) nsource,source,dipstr,dipvec
+cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg,gradtarg
       implicit none
@@ -419,7 +419,7 @@ cf2py  intent(out) pottarg,gradtarg
       
       double precision source(3,nsource),targ(3,ntarg)
       double complex charge(nd,1)
-      double complex dipstr(nd,nsource)
+      
       double complex dipvec(nd,3,nsource)
 
       double complex pot(nd,1),grad(nd,3,1)
@@ -435,7 +435,7 @@ cf2py  intent(out) pottarg,gradtarg
       ifpghtarg = 2
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return
@@ -447,10 +447,10 @@ c
 c
 
       subroutine hfmm3dpartstotcdp_vec(nd,eps,zk,nsource,source,
-     1    charge,dipstr,dipvec,ntarg,targ,pottarg)
+     1    charge,dipvec,ntarg,targ,pottarg)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
-cf2py  intent(in) nsource,source,dipstr,dipvec,charge
+cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg
       implicit none
@@ -461,7 +461,7 @@ cf2py  intent(out) pottarg
       integer nd
       
       double precision source(3,nsource),targ(3,ntarg)
-      double complex charge(nd,nsource),dipstr(nd,nsource)
+      double complex charge(nd,nsource)
       double complex dipvec(nd,3,nsource)
 
       double complex pot(nd,1)
@@ -478,7 +478,7 @@ cf2py  intent(out) pottarg
       ifpghtarg = 1
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return
@@ -491,11 +491,11 @@ c
 c
 
       subroutine hfmm3dpartstotcdg_vec(nd,eps,zk,nsource,source,
-     1    charge,dipstr,dipvec,ntarg,targ,pottarg,
+     1    charge,dipvec,ntarg,targ,pottarg,
      2    gradtarg)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
-cf2py  intent(in) nsource,source,dipstr,dipvec,charge
+cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg,gradtarg
       implicit none
@@ -506,7 +506,7 @@ cf2py  intent(out) pottarg,gradtarg
       integer nd
       
       double precision source(3,nsource),targ(3,ntarg)
-      double complex charge(nd,nsource),dipstr(nd,nsource)
+      double complex charge(nd,nsource)
       double complex dipvec(nd,3,nsource)
 
       double complex pot(nd,1),grad(nd,3,1)
@@ -522,7 +522,7 @@ cf2py  intent(out) pottarg,gradtarg
       ifpghtarg = 2
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return
@@ -549,7 +549,7 @@ cf2py  intent(out) pottarg
       integer nd
       
       double precision source(3,nsource),targ(3,ntarg)
-      double complex charge(nd,nsource),dipstr(nd,1)
+      double complex charge(nd,nsource)
       double complex dipvec(nd,3,1)
 
       double complex pot(nd,nsource)
@@ -566,7 +566,7 @@ cf2py  intent(out) pottarg
       ifpghtarg = 1
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return
@@ -594,7 +594,7 @@ cf2py  intent(out) pottarg,gradtarg
       integer nd
       
       double precision source(3,nsource),targ(3,ntarg)
-      double complex charge(nd,nsource),dipstr(nd,1)
+      double complex charge(nd,nsource)
       double complex dipvec(nd,3,1)
 
       double complex pot(nd,nsource),grad(nd,3,nsource)
@@ -610,7 +610,7 @@ cf2py  intent(out) pottarg,gradtarg
       ifpghtarg = 2
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return
@@ -623,10 +623,10 @@ c
 c
 
       subroutine hfmm3dpartstostdp_vec(nd,eps,zk,nsource,source,
-     1    dipstr,dipvec,pot,ntarg,targ,pottarg)
+     1    dipvec,pot,ntarg,targ,pottarg)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
-cf2py  intent(in) nsource,source,dipstr,dipvec
+cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot
 cf2py  intent(out) pottarg
@@ -639,7 +639,7 @@ cf2py  intent(out) pottarg
       
       double precision source(3,nsource),targ(3,ntarg)
       double complex charge(nd,1)
-      double complex dipstr(nd,nsource)
+      
       double complex dipvec(nd,3,nsource)
 
       double complex pot(nd,nsource)
@@ -656,7 +656,7 @@ cf2py  intent(out) pottarg
       ifpghtarg = 1
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return
@@ -668,11 +668,11 @@ c
 c
 
       subroutine hfmm3dpartstostdg_vec(nd,eps,zk,nsource,source,
-     1    dipstr,dipvec,pot,grad,ntarg,targ,pottarg,
+     1    dipvec,pot,grad,ntarg,targ,pottarg,
      2    gradtarg)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
-cf2py  intent(in) nsource,source,dipstr,dipvec
+cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot,grad
 cf2py  intent(out) pottarg,gradtarg
@@ -685,7 +685,7 @@ cf2py  intent(out) pottarg,gradtarg
       
       double precision source(3,nsource),targ(3,ntarg)
       double complex charge(nd,1)
-      double complex dipstr(nd,nsource)
+      
       double complex dipvec(nd,3,nsource)
 
       double complex pot(nd,nsource),grad(nd,3,nsource)
@@ -701,7 +701,7 @@ cf2py  intent(out) pottarg,gradtarg
       ifpghtarg = 2
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return
@@ -713,10 +713,10 @@ c
 c
 
       subroutine hfmm3dpartstostcdp_vec(nd,eps,zk,nsource,source,
-     1    charge,dipstr,dipvec,pot,ntarg,targ,pottarg)
+     1    charge,dipvec,pot,ntarg,targ,pottarg)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
-cf2py  intent(in) nsource,source,dipstr,dipvec,charge
+cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot
 cf2py  intent(out) pottarg
@@ -728,7 +728,7 @@ cf2py  intent(out) pottarg
       integer nd
       
       double precision source(3,nsource),targ(3,ntarg)
-      double complex charge(nd,nsource),dipstr(nd,nsource)
+      double complex charge(nd,nsource)
       double complex dipvec(nd,3,nsource)
 
       double complex pot(nd,nsource)
@@ -745,7 +745,7 @@ cf2py  intent(out) pottarg
       ifpghtarg = 1
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return
@@ -757,11 +757,11 @@ c
 c
 
       subroutine hfmm3dpartstostcdg_vec(nd,eps,zk,nsource,source,
-     1    charge,dipstr,dipvec,pot,grad,ntarg,targ,pottarg,
+     1    charge,dipvec,pot,grad,ntarg,targ,pottarg,
      2    gradtarg)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
-cf2py  intent(in) nsource,source,dipstr,dipvec,charge
+cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot,grad
 cf2py  intent(out) pottarg,gradtarg
@@ -773,7 +773,7 @@ cf2py  intent(out) pottarg,gradtarg
       integer nd
       
       double precision source(3,nsource),targ(3,ntarg)
-      double complex charge(nd,nsource),dipstr(nd,nsource)
+      double complex charge(nd,nsource)
       double complex dipvec(nd,3,nsource)
 
       double complex pot(nd,nsource),grad(nd,3,nsource)
@@ -789,7 +789,7 @@ cf2py  intent(out) pottarg,gradtarg
       ifpghtarg = 2
 
       call hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,charge,
-     1      ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
+     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
       return

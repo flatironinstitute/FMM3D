@@ -1,7 +1,7 @@
       implicit none
       integer ns,nt,nd
       double precision, allocatable :: source(:,:),targ(:,:)
-      double precision, allocatable :: charge(:,:),dipstr(:,:)
+      double precision, allocatable :: charge(:,:)
       double precision, allocatable :: dipvec(:,:,:)
       double precision, allocatable :: pot(:,:),pottarg(:,:)
       double precision, allocatable :: grad(:,:,:),gradtarg(:,:,:)
@@ -28,7 +28,7 @@ c
       nd = 3
 
       allocate(source(3,ns),targ(3,nt))
-      allocate(charge(nd,ns),dipstr(nd,ns),dipvec(nd,3,ns))
+      allocate(charge(nd,ns),dipvec(nd,3,ns))
       allocate(pot(nd,ns))
       allocate(grad(nd,3,ns))
 
@@ -47,7 +47,6 @@ c
 
         do idim=1,nd
           charge(idim,i) = hkrand(0) 
-          dipstr(idim,i) = hkrand(0) 
         
 
           dipvec(idim,1,i) = hkrand(0) 
@@ -99,7 +98,7 @@ c
        ifpghtarg = 0
 
        
-       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -130,7 +129,7 @@ c
        ifpghtarg = 0
 
        
-       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -151,7 +150,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstosdp_vec(nd,eps,ns,source,dipstr,dipvec,
+       call rfmm3dpartstosdp_vec(nd,eps,ns,source,dipvec,
      1      pot)
 
        ifcharge = 0
@@ -160,7 +159,7 @@ c
        ifpghtarg = 0
 
        
-       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -180,7 +179,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstosdg_vec(nd,eps,ns,source,dipstr,dipvec,
+       call rfmm3dpartstosdg_vec(nd,eps,ns,source,dipvec,
      1      pot,grad)
 
        ifcharge = 0
@@ -189,7 +188,7 @@ c
        ifpghtarg = 0
 
        
-       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -208,7 +207,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstoscdp_vec(nd,eps,ns,source,charge,dipstr,dipvec,
+       call rfmm3dpartstoscdp_vec(nd,eps,ns,source,charge,dipvec,
      1      pot)
 
        ifcharge = 1
@@ -217,7 +216,7 @@ c
        ifpghtarg = 0 
 
        
-       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -237,7 +236,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstoscdg_vec(nd,eps,ns,source,charge,dipstr,dipvec,
+       call rfmm3dpartstoscdg_vec(nd,eps,ns,source,charge,dipvec,
      1      pot,grad)
 
        ifcharge = 1
@@ -246,7 +245,7 @@ c
        ifpghtarg = 0
 
        
-       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -276,7 +275,7 @@ c
        ifpghtarg = 1
 
        
-       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -307,7 +306,7 @@ c
        ifpghtarg = 2
 
        
-       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -328,7 +327,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstotdp_vec(nd,eps,ns,source,dipstr,dipvec,
+       call rfmm3dpartstotdp_vec(nd,eps,ns,source,dipvec,
      1      nt,targ,pottarg)
 
        ifcharge = 0
@@ -337,7 +336,7 @@ c
        ifpghtarg = 1
 
        
-       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -357,7 +356,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstotdg_vec(nd,eps,ns,source,dipstr,dipvec,
+       call rfmm3dpartstotdg_vec(nd,eps,ns,source,dipvec,
      1      nt,targ,pottarg,gradtarg)
 
        ifcharge = 0
@@ -366,7 +365,7 @@ c
        ifpghtarg = 2
 
        
-       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -385,7 +384,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstotcdp_vec(nd,eps,ns,source,charge,dipstr,dipvec,
+       call rfmm3dpartstotcdp_vec(nd,eps,ns,source,charge,dipvec,
      1      nt,targ,pottarg)
 
        ifcharge = 1
@@ -394,7 +393,7 @@ c
        ifpghtarg = 1
 
        
-       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -414,7 +413,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstotcdg_vec(nd,eps,ns,source,charge,dipstr,dipvec,
+       call rfmm3dpartstotcdg_vec(nd,eps,ns,source,charge,dipvec,
      1      nt,targ,pottarg,gradtarg)
 
        ifcharge = 1
@@ -423,7 +422,7 @@ c
        ifpghtarg = 2
 
        
-       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -451,7 +450,7 @@ c
        ifpghtarg = 1
 
        
-       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -480,7 +479,7 @@ c
        ifpghtarg = 2
 
        
-       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -501,7 +500,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstostdp_vec(nd,eps,ns,source,dipstr,dipvec,
+       call rfmm3dpartstostdp_vec(nd,eps,ns,source,dipvec,
      1      pot,nt,targ,pottarg)
 
        ifcharge = 0
@@ -510,7 +509,7 @@ c
        ifpghtarg = 1
 
        
-       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -530,7 +529,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstostdg_vec(nd,eps,ns,source,dipstr,dipvec,
+       call rfmm3dpartstostdg_vec(nd,eps,ns,source,dipvec,
      1      pot,grad,nt,targ,pottarg,gradtarg)
 
        ifcharge = 0
@@ -539,7 +538,7 @@ c
        ifpghtarg = 2
 
        
-       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -558,7 +557,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstostcdp_vec(nd,eps,ns,source,charge,dipstr,
+       call rfmm3dpartstostcdp_vec(nd,eps,ns,source,charge,
      1       dipvec,pot,nt,targ,pottarg)
 
        ifcharge = 1
@@ -567,7 +566,7 @@ c
        ifpghtarg = 1
 
        
-       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -587,7 +586,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstostcdg_vec(nd,eps,ns,source,charge,dipstr,
+       call rfmm3dpartstostcdg_vec(nd,eps,ns,source,charge,
      1    dipvec,pot,grad,nt,targ,pottarg,gradtarg)
 
        ifcharge = 1
@@ -596,7 +595,7 @@ c
        ifpghtarg = 2
 
        
-       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,dipstr,
+       call comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
      2   ntest,err)
 
@@ -616,7 +615,7 @@ c
 c
 c
       subroutine comperr_vec(nd,ns,source,ifcharge,charge,ifdipole,
-     1   dipstr,dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,
+     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,
      2   gradtarg,ntest,err)
 
       implicit none
@@ -625,7 +624,7 @@ c
       
       double precision source(3,*),targ(3,*)
       double precision dipvec(nd,3,*)
-      double precision dipstr(nd,*),charge(nd,*)
+      double precision charge(nd,*)
 
       double precision pot(nd,*),pottarg(nd,*),grad(nd,3,*),
      1   gradtarg(nd,3,*)
@@ -681,44 +680,44 @@ c
 
       if(ifcharge.eq.0.and.ifdipole.eq.1) then
         if(ifpgh.eq.1) then
-          call l3ddirectdp(nd,source,dipstr,dipvec,
+          call l3ddirectdp(nd,source,dipvec,
      1      ns,source,ntest,potex,thresh)
         endif
 
         if(ifpgh.eq.2) then
-          call l3ddirectdg(nd,source,dipstr,dipvec,
+          call l3ddirectdg(nd,source,dipvec,
      1       ns,source,ntest,potex,gradex,thresh)
         endif
 
         if(ifpghtarg.eq.1) then
-          call l3ddirectdp(nd,source,dipstr,dipvec,
+          call l3ddirectdp(nd,source,dipvec,
      1       ns,targ,ntest,pottargex,thresh)
         endif
 
         if(ifpghtarg.eq.2) then
-          call l3ddirectdg(nd,source,dipstr,dipvec,
+          call l3ddirectdg(nd,source,dipvec,
      1       ns,targ,ntest,pottargex,gradtargex,thresh)
         endif
       endif
 
       if(ifcharge.eq.1.and.ifdipole.eq.1) then
         if(ifpgh.eq.1) then
-          call l3ddirectcdp(nd,source,charge,dipstr,dipvec,
+          call l3ddirectcdp(nd,source,charge,dipvec,
      1      ns,source,ntest,potex,thresh)
         endif
 
         if(ifpgh.eq.2) then
-          call l3ddirectcdg(nd,source,charge,dipstr,dipvec,
+          call l3ddirectcdg(nd,source,charge,dipvec,
      1       ns,source,ntest,potex,gradex,thresh)
         endif
 
         if(ifpghtarg.eq.1) then
-          call l3ddirectcdp(nd,source,charge,dipstr,dipvec,
+          call l3ddirectcdp(nd,source,charge,dipvec,
      1       ns,targ,ntest,pottargex,thresh)
         endif
 
         if(ifpghtarg.eq.2) then
-          call l3ddirectcdg(nd,source,charge,dipstr,dipvec,
+          call l3ddirectcdg(nd,source,charge,dipvec,
      1       ns,targ,ntest,pottargex,gradtargex,thresh)
         endif
       endif

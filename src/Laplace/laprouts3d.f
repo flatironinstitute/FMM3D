@@ -608,7 +608,7 @@ c
 c
 c
 C***********************************************************************
-      subroutine l3dformmpd(nd,rscale,sources,dipstr,dipvec,ns,center,
+      subroutine l3dformmpd(nd,rscale,sources,dipvec,ns,center,
      1                  nterms,mpole,wlege,nlege)
 C***********************************************************************
 C
@@ -621,7 +621,6 @@ c
 c     nd              : number of multipole expansions
 C     rscale          : the scaling factor.
 C     sources(3,ns)   : coordinates of sources
-C     dipstr(nd,ns)   : dipole strengths
 C     dipvec(nd,3,ns) : dipole orientiation vectors
 C     ns              : number of sources
 C     center(3)       : epxansion center
@@ -643,7 +642,6 @@ c
       real *8 wlege(0:nlege,0:nlege)
       real *8 rscale
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
-      real *8 dipstr(nd,ns)
       real *8 dipvec(nd,3,ns)
 
 c
@@ -762,7 +760,7 @@ c
         do idim=1,nd
           zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1        dipvec(idim,3,isrc)*uz
-          mpole(idim,0,0)= mpole(idim,0,0) + zzz*dipstr(idim,isrc)
+          mpole(idim,0,0)= mpole(idim,0,0) + zzz
         enddo
 
         do n=1,nterms
@@ -775,7 +773,7 @@ c
           do idim=1,nd
             zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1        dipvec(idim,3,isrc)*uz
-            mpole(idim,n,0)= mpole(idim,n,0) + zzz*dipstr(idim,isrc)
+            mpole(idim,n,0)= mpole(idim,n,0) + zzz
           enddo
           do m=1,n
             ur = frder(n)*ynm(n,m)*stheta*ephi(-m)
@@ -787,7 +785,7 @@ c
             do idim=1,nd
               zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1          dipvec(idim,3,isrc)*uz
-              mpole(idim,n,m)= mpole(idim,n,m) + zzz*dipstr(idim,isrc)
+              mpole(idim,n,m)= mpole(idim,n,m) + zzz
             enddo
 c
             ur = frder(n)*ynm(n,m)*stheta*ephi(m)
@@ -799,7 +797,7 @@ c
             do idim=1,nd
               zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1          dipvec(idim,3,isrc)*uz
-              mpole(idim,n,-m)= mpole(idim,n,-m) + zzz*dipstr(idim,isrc)
+              mpole(idim,n,-m)= mpole(idim,n,-m) + zzz
             enddo
           enddo
         enddo
@@ -815,7 +813,7 @@ c
 c
 c
 C***********************************************************************
-      subroutine l3dformmpcd(nd,rscale,sources,charge,dipstr,dipvec,ns,
+      subroutine l3dformmpcd(nd,rscale,sources,charge,dipvec,ns,
      1             center,nterms,mpole,wlege,nlege)
 C***********************************************************************
 C
@@ -829,7 +827,6 @@ c     nd              : number of multipole expansions
 C     rscale          : the scaling factor.
 C     sources(3,ns)   : coordinates of sources
 C     charge(nd,ns)   : charge strengths
-C     dipstr(nd,ns)   : dipole strengths
 C     dipvec(nd,3,ns) : dipole orientiation vectors
 C     ns              : number of sources
 C     center(3)       : epxansion center
@@ -851,7 +848,7 @@ c
       real *8 wlege(0:nlege,0:nlege)
       real *8 rscale
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
-      real *8 charge(nd,ns),dipstr(nd,ns)
+      real *8 charge(nd,ns)
       real *8 dipvec(nd,3,ns)
 
 c
@@ -969,7 +966,7 @@ c
         do idim=1,nd
           zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1        dipvec(idim,3,isrc)*uz
-          mpole(idim,0,0)= mpole(idim,0,0) + zzz*dipstr(idim,isrc) +
+          mpole(idim,0,0)= mpole(idim,0,0) + zzz +
      1            fr(0)*charge(idim,isrc)
         enddo
 
@@ -984,7 +981,7 @@ c
           do idim=1,nd
             zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1        dipvec(idim,3,isrc)*uz
-            mpole(idim,n,0)= mpole(idim,n,0) + zzz*dipstr(idim,isrc) + 
+            mpole(idim,n,0)= mpole(idim,n,0) + zzz + 
      1         charge(idim,isrc)*dtmp
           enddo
           do m=1,n
@@ -998,7 +995,7 @@ c
             do idim=1,nd
               zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1          dipvec(idim,3,isrc)*uz
-              mpole(idim,n,m)= mpole(idim,n,m) + zzz*dipstr(idim,isrc)+
+              mpole(idim,n,m)= mpole(idim,n,m) + zzz + 
      1            charge(idim,isrc)*dtmp*ephi(-m)
             enddo
 c
@@ -1011,7 +1008,7 @@ c
             do idim=1,nd
               zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1          dipvec(idim,3,isrc)*uz
-              mpole(idim,n,-m)= mpole(idim,n,-m)+zzz*dipstr(idim,isrc)+
+              mpole(idim,n,-m)= mpole(idim,n,-m)+zzz+
      1              charge(idim,isrc)*dtmp*ephi(m)
             enddo
           enddo
@@ -1487,7 +1484,7 @@ c
 c
 c
 C***********************************************************************
-      subroutine l3dformtad(nd,rscale,sources,dipstr,dipvec,ns,center,
+      subroutine l3dformtad(nd,rscale,sources,dipvec,ns,center,
      1                  nterms,mpole,wlege,nlege)
 C***********************************************************************
 C
@@ -1500,7 +1497,6 @@ c
 c     nd              : number of multipole expansions
 C     rscale          : the scaling factor.
 C     sources(3,ns)   : coordinates of sources
-C     dipstr(nd,ns)   : dipole strengths
 C     dipvec(nd,3,ns) : dipole orientiation vectors
 C     ns              : number of sources
 C     center(3)       : epxansion center
@@ -1522,7 +1518,6 @@ c
       real *8 wlege(0:nlege,0:nlege)
       real *8 rscale
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
-      real *8 dipstr(nd,ns)
       real *8 dipvec(nd,3,ns)
 
 c
@@ -1634,7 +1629,7 @@ c
         do idim=1,nd
           zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1        dipvec(idim,3,isrc)*uz
-          mpole(idim,0,0)= mpole(idim,0,0) + zzz*dipstr(idim,isrc)
+          mpole(idim,0,0)= mpole(idim,0,0) + zzz
         enddo
 
         do n=1,nterms
@@ -1646,7 +1641,7 @@ c
           do idim=1,nd
             zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1        dipvec(idim,3,isrc)*uz
-            mpole(idim,n,0)= mpole(idim,n,0) + zzz*dipstr(idim,isrc)
+            mpole(idim,n,0)= mpole(idim,n,0) + zzz
           enddo
           do m=1,n
             ur = frder(n)*ynm(n,m)*stheta*ephi(-m)
@@ -1658,7 +1653,7 @@ c
             do idim=1,nd
               zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1          dipvec(idim,3,isrc)*uz
-              mpole(idim,n,m)= mpole(idim,n,m) + zzz*dipstr(idim,isrc)
+              mpole(idim,n,m)= mpole(idim,n,m) + zzz
             enddo
 c
             ur = frder(n)*ynm(n,m)*stheta*ephi(m)
@@ -1670,7 +1665,7 @@ c
             do idim=1,nd
               zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1          dipvec(idim,3,isrc)*uz
-              mpole(idim,n,-m)= mpole(idim,n,-m) + zzz*dipstr(idim,isrc)
+              mpole(idim,n,-m)= mpole(idim,n,-m) + zzz
             enddo
           enddo
         enddo
@@ -1686,7 +1681,7 @@ c
 c
 c
 C***********************************************************************
-      subroutine l3dformtacd(nd,rscale,sources,charge,dipstr,dipvec,ns,
+      subroutine l3dformtacd(nd,rscale,sources,charge,dipvec,ns,
      1             center,nterms,mpole,wlege,nlege)
 C***********************************************************************
 C
@@ -1700,7 +1695,6 @@ c     nd              : number of multipole expansions
 C     rscale          : the scaling factor.
 C     sources(3,ns)   : coordinates of sources
 C     charge(nd,ns)   : charge strengths
-C     dipstr(nd,ns)   : dipole strengths
 C     dipvec(nd,3,ns) : dipole orientiation vectors
 C     ns              : number of sources
 C     center(3)       : epxansion center
@@ -1722,7 +1716,7 @@ c
       real *8 wlege(0:nlege,0:nlege)
       real *8 rscale
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
-      real *8 charge(nd,ns),dipstr(nd,ns)
+      real *8 charge(nd,ns)
       real *8 dipvec(nd,3,ns)
 
 c
@@ -1840,7 +1834,7 @@ c
         do idim=1,nd
           zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1        dipvec(idim,3,isrc)*uz
-          mpole(idim,0,0)= mpole(idim,0,0) + zzz*dipstr(idim,isrc) +
+          mpole(idim,0,0)= mpole(idim,0,0) + zzz + 
      1            fr(0)*charge(idim,isrc)
         enddo
 
@@ -1854,7 +1848,7 @@ c
           do idim=1,nd
             zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1        dipvec(idim,3,isrc)*uz
-            mpole(idim,n,0)= mpole(idim,n,0) + zzz*dipstr(idim,isrc) + 
+            mpole(idim,n,0)= mpole(idim,n,0) + zzz + 
      1         charge(idim,isrc)*dtmp
           enddo
           do m=1,n
@@ -1868,7 +1862,7 @@ c
             do idim=1,nd
               zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1          dipvec(idim,3,isrc)*uz
-              mpole(idim,n,m)= mpole(idim,n,m) + zzz*dipstr(idim,isrc)+
+              mpole(idim,n,m)= mpole(idim,n,m) + zzz+ 
      1            charge(idim,isrc)*dtmp*ephi(-m)
             enddo
 c
@@ -1881,7 +1875,7 @@ c
             do idim=1,nd
               zzz = dipvec(idim,1,isrc)*ux + dipvec(idim,2,isrc)*uy + 
      1          dipvec(idim,3,isrc)*uz
-              mpole(idim,n,-m)= mpole(idim,n,-m)+zzz*dipstr(idim,isrc)+
+              mpole(idim,n,-m)= mpole(idim,n,-m)+zzz+
      1              charge(idim,isrc)*dtmp*ephi(m)
             enddo
           enddo
@@ -2071,7 +2065,7 @@ c
 c
 c
 C***********************************************************************
-      subroutine l3ddirectdp(nd,sources,dipstr,
+      subroutine l3ddirectdp(nd,sources,
      1            dipvec,ns,ztarg,nt,pot,thresh)
 c**********************************************************************
 c
@@ -2079,10 +2073,9 @@ c     This subroutine evaluates the potential due to a collection
 c     of sources and adds to existing
 c     quantities.
 c
-c     pot(x) = pot(x) + sum   d_{j} \nabla 1/|x-x_{j}| \cdot v_{j} 
+c     pot(x) = pot(x) + sum   \nabla 1/|x-x_{j}| \cdot v_{j} 
 c   
-c      where d_{j} is the dipole strength
-c      and v_{j} is the dipole orientation vector, 
+c      where v_{j} is the dipole orientation vector, 
 c      \nabla denotes the gradient is with respect to the x_{j} 
 c      variable 
 c      If |r| < thresh 
@@ -2096,7 +2089,6 @@ c     INPUT:
 c
 c     nd     :    number of charge and dipole densities
 c     sources:    source locations
-C     dipstr :    dipole strengths
 C     dipvec :    dipole orientation vectors
 C     ns     :    number of sources
 c     ztarg  :    target locations
@@ -2118,7 +2110,7 @@ cc      calling sequence variables
 c  
       integer ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
-      real *8 dipstr(nd,ns),pot(nd,nt)
+      real *8 pot(nd,nt)
       real *8 thresh
       
 c
@@ -2145,7 +2137,7 @@ c
             dotprod = zdiff(1)*dipvec(idim,1,j) + 
      1          zdiff(2)*dipvec(idim,2,j)+
      1          zdiff(3)*dipvec(idim,3,j)
-            pot(idim,i) = pot(idim,i) + dipstr(idim,j)*cd*dotprod
+            pot(idim,i) = pot(idim,i) + cd*dotprod
           enddo
 
  1000     continue
@@ -2162,7 +2154,7 @@ c
 c
 c
 C***********************************************************************
-      subroutine l3ddirectdg(nd,sources,dipstr,
+      subroutine l3ddirectdg(nd,sources,
      1            dipvec,ns,ztarg,nt,pot,grad,thresh)
 c**********************************************************************
 c
@@ -2175,11 +2167,10 @@ c
 c     grad(x) = grad(x) + Gradient( sum  
 c                                    j
 c
-c                            d_{j} \nabla 1|/|x-x_{j}| \cdot v_{j}
+c                            \nabla 1|/|x-x_{j}| \cdot v_{j}
 c                            )
 c                                   
-c      where d_{j} is the dipole strength
-c      and v_{j} is the dipole orientation vector, 
+c      where v_{j} is the dipole orientation vector, 
 c      \nabla denotes the gradient is with respect to the x_{j} 
 c      variable, and Gradient denotes the gradient with respect to
 c      the x variable
@@ -2194,7 +2185,6 @@ c     INPUT:
 c
 c     nd     :    number of charge and dipole densities
 c     sources:    source locations
-C     dipstr :    dipole strengths
 C     dipvec :    dipole orientation vector
 C     ns     :    number of sources
 c     ztarg  :    target locations
@@ -2217,7 +2207,7 @@ cc      calling sequence variables
 c  
       integer ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
-      real *8 dipstr(nd,ns),pot(nd,nt),grad(nd,3,nt)
+      real *8 pot(nd,nt),grad(nd,3,nt)
       real *8 thresh
       
 c
@@ -2252,13 +2242,13 @@ c
      1               zdiff(3)*dipvec(idim,3,j)
             cd4 = cd3*dotprod
 
-            pot(idim,i) = pot(idim,i) - cd2*dotprod*dipstr(idim,j)
+            pot(idim,i) = pot(idim,i) - cd2*dotprod
             grad(idim,1,i) = grad(idim,1,i) + (cd4*zdiff(1) - 
-     1         cd2*dipvec(idim,1,j))*dipstr(idim,j) 
+     1         cd2*dipvec(idim,1,j))
             grad(idim,2,i) = grad(idim,2,i) + (cd4*zdiff(2) - 
-     1         cd2*dipvec(idim,2,j))*dipstr(idim,j) 
+     1         cd2*dipvec(idim,2,j))
             grad(idim,3,i) = grad(idim,3,i) + (cd4*zdiff(3) - 
-     1         cd2*dipvec(idim,3,j))*dipstr(idim,j) 
+     1         cd2*dipvec(idim,3,j))
           enddo
  1000     continue
         enddo
@@ -2272,7 +2262,7 @@ c
 c
 c
 C***********************************************************************
-      subroutine l3ddirectcdp(nd,sources,charge,dipstr,
+      subroutine l3ddirectcdp(nd,sources,charge,
      1            dipvec,ns,ztarg,nt,pot,thresh)
 c**********************************************************************
 c
@@ -2283,9 +2273,9 @@ c
 c     pot(x) = pot(x) + sum  q_{j} 1/|x-x_{j}| +  
 c                        j
 c
-c                            d_{j} \nabla 1/|x-x_{j}| \cdot v_{j}
+c                            \nabla 1/|x-x_{j}| \cdot v_{j}
 c   
-c      where q_{j} is the charge strength, d_{j} is the dipole strength
+c      where q_{j} is the charge strength, 
 c      and v_{j} is the dipole orientation vector, 
 c      \nabla denotes the gradient is with respect to the x_{j} 
 c      variable 
@@ -2301,7 +2291,6 @@ c
 c     nd     :    number of charge and dipole densities
 c     sources:    source locations
 C     charge :    charge strengths
-C     dipstr :    dipole strengths
 C     dipvec :    dipole orientation vectors
 C     ns     :    number of sources
 c     ztarg  :    target locations
@@ -2323,7 +2312,7 @@ cc      calling sequence variables
 c  
       integer ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
-      real *8 charge(nd,ns),dipstr(nd,ns),pot(nd,nt)
+      real *8 charge(nd,ns),pot(nd,nt)
       real *8 thresh
       
 c
@@ -2354,7 +2343,7 @@ c
             dotprod = zdiff(1)*dipvec(idim,1,j) + 
      1          zdiff(2)*dipvec(idim,2,j)+
      1          zdiff(3)*dipvec(idim,3,j)
-            pot(idim,i) = pot(idim,i) + dipstr(idim,j)*cd1*dotprod
+            pot(idim,i) = pot(idim,i) + cd1*dotprod
           enddo
 
  1000     continue
@@ -2371,7 +2360,7 @@ c
 c
 c
 C***********************************************************************
-      subroutine l3ddirectcdg(nd,sources,charge,dipstr,
+      subroutine l3ddirectcdg(nd,sources,charge,
      1            dipvec,ns,ztarg,nt,pot,grad,thresh)
 c**********************************************************************
 c
@@ -2381,15 +2370,15 @@ c
 c     pot(x) = pot(x) + sum  q_{j} 1/|x-x_{j}| +  
 c                        j
 c
-c                            d_{j} \nabla 1/|x-x_{j}| \cdot v_{j}
+c                            \nabla 1/|x-x_{j}| \cdot v_{j}
 c   
 c     grad(x) = grad(x) + Gradient( sum  q_{j} 1/|x-x_{j}| +  
 c                                    j
 c
-c                            d_{j} \nabla 1/|x-x_{j}| \cdot v_{j}
+c                            \nabla 1/|x-x_{j}| \cdot v_{j}
 c                            )
 c                                   
-c      where q_{j} is the charge strength, d_{j} is the dipole strength
+c      where q_{j} is the charge strength, 
 c      and v_{j} is the dipole orientation vector, 
 c      \nabla denotes the gradient is with respect to the x_{j} 
 c      variable, and Gradient denotes the gradient with respect to
@@ -2406,7 +2395,6 @@ c
 c     nd     :    number of charge and dipole densities
 c     sources:    source locations
 C     charge :    charge strengths
-C     dipstr :    dipole strengths
 C     dipvec :    dipole orientation vector
 C     ns     :    number of sources
 c     ztarg  :    target locations
@@ -2429,7 +2417,7 @@ cc      calling sequence variables
 c  
       integer ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
-      real *8 charge(nd,ns),dipstr(nd,ns),pot(nd,nt),grad(nd,3,nt)
+      real *8 charge(nd,ns),pot(nd,nt),grad(nd,3,nt)
       real *8 thresh
       
 c
@@ -2463,15 +2451,15 @@ c
      1               zdiff(3)*dipvec(idim,3,j)
             cd4 = cd3*dotprod
 
-            pot(idim,i) = pot(idim,i) - cd2*dotprod*dipstr(idim,j)
+            pot(idim,i) = pot(idim,i) - cd2*dotprod
             grad(idim,1,i) = grad(idim,1,i) + (cd4*zdiff(1) - 
-     1         cd2*dipvec(idim,1,j))*dipstr(idim,j) 
+     1         cd2*dipvec(idim,1,j))
      2         + cd2*charge(idim,j)*zdiff(1) 
             grad(idim,2,i) = grad(idim,2,i) + (cd4*zdiff(2) - 
-     1         cd2*dipvec(idim,2,j))*dipstr(idim,j) 
+     1         cd2*dipvec(idim,2,j))
      2         + cd2*charge(idim,j)*zdiff(2) 
             grad(idim,3,i) = grad(idim,3,i) + (cd4*zdiff(3) - 
-     1         cd2*dipvec(idim,3,j))*dipstr(idim,j) 
+     1         cd2*dipvec(idim,3,j))
      2         + cd2*charge(idim,j)*zdiff(3)
           enddo
  1000     continue

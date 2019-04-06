@@ -28,7 +28,7 @@ c
 c   
 c-----------------------------------------------------------
         subroutine hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,
-     $    charge,ifdipole,dipstr,dipvec,ifpgh,pot,grad,hess,ntarg,
+     $    charge,ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,
      $    targ,ifpghtarg,pottarg,gradtarg,hesstarg)
 c-----------------------------------------------------------------------
 c   INPUT PARAMETERS:
@@ -59,9 +59,6 @@ c   ifdipole   in: integer
 c              dipole computation flag
 c              ifdipole = 1   =>  include dipole contribution
 c                                     otherwise do not
-c
-c   dipstr   in: double complex (nd,nsource)
-c              dipole strengths
 c
 c   dipvec   in: double precision (nd,3,nsource) 
 c              dipole orientation vectors
@@ -122,7 +119,6 @@ c------------------------------------------------------------------
       double precision source(3,*),targ(3,*)
       double complex charge(nd,*)
 
-      double complex dipstr(nd,*)
       double complex dipvec(nd,3,*)
 
       double complex pot(nd,*),grad(nd,3,*),pottarg(nd,3,*),
@@ -141,7 +137,7 @@ cc      temporary sorted arrays
 c
       double precision, allocatable :: sourcesort(:,:),targsort(:,:)
       double precision, allocatable :: radsrc(:)
-      double complex, allocatable :: chargesort(:,:),dipstrsort(:,:)
+      double complex, allocatable :: chargesort(:,:)
       double complex, allocatable :: dipvecsort(:,:,:)
 
       double complex, allocatable :: potsort(:,:),gradsort(:,:,:),
@@ -255,7 +251,7 @@ c     Allocate sorted source and target arrays
       allocate(targsort(3,ntarg))
       if(ifcharge.eq.1) allocate(chargesort(nd,nsource))
       if(ifdipole.eq.1) then
-         allocate(dipstrsort(nd,nsource),dipvecsort(nd,3,nsource))
+         allocate(dipvecsort(nd,3,nsource))
       endif
 
       if(ifpgh.eq.1) then 
@@ -418,8 +414,6 @@ c
      1                     itree(ipointer(5)))
 
       if(ifdipole.eq.1) then
-         call dreorderf(2*nd,nsource,dipstr,dipstrsort,
-     1       itree(ipointer(5)))
          call dreorderf(6*nd,nsource,dipvec,dipvecsort,
      1       itree(ipointer(5)))
       endif
@@ -453,7 +447,7 @@ C$      time1=omp_get_wtime()
       call hfmm3dmain(nd,eps,zk,
      $   nsource,sourcesort,
      $   ifcharge,chargesort,
-     $   ifdipole,dipstrsort,dipvecsort,
+     $   ifdipole,dipvecsort,
      $   ntarg,targsort,nexpc,expcsort,radssort,
      $   iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp,
      $   itree,ltree,ipointer,isep,ndiv,nlevels,
@@ -518,7 +512,7 @@ c
       subroutine hfmm3dmain(nd,eps,zk,
      $     nsource,sourcesort,
      $     ifcharge,chargesort,
-     $     ifdipole,dipstrsort,dipvecsort,
+     $     ifdipole,dipvecsort,
      $     ntarg,targsort,nexpc,expcsort,radssort,
      $     iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp,
      $     itree,ltree,ipointer,isep,ndiv,nlevels, 
@@ -541,7 +535,6 @@ c
       double precision sourcesort(3,nsource)
 
       double complex chargesort(nd,*)
-      double complex dipstrsort(nd,*)
       double complex dipvecsort(nd,3,*)
 
       double precision targsort(3,ntarg)
@@ -813,7 +806,7 @@ C
 
                if(npts.gt.0.and.nchild.eq.0) then
                   call h3dformmpd(nd,zk,rscales(ilev),
-     1            sourcesort(1,istart),dipstrsort(1,istart),
+     1            sourcesort(1,istart),
      2            dipvecsort(1,1,istart),npts,
      2            centers(1,ibox),nterms(ilev),
      3            rmlexp(iaddr(1,ibox)),wlege,nlege)          
@@ -833,7 +826,7 @@ C
                if(npts.gt.0.and.nchild.eq.0) then
                   call h3dformmpcd(nd,zk,rscales(ilev),
      1            sourcesort(1,istart),chargesort(1,istart),
-     2            dipstrsort(1,istart),dipvecsort(1,1,istart),npts,
+     2            dipvecsort(1,1,istart),npts,
      2            centers(1,ibox),nterms(ilev),
      3            rmlexp(iaddr(1,ibox)),wlege,nlege)          
                endif
@@ -902,9 +895,8 @@ c              of the current box
                if(npts.gt.0) then
                    call h3dformtad(nd,zk,rscales(ilev),
      1              sourcesort(1,istart),
-     2              dipstrsort(1,istart),
-     3              dipvecsort(1,1,istart),npts,centers(1,ibox),
-     4              nterms(ilev),rmlexp(iaddr(2,ibox)),wlege,nlege)
+     2              dipvecsort(1,1,istart),npts,centers(1,ibox),
+     3              nterms(ilev),rmlexp(iaddr(2,ibox)),wlege,nlege)
                endif
             enddo
          enddo
@@ -932,9 +924,8 @@ c              of the current box
                if(npts.gt.0) then
                    call h3dformtacd(nd,zk,rscales(ilev),
      1              sourcesort(1,istart),chargesort(1,istart),
-     2              dipstrsort(1,istart),
-     3              dipvecsort(1,1,istart),npts,centers(1,ibox),
-     4              nterms(ilev),rmlexp(iaddr(2,ibox)),wlege,nlege)
+     2              dipvecsort(1,1,istart),npts,centers(1,ibox),
+     3              nterms(ilev),rmlexp(iaddr(2,ibox)),wlege,nlege)
                endif
             enddo
          enddo
@@ -1638,7 +1629,7 @@ C$OMP$PRIVATE(jstart,jend)
 
                call hfmm3dexpc_direct(nd,zk,jstart,jend,istarte,
      1         iende,sourcesort,ifcharge,chargesort,ifdipole,
-     2         dipstrsort,dipvecsort,expcsort,jsort,scjsort,ntj,
+     2         dipvecsort,expcsort,jsort,scjsort,ntj,
      3         wlege,nlege)
             enddo
          enddo
@@ -1689,7 +1680,6 @@ c
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
                 call h3ddirectdp(nd,zk,sourcesort(1,jstart),
-     1             dipstrsort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),thresh)          
               enddo
@@ -1708,7 +1698,7 @@ c
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
                 call h3ddirectcdp(nd,zk,sourcesort(1,jstart),
-     1             chargesort(1,jstart),dipstrsort(1,jstart),
+     1             chargesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),thresh)          
               enddo
@@ -1749,7 +1739,6 @@ c
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
                 call h3ddirectdg(nd,zk,sourcesort(1,jstart),
-     1             dipstrsort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)          
               enddo
@@ -1769,7 +1758,7 @@ c
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
                 call h3ddirectcdg(nd,zk,sourcesort(1,jstart),
-     1             chargesort(1,jstart),dipstrsort(1,jstart),
+     1             chargesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)          
               enddo
@@ -1809,7 +1798,6 @@ c
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
                 call h3ddirectdp(nd,zk,sourcesort(1,jstart),
-     1             dipstrsort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),thresh)          
               enddo
@@ -1828,7 +1816,7 @@ c
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
                 call h3ddirectcdp(nd,zk,sourcesort(1,jstart),
-     1             chargesort(1,jstart),dipstrsort(1,jstart),
+     1             chargesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),thresh)          
               enddo
@@ -1869,7 +1857,6 @@ c
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
                 call h3ddirectdg(nd,zk,sourcesort(1,jstart),
-     1             dipstrsort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),gradtarg(1,1,istartt),
      3             thresh)          
@@ -1889,7 +1876,7 @@ c
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
                 call h3ddirectcdg(nd,zk,sourcesort(1,jstart),
-     1             chargesort(1,jstart),dipstrsort(1,jstart),
+     1             chargesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),gradtarg(1,1,istartt),
      3             thresh)          
@@ -1925,7 +1912,7 @@ C$        time2=omp_get_wtime()
 
 c------------------------------------------------------------------
       subroutine hfmm3dexpc_direct(nd,zk,istart,iend,jstart,
-     $     jend,source,ifcharge,charge,ifdipole,dipstr,
+     $     jend,source,ifcharge,charge,ifdipole,
      $     dipvec,targ,texps,scj,ntj,wlege,nlege)
 c---------------------------------------------------------------
 c     This subroutine adds the local expansions due to sources
@@ -1973,10 +1960,7 @@ c                 flag for including expansions due to dipoles
 c                 The expansion due to dipoles will be included
 c                 if ifdipole == 1
 c
-c     dipstr        in: double complex(ns)
-c                   dip strengths at the source locations
-c
-c     dipvec      in: double precision(3,ns)
+c     dipvec      in: double complex(3,ns)
 c                 Dipole orientation vector at the source locations
 c
 c     targ        in: double precision(3,nexpc)
@@ -2008,7 +1992,7 @@ c
         double complex zk
         double precision source(3,*)
         double precision wlege(0:nlege,0:nlege)
-        double complex charge(nd,*),dipstr(nd,*)
+        double complex charge(nd,*)
         double complex dipvec(nd,3,*)
         double precision targ(3,*),scj(*)
 
@@ -2029,7 +2013,7 @@ c
          if(ifcharge.eq.0.and.ifdipole.eq.1) then
           do j=jstart,jend
             call h3dformtad(nd,zk,scj(j),
-     1        source(1,istart),dipstr(1,istart),
+     1        source(1,istart),
      2        dipvec(1,1,istart),ns,targ(1,j),ntj,texps(1,0,-ntj,j),
      3        wlege,nlege)
            enddo
@@ -2038,7 +2022,7 @@ c
          if(ifcharge.eq.1.and.ifdipole.eq.1) then
           do j=jstart,jend
             call h3dformtacd(nd,zk,scj(j),
-     1        source(1,istart),charge(1,istart),dipstr(1,istart),
+     1        source(1,istart),charge(1,istart),
      2        dipvec(1,1,istart),ns,targ(1,j),ntj,texps(1,0,-ntj,j),
      3        wlege,nlege)
            enddo
