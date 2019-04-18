@@ -32,7 +32,7 @@ MWRAP=mwrap
 -include make.inc
 
 # multi-threaded libs & flags needed
-ifneq ($(OMP),on)
+ifeq ($(OMP),on)
 CFLAGS += $(OMPFLAGS)
 FFLAGS += $(OMPFLAGS)
 endif
@@ -46,7 +46,7 @@ STATICLIB = lib-static/$(LIBNAME).a
 # Common objects
 COM = src/Common
 COMOBJS = $(COM)/besseljs3d.o $(COM)/cdjseval3d.o $(COM)/dfft.o \
-	$(COM)/fmmcommon.f $(COM)/legeexps.o $(COM)/prini.o \
+	$(COM)/fmmcommon.o $(COM)/legeexps.o $(COM)/prini.o \
 	$(COM)/rotgen.o $(COM)/rotproj.o $(COM)/rotviarecur.o \
 	$(COM)/tree_lr_3d.o $(COM)/yrecursion.o
 
@@ -82,7 +82,7 @@ usage:
 	@echo "  make python - compile and test python interfaces"
 	@echo "  make objclean - removal all object files, preserving lib & MEX"
 	@echo "  make clean - also remove lib, MEX, py, and demo executables"
-	@echo "For faster (multicore) making, append the flag -j
+	@echo "For faster (multicore) making, append the flag -j"
 	@echo "  'make [tast] OMP=ON' for multi-threaded (otherwise single-threaded)"
 
 
@@ -101,7 +101,10 @@ ifeq ($(OMP),OFF)
 else
 	echo "$(STATICLIB) and $(DYNAMICLIB) built, multithreaded versions"
 endif
-$(STATICLIB): $(OBJS) $(HEADERS)
+$(STATICLIB): $(OBJS) 
 	ar rcs $(STATICLIB) $(OBJS)
-$(DYNAMICLIB): $(OBJS) $(HEADERS)
+$(DYNAMICLIB): $(OBJS) 
 	$(FC) -shared $(OMPFLAGS) $(OBJS) -o $(DYNAMICLIB)
+
+objclean: 
+	rm -f $(OBJS)
