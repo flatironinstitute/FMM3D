@@ -2,7 +2,7 @@ c
 cc      plane wave routines for Helmholtz 3D FMM
 c 
 c***********************************************************************
-      subroutine rlscini(rlsc,nlambs,rlams,zk,nterms)
+      subroutine hrlscini(rlsc,nlambs,rlams,zk,nterms)
 c***********************************************************************
 c
 c       this subroutine computes p_{n,m}(i\sqrt(\lambda^2 - k^2)/k) (-i)^n
@@ -55,7 +55,7 @@ c
       return
       end
 c***********************************************************************
-      subroutine mkexps(rlams,nlambs,numphys,nexptotp,zk,xs,ys,zs)
+      subroutine hmkexps(rlams,nlambs,numphys,nexptotp,zk,xs,ys,zs)
       implicit real *8 (a-h,o-z)
       complex *16 ima,zk,rk
       complex *16 xs(-5:5,nexptotp)
@@ -167,7 +167,7 @@ c
       return
       end
 c***********************************************************************
-      subroutine mkfexp(nlambs,numfour,numphys,fexp,fexp2)
+      subroutine hmkfexp(nlambs,numfour,numphys,fexp,fexp2)
       implicit real *8 (a-h,o-z)
       complex *16 ima
       complex *16 fexp(1),fexp2(1)
@@ -222,7 +222,7 @@ c***********************************************************************
       end
 c***********************************************************************
 
-      subroutine mpoletoexp(nd,mpole,nterms,nlambs,numtets,nexptot,
+      subroutine hmpoletoexp(nd,mpole,nterms,nlambs,numtets,nexptot,
      1                mexpupf,mexpdownf,rlsc)
 
 c     This subroutine converts a multipole expansion into the
@@ -400,7 +400,7 @@ c     Temp variables
       end
 
 c-----------------------------------------------------------------      
-      subroutine exptolocal(nd,local,nterms,zk,rlambs,whts,nlambs,
+      subroutine hexptolocal(nd,local,nterms,zk,rlambs,whts,nlambs,
      1       numtets,nthmax,nexptot,lexp1f,lexp2f,scale,rlsc)
 c-----------------------------------------------------------------
 c     This sburoutine converts the Fourier representation of
@@ -590,7 +590,8 @@ c        Add contributions to local expansion
       return
       end
 c***********************************************************************
-      subroutine phystof(nd,mexpf,nlambs,numfour,numphys,mexpphys,fexp2)
+      subroutine hphystof(nd,mexpf,nlambs,numfour,numphys,mexpphys,
+     1   fexp2)
 c***********************************************************************
       implicit real *8 (a-h,o-z)
       integer nd,idim
@@ -693,7 +694,7 @@ c
       end
 c
 c********************************************************************
-      subroutine ftophys(nd,mexpf,nlambs,numfour,numphys,mexpphys,fexp)
+      subroutine hftophys(nd,mexpf,nlambs,numfour,numphys,mexpphys,fexp)
 c***********************************************************************
       implicit real *8 (a-h,o-z)
       complex *16 mexpf(nd,*)
@@ -774,7 +775,7 @@ c
       end
 c----------------------------------------------------------      
 
-      subroutine processudexp(nd,zk2,ibox,ilev,nboxes,centers,ichild,
+      subroutine hprocessudexp(nd,zk2,ibox,ilev,nboxes,centers,ichild,
      1           rscale,nterms,iaddr,rmlexp,rlams,whts,nlams,nfourier,
      2           nphysical,nthmax,nexptot,nexptotp,mexp,nuall,uall,
      3           nu1234,u1234,ndall,dall,nd5678,d5678,mexpup,mexpdown,
@@ -907,13 +908,13 @@ c      add contributions due to child 1
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -933,14 +934,14 @@ c      add contributions due to child 2
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -960,13 +961,13 @@ c      add contributions due to child 3
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -988,13 +989,13 @@ c      add contributions due to child 4
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -1016,13 +1017,13 @@ c      add contributions due to child 5
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -1045,13 +1046,13 @@ c      add contributions due to child 6
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -1076,13 +1077,13 @@ c      add contributions due to child 7
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -1104,13 +1105,13 @@ c      add contributions due to child 8
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -1122,7 +1123,7 @@ c      add contributions due to child 8
       end
 c--------------------------------------------------------------------      
 
-      subroutine processnsexp(nd,zk2,ibox,ilev,nboxes,centers,ichild,
+      subroutine hprocessnsexp(nd,zk2,ibox,ilev,nboxes,centers,ichild,
      1           rscale,nterms,iaddr,rmlexp,rlams,whts,nlams,nfourier,
      2           nphysical,nthmax,nexptot,nexptotp,mexp,nnall,nall,
      3           nn1256,n1256,nn12,n12,nn56,n56,
@@ -1332,13 +1333,13 @@ c      add contributions due to child 1
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -1360,14 +1361,14 @@ c      add contributions due to child 2
          enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -1390,13 +1391,13 @@ c      add contributions due to child 3
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -1421,13 +1422,13 @@ c      add contributions due to child 4
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -1449,13 +1450,13 @@ c      add contributions due to child 5
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -1478,13 +1479,13 @@ c      add contributions due to child 6
          enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -1508,13 +1509,13 @@ c      add contributions due to child 7
          enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -1537,13 +1538,13 @@ c      add contributions due to child 8
          enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -1557,7 +1558,7 @@ c      add contributions due to child 8
       end
 c--------------------------------------------------------------------      
 
-      subroutine processewexp(nd,zk2,ibox,ilev,nboxes,centers,ichild,
+      subroutine hprocessewexp(nd,zk2,ibox,ilev,nboxes,centers,ichild,
      1           rscale,nterms,iaddr,rmlexp,rlams,whts,nlams,nfourier,
      2           nphysical,nthmax,nexptot,nexptotp,mexp,neall,eall,
      3           ne1357,e1357,ne13,e13,ne57,e57,ne1,e1,ne3,e3,ne5,e5,
@@ -1907,13 +1908,13 @@ c      add contributions due to child 1
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -1938,14 +1939,14 @@ c      add contributions due to child 2
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -1968,13 +1969,13 @@ c      add contributions due to child 3
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -1998,13 +1999,13 @@ c      add contributions due to child 4
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -2025,13 +2026,13 @@ c      add contributions due to child 5
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -2054,13 +2055,13 @@ c      add contributions due to child 6
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -2085,13 +2086,13 @@ c      add contributions due to child 7
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
@@ -2115,13 +2116,13 @@ c      add contributions due to child 8
           enddo
        enddo
 
-       call phystof(nd,mexpup,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpup,nlams,nfourier,nphysical,
      1               mexpupphys,fexpback)
  
-       call phystof(nd,mexpdown,nlams,nfourier,nphysical,
+       call hphystof(nd,mexpdown,nlams,nfourier,nphysical,
      1              mexpdownphys,fexpback)
 
-        call exptolocal(nd,tloc,nterms,zk2,rlams,whts,
+        call hexptolocal(nd,tloc,nterms,zk2,rlams,whts,
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 

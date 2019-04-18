@@ -1040,7 +1040,7 @@ c-------------------------------------------------------------------
       integer n12(*),n56(*),s34(*),s78(*)
       double precision rscale
       double complex zk2
-      double complex rlams(*),whts(*)
+      double precision rlams(*),whts(*)
       double complex, allocatable :: tloc(:,:,:)
       double complex, allocatable :: tloc2(:,:,:)
       double complex mexp(nd,nexptotp,nboxes,6)
@@ -1485,7 +1485,7 @@ c-------------------------------------------------------------------
       integer e1(*),e3(*),e5(*),e7(*),w2(*),w4(*),w6(*),w8(*)
       double precision rscale
       double complex zk2
-      double complex rlams(*),whts(*)
+      double precision rlams(*),whts(*)
       double complex, allocatable :: tloc(:,:,:),tloc2(:,:,:)
       double complex mexp(nd,nexptotp,nboxes,6)
       double precision rdminus(0:nterms,0:nterms,-nterms:nterms)

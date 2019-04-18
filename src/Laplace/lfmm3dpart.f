@@ -151,12 +151,13 @@ c
        double precision, allocatable :: rmlexp(:)
 
        integer lmptemp,nmax,lmptot
-       double complex, allocatable :: mptemp(:),mptemp2(:)
+       double precision, allocatable :: mptemp(:),mptemp2(:)
 
 c
 cc       temporary variables not main fmm routine but
 c        not used in particle code
-       double precision expc(3),texpssort(100),scjsort,radexp
+       double precision expc(3),scjsort(1),radexp
+       double complex texpssort(100)
        double precision expcsort(3)
        integer ntj,nexpc,nadd
 

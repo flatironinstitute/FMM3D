@@ -55,7 +55,7 @@ HELM = src/Helmholtz
 HOBJS = $(HELM)/h3dcommon.o $(HELM)/h3dterms.o $(HELM)/h3dtrans.o \
 	$(HELM)/helmrouts3d.o $(HELM)/hfmm3dpart.o $(HELM)/hfmm3dpartwrap.o \
 	$(HELM)/hfmm3dpartwrap_vec.o $(HELM)/hpwrouts.o \
-	$(HELM)/hwts3.o $(HELM)/numphysfour.o $(HELM)/projection.o \
+	$(HELM)/hwts3.o $(HELM)/numphysfour.o $(HELM)/projections.o \
 	$(HELM)/quadread.o
 
 # Laplace objects
@@ -96,15 +96,28 @@ usage:
 
 # build the library...
 lib: $(STATICLIB) $(DYNAMICLIB)
-ifeq ($(OMP),OFF)
-	echo "$(STATICLIB) and $(DYNAMICLIB) built, single-thread versions"
+ifeq ($(OMP),ON)
+	echo "$(STATICLIB) and $(DYNAMICLIB) built, multithread versions"
 else
-	echo "$(STATICLIB) and $(DYNAMICLIB) built, multithreaded versions"
+	echo "$(STATICLIB) and $(DYNAMICLIB) built, single-threaded versions"
 endif
 $(STATICLIB): $(OBJS) 
 	ar rcs $(STATICLIB) $(OBJS)
 $(DYNAMICLIB): $(OBJS) 
 	$(FC) -shared $(OMPFLAGS) $(OBJS) -o $(DYNAMICLIB)
 
+
+test: $(STATICLIB) test/helmrouts test/hfmm3dpart test/hfmm3dpart_vec test/laprouts test/rfmm3dpart test/rfmm3dpart_vec
+	(cd test/Helmholtz; ./run_helmtest.sh)
+	(cd test/Laplace; ./run_laptest.sh)
+
+test/testhelmrouts:
+	$(FC) $(FFLAGS) test/Helmholtz/test_helmrouts3d.f $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_helmrouts3d 
+
+clean: objclean
+	rm -f lib-static/*.a lib/*.so
+	
+
 objclean: 
 	rm -f $(OBJS)
+	rm -f test/*.o examples/*.o

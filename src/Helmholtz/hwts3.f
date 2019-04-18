@@ -329,12 +329,11 @@ c
 c
         subroutine hwts3p0(iquad,xs,ws,n)
         implicit real *8 (a-h,o-z)
-        dimension xs(1), ws(1)
+        dimension xs(*), ws(*)
 c
 c       2 digit exponential representation tables for
 c       exp(ima*rk*sqrt(u^2+v^2)/sqrt(u^2+v^2) 
 
-c#include "../fort.51"
  
         if( iquad .eq.    1 ) then
         idomain =    1
@@ -4797,7 +4796,7 @@ c
 
         subroutine hwts3p1(iquad,xs,ws,n)
         implicit real *8 (a-h,o-z)
-        dimension xs(1), ws(1)
+        dimension xs(*), ws(*)
 c
 c       3 digit exponential representation tables for
 c       exp(ima*rk*sqrt(u^2+v^2)/sqrt(u^2+v^2) 
@@ -10086,7 +10085,7 @@ c
 c
         subroutine hwts3p2(iquad,xs,ws,n)
         implicit real *8 (a-h,o-z)
-        dimension xs(1), ws(1)
+        dimension xs(*), ws(*)
 c
 c       6 digit exponential representation tables for
 c       exp(ima*rk*sqrt(u^2+v^2)/sqrt(u^2+v^2) 
@@ -17876,7 +17875,7 @@ c
 c
         subroutine hwts3p3(iquad,xs,ws,n)
         implicit real *8 (a-h,o-z)
-        dimension xs(1), ws(1)
+        dimension xs(*), ws(*)
 c
 c       9 digit exponential representation tables for
 c       exp(ima*rk*sqrt(u^2+v^2)/sqrt(u^2+v^2) 
@@ -27867,7 +27866,7 @@ c
 c
         subroutine hwts3p4(iquad,xs,ws,n)
         implicit real *8 (a-h,o-z)
-        dimension xs(1), ws(1)
+        dimension xs(*), ws(*)
 c
 c       12 digit exponential representation tables for
 c       exp(ima*rk*sqrt(u^2+v^2)/sqrt(u^2+v^2) 

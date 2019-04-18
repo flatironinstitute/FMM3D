@@ -154,13 +154,14 @@ c
       double precision, allocatable :: rmlexp(:)
 
       integer lmptemp,nmax,lmptot
-      double complex, allocatable :: mptemp(:),mptemp2(:)
+      double precision, allocatable :: mptemp(:),mptemp2(:)
 
 c
 cc       temporary variables not used in particle code
 c
-      double precision expc(3),texpssort(100),scjsort,radexp
-      double precision expcsort(3),radssort
+      double precision expc(3),scjsort(1),radexp
+      double complex texpssort(100)
+      double precision expcsort(3),radssort(1)
       integer ntj,nexpc,nadd
 
 c
@@ -1037,10 +1038,10 @@ c     generate rotation matrices and carray
             call getpwrotmat(nn,carray,rdplus,rdminus,rdsq3,rdmsq3,dc)
 
 
-            call rlscini(rlsc,nlams,rlams,zk2,nterms(ilev))
-            call mkexps(rlams,nlams,nphysical,nexptotp,zk2,xshift,
+            call hrlscini(rlsc,nlams,rlams,zk2,nterms(ilev))
+            call hmkexps(rlams,nlams,nphysical,nexptotp,zk2,xshift,
      1           yshift,zshift)
-            call mkfexp(nlams,nfourier,nphysical,fexp,fexpback)
+            call hmkfexp(nlams,nfourier,nphysical,fexp,fexpback)
 c
 cc      zero out mexp
 c
@@ -1086,13 +1087,13 @@ c           rescale multipole expansion
                   call mpscale(nd,nterms(ilev),rmlexp(iaddr(1,ibox)),
      1               rsc,tmp)
 
-                  call mpoletoexp(nd,tmp,nterms(ilev),
+                  call hmpoletoexp(nd,tmp,nterms(ilev),
      1                  nlams,nfourier,nexptot,mexpf1,mexpf2,rlsc) 
 
-                  call ftophys(nd,mexpf1,nlams,nfourier,nphysical,
+                  call hftophys(nd,mexpf1,nlams,nfourier,nphysical,
      1                 mexp(1,1,ibox,1),fexp)           
 
-                  call ftophys(nd,mexpf2,nlams,nfourier,nphysical,
+                  call hftophys(nd,mexpf2,nlams,nfourier,nphysical,
      1                 mexp(1,1,ibox,2),fexp)
 
 
@@ -1103,26 +1104,26 @@ c             mexpsouth
                   call rotztoy(nd,nterms(ilev),tmp,
      1                           mptemp,rdminus)
 
-                  call mpoletoexp(nd,mptemp,nterms(ilev),nlams,
+                  call hmpoletoexp(nd,mptemp,nterms(ilev),nlams,
      1                  nfourier,nexptot,mexpf1,mexpf2,rlsc)
 
-                  call ftophys(nd,mexpf1,nlams,nfourier,
+                  call hftophys(nd,mexpf1,nlams,nfourier,
      1                 nphysical,mexp(1,1,ibox,3),fexp)           
 
-                  call ftophys(nd,mexpf2,nlams,nfourier,
+                  call hftophys(nd,mexpf2,nlams,nfourier,
      1                 nphysical,mexp(1,1,ibox,4),fexp)   
 
 
 c             Rotate mpole for computing mexpeast, mexpwest
                   call rotztox(nd,nterms(ilev),tmp,
      1                              mptemp,rdplus)
-                  call mpoletoexp(nd,mptemp,nterms(ilev),nlams,
+                  call hmpoletoexp(nd,mptemp,nterms(ilev),nlams,
      1                  nfourier,nexptot,mexpf1,mexpf2,rlsc)
 
-                  call ftophys(nd,mexpf1,nlams,nfourier,
+                  call hftophys(nd,mexpf1,nlams,nfourier,
      1                 nphysical,mexp(1,1,ibox,5),fexp)
 
-                  call ftophys(nd,mexpf2,nlams,nfourier,
+                  call hftophys(nd,mexpf2,nlams,nfourier,
      1                 nphysical,mexp(1,1,ibox,6),fexp)           
 
                endif
@@ -1189,7 +1190,7 @@ C$OMP$PRIVATE(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
      8            nw2,w2,nw4,w4,nw6,w6,nw8,w8)
 
 
-                  call processudexp(nd,zk2,ibox,ilev,nboxes,centers,
+                  call hprocessudexp(nd,zk2,ibox,ilev,nboxes,centers,
      1            itree(ipointer(4)),rscales(ilev),nterms(ilev),
      2            iaddr,rmlexp,rlams,whts,
      3            nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,
@@ -1199,7 +1200,7 @@ C$OMP$PRIVATE(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
      7            xshift,yshift,zshift,fexpback,rlsc)
 
 
-                  call processnsexp(nd,zk2,ibox,ilev,nboxes,centers,
+                  call hprocessnsexp(nd,zk2,ibox,ilev,nboxes,centers,
      1            itree(ipointer(4)),rscales(ilev),nterms(ilev),
      2            iaddr,rmlexp,rlams,whts,
      3            nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,
@@ -1211,7 +1212,7 @@ C$OMP$PRIVATE(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
      9            mexppall(1,1,8),rdplus,xshift,yshift,zshift,
      9            fexpback,rlsc)
 
-                  call processewexp(nd,zk2,ibox,ilev,nboxes,centers,
+                  call hprocessewexp(nd,zk2,ibox,ilev,nboxes,centers,
      1            itree(ipointer(4)),rscales(ilev),nterms(ilev),
      2            iaddr,rmlexp,rlams,whts,
      3            nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,
