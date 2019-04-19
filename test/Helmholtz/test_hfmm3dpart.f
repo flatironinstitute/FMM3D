@@ -10,7 +10,9 @@
       double complex eye,zk
       integer i,j,k,ntest
       integer ifcharge,ifdipole,ifpgh,ifpghtarg
+      integer ipass(18),len1,ntests,isum
       double precision err,hkrand
+      character(len=72) str1
       
 
       data eye/(0.0d0,1.0d0)/
@@ -20,11 +22,10 @@ cc      initialize printing routine
 c
       call prini(6,13)
 
-      zk = 48.0d0 + eye*0.002d0
-      zk = 0.2d0
+      zk = 2.2d0
 
       ns = 2000
-      nt = 2000
+      nt = 1999
       
       ntest = 10
 
@@ -36,6 +37,18 @@ c
       allocate(pottarg(nt))
       allocate(gradtarg(3,nt))
 
+      eps = 0.5d-9
+
+      write(*,*) "=========================================="
+      write(*,*) "Testing suite for hfmm3dpart"
+      write(*,'(a,e11.5)') "Requested precision = ",eps
+
+      open(unit=33,file='print_testres.txt',access='append')
+
+      ntests = 18
+      do i=1,ntests
+        ipass(i) = 0
+      enddo
 
 c
 cc      generate sources uniformly in the unit cube 
@@ -48,9 +61,9 @@ c
 
         charge(i) = hkrand(0) + eye*hkrand(0)
 
-        dipvec(1,i) = hkrand(0) 
-        dipvec(2,i) = hkrand(0)
-        dipvec(3,i) = hkrand(0)
+        dipvec(1,i) = hkrand(0) + eye*hkrand(0) 
+        dipvec(2,i) = hkrand(0) + eye*hkrand(0)  
+        dipvec(3,i) = hkrand(0) + eye*hkrand(0)
 
         pot(i) = 0
         grad(1,i) = 0
@@ -72,7 +85,6 @@ c
         gradtarg(3,i) = 0 
       enddo
 
-      eps = 0.5d-4
 c
 cc     now test source to source, charge, 
 c      with potentials
@@ -100,6 +112,10 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+
+      if(err.lt.eps) ipass(1) = 1
+      call gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1) 
 
 
 c
@@ -131,8 +147,10 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+      if(err.lt.eps) ipass(2) = 1
+      call gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1) 
       
-
 
 c
 cc     now test source to source, dipole, 
@@ -161,6 +179,10 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+      if(err.lt.eps) ipass(3) = 1
+      call gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1) 
+
 
 
 c
@@ -190,6 +212,10 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+      if(err.lt.eps) ipass(4) = 1
+      call gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1) 
+
 
 c
 cc     now test source to source, charge + dipole, 
@@ -218,6 +244,9 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+      if(err.lt.eps) ipass(5) = 1
+      call gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1) 
 
 
 c
@@ -247,6 +276,9 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+      if(err.lt.eps) ipass(6) = 1
+      call gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1) 
 
 
 
@@ -277,6 +309,9 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+      if(err.lt.eps) ipass(7) = 1
+      call gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1) 
 
 
 c
@@ -306,6 +341,9 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+      if(err.lt.eps) ipass(8) = 1
+      call gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1) 
       
 
 
@@ -336,6 +374,9 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+      if(err.lt.eps) ipass(9) = 1
+      call gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1) 
 
 
 c
@@ -365,6 +406,9 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+      if(err.lt.eps) ipass(10) = 1
+      call gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1) 
 
 c
 cc     now test source to target, charge + dipole, 
@@ -393,6 +437,9 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+      if(err.lt.eps) ipass(11) = 1
+      call gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1) 
 
 
 c
@@ -422,6 +469,9 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+      if(err.lt.eps) ipass(12) = 1
+      call gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1) 
 
 c
 cc     now test source to source + target, charge, 
@@ -450,6 +500,9 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+      if(err.lt.eps) ipass(13) = 1
+      call gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1) 
 
 
 c
@@ -479,6 +532,9 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+      if(err.lt.eps) ipass(14) = 1
+      call gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1) 
       
 
 
@@ -509,6 +565,9 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+      if(err.lt.eps) ipass(15) = 1
+      call gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1) 
 
 
 c
@@ -538,6 +597,9 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+      if(err.lt.eps) ipass(16) = 1
+      call gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1) 
 
 c
 cc     now test source to source + target, charge + dipole, 
@@ -566,6 +628,9 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+      if(err.lt.eps) ipass(17) = 1
+      call gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1) 
 
 
 c
@@ -595,7 +660,21 @@ c
        write(6,*)
        write(6,*)
        write(6,*) '================'
+      if(err.lt.eps) ipass(18) = 1
+      call gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1) 
 
+      isum = 0
+      do i=1,ntests
+        isum = isum+ipass(i)
+      enddo
+
+      write(*,'(a,i2,a,i2,a)') 'Successfully completed ',isum,
+     1   ' out of ',ntests,' tests in hfmm3dpart testing suite'
+      write(33,'(a,i2,a,i2,a)') 'Successfully completed ',isum,
+     1   ' out of ',ntests,' tests in hfmm3dpart testing suite'
+      close(33)
+      
 
       stop
       end
@@ -761,4 +840,60 @@ c
       err = sqrt(err/ra)
       return
       end
+c
+c
+c
+c
+c-------------------------------------------------------
+      subroutine gererrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      implicit real *8 (a-h,o-z)
+      character(len=*) str1
+      character(len=13) str2
+      character(len=14) str3
+      character(len=19) str4
+      character(len=18) str5
+
+      str2 = "Failed src to"
+      len1 = 13
+      if(ifpgh.gt.0.and.ifpghtarg.eq.0) then
+        str3 = " src,"
+        len1 = len1+5  
+      endif
+      if(ifpgh.eq.0.and.ifpghtarg.gt.0) then
+        str3 = " targ,"
+        len1 = len1+6
+      endif
+      if(ifpgh.gt.0.and.ifpghtarg.gt.0) then
+        str3 = " src and targ,"
+        len1 = len1+14
+      endif
+
+      if(ifcharge.eq.1.and.ifdipole.eq.0) then
+        str4=" charge,"
+        len1 = len1+8
+      endif
       
+      if(ifcharge.eq.0.and.ifdipole.eq.1) then
+        str4=" dipole,"
+        len1 = len1+8
+      endif
+      
+      if(ifcharge.eq.1.and.ifdipole.eq.1) then
+        str4=" charge and dipole,"
+        len1 = len1+19
+      endif
+
+      if(ifpgh.eq.1.or.ifpghtarg.eq.1) then
+        str5=" pot test"
+        len1 = len1 + 9
+      endif
+      
+      if(ifpgh.eq.2.or.ifpghtarg.eq.2) then
+        str5=" pot and grad test"
+        len1 = len1 + 18
+      endif
+
+      str1 = str2//trim(str3)//trim(str4)//trim(str5)
+
+      return
+      end

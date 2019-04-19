@@ -11,14 +11,14 @@ Flatiron Institute Fast multipole methods in three dimensions (FMM3D)
 .. image:: spreadpic.png
     :width: 54%
 	    
-`FMM3D <https://github.com/mrachh/FMM3D>`_ is a set of libraries to 
-compute efficiently $N-$ body interactions for Laplace, Helmholtz,
-Maxwell, and Stokes kernels 
+`FMM3D <https://github.com/flatironinstitute/FMM3D>`_ 
+is a set of libraries to compute efficiently $N-$ body interactions 
+for Laplace, Helmholtz, Stokes, and Maxwell kernels 
 to a specified precision, in three dimensions,
 on a multi-core shared-memory machine.
 The library has a very simple interface, 
 is written in Fortran (using OpenMP),
-and has wrappers to C, MATLAB, octave, and python.
+and has wrappers to C, MATLAB, and python.
 As an example, given $M$ arbitrary points $y_j \in \mathbb{R}^{3}$ 
 and complex numbers $c_j$, with $j=1,\dots,M$, and 
 $N$ arbitrary points $x_{k} \in \mathhbb{R}^{3}$, the Laplace FMM
@@ -52,19 +52,14 @@ following additions:
 
 #. Use of plane wave expansions for diagonalizing the outgoing to
 incoming translation operators
-#. Easier to use interfaces for different types of input 
-and output arguments 
+#. Vectorizing the FMM, to apply the same kernel with same source
+and target locations on multiple densities.
 
 For sources and targets distributed in the volume, this code is 4 times
 faster than the previous generation on a single CPU core, and for
 sources and targets distributed on a surface, this code is 2 times
 faster.  
 
-
-For the case of small problems where repeated NUFFTs are needed with a fixed set of nonuniform points, we have started to build interfaces for this case.
-These are a factor of 2 or more faster than repeated calls to the plain
-interface, since certain costs such as FFTW setup and sorted are performed
-only once; see the advanced usage.
 
 .. note::
 

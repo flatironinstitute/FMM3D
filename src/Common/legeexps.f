@@ -852,7 +852,7 @@ c
 c
         subroutine legeinte(polin,n,polout)
         implicit double precision (a-h,o-z)
-        dimension polin(1),polout(*)
+        dimension polin(*),polout(*)
 c
 c       this subroutine computes the indefinite integral of the 
 c       legendre expansion polin getting the expansion polout
@@ -1013,7 +1013,7 @@ c
       SUBROUTINE legeFDE2(X,VAL,der,PEXP,N,
      1    pjcoefs1,pjcoefs2,ninit)
       IMPLICIT double precision (A-H,O-Z)
-      double precision PEXP(*),pjcoefs1(1),pjcoefs2(1)
+      double precision PEXP(*),pjcoefs1(*),pjcoefs2(*)
 c
 C     This subroutine computes the value and the derivative
 c     of a gaussian expansion with coefficients PEXP
@@ -1147,7 +1147,7 @@ c
       SUBROUTINE legeexe2(X,VAL,PEXP,N,
      1      pjcoefs1,pjcoefs2,ninit)
       IMPLICIT double precision (A-H,O-Z)
-      double precision PEXP(*),pjcoefs1(1),pjcoefs2(1)
+      double precision PEXP(*),pjcoefs1(*),pjcoefs2(*)
 c
 C     This subroutine computes the value o a Legendre
 c     expansion with coefficients PEXP at point X in interval [-1,1]
@@ -1564,8 +1564,8 @@ c
         subroutine legepeven(x,nn,pols,ninit,
      1      coepnm1,coepnp1,coexpnp1)
         implicit double precision (a-h,o-z)
-        dimension pols(*),coepnm1(1),coepnp1(1),
-     1            coexpnp1(1)
+        dimension pols(*),coepnm1(*),coepnp1(*),
+     1            coexpnp1(*)
 c
 c       This subroutine evaluates even-numbered Legendre polynomials 
 c       of the argument x, up to order nn+1
@@ -2003,7 +2003,7 @@ c
       SUBROUTINE legecFD2(X,VAL,der,PEXP,N,
      1    pjcoefs1,pjcoefs2,ninit)
       IMPLICIT double precision (A-H,O-Z)
-      double precision pjcoefs1(1),pjcoefs2(1)
+      double precision pjcoefs1(*),pjcoefs2(*)
       double complex PEXP(*),val,der
 c
 C     This subroutine computes the value and the derivative
@@ -2095,7 +2095,7 @@ c
       SUBROUTINE legecva2(X,VAL,PEXP,N,
      1    pjcoefs1,pjcoefs2,ninit)
       IMPLICIT double precision (A-H,O-Z)
-      double precision pjcoefs1(1),pjcoefs2(1)
+      double precision pjcoefs1(*),pjcoefs2(*)
       double complex PEXP(*),val
 c
 C     This subroutine computes the value of a Legendre expansion 

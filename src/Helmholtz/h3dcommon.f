@@ -97,7 +97,7 @@ c     hder    : the derivatives of the spherical Hankel functions
 c
 c-----------------------------------------------------------------------
       implicit real *8 (a-h,o-z)
-      complex *16 hvec(0:1),hder(0:1)
+      complex *16 hvec(0:*),hder(0:*)
       complex *16 zk2,z,zinv,ztmp,fhextra
 c
       data thresh/1.0d-15/,done/1.0d0/

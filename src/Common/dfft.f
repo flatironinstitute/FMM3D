@@ -870,7 +870,7 @@ C
 
       SUBROUTINE ZFFTB (N,C,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       C(1)       ,WSAVE(1)
+      DIMENSION       C(1)       ,WSAVE(*)
       IF (N .EQ. 1) RETURN
       IW1 = N+N+1
       IW2 = IW1+N+N
@@ -879,7 +879,7 @@ C
       END
       SUBROUTINE ZFFTB1 (N,C,CH,WA,IFAC)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       CH(1)      ,C(1)       ,WA(1)      ,IFAC(*)
+      DIMENSION       CH(1)      ,C(1)       ,WA(*)      ,IFAC(*)
       NF = IFAC(2)
       NA = 0
       L1 = 1
@@ -941,7 +941,7 @@ C
       END
       SUBROUTINE ZFFTF (N,C,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       C(1)       ,WSAVE(1)
+      DIMENSION       C(1)       ,WSAVE(*)
       IF (N .EQ. 1) RETURN
       IW1 = N+N+1
       IW2 = IW1+N+N
@@ -950,7 +950,7 @@ C
       END
       SUBROUTINE ZFFTF1 (N,C,CH,WA,IFAC)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       CH(1)      ,C(1)       ,WA(1)      ,IFAC(*)
+      DIMENSION       CH(1)      ,C(1)       ,WA(*)      ,IFAC(*)
       NF = IFAC(2)
       NA = 0
       L1 = 1
@@ -1012,7 +1012,7 @@ C
       END
       SUBROUTINE ZFFTI (N,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       WSAVE(1)
+      DIMENSION       WSAVE(*)
       IF (N .EQ. 1) RETURN
       IW1 = N+N+1
       IW2 = IW1+N+N
@@ -1021,7 +1021,7 @@ C
       END
       SUBROUTINE ZFFTI1 (N,WA,IFAC)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       WA(1)      ,IFAC(*)    ,NTRYH(4)
+      DIMENSION       WA(*)      ,IFAC(*)    ,NTRYH(4)
       DATA NTRYH(1),NTRYH(2),NTRYH(3),NTRYH(4)/3,4,2,5/
       NL = N
       NF = 0
@@ -1082,7 +1082,7 @@ C
       END
       SUBROUTINE DCOSQB (N,X,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       X(*)       ,WSAVE(1)
+      DIMENSION       X(*)       ,WSAVE(*)
       DATA TSQRT2 /2.8284271247461900976033774484193961D0/
       IF (N-2) 101,102,103
   101 X(1) = 4.0D0*X(1)
@@ -1124,7 +1124,7 @@ C
       END
       SUBROUTINE DCOSQF (N,X,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       X(*)       ,WSAVE(1)
+      DIMENSION       X(*)       ,WSAVE(*)
       DATA SQRT2 /1.4142135623730950488016887242096980D0/
       IF (N-2) 102,101,103
   101 TSQX = SQRT2*X(2)
@@ -1162,7 +1162,7 @@ C
       END
       SUBROUTINE DCOSQI (N,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       WSAVE(1)
+      DIMENSION       WSAVE(*)
       DATA PIH /1.5707963267948966192313216916397514D0/
       DT = PIH/DBLE(N)
       FK = 0.0D0
@@ -1175,7 +1175,7 @@ C
       END
       SUBROUTINE DCOST (N,X,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       X(*)       ,WSAVE(1)
+      DIMENSION       X(*)       ,WSAVE(*)
       NM1 = N-1
       NP1 = N+1
       NS2 = N/2
@@ -1218,7 +1218,7 @@ C
       END
       SUBROUTINE DCOSTI (N,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       WSAVE(1)
+      DIMENSION       WSAVE(*)
       DATA PI /3.1415926535897932384626433832795028D0/
       IF (N .LE. 3) RETURN
       NM1 = N-1
@@ -1237,7 +1237,7 @@ C
       END
       SUBROUTINE DZFFT1 (N,WA,IFAC)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       WA(1)      ,IFAC(*)    ,NTRYH(4)
+      DIMENSION       WA(*)      ,IFAC(*)    ,NTRYH(4)
       DATA NTRYH(1),NTRYH(2),NTRYH(3),NTRYH(4)/4,2,3,5/
      1    ,TPI/6.2831853071795864769252867665590057D0/
       NL = N
@@ -1300,7 +1300,7 @@ C
       END
       SUBROUTINE DZFFTB (N,R,AZERO,A,B,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       R(*)       ,A(1)       ,B(1)       ,WSAVE(1)
+      DIMENSION       R(*)       ,A(*)       ,B(*)       ,WSAVE(*)
       IF (N-2) 101,102,103
   101 R(1) = AZERO
       RETURN
@@ -1322,7 +1322,7 @@ C
 C                       VERSION 3  JUNE 1979
 C
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       R(*)       ,A(1)       ,B(1)       ,WSAVE(1)
+      DIMENSION       R(*)       ,A(*)       ,B(*)       ,WSAVE(*)
       IF (N-2) 101,102,103
   101 AZERO = R(1)
       RETURN
@@ -1349,7 +1349,7 @@ C
       END
       SUBROUTINE DZFFTI (N,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       WSAVE(1)
+      DIMENSION       WSAVE(*)
       IF (N .EQ. 1) RETURN
       CALL DZFFT1 (N,WSAVE(2*N+1),WSAVE(3*N+1))
       RETURN
@@ -1357,7 +1357,7 @@ C
       SUBROUTINE DPASSB (NAC,IDO,IP,L1,IDL1,CC,C1,C2,CH,CH2,WA)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CH(IDO,L1,IP)          ,CC(IDO,IP,L1)          ,
-     1                C1(IDO,L1,IP)          ,WA(1)      ,C2(IDL1,IP),
+     1                C1(IDO,L1,IP)          ,WA(*)      ,C2(IDL1,IP),
      2                CH2(IDL1,IP)
       IDOT = IDO/2
       NT = IP*IDL1
@@ -1474,7 +1474,7 @@ C
       SUBROUTINE DPASSB2 (IDO,L1,CC,CH,WA1)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CC(IDO,2,L1)           ,CH(IDO,L1,2)           ,
-     1                WA1(1)
+     1                WA1(*)
       IF (IDO .GT. 2) GO TO 102
       DO 101 K=1,L1
          CH(1,K,1) = CC(1,1,K)+CC(1,2,K)
@@ -1498,7 +1498,7 @@ C
       SUBROUTINE DPASSB3 (IDO,L1,CC,CH,WA1,WA2)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CC(IDO,3,L1)           ,CH(IDO,L1,3)           ,
-     1                WA1(1)     ,WA2(1)
+     1                WA1(*)     ,WA2(*)
       DATA TAUR,TAUI /-.5D0,.86602540378443864676372317075293618D0/
       IF (IDO .NE. 2) GO TO 102
       DO 101 K=1,L1
@@ -1541,7 +1541,7 @@ C
       SUBROUTINE DPASSB4 (IDO,L1,CC,CH,WA1,WA2,WA3)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CC(IDO,4,L1)           ,CH(IDO,L1,4)           ,
-     1                WA1(1)     ,WA2(1)     ,WA3(1)
+     1                WA1(*)     ,WA2(*)     ,WA3(*)
       IF (IDO .NE. 2) GO TO 102
       DO 101 K=1,L1
          TI1 = CC(2,1,K)-CC(2,3,K)
@@ -1593,7 +1593,7 @@ C
       SUBROUTINE DPASSB5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CC(IDO,5,L1)           ,CH(IDO,L1,5)           ,
-     1                WA1(1)     ,WA2(1)     ,WA3(1)     ,WA4(1)
+     1                WA1(*)     ,WA2(*)     ,WA3(*)     ,WA4(*)
       DATA TR11,TI11,TR12,TI12 /
      1   .30901699437494742410229341718281905D0,
      2   .95105651629515357211643933337938214D0,
@@ -1672,7 +1672,7 @@ C
       SUBROUTINE DPASSF (NAC,IDO,IP,L1,IDL1,CC,C1,C2,CH,CH2,WA)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CH(IDO,L1,IP)          ,CC(IDO,IP,L1)          ,
-     1                C1(IDO,L1,IP)          ,WA(1)      ,C2(IDL1,IP),
+     1                C1(IDO,L1,IP)          ,WA(*)      ,C2(IDL1,IP),
      2                CH2(IDL1,IP)
       IDOT = IDO/2
       NT = IP*IDL1
@@ -1789,7 +1789,7 @@ C
       SUBROUTINE DPASSF2 (IDO,L1,CC,CH,WA1)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CC(IDO,2,L1)           ,CH(IDO,L1,2)           ,
-     1                WA1(1)
+     1                WA1(*)
       IF (IDO .GT. 2) GO TO 102
       DO 101 K=1,L1
          CH(1,K,1) = CC(1,1,K)+CC(1,2,K)
@@ -1813,7 +1813,7 @@ C
       SUBROUTINE DPASSF3 (IDO,L1,CC,CH,WA1,WA2)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CC(IDO,3,L1)           ,CH(IDO,L1,3)           ,
-     1                WA1(1)     ,WA2(1)
+     1                WA1(*)     ,WA2(*)
       DATA TAUR,TAUI /-.5D0,-.86602540378443864676372317075293618D0/
       IF (IDO .NE. 2) GO TO 102
       DO 101 K=1,L1
@@ -1856,7 +1856,7 @@ C
       SUBROUTINE DPASSF4 (IDO,L1,CC,CH,WA1,WA2,WA3)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CC(IDO,4,L1)           ,CH(IDO,L1,4)           ,
-     1                WA1(1)     ,WA2(1)     ,WA3(1)
+     1                WA1(*)     ,WA2(*)     ,WA3(*)
       IF (IDO .NE. 2) GO TO 102
       DO 101 K=1,L1
          TI1 = CC(2,1,K)-CC(2,3,K)
@@ -1908,7 +1908,7 @@ C
       SUBROUTINE DPASSF5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CC(IDO,5,L1)           ,CH(IDO,L1,5)           ,
-     1                WA1(1)     ,WA2(1)     ,WA3(1)     ,WA4(1)
+     1                WA1(*)     ,WA2(*)     ,WA3(*)     ,WA4(*)
       DATA TR11,TI11,TR12,TI12 /
      1   .30901699437494742410229341718281905D0,
      2  -.95105651629515357211643933337938214D0,
@@ -1987,7 +1987,7 @@ C
       SUBROUTINE DRADB2 (IDO,L1,CC,CH,WA1)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CC(IDO,2,L1)           ,CH(IDO,L1,2)           ,
-     1                WA1(1)
+     1                WA1(*)
       DO 101 K=1,L1
          CH(1,K,1) = CC(1,1,K)+CC(IDO,2,K)
          CH(1,K,2) = CC(1,1,K)-CC(IDO,2,K)
@@ -2015,7 +2015,7 @@ C
       SUBROUTINE DRADB3 (IDO,L1,CC,CH,WA1,WA2)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CC(IDO,3,L1)           ,CH(IDO,L1,3)           ,
-     1                WA1(1)     ,WA2(1)
+     1                WA1(*)     ,WA2(*)
       DATA TAUR,TAUI /-.5D0,.86602540378443864676372317075293618D0/
       DO 101 K=1,L1
          TR2 = CC(IDO,2,K)+CC(IDO,2,K)
@@ -2053,7 +2053,7 @@ C
       SUBROUTINE DRADB4 (IDO,L1,CC,CH,WA1,WA2,WA3)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CC(IDO,4,L1)           ,CH(IDO,L1,4)           ,
-     1                WA1(1)     ,WA2(1)     ,WA3(1)
+     1                WA1(*)     ,WA2(*)     ,WA3(*)
       DATA SQRT2 /1.4142135623730950488016887242096980D0/
       DO 101 K=1,L1
          TR1 = CC(1,1,K)-CC(IDO,4,K)
@@ -2111,7 +2111,7 @@ C
       SUBROUTINE DRADB5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CC(IDO,5,L1)           ,CH(IDO,L1,5)           ,
-     1                WA1(1)     ,WA2(1)     ,WA3(1)     ,WA4(1)
+     1                WA1(*)     ,WA2(*)     ,WA3(*)     ,WA4(*)
       DATA TR11,TI11,TR12,TI12 /
      1   .30901699437494742410229341718281905D0,
      2   .95105651629515357211643933337938214D0,
@@ -2179,7 +2179,7 @@ C
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CH(IDO,L1,IP)          ,CC(IDO,IP,L1)          ,
      1                C1(IDO,L1,IP)          ,C2(IDL1,IP),
-     2                CH2(IDL1,IP)           ,WA(1)
+     2                CH2(IDL1,IP)           ,WA(*)
       DATA TPI/6.2831853071795864769252867665590057D0/
       ARG = TPI/DBLE(IP)
       DCP = DCOS(ARG)
@@ -2339,7 +2339,7 @@ C
       SUBROUTINE DRADF2 (IDO,L1,CC,CH,WA1)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CH(IDO,2,L1)           ,CC(IDO,L1,2)           ,
-     1                WA1(1)
+     1                WA1(*)
       DO 101 K=1,L1
          CH(1,1,K) = CC(1,K,1)+CC(1,K,2)
          CH(IDO,2,K) = CC(1,K,1)-CC(1,K,2)
@@ -2367,7 +2367,7 @@ C
       SUBROUTINE DRADF3 (IDO,L1,CC,CH,WA1,WA2)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CH(IDO,3,L1)           ,CC(IDO,L1,3)           ,
-     1                WA1(1)     ,WA2(1)
+     1                WA1(*)     ,WA2(*)
       DATA TAUR,TAUI /-.5D0,.86602540378443864676372317075293618D0/
       DO 101 K=1,L1
          CR2 = CC(1,K,2)+CC(1,K,3)
@@ -2403,7 +2403,7 @@ C
       SUBROUTINE DRADF4 (IDO,L1,CC,CH,WA1,WA2,WA3)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CC(IDO,L1,4)           ,CH(IDO,4,L1)           ,
-     1                WA1(1)     ,WA2(1)     ,WA3(1)
+     1                WA1(*)     ,WA2(*)     ,WA3(*)
       DATA HSQT2 /0.70710678118654752440084436210484904D0/
       DO 101 K=1,L1
          TR1 = CC(1,K,2)+CC(1,K,4)
@@ -2457,7 +2457,7 @@ C
       SUBROUTINE DRADF5 (IDO,L1,CC,CH,WA1,WA2,WA3,WA4)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CC(IDO,L1,5)           ,CH(IDO,5,L1)           ,
-     1                WA1(1)     ,WA2(1)     ,WA3(1)     ,WA4(1)
+     1                WA1(*)     ,WA2(*)     ,WA3(*)     ,WA4(*)
       DATA TR11,TI11,TR12,TI12 /
      1   .30901699437494742410229341718281905D0,
      2   .95105651629515357211643933337938214D0,
@@ -2521,7 +2521,7 @@ C
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       CH(IDO,L1,IP)          ,CC(IDO,IP,L1)          ,
      1                C1(IDO,L1,IP)          ,C2(IDL1,IP),
-     2                CH2(IDL1,IP)           ,WA(1)
+     2                CH2(IDL1,IP)           ,WA(*)
       DATA TPI/6.2831853071795864769252867665590057D0/
       ARG = TPI/DBLE(IP)
       DCP = DCOS(ARG)
@@ -2686,14 +2686,14 @@ C
       END
       SUBROUTINE DFFTB (N,R,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       R(*)       ,WSAVE(1)
+      DIMENSION       R(*)       ,WSAVE(*)
       IF (N .EQ. 1) RETURN
       CALL DFFTB1 (N,R,WSAVE,WSAVE(N+1),WSAVE(2*N+1))
       RETURN
       END
       SUBROUTINE DFFTB1 (N,C,CH,WA,IFAC)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       CH(1)      ,C(1)       ,WA(1)      ,IFAC(*)
+      DIMENSION       CH(1)      ,C(1)       ,WA(*)      ,IFAC(*)
       NF = IFAC(2)
       NA = 0
       L1 = 1
@@ -2753,14 +2753,14 @@ C
       END
       SUBROUTINE DFFTF (N,R,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       R(*)       ,WSAVE(1)
+      DIMENSION       R(*)       ,WSAVE(*)
       IF (N .EQ. 1) RETURN
       CALL DFFTF1 (N,R,WSAVE,WSAVE(N+1),WSAVE(2*N+1))
       RETURN
       END
       SUBROUTINE DFFTF1 (N,C,CH,WA,IFAC)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       CH(1)      ,C(1)       ,WA(1)      ,IFAC(*)
+      DIMENSION       CH(1)      ,C(1)       ,WA(*)      ,IFAC(*)
       NF = IFAC(2)
       NA = 1
       L2 = N
@@ -2820,14 +2820,14 @@ C
       END
       SUBROUTINE DFFTI (N,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       WSAVE(1)
+      DIMENSION       WSAVE(*)
       IF (N .EQ. 1) RETURN
       CALL DFFTI1 (N,WSAVE(N+1),WSAVE(2*N+1))
       RETURN
       END
       SUBROUTINE DFFTI1 (N,WA,IFAC)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       WA(1)      ,IFAC(*)    ,NTRYH(4)
+      DIMENSION       WA(*)      ,IFAC(*)    ,NTRYH(4)
       DATA NTRYH(1),NTRYH(2),NTRYH(3),NTRYH(4)/4,2,3,5/
       NL = N
       NF = 0
@@ -2885,7 +2885,7 @@ C
       END
       SUBROUTINE DSINQB (N,X,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       X(*)       ,WSAVE(1)
+      DIMENSION       X(*)       ,WSAVE(*)
       IF (N .GT. 1) GO TO 101
       X(1) = 4.0D0*X(1)
       RETURN
@@ -2904,7 +2904,7 @@ C
       END
       SUBROUTINE DSINQF (N,X,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       X(*)       ,WSAVE(1)
+      DIMENSION       X(*)       ,WSAVE(*)
       IF (N .EQ. 1) RETURN
       NS2 = N/2
       DO 101 K=1,NS2
@@ -2921,13 +2921,13 @@ C
       END
       SUBROUTINE DSINQI (N,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       WSAVE(1)
+      DIMENSION       WSAVE(*)
       CALL DCOSQI (N,WSAVE)
       RETURN
       END
       SUBROUTINE DSINT (N,X,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       X(*)       ,WSAVE(1)
+      DIMENSION       X(*)       ,WSAVE(*)
       NP1 = N+1
       IW1 = N/2+1
       IW2 = IW1+NP1
@@ -2978,7 +2978,7 @@ C
       END
       SUBROUTINE DSINTI (N,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       WSAVE(1)
+      DIMENSION       WSAVE(*)
       DATA PI /3.1415926535897932384626433832795028D0/
       IF (N .LE. 1) RETURN
       NS2 = N/2

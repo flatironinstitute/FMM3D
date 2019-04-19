@@ -1930,6 +1930,8 @@ c     pot    :    updated potential at ztarg
 c
 c-----------------------------------------------------------------------
       implicit none
+cf2py intent(in) nd,sources,charge,ns,ztarg,nt,thresh
+cf2py intent(out) pot
 c
 cc      calling sequence variables
 c  
@@ -2014,6 +2016,8 @@ c     grad   :    updated gradient at ztarg
 c
 c-----------------------------------------------------------------------
       implicit none
+cf2py intent(in) nd,sources,charge,ns,ztarg,nt,thresh
+cf2py intent(out) pot,grad
 c
 cc      calling sequence variables
 c  
@@ -2105,6 +2109,8 @@ c     pot    :    updated potential at ztarg
 c
 c-----------------------------------------------------------------------
       implicit none
+cf2py intent(in) nd,sources,dipvec,ns,ztarg,nt,thresh
+cf2py intent(out) pot
 c
 cc      calling sequence variables
 c  
@@ -2202,6 +2208,8 @@ c     grad   :    updated gradient at ztarg
 c
 c-----------------------------------------------------------------------
       implicit none
+cf2py intent(in) nd,sources,dipvec,ns,ztarg,nt,thresh
+cf2py intent(out) pot,grad
 c
 cc      calling sequence variables
 c  
@@ -2307,6 +2315,8 @@ c     pot    :    updated potential at ztarg
 c
 c-----------------------------------------------------------------------
       implicit none
+cf2py intent(in) nd,sources,charge,dipvec,ns,ztarg,nt,thresh
+cf2py intent(out) pot
 c
 cc      calling sequence variables
 c  
@@ -2412,6 +2422,8 @@ c     grad   :    updated gradient at ztarg
 c
 c-----------------------------------------------------------------------
       implicit none
+cf2py intent(in) nd,sources,charge,dipvec,ns,ztarg,nt,thresh
+cf2py intent(out) pot,grad
 c
 cc      calling sequence variables
 c  

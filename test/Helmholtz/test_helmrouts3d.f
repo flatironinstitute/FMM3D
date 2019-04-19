@@ -35,7 +35,8 @@ c
       complex *16, allocatable :: mpole1(:,:),mpole2(:,:)
       complex *16, allocatable :: locexp1(:,:),locexp2(:,:)
       complex *16 charge(100),dipvec(3,100)
-      real *8 wlege(100000)
+      real *8 wlege(100000),errs(2,5),err_exp(5)
+      integer ipass(5)
       complex *16 zk,eye
 c
       data eye/(0.0d0,1.0d0)/
@@ -43,8 +44,14 @@ c
       done=1
       pi=4.0*atan(done)
       zk = 0.2d0
+
+      write(*,*) "=========================================="
+      write(*,*) "Testing suite for helmrouts3d"
+
+      open(unit=33,file='print_testres.txt',access='append')
+
+
 c
-      call prini(6,13)
 c
 c       set scale parameter neq 1 to make sure it is used correctly.
 c
@@ -101,6 +108,12 @@ c
       ztrg(2)=c3(2)-0.25d0
       ztrg(3)=c3(3)-0.25d0
       nt = 1
+
+
+      ntest = 5
+      do i=1,ntest
+        ipass(i) = 0 
+      enddo
 c
 c       direct calculation:
 c
@@ -121,10 +134,6 @@ c
       call h3dterms(bsize, zk, eps, nterms2)
       call h3dterms(bsize/2, zk, eps, nterms3)
 
-      nterms = 90
-      nterms2 = 90
-      nterms3 = 90
-
       nlege = 100
       lw7 = 100000
       call ylgndrfwini(nlege,wlege,lw7,lused7)
@@ -132,7 +141,6 @@ c
 c
 c       create h-expansion:
 c
-      call prinf('calling formmp and mpeval =*', lused,0)
       ifinit = 1
       nquad = 2.0*max(nterms2,nterms3)
       call legewhts(nquad,xnodes,wts,ifinit)
@@ -149,16 +157,25 @@ c
       fld(3) = 0
       nd = 1
 
+      rconv1 = 1.0d0/sqrt(3.0d0)
+      rconv2 = sqrt(3.0d0)/2.0d0
+      rconv3 = 0.75d0
+
       call h3dmpevalg(nd,zk,rscale1,c0,mpole1,nterms,ztrg,nt,pot,
      1      fld,wlege,nlege,thresh)
 
+      err_exp(1) = 10*max(rconv1**(nterms),eps)
+      write(*,'(a,e11.5)') 'Testing formmp and mpeval, expected error='
+     1   ,err_exp(1)
+      call errprint(pot,opot,fld,ofld,errs(1,1))
+      if(max(errs(1,1),errs(2,1)).lt.err_exp(1)) ipass(1) = 1
+      write(*,*)
 
-      call errprint(pot,opot,fld,ofld)
+      if(ipass(1).ne.1) write(33,*) 'Failed formmp and mpeval test' 
 
 c
 c    mpmp shift
 c
-      call prinf('calling mpmp and mpeval *',nterms,0)
       radius = sqrt(3.0d0)/2.0d0
       allocate(mpole2(0:nterms2,-nterms2:nterms2))
       call mpzero(nd,mpole2,nterms2)
@@ -172,12 +189,21 @@ c
       nd = 1
       call h3dmpevalg(nd,zk,rscale2,c1,mpole2,nterms,ztrg,nt,pot,
      1      fld,wlege,nlege,thresh)
-       call errprint(pot,opot,fld,ofld)
+
+      err_exp(2) = 10*max(rconv2**(nterms),eps)
+      write(*,'(a,e11.5)') 'Testing mpmp, expected error='
+     1   ,err_exp(2)
+      call errprint(pot,opot,fld,ofld,errs(1,2))
+
+      if(max(errs(1,2),errs(2,2)).lt.err_exp(2)) ipass(2) = 1
+      write(*,*)
+      if(ipass(2).ne.1) write(33,*) 'Failed mpmp test' 
+      
+      
 c
 c    convert to local
 c
       radius = sqrt(3.0d0)/2.0d0
-      call prin2('calling mploc and taeval *',wavek,0)
       nquad = 2.2*nterms2
       call legewhts(nquad,xnodes,wts,ifinit)
 
@@ -185,8 +211,6 @@ c
       call mpzero(nd,locexp2,nterms2)
       call h3dmploc(nd,zk,rscale2,c1,mpole2,nterms2,
      1      rscale2,c2,locexp2,nterms2,radius,xnodes,wts,nquad)
-
-cc      call prinm(locexp2,nterms2)
 
       pot = 0
       fld(1) = 0
@@ -196,14 +220,18 @@ cc      call prinm(locexp2,nterms2)
       call h3dtaevalg(nd,zk,rscale2,c2,locexp2,nterms2,ztrg,nt,
      1      pot,fld,wlege,nlege)
 
-      call errprint(pot,opot,fld,ofld)
+      err_exp(3) = 10*max(rconv3**(nterms),eps)
+      write(*,'(a,e11.5)') 'Testing mploc, expected error='
+     1   ,err_exp(3)
+      call errprint(pot,opot,fld,ofld,errs(1,3))
+      if(max(errs(1,3),errs(2,3)).lt.err_exp(3)) ipass(3) = 1
+      write(*,*)
+      if(ipass(3).ne.1) write(33,*) 'Failed mploc test' 
 
 c
 c    shift local 
 c
       radius = sqrt(3.0d0)/4.0d0
-      call prinf('calling locloc and taeval *',nterms3,0)
-
       allocate(locexp1(0:nterms3,-nterms3:nterms3))
       call mpzero(nd,locexp1,nterms3)
 
@@ -219,19 +247,22 @@ c
       call h3dtaevalg(nd,zk,rscale1,c3,locexp1,nterms3,ztrg,nt,
      1      pot,fld,wlege,nlege)
 
-      call errprint(pot,opot,fld,ofld)
+      err_exp(4) = 10*max(rconv3**(nterms),eps)
+      write(*,'(a,e11.5)') 'Testing locloc, expected error='
+     1   ,err_exp(4)
+      call errprint(pot,opot,fld,ofld,errs(1,4))
+      if(max(errs(1,4),errs(2,4)).lt.err_exp(4)) ipass(4) = 1
+      write(*,*)
+      if(ipass(4).ne.1) write(33,*) 'Failed locloc test' 
 
 c
 c
 c    create local exp from sources
 
-           call prin2('calling l3dformta and taeval *',nterms,0)
-
       call mpzero(nd,locexp1,nterms3)
       nd = 1
       call h3dformtacd(nd,zk,rscale1,sources,charge,
      1       dipvec,ns,c3,nterms3,locexp1,wlege,nlege)
-      call errprint(pot,opot,fld,ofld)
       pot = 0
       fld(1) = 0
       fld(2) = 0
@@ -240,9 +271,25 @@ c    create local exp from sources
       call h3dtaevalg(nd,zk,rscale1,c3,locexp1,nterms3,ztrg,nt,
      1      pot,fld,wlege,nlege)
 
-      call errprint(pot,opot,fld,ofld)
+      err_exp(5) = 10*max(rconv3**(nterms),eps)
+      write(*,'(a,e11.5)') 'Testing formta and taeval, expected error='
+     1   ,err_exp(5)
+      call errprint(pot,opot,fld,ofld,errs(1,5))
+      if(max(errs(1,5),errs(2,5)).lt.err_exp(5)) ipass(5) = 1
+      write(*,*)
+      if(ipass(5).ne.1) write(33,*) 'Failed formta and taeval test'
 
+      isum = 0
+      do i=1,ntest
+        isum = isum+ipass(i)
+      enddo
 
+      write(*,'(a,i1,a,i1,a)') 'Successfully completed ',isum,
+     1   ' out of ',ntest,' tests in helmrouts3d testing suite'
+      write(33,'(a,i1,a,i1,a)') 'Successfully completed ',isum,
+     1   ' out of ',ntest,' tests in helmrouts3d testing suite'
+      close(33)
+      
       stop
       end
 c
@@ -252,9 +299,10 @@ c
 c
 C
 C
-      subroutine errprint(pot,opot,fld,ofld)
+      subroutine errprint(pot,opot,fld,ofld,errs)
       implicit real *8 (a-h,o-z)
       complex *16 pot,opot,fld(3),ofld(3)
+      real *8 errs(2)
  1000  format(4D15.5) 
       err = 0
       ddd = 0
@@ -266,14 +314,14 @@ C
       ddd = ddd + abs(ofld(3))**2
       err = sqrt(err)
       ddd = sqrt(ddd)
-      write(6,*) 
-     1     ' POT error,       rel error,    FLD error,       rel error'
-      write(6,1000) abs(pot-opot),
-     1 		abs(pot-opot)/abs(opot),err,err/ddd
-      write(13,*) 
-     1     ' POT error,       rel error,    FLD error,       rel error'
-      write(13,1000) abs(pot-opot),
-     1 		abs(pot-opot)/abs(opot),err,err/ddd
+
+      err1 = abs(pot-opot)/abs(opot)
+      write(*,'(a,e11.5,a,e11.5)') 
+     1     'pot error=',err1,'   grad error=',err/ddd
+
+      errs(1) = err1 
+      errs(2) = err/ddd
+
       return
       end
 c

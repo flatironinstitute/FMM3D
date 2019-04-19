@@ -65,6 +65,9 @@ LOBJS = $(LAP)/lwtsexp_sep1.o $(LAP)/l3dterms.o $(LAP)/l3dtrans.o \
 	$(LAP)/rfmm3dpartwrap_vec.o $(LAP)/lwtsexp_sep2.o \
 	$(LAP)/lpwrouts.o
 
+# Test objects
+TOBJS = $(COM)/hkrand.o $(COM)/dlaran.o
+
 OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
 .PHONY: usage lib examples test perftest python all
@@ -106,13 +109,33 @@ $(STATICLIB): $(OBJS)
 $(DYNAMICLIB): $(OBJS) 
 	$(FC) -shared $(OMPFLAGS) $(OBJS) -o $(DYNAMICLIB)
 
-
+# testing routines
+#
 test: $(STATICLIB) test/helmrouts test/hfmm3dpart test/hfmm3dpart_vec test/laprouts test/rfmm3dpart test/rfmm3dpart_vec
 	(cd test/Helmholtz; ./run_helmtest.sh)
 	(cd test/Laplace; ./run_laptest.sh)
+	cat print_testreshelm.txt
+	cat print_testreslap.txt
+	rm print_testreshelm.txt
+	rm print_testreslap.txt
 
-test/testhelmrouts:
-	$(FC) $(FFLAGS) test/Helmholtz/test_helmrouts3d.f $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_helmrouts3d 
+test/helmrouts: 
+	$(FC) $(FFLAGS) test/Helmholtz/test_helmrouts3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_helmrouts3d 
+
+test/hfmm3dpart:
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3dpart.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3dpart
+
+test/hfmm3dpart_vec:
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3dpart_vec.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3dpart_vec 
+
+test/laprouts:
+	$(FC) $(FFLAGS) test/Laplace/test_laprouts3d.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_laprouts3d 
+
+test/rfmm3dpart:
+	$(FC) $(FFLAGS) test/Laplace/test_rfmm3dpart.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_rfmm3dpart
+
+test/rfmm3dpart_vec:
+	$(FC) $(FFLAGS) test/Laplace/test_rfmm3dpart_vec.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_rfmm3dpart_vec 
 
 clean: objclean
 	rm -f lib-static/*.a lib/*.so
