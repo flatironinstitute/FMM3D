@@ -20,10 +20,11 @@ OMPFLAGS = -fopenmp
 MOMPFLAGS = -lgomp -D_OPENMP
 
 # flags for MATLAB MEX compilation..
-MFLAGS=-largeArrayDims
+MFLAGS=-largeArrayDims -L/usr/local/Cellar/gcc/8.3.0/lib/gcc/8 -lgfortran -lgomp -lm
+MWFLAGS=-c99complex
 
 # location of MATLAB's mex compiler
-MEX=mex
+MEX=/Applications/MATLAB_R2019a.app/bin/mex
 
 # For experts, location of Mwrap executable
 MWRAP=mwrap
@@ -82,6 +83,7 @@ usage:
 	@echo "  make examples - compile and run codes in examples/"
 	@echo "  make test - compile and run quick math validation tests"
 	@echo "  make perftest - compile and run performance tests"
+	@echo "  make matlab - compile matlab interfaces"
 	@echo "  make python - compile and test python interfaces"
 	@echo "  make objclean - removal all object files, preserving lib & MEX"
 	@echo "  make clean - also remove lib, MEX, py, and demo executables"
@@ -108,6 +110,18 @@ $(STATICLIB): $(OBJS)
 	ar rcs $(STATICLIB) $(OBJS)
 $(DYNAMICLIB): $(OBJS) 
 	$(FC) -shared $(OMPFLAGS) $(OBJS) -o $(DYNAMICLIB)
+
+# matlab..
+MWRAPFILE = fmm3d_r2019
+GATEWAY = $(MWRAPFILE)gateway
+matlab:	
+	(cd matlab; $(MEX) $(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d)
+
+mex: 
+	cd matlab; mwrap $(MWFLAGS) -list -mex $(GATEWAY) -mb $(MWRAPFILE).mw ;\
+	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY) -c $(GATEWAY).c $(MWRAPFILE).mw;\
+	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output fmm3d
+
 
 # testing routines
 #

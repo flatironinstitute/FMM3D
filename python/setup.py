@@ -20,9 +20,11 @@ p_opts = ['p','g']
 
 list_int_helm = []
 list_int_helm_vec = []
+list_int_helm_dir = []
 
 list_int_lap = []
 list_int_lap_vec = []
+list_int_lap_dir = []
 
 for st in st_opts:
     for cd in c_opts:
@@ -32,10 +34,15 @@ for st in st_opts:
             list_int_lap.append('rfmm3dpart'+st+cd+pg)
             list_int_lap_vec.append('rfmm3dpart'+st+cd+pg+'_vec')
 
+for cd in c_opts:
+    for pg in p_opts:
+        list_int_helm_dir.append('h3ddirect'+cd+pg)
+        list_int_lap_dir.append('l3ddirect'+cd+pg)
+
 ext_helm = Extension(
     name='hfmm3d_fortran',
     sources=['../src/Helmholtz/'+item for item in list_helm]+['../src/Common/'+item for item in list_common],
-    f2py_options=['only:']+list_int_helm+list_int_helm_vec+[':'],
+    f2py_options=['only:']+list_int_helm+list_int_helm_vec+list_int_helm_dir+[':'],
     extra_compile_args=['-O3', '-W'],
     extra_link_args=['-O3']
 )
@@ -43,7 +50,7 @@ ext_helm = Extension(
 ext_lap = Extension(
     name='lfmm3d_fortran',
     sources=['../src/Laplace/'+item for item in list_lap]+['../src/Common/'+item for item in list_common],
-    f2py_options=['only:']+list_int_lap+list_int_lap_vec+[':'],
+    f2py_options=['only:']+list_int_lap+list_int_lap_vec+list_int_lap_dir+[':'],
     extra_compile_args=['-O3', '-W'],
     extra_link_args=['-O3']
 )
@@ -64,5 +71,5 @@ setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
-    )
+    
 )

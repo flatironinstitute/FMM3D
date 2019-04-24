@@ -28,7 +28,6 @@ out = fmm.lfmm3d(eps=eps,sources=sources,charges=charges,pg=1)
 nd = 3
 nt = 1870
 targ = np.random.uniform(0,1,(3,nt))
-dipoles = np.random.uniform(0,1,(nd,n)) 
 dipvecs = np.random.uniform(0,1,(nd,3,n)) 
-out = fmm.lfmm3d(eps=eps,sources=sources,dipoles=dipoles,dipvec=dipvecs,\
+out = fmm.lfmm3d(eps=eps,sources=sources,dipvec=dipvecs,\
     targets=targ,nd=nd,pg=2,pgt=2)

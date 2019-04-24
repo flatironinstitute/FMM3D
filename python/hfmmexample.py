@@ -30,7 +30,6 @@ nd = 3
 zk = 1.1 + 1j*0
 nt = 1870
 targ = np.random.uniform(0,1,(3,nt))
-dipoles = np.random.uniform(0,1,(nd,n)) + 1j*np.random.uniform(0,1,(nd,n))
 dipvecs = np.random.uniform(0,1,(nd,3,n)) + 1j*np.random.uniform(0,1,(nd,3,n))
-out = fmm.hfmm3d(eps=eps,zk=zk, sources=sources,dipoles=dipoles,dipvec=dipvecs,\
+out = fmm.hfmm3d(eps=eps,zk=zk, sources=sources,dipvec=dipvecs,\
     targets=targ,nd=nd,pg=2,pgt=2)
