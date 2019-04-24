@@ -1,0 +1,73 @@
+@function Readme()
+%README
+%
+% Copyright (C) 2009-2012: Leslie Greengard, Zydrunas Gimbutas, and 
+% Manas Rachh
+% Contact: greengard@cims.nyu.edu
+% 
+% This program is free software; you can redistribute it and/or modify 
+% it under the terms of the GNU General Public License as published by 
+% the Free Software Foundation; either version 2 of the License, or 
+% (at your option) any later version.  This program is distributed in 
+% the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
+% even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+% PARTICULAR PURPOSE.  See the GNU General Public License for more 
+% details. You should have received a copy of the GNU General Public 
+% License along with this program; 
+% if not, see <http://www.gnu.org/licenses/>.
+%
+
+@function [U] = hfmm3d(eps,zk,srcinfo,pg,targ,pgt)
+
+  nd = 1;
+
+  sources = srcinfo.sources;
+  [m,ns] = size(sources);
+  % Enter check to make sure m=3;
+
+  pot = 0 + 1i*0;
+  grad = zeros(3,1) + 1i*zeros(3,1);
+  hess = zeros(6,1) + 1i*zeros(6,1);
+  
+
+  if(pg>=1), pot = zeros(1,ns)+1i*zeros(1,ns); end;
+  if(ifpg == 2) grad = zeros(3,ns)+1i*zeros(3,ns); end;
+
+  pottarg = 0 + 1i*0;
+  gradtarg = zeros(3,1) + 1i*zeros(3,1);
+  hesstarg = zeros(6,1) + 1i*zeros(6,1);
+  if( nargin == 4 )
+    nt = 0;
+    ifpottarg = 0;
+    ifgradtarg = 0;
+    targ = zeros(3,1);
+  else
+    [m,nt] = size(targ);
+    if(pgt >=1), pottarg = zeros(1,nt)+1i*zeros(1,nt); end;
+    if(ifpgt == 2), gradtarg = zeros(1,nt) + 1i*zeros(1,nt) end;
+  end
+
+ 
+
+
+  if(isfield(srcinfo,'charges'))
+    ifcharge = 1;
+    charges = srcinfo.charges;
+  else
+    ifcharge = 0
+    charges = 0 + 1i*0;
+  end
+
+  if(isfield(srcinfo,'dipoles'))
+    ifdipole = 1;
+    dipvec = srcinfo.dipoles
+  else
+    ifdipole = 0;
+    dipvec = zeros(3,1) + 1i*zeros(3,1);
+  end
+
+  # FORTRAN hfmm3dpart(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, int[1] ifcharge, dcomplex[] charges, int[1] ifdipole, dcomplex[] dipvec, int[1] pg, inout dcomplex[] pot, inout dcomplex[] grad, inout dcomplex[] hess,int[1] nt, double[] targ, int[1] pgt, inout dcomplex[] pottarg, inout dcomplex[] gradtarg, inout dcomplex[] hesstarg);
+   U.pot = pot;
+   U.grad = grad;
+   U.pottarg = pottarg;
+   U.gradtarg = gradtarg;
