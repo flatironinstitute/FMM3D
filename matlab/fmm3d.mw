@@ -1,0 +1,628 @@
+@function Readme()
+%README
+%
+% Copyright (C) 2009-2012: Leslie Greengard, Zydrunas Gimbutas, and 
+% Manas Rachh
+% Contact: greengard@cims.nyu.edu
+% 
+% This program is free software; you can redistribute it and/or modify 
+% it under the terms of the GNU General Public License as published by 
+% the Free Software Foundation; either version 2 of the License, or 
+% (at your option) any later version.  This program is distributed in 
+% the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
+% even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+% PARTICULAR PURPOSE.  See the GNU General Public License for more 
+% details. You should have received a copy of the GNU General Public 
+% License along with this program; 
+% if not, see <http://www.gnu.org/licenses/>.
+%
+end
+
+
+@function [U] = hfmm3d(eps,zk,srcinfo,pg,targ,pgt)
+
+
+  sources = srcinfo.sources;
+  [m,ns] = size(sources);
+  assert(m==3,'The first dimension of sources must be 3');
+  if(~isfield(srcinfo,'nd'))
+    nd = 1;
+  end
+  if(isfield(srcinfo,'nd'))
+    nd = srcinfo.nd;
+  end
+
+  pot = complex(zeros(nd,1)); 
+  grad = complex(zeros(nd*3,1));
+  
+
+  if(pg>=1), pot = complex(zeros(nd,ns)); end;
+  if(pg == 2), grad = complex(zeros(nd*3,ns)); end;
+
+  pottarg = complex(zeros(nd,1));
+  gradtarg = complex(zeros(nd*3,1));
+  if( nargin == 4 )
+    nt = 0;
+    iftarg = 0;
+    pgt = 0;
+    targ = zeros(3,1);
+  else
+    [m,nt] = size(targ);
+    iftarg = 1;
+    assert(m==3,'First dimension of targets must be 3');
+    if(pgt >=1), pottarg = complex(zeros(nd,nt)); end;
+    if(pgt == 2), gradtarg = complex(zeros(nd*3,nt)); end;
+  end
+
+  if(pg ==0 && pgt ==0), disp('Nothing to compute, set eigher pg or pgt to 1 or 2'); return; end;
+
+  if(isfield(srcinfo,'charges'))
+    ifcharge = 1;
+    charges = srcinfo.charges;
+    if(nd==1), assert(length(charges)==ns,'Charges must be same length as second dimension of sources'); end;
+    if(nd>1), [a,b] = size(charges); assert(a==nd && b==ns,'Charges must be of shape [nd,ns] where nd is the number of densities, and ns is the number of sources'); end;
+  else
+    ifcharge = 0;
+    charges = complex(zeros(nd,1));
+  end
+
+  if(isfield(srcinfo,'dipoles'))
+    ifdipole = 1;
+    dipoles = srcinfo.dipoles;
+    if(nd == 1), [a,b] = size(squeeze(dipoles)); assert(a==3 && b==ns,'Dipoles must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(dipoles); assert(a==nd && b==3 && c==ns, 'Dipoles must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    dipoles = reshape(dipoles,[3*nd,ns]);
+  else
+    ifdipole = 0;
+    dipoles = complex(zeros(nd*3,1));
+  end
+
+  nd3 = 3*nd;
+
+
+  if(iftarg == 0 || (pgt ~=1 && pgt ~=2)) 
+    if(pg == 1)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN hfmm3dpartstoscp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, inout dcomplex[nd,ns] pot); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN hfmm3dpartstosdp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN hfmm3dpartstoscdp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot); 
+      end
+      U.pot = pot;
+    end
+    if(pg == 2)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN hfmm3dpartstoscg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN hfmm3dpartstosdg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN hfmm3dpartstoscdg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, inout dcomplex [nd3,ns] grad); 
+      end
+      U.pot = pot;
+      U.grad = squeeze(reshape(grad,[nd,3,ns]));
+    end
+  end
+  if(iftarg == 1 && pg ~=1 && pg ~=2) 
+    if(pgt == 1)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN hfmm3dpartstotcp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN hfmm3dpartstotdp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN hfmm3dpartstotcdp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg); 
+      end
+      U.pottarg = pottarg;
+    end
+    if(pgt == 2)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN hfmm3dpartstotcg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex[nd3,nt] gradtarg); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN hfmm3dpartstotdg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex[nd3,nt] gradtarg); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN hfmm3dpartstotcdg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex [nd3,nt] gradtarg); 
+      end
+      U.pottarg = pottarg;
+      U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
+    end
+  end
+  if(iftarg == 1 && (pg ==1 || pg ==2))
+    assert(pg==pgt,'pg must be pgt');
+    if(pgt == 1)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN hfmm3dpartstostcp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, inout dcomplex[nd,ns] pot, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN hfmm3dpartstostdp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN hfmm3dpartstostcdp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg); 
+      end
+      U.pot = pot;
+      U.pottarg = pottarg;
+    end
+    if(pgt == 2)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN hfmm3dpartstostcg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex[nd3,nt] gradtarg); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN hfmm3dpartstostdg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex[nd3,nt] gradtarg); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN hfmm3dpartstostcdg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex [nd3,nt] gradtarg); 
+      end
+      U.pot = pot;
+      U.grad = squeeze(reshape(grad,[nd,3,ns]));
+      U.pottarg = pottarg;
+      U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
+    end
+  end
+end
+
+@function [U] = h3ddir(eps,zk,ntest,srcinfo,pg,targ,pgt)
+
+  sources = srcinfo.sources;
+  stmp = sources(:,1:ntest);
+  [m,ns] = size(sources);
+  assert(m==3,'The first dimension of sources must be 3');
+  if(~isfield(srcinfo,'nd'))
+    nd = 1;
+  end
+  if(isfield(srcinfo,'nd'))
+    nd = srcinfo.nd;
+  end
+
+  thresh = 1e-15;
+
+  pot = complex(zeros(nd,1)); 
+  grad = complex(zeros(nd*3,1));
+  
+
+  if(pg>=1), pot = complex(zeros(nd,ntest)); end;
+  if(pg == 2), grad = complex(zeros(nd*3,ntest)); end;
+
+  pottarg = complex(zeros(nd,1));
+  gradtarg = complex(zeros(nd*3,1));
+  if( nargin == 5 )
+    nt = 0;
+    iftarg = 0;
+    pgt = 0;
+    targ = zeros(3,1);
+  else
+    [m,nt] = size(targ);
+    iftarg = 1;
+    assert(m==3,'First dimension of targets must be 3');
+    ttmp = targ(:,1:ntest);
+    if(pgt >=1), pottarg = complex(zeros(nd,ntest)); end;
+    if(pgt == 2), gradtarg = complex(zeros(nd*3,ntest)); end;
+  end
+
+  if(pg ==0 && pgt ==0), disp('Nothing to compute, set eigher pg or pgt to 1 or 2'); return; end;
+
+  if(isfield(srcinfo,'charges'))
+    ifcharge = 1;
+    charges = srcinfo.charges;
+    if(nd==1), assert(length(charges)==ns,'Charges must be same length as second dimension of sources'); end;
+    if(nd>1), [a,b] = size(charges); assert(a==nd && b==ns,'Charges must be of shape [nd,ns] where nd is the number of densities, and ns is the number of sources'); end;
+  else
+    ifcharge = 0;
+    charges = complex(zeros(nd,1));
+  end
+
+  if(isfield(srcinfo,'dipoles'))
+    ifdipole = 1;
+    dipoles = srcinfo.dipoles;
+    if(nd == 1), [a,b] = size(squeeze(dipoles)); assert(a==3 && b==ns,'Dipoles must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(dipoles); assert(a==nd && b==3 && c==ns, 'Dipoles must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    dipoles = reshape(dipoles,[3*nd,ns]);
+  else
+    ifdipole = 0;
+    dipoles = complex(zeros(nd*3,1));
+  end
+
+  nd3 = 3*nd;
+
+  if(iftarg == 0 || (pgt ~=1 && pgt ~=2)) 
+    if(pg == 1)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN h3ddirectcp(int[1] nd, dcomplex[1] zk, double[3,ns] sources, dcomplex[nd,ns] charges, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout dcomplex[nd,ntest] pot, double[1] thresh); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN h3ddirectdp(int[1] nd, dcomplex[1] zk, double[3,ns] sources,dcomplex[nd3,ns] dipoles, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout dcomplex[nd,ntest] pot, double[1] thresh); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN h3ddirectcdp(int[1] nd, dcomplex[1] zk, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout dcomplex[nd,ntest] pot, double[1] thresh); 
+      end
+      U.pot = pot;
+    end
+    if(pg == 2)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN h3ddirectcg(int[1] nd, dcomplex[1] zk, double[3,ns] sources,dcomplex[nd,ns] charges, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout dcomplex[nd,ntest] pot, inout dcomplex[nd3,ntest] grad, double[1] thresh); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN h3ddirectdg(int[1] nd, dcomplex[1] zk, double[3,ns] sources, dcomplex[nd3,ns] dipoles, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout dcomplex[nd,ntest] pot, inout dcomplex[nd3,ntest] grad, double[1] thresh); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN h3ddirectcdg(int[1] nd, dcomplex[1] zk, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout dcomplex[nd,ntest] pot, inout dcomplex[nd3,ntest] grad, double[1] thresh); 
+      end
+      U.pot = pot;
+      U.grad = squeeze(reshape(grad,[nd,3,ntest]));
+    end
+  end
+  if(iftarg == 1 && pg ~=1 && pg ~=2) 
+    if(pgt == 1)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN h3ddirectcp(int[1] nd, dcomplex[1] zk, double[3,ns] sources, dcomplex[nd,ns] charges, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout dcomplex[nd,ntest] pottarg, double[1] thresh); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN h3ddirectdp(int[1] nd, dcomplex[1] zk, double[3,ns] sources,dcomplex[nd3,ns] dipoles, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout dcomplex[nd,ntest] pottarg, double[1] thresh); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN h3ddirectcdp(int[1] nd, dcomplex[1] zk, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout dcomplex[nd,ntest] pottarg, double[1] thresh); 
+      end
+      U.pottarg = pottarg;
+    end
+    if(pgt == 2)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN h3ddirectcg(int[1] nd, dcomplex[1] zk, double[3,ns] sources,dcomplex[nd,ns] charges, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout dcomplex[nd,ntest] pottarg, inout dcomplex[nd3,ntest] gradtarg, double[1] thresh); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN h3ddirectdg(int[1] nd, dcomplex[1] zk, double[3,ns] sources, dcomplex[nd3,ns] dipoles, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout dcomplex[nd,ntest] pottarg, inout dcomplex[nd3,ntest] gradtarg, double[1] thresh); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN h3ddirectcdg(int[1] nd, dcomplex[1] zk, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout dcomplex[nd,ntest] pottarg, inout dcomplex[nd3,ntest] gradtarg, double[1] thresh); 
+      end
+      U.pottarg = pottarg;
+      U.gradtarg = squeeze(reshape(gradtarg,[nd,3,ntest]));
+    end
+  end
+  if(iftarg == 1 && (pg ==1 || pg ==2))
+    assert(pg==pgt,'pg must be pgt');
+    if(pgt == 1)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN h3ddirectcp(int[1] nd, dcomplex[1] zk, double[3,ns] sources, dcomplex[nd,ns] charges, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout dcomplex[nd,ntest] pot, double[1] thresh); 
+        # FORTRAN h3ddirectcp(int[1] nd, dcomplex[1] zk, double[3,ns] sources, dcomplex[nd,ns] charges, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout dcomplex[nd,ntest] pottarg, double[1] thresh); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN h3ddirectdp(int[1] nd, dcomplex[1] zk, double[3,ns] sources,dcomplex[nd3,ns] dipoles, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout dcomplex[nd,ntest] pot, double[1] thresh); 
+        # FORTRAN h3ddirectdp(int[1] nd, dcomplex[1] zk, double[3,ns] sources,dcomplex[nd3,ns] dipoles, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout dcomplex[nd,ntest] pottarg, double[1] thresh); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN h3ddirectcdp(int[1] nd, dcomplex[1] zk, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout dcomplex[nd,ntest] pot, double[1] thresh); 
+        # FORTRAN h3ddirectcdp(int[1] nd, dcomplex[1] zk, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout dcomplex[nd,ntest] pottarg, double[1] thresh); 
+      end
+      U.pot = pot;
+      U.pottarg = pottarg;
+    end
+    if(pgt == 2)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN h3ddirectcg(int[1] nd, dcomplex[1] zk, double[3,ns] sources,dcomplex[nd,ns] charges, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout dcomplex[nd,ntest] pot, inout dcomplex[nd3,ntest] grad, double[1] thresh); 
+        # FORTRAN h3ddirectcg(int[1] nd, dcomplex[1] zk, double[3,ns] sources,dcomplex[nd,ns] charges, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout dcomplex[nd,ntest] pottarg, inout dcomplex[nd3,ntest] gradtarg, double[1] thresh); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN h3ddirectdg(int[1] nd, dcomplex[1] zk, double[3,ns] sources, dcomplex[nd3,ns] dipoles, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout dcomplex[nd,ntest] pot, inout dcomplex[nd3,ntest] grad, double[1] thresh); 
+        # FORTRAN h3ddirectdg(int[1] nd, dcomplex[1] zk, double[3,ns] sources, dcomplex[nd3,ns] dipoles, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout dcomplex[nd,ntest] pottarg, inout dcomplex[nd3,ntest] gradtarg, double[1] thresh); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN h3ddirectcdg(int[1] nd, dcomplex[1] zk, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout dcomplex[nd,ntest] pot, inout dcomplex[nd3,ntest] grad, double[1] thresh); 
+        # FORTRAN h3ddirectcdg(int[1] nd, dcomplex[1] zk, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout dcomplex[nd,ntest] pottarg, inout dcomplex[nd3,ntest] gradtarg, double[1] thresh); 
+      end
+      U.pot = pot;
+      U.grad = squeeze(reshape(grad,[nd,3,ntest]));
+      U.pottarg = pottarg;
+      U.gradtarg = squeeze(reshape(gradtarg,[nd,3,ntest]));
+    end
+  end
+end
+
+@function [U] = rfmm3d(eps,srcinfo,pg,targ,pgt)
+
+
+  sources = srcinfo.sources;
+  [m,ns] = size(sources);
+  assert(m==3,'The first dimension of sources must be 3');
+  if(~isfield(srcinfo,'nd'))
+    nd = 1;
+  end
+  if(isfield(srcinfo,'nd'))
+    nd = srcinfo.nd;
+  end
+
+  pot = zeros(nd,1); 
+  grad = zeros(nd*3,1);
+  
+
+  if(pg>=1), pot = zeros(nd,ns); end;
+  if(pg == 2), grad = zeros(nd*3,ns); end;
+
+  pottarg = zeros(nd,1);
+  gradtarg = zeros(nd*3,1);
+  if( nargin == 3 )
+    nt = 0;
+    iftarg = 0;
+    pgt = 0;
+    targ = zeros(3,1);
+  else
+    [m,nt] = size(targ);
+    iftarg = 1;
+    assert(m==3,'First dimension of targets must be 3');
+    if(pgt >=1), pottarg = zeros(nd,nt); end;
+    if(pgt == 2), gradtarg = zeros(nd*3,nt); end;
+  end
+
+  if(pg ==0 && pgt ==0), disp('Nothing to compute, set eigher pg or pgt to 1 or 2'); return; end;
+
+  if(isfield(srcinfo,'charges'))
+    ifcharge = 1;
+    charges = srcinfo.charges;
+    if(nd==1), assert(length(charges)==ns,'Charges must be same length as second dimension of sources'); end;
+    if(nd>1), [a,b] = size(charges); assert(a==nd && b==ns,'Charges must be of shape [nd,ns] where nd is the number of densities, and ns is the number of sources'); end;
+  else
+    ifcharge = 0;
+    charges = zeros(nd,1);
+  end
+
+  if(isfield(srcinfo,'dipoles'))
+    ifdipole = 1;
+    dipoles = srcinfo.dipoles;
+    if(nd == 1), [a,b] = size(squeeze(dipoles)); assert(a==3 && b==ns,'Dipoles must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(dipoles); assert(a==nd && b==3 && c==ns, 'Dipoles must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    dipoles = reshape(dipoles,[3*nd,ns]);
+  else
+    ifdipole = 0;
+    dipoles = zeros(nd*3,1);
+  end
+
+  nd3 = 3*nd;
+
+
+  if(iftarg == 0 || (pgt ~=1 && pgt ~=2)) 
+    if(pg == 1)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN rfmm3dpartstoscp_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN rfmm3dpartstosdp_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN rfmm3dpartstoscdp_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot); 
+      end
+      U.pot = pot;
+    end
+    if(pg == 2)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN rfmm3dpartstoscg_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot, inout double[nd3,ns] grad); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN rfmm3dpartstosdg_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double[nd3,ns] grad); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN rfmm3dpartstoscdg_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double [nd3,ns] grad); 
+      end
+      U.pot = pot;
+      U.grad = squeeze(reshape(grad,[nd,3,ns]));
+    end
+  end
+  if(iftarg == 1 && pg ~=1 && pg ~=2) 
+    if(pgt == 1)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN rfmm3dpartstotcp_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN rfmm3dpartstotdp_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN rfmm3dpartstotcdp_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg); 
+      end
+      U.pottarg = pottarg;
+    end
+    if(pgt == 2)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN rfmm3dpartstotcg_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN rfmm3dpartstotdg_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN rfmm3dpartstotcdg_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double [nd3,nt] gradtarg); 
+      end
+      U.pottarg = pottarg;
+      U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
+    end
+  end
+  if(iftarg == 1 && (pg ==1 || pg ==2))
+    assert(pg==pgt,'pg must be pgt');
+    if(pgt == 1)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN rfmm3dpartstostcp_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN rfmm3dpartstostdp_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN rfmm3dpartstostcdp_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg); 
+      end
+      U.pot = pot;
+      U.pottarg = pottarg;
+    end
+    if(pgt == 2)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN rfmm3dpartstostcg_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot, inout double[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN rfmm3dpartstostdg_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN rfmm3dpartstostcdg_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double [nd3,nt] gradtarg); 
+      end
+      U.pot = pot;
+      U.grad = squeeze(reshape(grad,[nd,3,ns]));
+      U.pottarg = pottarg;
+      U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
+    end
+  end
+end
+
+@function [U] = r3ddir(eps,ntest,srcinfo,pg,targ,pgt)
+
+  sources = srcinfo.sources;
+  stmp = sources(:,1:ntest);
+  [m,ns] = size(sources);
+  assert(m==3,'The first dimension of sources must be 3');
+  if(~isfield(srcinfo,'nd'))
+    nd = 1;
+  end
+  if(isfield(srcinfo,'nd'))
+    nd = srcinfo.nd;
+  end
+
+  thresh = 1e-15;
+
+  pot = zeros(nd,1); 
+  grad = zeros(nd*3,1);
+  
+
+  if(pg>=1), pot = zeros(nd,ntest); end;
+  if(pg == 2), grad = zeros(nd*3,ntest); end;
+
+  pottarg = zeros(nd,1);
+  gradtarg = zeros(nd*3,1);
+  if( nargin == 4 )
+    nt = 0;
+    iftarg = 0;
+    pgt = 0;
+    targ = zeros(3,1);
+  else
+    [m,nt] = size(targ);
+    iftarg = 1;
+    assert(m==3,'First dimension of targets must be 3');
+    ttmp = targ(:,1:ntest);
+    if(pgt >=1), pottarg = zeros(nd,ntest); end;
+    if(pgt == 2), gradtarg = zeros(nd*3,ntest); end;
+  end
+
+  if(pg ==0 && pgt ==0), disp('Nothing to compute, set eigher pg or pgt to 1 or 2'); return; end;
+
+  if(isfield(srcinfo,'charges'))
+    ifcharge = 1;
+    charges = srcinfo.charges;
+    if(nd==1), assert(length(charges)==ns,'Charges must be same length as second dimension of sources'); end;
+    if(nd>1), [a,b] = size(charges); assert(a==nd && b==ns,'Charges must be of shape [nd,ns] where nd is the number of densities, and ns is the number of sources'); end;
+  else
+    ifcharge = 0;
+    charges = zeros(nd,1);
+  end
+
+  if(isfield(srcinfo,'dipoles'))
+    ifdipole = 1;
+    dipoles = srcinfo.dipoles;
+    if(nd == 1), [a,b] = size(squeeze(dipoles)); assert(a==3 && b==ns,'Dipoles must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(dipoles); assert(a==nd && b==3 && c==ns, 'Dipoles must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    dipoles = reshape(dipoles,[3*nd,ns]);
+  else
+    ifdipole = 0;
+    dipoles = zeros(nd*3,1);
+  end
+
+  nd3 = 3*nd;
+
+  if(iftarg == 0 || (pgt ~=1 && pgt ~=2)) 
+    if(pg == 1)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN l3ddirectcp(int[1] nd,  double[3,ns] sources, double[nd,ns] charges, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout double[nd,ntest] pot, double[1] thresh); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN l3ddirectdp(int[1] nd,  double[3,ns] sources,double[nd3,ns] dipoles, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout double[nd,ntest] pot, double[1] thresh); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN l3ddirectcdp(int[1] nd,  double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout double[nd,ntest] pot, double[1] thresh); 
+      end
+      U.pot = pot;
+    end
+    if(pg == 2)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN l3ddirectcg(int[1] nd,  double[3,ns] sources,double[nd,ns] charges, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout double[nd,ntest] pot, inout double[nd3,ntest] grad, double[1] thresh); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN l3ddirectdg(int[1] nd,  double[3,ns] sources, double[nd3,ns] dipoles, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout double[nd,ntest] pot, inout double[nd3,ntest] grad, double[1] thresh); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN l3ddirectcdg(int[1] nd,  double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout double[nd,ntest] pot, inout double[nd3,ntest] grad, double[1] thresh); 
+      end
+      U.pot = pot;
+      U.grad = squeeze(reshape(grad,[nd,3,ntest]));
+    end
+  end
+  if(iftarg == 1 && pg ~=1 && pg ~=2) 
+    if(pgt == 1)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN l3ddirectcp(int[1] nd,  double[3,ns] sources, double[nd,ns] charges, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout double[nd,ntest] pottarg, double[1] thresh); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN l3ddirectdp(int[1] nd,  double[3,ns] sources,double[nd3,ns] dipoles, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout double[nd,ntest] pottarg, double[1] thresh); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN l3ddirectcdp(int[1] nd,  double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout double[nd,ntest] pottarg, double[1] thresh); 
+      end
+      U.pottarg = pottarg;
+    end
+    if(pgt == 2)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN l3ddirectcg(int[1] nd,  double[3,ns] sources,double[nd,ns] charges, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout double[nd,ntest] pottarg, inout double[nd3,ntest] gradtarg, double[1] thresh); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN l3ddirectdg(int[1] nd,  double[3,ns] sources, double[nd3,ns] dipoles, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout double[nd,ntest] pottarg, inout double[nd3,ntest] gradtarg, double[1] thresh); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN l3ddirectcdg(int[1] nd,  double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout double[nd,ntest] pottarg, inout double[nd3,ntest] gradtarg, double[1] thresh); 
+      end
+      U.pottarg = pottarg;
+      U.gradtarg = squeeze(reshape(gradtarg,[nd,3,ntest]));
+    end
+  end
+  if(iftarg == 1 && (pg ==1 || pg ==2))
+    assert(pg==pgt,'pg must be pgt');
+    if(pgt == 1)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN l3ddirectcp(int[1] nd,  double[3,ns] sources, double[nd,ns] charges, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout double[nd,ntest] pot, double[1] thresh); 
+        # FORTRAN l3ddirectcp(int[1] nd,  double[3,ns] sources, double[nd,ns] charges, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout double[nd,ntest] pottarg, double[1] thresh); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN l3ddirectdp(int[1] nd,  double[3,ns] sources,double[nd3,ns] dipoles, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout double[nd,ntest] pot, double[1] thresh); 
+        # FORTRAN l3ddirectdp(int[1] nd,  double[3,ns] sources,double[nd3,ns] dipoles, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout double[nd,ntest] pottarg, double[1] thresh); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN l3ddirectcdp(int[1] nd,  double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout double[nd,ntest] pot, double[1] thresh); 
+        # FORTRAN l3ddirectcdp(int[1] nd,  double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout double[nd,ntest] pottarg, double[1] thresh); 
+      end
+      U.pot = pot;
+      U.pottarg = pottarg;
+    end
+    if(pgt == 2)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN l3ddirectcg(int[1] nd,  double[3,ns] sources,double[nd,ns] charges, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout double[nd,ntest] pot, inout double[nd3,ntest] grad, double[1] thresh); 
+        # FORTRAN l3ddirectcg(int[1] nd,  double[3,ns] sources,double[nd,ns] charges, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout double[nd,ntest] pottarg, inout double[nd3,ntest] gradtarg, double[1] thresh); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN l3ddirectdg(int[1] nd,  double[3,ns] sources, double[nd3,ns] dipoles, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout double[nd,ntest] pot, inout double[nd3,ntest] grad, double[1] thresh); 
+        # FORTRAN l3ddirectdg(int[1] nd,  double[3,ns] sources, double[nd3,ns] dipoles, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout double[nd,ntest] pottarg, inout double[nd3,ntest] gradtarg, double[1] thresh); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN l3ddirectcdg(int[1] nd,  double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] ns, double[3,ntest] stmp, int[1] ntest, inout double[nd,ntest] pot, inout double[nd3,ntest] grad, double[1] thresh); 
+        # FORTRAN l3ddirectcdg(int[1] nd,  double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] ns, double[3,ntest] ttmp, int[1] ntest, inout double[nd,ntest] pottarg, inout double[nd3,ntest] gradtarg, double[1] thresh); 
+      end
+      U.pot = pot;
+      U.grad = squeeze(reshape(grad,[nd,3,ntest]));
+      U.pottarg = pottarg;
+      U.gradtarg = squeeze(reshape(gradtarg,[nd,3,ntest]));
+    end
+  end
+end
