@@ -20,8 +20,8 @@ OMPFLAGS = -fopenmp
 MOMPFLAGS = -lgomp -D_OPENMP
 
 # flags for MATLAB MEX compilation..
-MFLAGS=-largeArrayDims -L/usr/local/Cellar/gcc/8.3.0/lib/gcc/8 -lgfortran -lgomp -lm
-MWFLAGS=-c99complex
+MFLAGS=-largeArrayDims -L/usr/local/Cellar/gcc/8.3.0/lib/gcc/8 -DMWF77_UNDERSCORE1 -lgfortran -lgomp -lm
+MWFLAGS=-c99complex 
 
 # location of MATLAB's mex compiler
 MEX=/Applications/MATLAB_R2019a.app/bin/mex
@@ -112,13 +112,13 @@ $(DYNAMICLIB): $(OBJS)
 	$(FC) -shared $(OMPFLAGS) $(OBJS) -o $(DYNAMICLIB)
 
 # matlab..
-MWRAPFILE = fmm3d_r2019
-GATEWAY = $(MWRAPFILE)gateway
+MWRAPFILE = fmm3d
+GATEWAY = $(MWRAPFILE)
 matlab:	
 	(cd matlab; $(MEX) $(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d)
 
 mex: 
-	cd matlab; mwrap $(MWFLAGS) -list -mex $(GATEWAY) -mb $(MWRAPFILE).mw ;\
+	cd matlab; mwrap $(MWFLAGS) -list -mex $(GATEWAY) -mb $(MWRAPFILE).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY) -c $(GATEWAY).c $(MWRAPFILE).mw;\
 	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output fmm3d
 
