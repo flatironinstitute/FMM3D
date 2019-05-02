@@ -832,10 +832,9 @@ c       form multipole expansions
 
 
       do ilev=2,nlevels
+         if(ifcharge.eq.1.and.ifdipole.eq.0) then
 C$OMP PARALLEL DO DEFAULT(SHARED)
 C$OMP$PRIVATE(ibox,npts,istart,iend,nchild)
-C
-         if(ifcharge.eq.1.and.ifdipole.eq.0) then
             do ibox=laddr(1,ilev),laddr(2,ilev)
 
                istart = itree(ipointer(10)+ibox-1)
@@ -851,9 +850,12 @@ C
      3            rmlexp(iaddr(1,ibox)),wlege,nlege)          
                endif
             enddo
+C$OMP END PARALLEL DO          
          endif
 
          if(ifcharge.eq.0.and.ifdipole.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(ibox,npts,istart,iend,nchild)
             do ibox=laddr(1,ilev),laddr(2,ilev)
 
                istart = itree(ipointer(10)+ibox-1)
@@ -870,9 +872,12 @@ C
      3            rmlexp(iaddr(1,ibox)),wlege,nlege)          
                endif
             enddo
+C$OMP END PARALLEL DO          
          endif
 
          if(ifdipole.eq.1.and.ifcharge.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(ibox,npts,istart,iend,nchild)
             do ibox=laddr(1,ilev),laddr(2,ilev)
 
                istart = itree(ipointer(10)+ibox-1)
@@ -889,8 +894,8 @@ C
      3            rmlexp(iaddr(1,ibox)),wlege,nlege)          
                endif
             enddo
-         endif
 C$OMP END PARALLEL DO          
+         endif
       enddo
 
 
@@ -1070,16 +1075,13 @@ C$OMP END PARALLEL DO
          enddo
 
 C$OMP PARALLEL DO DEFAULT (SHARED)
-C$OMP$PRIVATE(ibox,istart,iend,npts,tmp,mexpf1,mexpf2,mptemp,ictr)
-C$OMP$PRIVATE(ii,jj)
+C$OMP$PRIVATE(ibox,istart,iend,npts,tmp,mexpf1,mexpf2,mptemp)
          do ibox=laddr(1,ilev),laddr(2,ilev)
 
             istart = itree(ipointer(10)+ibox-1)
             iend = itree(ipointer(11)+ibox-1)
 
             npts = iend-istart+1
-
-
 
             if(npts.gt.0) then
 c            rescale the multipole expansion
@@ -1330,10 +1332,10 @@ cc       evaluate multipole expansions at source locations
 c
 
       do ilev=1,nlevels
-C$OMP PARALLEL DO DEFAULT(SHARED)
-C$OMP$PRIVATE(ibox,nlist3,istart,iend,npts,j,i,jbox)
-C$OMP$SCHEDULE(DYNAMIC)
         if(ifpgh.eq.1) then         
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(ibox,nlist3,istart,iend,npts,i,jbox)
+C$OMP$SCHEDULE(DYNAMIC)
           do ibox=laddr(1,ilev),laddr(2,ilev)
             nlist3 = itree(ipointer(24)+ibox-1)
             istart = itree(ipointer(10)+ibox-1)
@@ -1343,16 +1345,19 @@ C$OMP$SCHEDULE(DYNAMIC)
 
             do i=1,nlist3
               jbox = itree(ipointer(25)+(ibox-1)*mnlist3+i-1)
-cc              call prinm(rmlexp(iaddr(1,jbox)),nterms(ilev+1))
               call l3dmpevalp(nd,rscales(ilev+1),centers(1,jbox),
      1          rmlexp(iaddr(1,jbox)),nterms(ilev+1),
      2          sourcesort(1,istart),npts,pot(1,istart),wlege,nlege,
      3          thresh)
             enddo
           enddo
+C$OMP END PARALLEL DO
         endif
 
         if(ifpgh.eq.2) then
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(ibox,nlist3,istart,iend,npts,i,jbox)
+C$OMP$SCHEDULE(DYNAMIC)
           do ibox=laddr(1,ilev),laddr(2,ilev)
             nlist3 = itree(ipointer(24)+ibox-1)
             istart = itree(ipointer(10)+ibox-1)
@@ -1368,9 +1373,13 @@ cc              call prinm(rmlexp(iaddr(1,jbox)),nterms(ilev+1))
      3          grad(1,1,istart),wlege,nlege,thresh)
             enddo
           enddo
+C$OMP END PARALLEL DO
         endif
 
         if(ifpghtarg.eq.1) then         
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(ibox,nlist3,istart,iend,npts,i,jbox)
+C$OMP$SCHEDULE(DYNAMIC)
           do ibox=laddr(1,ilev),laddr(2,ilev)
             nlist3 = itree(ipointer(24)+ibox-1)
             istart = itree(ipointer(12)+ibox-1)
@@ -1386,9 +1395,13 @@ cc              call prinm(rmlexp(iaddr(1,jbox)),nterms(ilev+1))
      3          thresh)
             enddo
           enddo
+C$OMP END PARALLEL DO
         endif
 
         if(ifpghtarg.eq.2) then
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(ibox,nlist3,istart,iend,npts,i,jbox)
+C$OMP$SCHEDULE(DYNAMIC)
           do ibox=laddr(1,ilev),laddr(2,ilev)
             nlist3 = itree(ipointer(24)+ibox-1)
             istart = itree(ipointer(12)+ibox-1)
@@ -1404,8 +1417,8 @@ cc              call prinm(rmlexp(iaddr(1,jbox)),nterms(ilev+1))
      3          gradtarg(1,1,istart),wlege,nlege,thresh)
             enddo
           enddo
-        endif
 C$OMP END PARALLEL DO
+        endif
       enddo
 
 
@@ -1455,10 +1468,10 @@ cc        evaluate local expansion at source and target
 c         locations
 c
       do ilev = 0,nlevels
-C$OMP PARALLEL DO DEFAULT(SHARED)
-C$OMP$PRIVATE(ibox,nchild,istart,iend,i)
-C$OMP$SCHEDULE(DYNAMIC)      
         if(ifpgh.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(ibox,nchild,istart,iend,i,npts)
+C$OMP$SCHEDULE(DYNAMIC)      
           do ibox = laddr(1,ilev),laddr(2,ilev)
             nchild=itree(ipointer(3)+ibox-1)
             if(nchild.eq.0) then 
@@ -1470,9 +1483,13 @@ C$OMP$SCHEDULE(DYNAMIC)
      2         npts,pot(1,istart),wlege,nlege)
             endif
           enddo
+C$OMP END PARALLEL DO         
         endif
 
         if(ifpgh.eq.2) then
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(ibox,nchild,istart,iend,i,npts)
+C$OMP$SCHEDULE(DYNAMIC)      
           do ibox = laddr(1,ilev),laddr(2,ilev)
             nchild=itree(ipointer(3)+ibox-1)
             if(nchild.eq.0) then 
@@ -1484,9 +1501,13 @@ C$OMP$SCHEDULE(DYNAMIC)
      2         npts,pot(1,istart),grad(1,1,istart),wlege,nlege)
             endif
           enddo
+C$OMP END PARALLEL DO         
         endif
 
         if(ifpghtarg.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(ibox,nchild,istart,iend,i,npts)
+C$OMP$SCHEDULE(DYNAMIC)      
           do ibox = laddr(1,ilev),laddr(2,ilev)
             nchild=itree(ipointer(3)+ibox-1)
             if(nchild.eq.0) then 
@@ -1498,9 +1519,13 @@ C$OMP$SCHEDULE(DYNAMIC)
      2         npts,pottarg(1,istart),wlege,nlege)
             endif
           enddo
+C$OMP END PARALLEL DO         
         endif
 
         if(ifpghtarg.eq.2) then
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(ibox,nchild,istart,iend,i,npts)
+C$OMP$SCHEDULE(DYNAMIC)      
           do ibox = laddr(1,ilev),laddr(2,ilev)
             nchild=itree(ipointer(3)+ibox-1)
             if(nchild.eq.0) then 
@@ -1513,8 +1538,8 @@ C$OMP$SCHEDULE(DYNAMIC)
      2         npts,pottarg(1,istart),gradtarg(1,1,istart),wlege,nlege)
             endif
           enddo
-        endif
 C$OMP END PARALLEL DO         
+        endif
       enddo
 
     
@@ -1568,15 +1593,15 @@ cc        directly evaluate potential at sources and targets
 c         due to sources in list1
 
       do ilev=0,nlevels
-C$OMP PARALLEL DO DEFAULT(SHARED)     
-C$OMP$PRIVATE(ibox,istarts,iends,istartt,iendt,nlist1,i,jbox)
-C$OMP$PRIVATE(jstart,jend,npts0,npts1,npts2)
 c
 cc           evaluate at the sources
 c
 
         if(ifpgh.eq.1) then
           if(ifcharge.eq.1.and.ifdipole.eq.0) then
+C$OMP PARALLEL DO DEFAULT(SHARED)     
+C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
+C$OMP$SCHEDULE(DYNAMIC)      
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istarts = itree(ipointer(10)+ibox-1)
               iends = itree(ipointer(11)+ibox-1)
@@ -1593,9 +1618,13 @@ c
      2             npts0,pot(1,istarts),thresh)          
               enddo
             enddo
+C$OMP END PARALLEL DO     
           endif
 
           if(ifcharge.eq.0.and.ifdipole.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED)     
+C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
+C$OMP$SCHEDULE(DYNAMIC)      
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istarts = itree(ipointer(10)+ibox-1)
               iends = itree(ipointer(11)+ibox-1)
@@ -1611,9 +1640,13 @@ c
      2             npts0,pot(1,istarts),thresh)          
               enddo
             enddo
+C$OMP END PARALLEL DO     
           endif
 
           if(ifcharge.eq.1.and.ifdipole.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED)     
+C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
+C$OMP$SCHEDULE(DYNAMIC)      
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istarts = itree(ipointer(10)+ibox-1)
               iends = itree(ipointer(11)+ibox-1)
@@ -1630,11 +1663,15 @@ c
      2             npts0,pot(1,istarts),thresh)          
               enddo
             enddo
+C$OMP END PARALLEL DO     
           endif
         endif
 
         if(ifpgh.eq.2) then
           if(ifcharge.eq.1.and.ifdipole.eq.0) then
+C$OMP PARALLEL DO DEFAULT(SHARED)     
+C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
+C$OMP$SCHEDULE(DYNAMIC)      
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istarts = itree(ipointer(10)+ibox-1)
               iends = itree(ipointer(11)+ibox-1)
@@ -1651,10 +1688,14 @@ c
      2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)   
               enddo
             enddo
+C$OMP END PARALLEL DO     
           endif
 
           if(ifcharge.eq.0.and.ifdipole.eq.1) then
 
+C$OMP PARALLEL DO DEFAULT(SHARED)     
+C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
+C$OMP$SCHEDULE(DYNAMIC)      
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istarts = itree(ipointer(10)+ibox-1)
               iends = itree(ipointer(11)+ibox-1)
@@ -1670,10 +1711,14 @@ c
      2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)          
               enddo
             enddo
+C$OMP END PARALLEL DO     
           endif
 
           if(ifcharge.eq.1.and.ifdipole.eq.1) then
 
+C$OMP PARALLEL DO DEFAULT(SHARED)     
+C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
+C$OMP$SCHEDULE(DYNAMIC)      
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istarts = itree(ipointer(10)+ibox-1)
               iends = itree(ipointer(11)+ibox-1)
@@ -1690,11 +1735,15 @@ c
      2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)          
               enddo
             enddo
+C$OMP END PARALLEL DO     
           endif
         endif
 
         if(ifpghtarg.eq.1) then
           if(ifcharge.eq.1.and.ifdipole.eq.0) then
+C$OMP PARALLEL DO DEFAULT(SHARED)     
+C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
+C$OMP$SCHEDULE(DYNAMIC)      
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istartt = itree(ipointer(12)+ibox-1)
               iendt = itree(ipointer(13)+ibox-1)
@@ -1711,9 +1760,13 @@ c
      2             npts0,pottarg(1,istartt),thresh)          
               enddo
             enddo
+C$OMP END PARALLEL DO     
           endif
 
           if(ifcharge.eq.0.and.ifdipole.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED)     
+C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
+C$OMP$SCHEDULE(DYNAMIC)      
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istartt = itree(ipointer(12)+ibox-1)
               iendt = itree(ipointer(13)+ibox-1)
@@ -1729,9 +1782,13 @@ c
      2             npts0,pottarg(1,istartt),thresh)          
               enddo
             enddo
+C$OMP END PARALLEL DO     
           endif
 
           if(ifcharge.eq.1.and.ifdipole.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED)     
+C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
+C$OMP$SCHEDULE(DYNAMIC)      
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istartt = itree(ipointer(12)+ibox-1)
               iendt = itree(ipointer(13)+ibox-1)
@@ -1748,11 +1805,15 @@ c
      2             npts0,pottarg(1,istartt),thresh)          
               enddo
             enddo
+C$OMP END PARALLEL DO     
           endif
         endif
 
         if(ifpghtarg.eq.2) then
           if(ifcharge.eq.1.and.ifdipole.eq.0) then
+C$OMP PARALLEL DO DEFAULT(SHARED)     
+C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
+C$OMP$SCHEDULE(DYNAMIC)      
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istartt = itree(ipointer(12)+ibox-1)
               iendt = itree(ipointer(13)+ibox-1)
@@ -1770,9 +1831,13 @@ c
      3             thresh)   
               enddo
             enddo
+C$OMP END PARALLEL DO     
           endif
 
           if(ifcharge.eq.0.and.ifdipole.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED)     
+C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
+C$OMP$SCHEDULE(DYNAMIC)      
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istartt = itree(ipointer(12)+ibox-1)
               iendt = itree(ipointer(13)+ibox-1)
@@ -1789,9 +1854,13 @@ c
      3             thresh)          
               enddo
             enddo
+C$OMP END PARALLEL DO     
           endif
 
           if(ifcharge.eq.1.and.ifdipole.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED)     
+C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
+C$OMP$SCHEDULE(DYNAMIC)      
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istartt = itree(ipointer(12)+ibox-1)
               iendt = itree(ipointer(13)+ibox-1)
@@ -1809,9 +1878,9 @@ c
      3             thresh)          
               enddo
             enddo
+C$OMP END PARALLEL DO     
           endif
         endif
-C$OMP END PARALLEL DO     
       enddo
  
       time2 = second()

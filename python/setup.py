@@ -42,17 +42,17 @@ for cd in c_opts:
 ext_helm = Extension(
     name='hfmm3d_fortran',
     sources=['../src/Helmholtz/'+item for item in list_helm]+['../src/Common/'+item for item in list_common],
-    f2py_options=['only:']+list_int_helm+list_int_helm_vec+list_int_helm_dir+[':'],
-    extra_compile_args=['-O3', '-W'],
-    extra_link_args=['-O3']
+    f2py_options=['-lgomp','only:']+list_int_helm+list_int_helm_vec+list_int_helm_dir+[':'],
+    extra_compile_args=['-O3', '-W','-fopenmp'],
+    extra_link_args=['-O3','-fopenmp']
 )
 
 ext_lap = Extension(
     name='lfmm3d_fortran',
     sources=['../src/Laplace/'+item for item in list_lap]+['../src/Common/'+item for item in list_common],
-    f2py_options=['only:']+list_int_lap+list_int_lap_vec+list_int_lap_dir+[':'],
-    extra_compile_args=['-O3', '-W'],
-    extra_link_args=['-O3']
+    f2py_options=['-lgomp','only:']+list_int_lap+list_int_lap_vec+list_int_lap_dir+[':'],
+    extra_compile_args=['-O3', '-W','-fopenmp'],
+    extra_link_args=['-O3','-fopenmp']
 )
 
 ## TODO: fill in the info below
@@ -71,5 +71,5 @@ setup(
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
-    
+    )    
 )

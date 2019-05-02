@@ -1,9 +1,9 @@
 
 EXEC = int2
 
-HOST=macosx
+#HOST=macosx
 #HOST = linux-gfortran
-#HOST= linux-gfortran-openmp
+HOST= linux-gfortran-openmp
 #HOST = linux-ifort
 
 ifeq ($(HOST),macosx)
@@ -16,8 +16,8 @@ endif
 ifeq ($(HOST),linux-gfortran-openmp)
 				
 FC = gfortran
-FFLAGS = -O3 -c -w --openmp 
-FLINK = gfortran -w -o $(EXEC) --openmp
+FFLAGS = -O3 -c -w -march=native -ffast-math -ftree-vectorize -funroll-loops -fopenmp 
+FLINK = gfortran -w -o $(EXEC) -fopenmp
 
 endif
 

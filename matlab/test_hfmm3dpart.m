@@ -1,8 +1,8 @@
-ns = 2000;
+ns = 20000;
 srcinfo.sources = rand(3,ns);
 srcinfo.charges = rand(1,ns)+1i*rand(1,ns);
 
-nt = 1999;
+nt = 19990;
 targ = rand(3,nt);
 
 eps = 1e-5;

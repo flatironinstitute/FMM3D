@@ -12,7 +12,7 @@
 CC=gcc
 FC=gfortran
 
-CFLAGS=-fPIC -O3 -funroll-loops -march=native
+CFLAGS=-fPIC -O3 -funroll-loops -march=native -fopenmp
 FFLAGS = $(CFLAGS)
 
 # extra flags for multithreaded: C/Fortran, MATLAB
@@ -20,7 +20,7 @@ OMPFLAGS = -fopenmp
 MOMPFLAGS = -lgomp -D_OPENMP
 
 # flags for MATLAB MEX compilation..
-MFLAGS=-largeArrayDims -L/usr/local/Cellar/gcc/8.3.0/lib/gcc/8 -DMWF77_UNDERSCORE1 -lgfortran -lgomp -lm
+MFLAGS=-largeArrayDims -L/usr/local/Cellar/gcc/8.3.0/lib/gcc/8 -DMWF77_UNDERSCORE1 -lgfortran -lgomp -D_OPENMP -lm
 MWFLAGS=-c99complex 
 
 # location of MATLAB's mex compiler
