@@ -1,6 +1,7 @@
 import hfmm3d_fortran as hfmm
 import lfmm3d_fortran as lfmm
 import numpy as np
+import numpy.linalg as la
 
 
 class Output():
@@ -72,7 +73,7 @@ def hfmm3d(*,eps,zk,sources,charges=None,dipvec=None,
         return out
     if charges is not None:
         if nd == 1:
-            assert charges.size == ns, "Charges must be same length as second dimension of sources"
+            assert charges.shape[0] == ns, "Charges must be same length as second dimension of sources"
         if nd>1:
             assert charges.shape[0] == nd and charges.shape[1]==ns, "Charges must be of shape [nd,ns] where nd is number of densities, and ns is number of sources" 
         ifcharge = 1
@@ -250,7 +251,7 @@ def lfmm3d(*,eps,sources,charges=None,dipvec=None,
         return out
     if charges is not None:
         if nd == 1:
-            assert charges.size == ns, "Charges must be same length as second dimension of sources"
+            assert charges.shape[0] == ns, "Charges must be same length as second dimension of sources"
         if nd>1:
             assert charges.shape[0] == nd and charges.shape[1]==ns, "Charges must be of shape [nd,ns] where nd is number of densities, and ns is number of sources" 
         ifcharge = 1
@@ -364,3 +365,242 @@ def lfmm3d(*,eps,sources,charges=None,dipvec=None,
 
     return out
 
+
+def h3ddir(*,zk,sources,targets,charges=None,dipvec=None,
+          pgt=0,nd=1,thresh=1e-16):
+    """
+      This subroutine computes the N-body Helmholtz interactions
+      in three dimensions where the interaction kernel is given by e^{ikr}/r 
+      and its gradients. 
+
+      u(x) = \sum_{j=1}^{N} c_{j} e^{ik |x-x_{j}|}/|x-x_{j}| + 
+                   Grad( e^{ik |x-x_{j}|}/|x-x_{j}|) . v_{j} \, ,
+
+      where c_{j} are the charge densities,  
+      v_{j} are the dipole orientation vectors, and 
+      x_{j} are the source locations.
+
+      When |x-x_{m}|\leq thresh, the term corresponding to x_{m} is dropped from the
+      sum
+
+
+      Args:
+        eps: float   
+               precision requested
+        zk: complex
+               Helmholtz parameter - k
+        sources: float(3,n)   
+               source locations (x_{j})
+        charges: complex(nd,n) or complex(n)
+                charge densities (c_{j})
+        dipole orientation vectors: complex(nd,3,n) or complex(3,n)
+                dipole orientation vectors (v_{j})
+        targets: float(3,nt)
+                target locations (x)
+
+        pgt:  integer
+               target eval flag
+               potential at targets evaluated if pgt = 1
+               potenial and gradient at targets evaluated if pgt=2
+        
+        nd:   integer
+               number of densities
+        thresh: contribution of source x_i, at location x ignored if |x-x_i|<=thresh
+
+        Returns:
+          out.pottarg  - potential at target locations if requested
+          out.gradtarg - gradient at target locations if requested
+              
+
+    """
+    out = Output()
+    assert sources.shape[0] == 3, "The first dimension of sources must be 3"
+    ns = sources.shape[1]
+    ifcharge = 0
+    ifdipole = 0
+    if(pgt == 0):
+        print("Nothing to compute, set either pg or pgt to non-zero")
+        return out
+    if charges is not None:
+        if nd == 1:
+            assert charges.shape[0] == ns, "Charges must be same length as second dimension of sources"
+            charges = charges.reshape(1,ns)
+        if nd>1:
+            assert charges.shape[0] == nd and charges.shape[1]==ns, "Charges must be of shape [nd,ns] where nd is number of densities, and ns is number of sources" 
+        ifcharge = 1
+    if(dipvec is not None):
+        if nd == 1:
+            assert dipvec.shape[0] == 3 and dipvec.shape[1] == ns, "dipole vectors must be of shape [3,number of sources]"
+            dipvec = dipvec.reshape(1,3,ns)
+        if nd>1:
+            assert dipvec.shape[0] == nd and dipvec.shape[1] == 3 and dipvec.shape[2] == ns, "Dipole vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+        ifdipole = 1
+
+    assert targets.shape[0] == 3, "The first dimension of targets must be 3"
+    nt = targets.shape[1]
+    if(pgt == 1 and ifcharge == 1 and ifdipole == 0):
+        out.pottarg = hfmm.h3ddirectcp(zk,sources,charges,targets,thresh)
+    if(pgt == 2 and ifcharge == 1 and ifdipole == 0):
+        out.pottarg,out.gradtarg = hfmm.h3ddirectcg(zk,sources,charges,targets,thresh)
+    if(pgt == 1 and ifcharge == 0 and ifdipole == 1):
+        out.pottarg = hfmm.h3ddirectdp(zk,sources,dipvec,targets,thresh)
+    if(pgt == 2 and ifcharge == 0 and ifdipole == 1):
+        out.pottarg,out.gradtarg = hfmm.h3ddirectdg(zk,sources,dipvec,targets,thresh)
+    if(pgt == 1 and ifcharge == 1 and ifdipole == 1):
+        out.pottarg = hfmm.h3ddirectcdp(zk,sources,charges,dipvec,targets,thresh)
+    if(pgt == 2 and ifcharge == 1 and ifdipole == 1):
+        out.pottarg,out.gradtarg = hfmm.h3ddirectcdg(zk,sources,charges,dipvec,targets,thresh)
+
+    if(nd == 1):
+        if(ifcharge==1):
+            charges = charges.reshape(ns,)
+        if(ifdipole==1):
+            dipvec = dipvec.reshape(3,ns)
+        if(pgt>0):
+            out.pottarg = out.pottarg.reshape(nt,)
+        if(pgt==2):
+            out.gradtarg = out.gradtarg.reshape(3,nt)
+
+
+    return out
+
+
+
+def l3ddir(*,sources,targets,charges=None,dipvec=None,
+          pgt=0,nd=1,thresh=1e-16):
+    """
+      This subroutine computes the N-body Laplace interactions
+      in three dimensions where the interaction kernel is given by 1/r 
+      and its gradients. 
+
+      u(x) = \sum_{j=1}^{N} c_{j} /|x-x_{j}| + 
+                   Grad( 1/|x-x_{j}|) . v_{j} \, ,
+
+      where c_{j} are the charge densities, 
+      v_{j} are the dipole orientation vectors, and 
+      x_{j} are the source locations.
+
+      When |x-x_{m}|leq thresh, the term corresponding to x_{m} is dropped from the
+      sum
+
+
+      Args:
+        sources: float(3,n)   
+               source locations (x_{j})
+        charges: float(nd,n) or float(n)
+                charge densities (c_{j})
+        dipole orientation vectors: float(nd,3,n) or float(3,n)
+                dipole orientation vectors (v_{j})
+        targets: float(3,nt)
+                target locations (x)
+
+        pgt:  integer
+               target eval flag
+               potential at targets evaluated if pgt = 1
+               potenial and gradient at targets evaluated if pgt=2
+        
+        nd:   integer
+               number of densities
+        thresh: contribution of source x_i, at location x ignored if |x-x_i|<=thresh
+
+        Returns:
+          out.pottarg  - potential at target locations if requested
+          out.gradtarg - gradient at target locations if requested
+              
+
+    """
+    out = Output()
+    assert sources.shape[0] == 3, "The first dimension of sources must be 3"
+    ns = sources.shape[1]
+    ifcharge = 0
+    ifdipole = 0
+    if(pgt == 0):
+        print("Nothing to compute, set either pg or pgt to non-zero")
+        return out
+    if charges is not None:
+        if nd == 1:
+            assert charges.shape[0] == ns, "Charges must be same length as second dimension of sources"
+            charges = charges.reshape(1,ns)
+        if nd>1:
+            assert charges.shape[0] == nd and charges.shape[1]==ns, "Charges must be of shape [nd,ns] where nd is number of densities, and ns is number of sources" 
+        ifcharge = 1
+    if(dipvec is not None):
+        if nd == 1:
+            assert dipvec.shape[0] == 3 and dipvec.shape[1] == ns, "dipole vectors must be of shape [3,number of sources]"
+            dipvec = dipvec.reshape(1,3,ns)
+
+        if nd>1:
+            assert dipvec.shape[0] == nd and dipvec.shape[1] == 3 and dipvec.shape[2] == ns, "Dipole vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+        ifdipole = 1
+
+    assert targets.shape[0] == 3, "The first dimension of targets must be 3"
+    nt = targets.shape[1]
+    if(pgt == 1 and ifcharge == 1 and ifdipole == 0):
+        out.pottarg = lfmm.l3ddirectcp(sources,charges,targets,thresh)
+    if(pgt == 2 and ifcharge == 1 and ifdipole == 0):
+        out.pottarg,out.gradtarg = lfmm.l3ddirectcg(sources,charges,targets,thresh)
+    if(pgt == 1 and ifcharge == 0 and ifdipole == 1):
+        out.pottarg = lfmm.l3ddirectdp(sources,dipvec,targets,thresh)
+    if(pgt == 2 and ifcharge == 0 and ifdipole == 1):
+        out.pottarg,out.gradtarg = lfmm.l3ddirectdg(sources,dipvec,targets,thresh)
+    if(pgt == 1 and ifcharge == 1 and ifdipole == 1):
+        out.pottarg = lfmm.l3ddirectcdp(sources,charges,dipvec,targets,thresh)
+    if(pgt == 2 and ifcharge == 1 and ifdipole == 1):
+        out.pottarg,out.gradtarg = lfmm.l3ddirectcdg(sources,charges,dipvec,targets,thresh)
+
+    if(nd == 1):
+        if(ifcharge == 1):
+            charges = charges.reshape(ns,)
+        if(ifdipole ==1): 
+            dipvec = dipvec.reshape(3,ns)
+        if(pgt>0):
+            out.pottarg = out.pottarg.reshape(nt,)
+        if(pgt==2):
+            out.gradtarg = out.gradtarg.reshape(3,nt)
+
+    return out
+
+
+def comperr(*,ntest,out,outex,pg=0,pgt=0,nd=1):
+    r = 0
+    err = 0
+    if(nd == 1):
+        if(pg > 0):
+            r = r+la.norm(outex.pot[0:ntest])**2
+            err = err+la.norm(outex.pot[0:ntest]-out.pot[0:ntest])**2
+        if(pg == 2):
+            g = out.grad[:,0:ntest].reshape(3*ntest,)
+            gex = outex.grad[:,0:ntest].reshape(3*ntest,)
+            r = r +la.norm(gex)**2
+            err = err+la.norm(gex-g)**2
+        if(pgt > 0):
+            r = r+la.norm(outex.pottarg[0:ntest])**2
+            err = err+la.norm(outex.pottarg[0:ntest]-out.pottarg[0:ntest])**2
+        if(pgt == 2):
+            g = out.gradtarg[:,0:ntest].reshape(3*ntest,)
+            gex = outex.gradtarg[:,0:ntest].reshape(3*ntest,)
+            r = r +la.norm(gex)**2
+            err = err+la.norm(gex-g)**2
+    if(nd > 1):
+        if(pg > 0):
+            p = out.pot[:,0:ntest].reshape(nd*ntest,)
+            pex = outex.pot[:,0:ntest].reshape(nd*ntest,)
+            r = r+la.norm(pex)**2
+            err = err+la.norm(p-pex)**2
+        if(pg == 2):
+            g = out.grad[:,:,0:ntest].reshape(3*nd*ntest,)
+            gex = outex.grad[:,:,0:ntest].reshape(3*nd*ntest,)
+            r = r +la.norm(gex)**2
+            err = err+la.norm(gex-g)**2
+        if(pgt > 0):
+            p = out.pottarg[:,0:ntest].reshape(nd*ntest,)
+            pex = outex.pottarg[:,0:ntest].reshape(nd*ntest,)
+            r = r+la.norm(pex)**2
+            err = err+la.norm(p-pex)**2
+        if(pgt == 2):
+            g = out.gradtarg[:,:,0:ntest].reshape(3*nd*ntest,)
+            gex = outex.gradtarg[:,:,0:ntest].reshape(3*nd*ntest,)
+            r = r +la.norm(gex)**2
+            err = err+la.norm(gex-g)**2
+    err = np.sqrt(err/r)
+    return err

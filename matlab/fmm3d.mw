@@ -167,7 +167,7 @@ end
   end
 end
 
-@function [U] = h3ddir(eps,zk,srcinfo,targ,pgt)
+@function [U] = h3ddir(zk,srcinfo,targ,pgt)
 
   sources = srcinfo.sources;
   [m,ns] = size(sources);
@@ -388,7 +388,7 @@ end
   end
 end
 
-@function [U] = r3ddir(eps,srcinfo,targ,pgt)
+@function [U] = r3ddir(srcinfo,targ,pgt)
 
   sources = srcinfo.sources;
   [m,ns] = size(sources);
