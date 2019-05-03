@@ -12,7 +12,7 @@ Flatiron Institute Fast multipole methods in three dimensions (FMM3D)
     :width: 54%
 	    
 `FMM3D <https://github.com/flatironinstitute/FMM3D>`_ 
-is a set of libraries to compute efficiently $N-$ body interactions 
+is a set of libraries to compute $N-$ body interactions 
 for Laplace, Helmholtz, Stokes, and Maxwell kernels 
 to a specified precision, in three dimensions,
 on a multi-core shared-memory machine.
@@ -32,18 +32,15 @@ The $y_j$ can be interpreted as source locations, $c_j$
 as charge strengths, and $u_k$ then as the potential at
 target location $x_{k}$.
 
-
-
-
 Such N-body interactions are needed in many applications in 
 science and engineering, including molecular dynmaics, astrophysics, 
-rheology, and numerical partial differential equations.
+rheology, and numerical solution of partial differential equations.
 The naive CPU effort to evaluate :eq:`lapcp` is $O(NM)$.
 The library approximates :eq:`lapcp` to a requested relative precision
 $\epsilon$ with linear effort $O((M+N) \log (1/\epsilon))$.
 
 The FMM relies on compressing the interactions between well-separated 
-cluster of source and target points at a heirarchy of scales using
+clusters of source and target points at a heirarchy of scales using
 analytic outgoing, incoming, and plane-wave 
 expansions of the interaction kernel and associated translation
 operators. 
@@ -63,7 +60,7 @@ faster.
 
 .. note::
 
-   For very small repeated problems (less than 10000 input and output points),
+   For very small repeated problems (less than 1000 input and output points),
    users should also consider a dense matrix-matrix multiplication against
    the $N-$body interaction matrix using BLAS3 (eg ZGEMM).
    This is currently work in progress.
@@ -78,7 +75,6 @@ faster.
    usage
    matlab
    pythoninterface
-   juliainterface
    related
    issues
    ackn

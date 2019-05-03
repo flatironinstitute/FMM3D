@@ -12,7 +12,7 @@ import numpy as np
 # sample with one density, sources to sources,
 # charge interactions, and potential only
 #
-n = 2000
+n = 200000
 nd = 1
 sources = np.random.uniform(0,1,(3,n))
 eps = 10**(-5)
