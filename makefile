@@ -122,6 +122,9 @@ mex:
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY) -c $(GATEWAY).c $(MWRAPFILE).mw;\
 	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output fmm3d
 
+python:
+	cd python; python3 setup.py develop; cd test; python3 test_hfmm.py;\
+	python3 test_rfmm.py;\
 
 # testing routines
 #

@@ -118,10 +118,13 @@ matlab:
 	(cd matlab; $(MEX) $(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d)
 
 mex: 
-	cd matlab; mwrap $(MWFLAGS) -list -mex $(GATEWAY) -mb $(MWRAPFILE).mw;\
+	cd matlab; $(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY) -mb $(MWRAPFILE).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY) -c $(GATEWAY).c $(MWRAPFILE).mw;\
 	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output fmm3d
 
+python:
+	cd python; python3 setup.py develop; cd test; python3 test_hfmm.py;\
+	python3 test_rfmm.py;\
 
 # testing routines
 #
