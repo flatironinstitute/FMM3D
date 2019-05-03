@@ -1,8 +1,8 @@
-ns = 2000;
+ns = 20000;
 srcinfo.sources = rand(3,ns);
-srcinfo.charges = rand(1,ns);
+srcinfo.charges = rand(1,ns)+1i*rand(1,ns);
 
-nt = 1999;
+nt = 19990;
 targ = rand(3,nt);
 
 eps = 1e-5;
@@ -11,11 +11,15 @@ ipass = zeros(ntests,1);
 errs = zeros(ntests,1);
 ntest = 10;
 
+stmp = srcinfo.sources(:,1:ntest);
+ttmp = targ(:,1:ntest);
+
 
 % Test sources to sources, charge, pot
 pg = 1;
 U1 = rfmm3d(eps,srcinfo,pg);
-U2 = r3ddir(eps,ntest,srcinfo,pg);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+U2.pot = U2.pottarg;
 errs(1) = norm(U1.pot(1:ntest)-U2.pot)/norm(U2.pot);
 assert(errs(1)<eps,'Failed source to source, charge, pot test');
 ipass(1) = 1;
@@ -23,9 +27,11 @@ ipass(1) = 1;
 % Test sources to sources, charge, grad
 pg = 2;
 U1 = rfmm3d(eps,srcinfo,pg);
-U2 = r3ddir(eps,ntest,srcinfo,pg);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+U2.pot = U2.pottarg;
+U2.grad = U2.gradtarg;
 err = norm(U1.pot(1:ntest)-U2.pot)^2+norm(U1.grad(:,1:ntest)-U2.grad)^2;
-ra = norm(U2.pot)^2 + norm(U2.grad)^2;
+ra = norm(U2.pottarg)^2 + norm(U2.gradtarg)^2;
 errs(2) = sqrt(err/ra);
 assert(errs(2)<eps,'Failed source to source, charge, grad test');
 ipass(2) = 1;
@@ -34,7 +40,7 @@ ipass(2) = 1;
 pg = 0;
 pgt = 1;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
 errs(3) = norm(U1.pottarg(1:ntest)-U2.pottarg)/norm(U2.pottarg);
 assert(errs(3)<eps,'Failed source to target, charge, pot test');
 ipass(3) = 1;
@@ -43,7 +49,7 @@ ipass(3) = 1;
 pg = 0;
 pgt = 2;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
 err = norm(U1.pottarg(1:ntest)-U2.pottarg)^2+norm(U1.gradtarg(:,1:ntest)-U2.gradtarg)^2;
 ra = norm(U2.pottarg)^2 + norm(U2.gradtarg)^2;
 errs(4) = sqrt(err/ra);
@@ -54,18 +60,26 @@ ipass(4) = 1;
 pg = 1;
 pgt = 1;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+pottmp = U2.pottarg;
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
+U2.pot = pottmp;
 err = norm(U1.pot(1:ntest)-U2.pot)^2 + norm(U1.pottarg(1:ntest)-U2.pottarg)^2;
 ra = norm(U2.pot)^2 + norm(U2.pottarg)^2;
 errs(5) = sqrt(err/ra);
 assert(errs(5)<eps,'Failed source to source+target, charge, pot test');
 ipass(5) = 1;
 
-% Test sources to targets, charge, grad
+% Test sources to sources+targets, charge, grad
 pg = 2;
 pgt = 2;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+pottmp= U2.pottarg;
+gradtmp = U2.gradtarg;
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
+U2.pot = pottmp;
+U2.grad = gradtmp;
 err = norm(U1.pot(1:ntest)-U2.pot)^2+norm(U1.grad(:,1:ntest)-U2.grad)^2;
 err = err+norm(U1.pottarg(1:ntest)-U2.pottarg)^2+norm(U1.gradtarg(:,1:ntest)-U2.gradtarg)^2;
 ra = norm(U2.pot)^2 + norm(U2.grad)^2;
@@ -79,11 +93,13 @@ ipass(6) = 1;
 %%%%
 
 srcinfo = rmfield(srcinfo,'charges');
-srcinfo.dipoles = rand(3,ns); 
+srcinfo.dipoles = rand(3,ns) + 1i*rand(3,ns);
+
 % Test sources to sources, dipole, pot
 pg = 1;
 U1 = rfmm3d(eps,srcinfo,pg);
-U2 = r3ddir(eps,ntest,srcinfo,pg);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+U2.pot = U2.pottarg;
 errs(7) = norm(U1.pot(1:ntest)-U2.pot)/norm(U2.pot);
 assert(errs(7)<eps,'Failed source to source, dipole, pot test');
 ipass(7) = 1;
@@ -91,7 +107,9 @@ ipass(7) = 1;
 % Test sources to sources, dipole, grad
 pg = 2;
 U1 = rfmm3d(eps,srcinfo,pg);
-U2 = r3ddir(eps,ntest,srcinfo,pg);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+U2.pot = U2.pottarg;
+U2.grad = U2.gradtarg;
 err = norm(U1.pot(1:ntest)-U2.pot)^2+norm(U1.grad(:,1:ntest)-U2.grad)^2;
 ra = norm(U2.pot)^2 + norm(U2.grad)^2;
 errs(8) = sqrt(err/ra);
@@ -102,7 +120,7 @@ ipass(8) = 1;
 pg = 0;
 pgt = 1;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
 errs(9) = norm(U1.pottarg(1:ntest)-U2.pottarg)/norm(U2.pottarg);
 assert(errs(9)<eps,'Failed source to target, dipole, pot test');
 ipass(9) = 1;
@@ -111,7 +129,7 @@ ipass(9) = 1;
 pg = 0;
 pgt = 2;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
 err = norm(U1.pottarg(1:ntest)-U2.pottarg)^2+norm(U1.gradtarg(:,1:ntest)-U2.gradtarg)^2;
 ra = norm(U2.pottarg)^2 + norm(U2.gradtarg)^2;
 errs(10) = sqrt(err/ra);
@@ -122,18 +140,26 @@ ipass(10) = 1;
 pg = 1;
 pgt = 1;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+pottmp = U2.pottarg;
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
+U2.pot = pottmp;
 err = norm(U1.pot(1:ntest)-U2.pot)^2 + norm(U1.pottarg(1:ntest)-U2.pottarg)^2;
 ra = norm(U2.pot)^2 + norm(U2.pottarg)^2;
 errs(11) = sqrt(err/ra);
 assert(errs(11)<eps,'Failed source to source+target, dipole, pot test');
 ipass(11) = 1;
 
-% test sources to target, dipole, grad
+% test sources to sources+target, dipole, grad
 pg = 2;
 pgt = 2;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+pottmp = U2.pottarg;
+gradtmp = U2.gradtarg;
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
+U2.pot = pottmp;
+U2.grad = gradtmp;
 err = norm(U1.pot(1:ntest)-U2.pot)^2+norm(U1.grad(:,1:ntest)-U2.grad)^2;
 err = err+norm(U1.pottarg(1:ntest)-U2.pottarg)^2+norm(U1.gradtarg(:,1:ntest)-U2.gradtarg)^2;
 ra = norm(U2.pot)^2 + norm(U2.grad)^2;
@@ -146,19 +172,22 @@ ipass(12) = 1;
 % Testing for charges + dipoles
 %%%%
 
-srcinfo.charges = rand(1,ns); 
-% Test sources to sources, dipole, pot
+srcinfo.charges = rand(1,ns) + 1i*rand(1,ns);
+% Test sources to sources, charge+dipole, pot
 pg = 1;
 U1 = rfmm3d(eps,srcinfo,pg);
-U2 = r3ddir(eps,ntest,srcinfo,pg);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+U2.pot = U2.pottarg;
 errs(13) = norm(U1.pot(1:ntest)-U2.pot)/norm(U2.pot);
 assert(errs(13)<eps,'Failed source to source, charge+dipole, pot test');
 ipass(13) = 1;
 
-% Test sources to sources, dipole, grad
+% Test sources to sources, charge+dipole, grad
 pg = 2;
 U1 = rfmm3d(eps,srcinfo,pg);
-U2 = r3ddir(eps,ntest,srcinfo,pg);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+U2.pot = U2.pottarg;
+U2.grad = U2.gradtarg;
 err = norm(U1.pot(1:ntest)-U2.pot)^2+norm(U1.grad(:,1:ntest)-U2.grad)^2;
 ra = norm(U2.pot)^2 + norm(U2.grad)^2;
 errs(14) = sqrt(err/ra);
@@ -166,42 +195,50 @@ assert(errs(14)<eps,'Failed source to source, charge+dipole, grad test');
 ipass(14) = 1;
 
 
-% Test sources to target, dipole, pot
+% Test sources to target, charge+dipole, pot
 pg = 0;
 pgt = 1;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
 errs(15) = norm(U1.pottarg(1:ntest)-U2.pottarg)/norm(U2.pottarg);
 assert(errs(15)<eps,'Failed source to target, charge+dipole, pot test');
 ipass(15) = 1;
 
-% Test sources to target, dipole, grad
+% Test sources to target, charge+dipole, grad
 pg = 0;
 pgt = 2;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
 err = norm(U1.pottarg(1:ntest)-U2.pottarg)^2+norm(U1.gradtarg(:,1:ntest)-U2.gradtarg)^2;
 ra = norm(U2.pottarg)^2 + norm(U2.gradtarg)^2;
 errs(16) = sqrt(err/ra);
 assert(errs(16)<eps,'Failed source to target, charge+dipole, grad test');
 ipass(16) = 1;
 
-% Test sources to source+target, dipole, pot
+% Test sources to source+target, charge+dipole, pot
 pg = 1;
 pgt = 1;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+pottmp = U2.pottarg;
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
+U2.pot = pottmp;
 err = norm(U1.pot(1:ntest)-U2.pot)^2 + norm(U1.pottarg(1:ntest)-U2.pottarg)^2;
 ra = norm(U2.pot)^2 + norm(U2.pottarg)^2;
 errs(17) = sqrt(err/ra);
 assert(errs(17)<eps,'Failed source to source+target, charge+dipole, pot test');
 ipass(17) = 1;
 
-% Test sources to target, dipole, grad
+% Test sources to sources+target, charge+dipole, grad
 pg = 2;
 pgt = 2;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+pottmp = U2.pottarg;
+gradtmp = U2.gradtarg;
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
+U2.pot = pottmp;
+U2.grad = gradtmp;
 err = norm(U1.pot(1:ntest)-U2.pot)^2+norm(U1.grad(:,1:ntest)-U2.grad)^2;
 err = err+norm(U1.pottarg(1:ntest)-U2.pottarg)^2+norm(U1.gradtarg(:,1:ntest)-U2.gradtarg)^2;
 ra = norm(U2.pot)^2 + norm(U2.grad)^2;
@@ -219,13 +256,14 @@ srcinfo = rmfield(srcinfo,'charges');
 srcinfo = rmfield(srcinfo,'dipoles');
 nd = 2;
 srcinfo.nd = nd;
-srcinfo.charges = rand(nd,ns);
+srcinfo.charges = rand(nd,ns)+1i*rand(nd,ns);
 
 
 % Test sources to sources, charge, pot
 pg = 1;
 U1 = rfmm3d(eps,srcinfo,pg);
-U2 = r3ddir(eps,ntest,srcinfo,pg);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+U2.pot = U2.pottarg;
 tmpp = U1.pot(:,1:ntest);
 tmpp = tmpp(:);
 tmpp2 = U2.pot(:);
@@ -236,7 +274,9 @@ ipass(19) = 1;
 % Test sources to sources, charge, grad
 pg = 2;
 U1 = rfmm3d(eps,srcinfo,pg);
-U2 = r3ddir(eps,ntest,srcinfo,pg);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+U2.pot = U2.pottarg;
+U2.grad = U2.gradtarg;
 tmpp = U1.pot(:,1:ntest);
 tmpp = tmpp(:);
 tmpp2 = U2.pot(:);
@@ -253,7 +293,7 @@ ipass(20) = 1;
 pg = 0;
 pgt = 1;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
 tmpp = U1.pottarg(:,1:ntest);
 tmpp = tmpp(:);
 tmpp2 = U2.pottarg(:);
@@ -261,11 +301,11 @@ errs(21) = norm(tmpp-tmpp2)/norm(tmpp2);
 assert(errs(21)<eps,'Failed source to target, charge, pot vec test');
 ipass(21) = 1;
 
-% Test sources to sources, charge, grad
+% Test sources to target, charge, grad
 pg = 0;
 pgt = 2;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
 tmpp = U1.pottarg(:,1:ntest);
 tmpp = tmpp(:);
 tmpp2 = U2.pottarg(:);
@@ -282,7 +322,10 @@ ipass(22) = 1;
 pg = 1;
 pgt = 1;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+pottmp = U2.pottarg;
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
+U2.pot = pottmp;
 p = U1.pot(:,1:ntest);
 p = p(:);
 p2 = U2.pot(:);
@@ -295,11 +338,16 @@ errs(23) = sqrt(err/ra);
 assert(errs(23)<eps,'Failed source to source+target, charge, pot vec test');
 ipass(23) = 1;
 
-% Test sources to sources, charge, grad
+% Test sources to sources+target, charge, grad
 pg = 2;
 pgt = 2;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+pottmp = U2.pottarg;
+gradtmp = U2.gradtarg;
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
+U2.pot = pottmp;
+U2.grad = gradtmp;
 p = U1.pot(:,1:ntest);
 p = p(:);
 p2 = U2.pot(:);
@@ -323,11 +371,13 @@ ipass(24) = 1;
 %%%%
 
 srcinfo = rmfield(srcinfo,'charges');
-srcinfo.dipoles = rand(nd,3,ns); 
+srcinfo.dipoles = rand(nd,3,ns) + 1i*rand(nd,3,ns);
+
 % Test sources to sources, dipole, pot
 pg = 1;
 U1 = rfmm3d(eps,srcinfo,pg);
-U2 = r3ddir(eps,ntest,srcinfo,pg);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+U2.pot = U2.pottarg;
 tmpp = U1.pot(:,1:ntest);
 tmpp = tmpp(:);
 tmpp2 = U2.pot(:);
@@ -338,7 +388,9 @@ ipass(25) = 1;
 % Test sources to sources, dipole, grad
 pg = 2;
 U1 = rfmm3d(eps,srcinfo,pg);
-U2 = r3ddir(eps,ntest,srcinfo,pg);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+U2.pot = U2.pottarg;
+U2.grad = U2.gradtarg;
 tmpp = U1.pot(:,1:ntest);
 tmpp = tmpp(:);
 tmpp2 = U2.pot(:);
@@ -356,7 +408,7 @@ ipass(26) = 1;
 pg = 0;
 pgt = 1;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
 tmpp = U1.pottarg(:,1:ntest);
 tmpp = tmpp(:);
 tmpp2 = U2.pottarg(:);
@@ -364,11 +416,11 @@ errs(27) = norm(tmpp-tmpp2)/norm(tmpp2);
 assert(errs(27)<eps,'Failed source to targ, dipole, pot vec test');
 ipass(27) = 1;
 
-% Test sources to sources, dipole, grad
+% Test sources to target, dipole, grad
 pg = 0; 
 pgt = 2;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
 tmpp = U1.pottarg(:,1:ntest);
 tmpp = tmpp(:);
 tmpp2 = U2.pottarg(:);
@@ -385,7 +437,10 @@ ipass(28) = 1;
 pg = 1;
 pgt = 1;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+pottmp = U2.pottarg;
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
+U2.pot = pottmp;
 p = U1.pot(:,1:ntest);
 p = p(:);
 p2 = U2.pot(:);
@@ -402,7 +457,12 @@ ipass(29) = 1;
 pg = 2; 
 pgt = 2;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+pottmp = U2.pottarg;
+gradtmp = U2.gradtarg;
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
+U2.pot = pottmp;
+U2.grad = gradtmp;
 p = U1.pot(:,1:ntest);
 p = p(:);
 p2 = U2.pot(:);
@@ -425,11 +485,13 @@ ipass(30) = 1;
 % Testing for charges + dipoles
 %%%%
 
-srcinfo.charges = rand(nd,ns);
-% Test sources to sources, dipole, pot
+srcinfo.charges = rand(nd,ns) + 1i*rand(nd,ns);
+
+% Test sources to sources, charge+dipole, pot
 pg = 1;
 U1 = rfmm3d(eps,srcinfo,pg);
-U2 = r3ddir(eps,ntest,srcinfo,pg);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+U2.pot = U2.pottarg;
 tmpp = U1.pot(:,1:ntest);
 tmpp = tmpp(:);
 tmpp2 = U2.pot(:);
@@ -437,10 +499,12 @@ errs(31) = norm(tmpp-tmpp2)/norm(tmpp2);
 assert(errs(31)<eps,'Failed source to source, charge+dipole, pot vec test');
 ipass(31) = 1;
 
-% Test sources to sources, dipole, grad
+% Test sources to sources, charge+dipole, grad
 pg = 2;
 U1 = rfmm3d(eps,srcinfo,pg);
-U2 = r3ddir(eps,ntest,srcinfo,pg);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+U2.pot = U2.pottarg;
+U2.grad = U2.gradtarg;
 tmpp = U1.pot(:,1:ntest);
 tmpp = tmpp(:);
 tmpp2 = U2.pot(:);
@@ -453,11 +517,11 @@ errs(32) = sqrt(err/ra);
 assert(errs(32)<eps,'Failed source to source, charge+dipole, grad vec test');
 ipass(32) = 1;
 
-% Test sources to target, dipole, pot
+% Test sources to target, charge+dipole, pot
 pg = 0;
 pgt = 1;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
 tmpp = U1.pottarg(:,1:ntest);
 tmpp = tmpp(:);
 tmpp2 = U2.pottarg(:);
@@ -465,11 +529,11 @@ errs(33) = norm(tmpp-tmpp2)/norm(tmpp2);
 assert(errs(33)<eps,'Failed source to target, charge+dipole, pot vec test');
 ipass(33) = 1;
 
-% Test sources to sources, dipole, grad
+% Test sources to target, charge+dipole, grad
 pg = 0;
 pgt = 2;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
 tmpp = U1.pottarg(:,1:ntest);
 tmpp = tmpp(:);
 tmpp2 = U2.pottarg(:);
@@ -482,11 +546,14 @@ errs(34) = sqrt(err/ra);
 assert(errs(34)<eps,'Failed source to target, charge+dipole, grad vec test');
 ipass(34) = 1;
 
-% Test sources to target, dipole, pot
+% Test sources to source+target, charge+dipole, pot
 pg = 1;
 pgt = 1;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+pottmp = U2.pottarg;
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
+U2.pot = pottmp;
 p = U1.pot(:,1:ntest);
 p = p(:);
 p2 = U2.pot(:);
@@ -499,11 +566,16 @@ errs(35) = sqrt(err/ra);
 assert(errs(35)<eps,'Failed source to target, charge+dipole, pot vec test');
 ipass(35) = 1;
 
-% Test sources to sources, dipole, grad
+% Test sources to sources+target, charge+dipole, grad
 pg = 2;
 pgt = 2;
 U1 = rfmm3d(eps,srcinfo,pg,targ,pgt);
-U2 = r3ddir(eps,ntest,srcinfo,pg,targ,pgt);
+U2 = r3ddir(eps,srcinfo,stmp,pg);
+pottmp = U2.pottarg;
+gradtmp = U2.gradtarg;
+U2 = r3ddir(eps,srcinfo,ttmp,pgt);
+U2.pot = pottmp;
+U2.grad = gradtmp;
 p = U1.pot(:,1:ntest);
 p = p(:);
 p2 = U2.pot(:);
