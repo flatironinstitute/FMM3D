@@ -1,7 +1,53 @@
-function [U] = h3ddir(eps,zk,ntest,srcinfo,pg,targ,pgt)
-
+function [U] = h3ddir(zk,srcinfo,targ,pgt)
+% H3DDIR
+%
+%   This subroutine computes the N-body Helmholtz
+%   interactions and its gradients in three dimensions where 
+%   the interaction kernel is given by e^{ikr}/r
+%
+%   :: 
+%
+%   u(x) = \sum_{j=1}^{N} c_{j} e^{ik|x-x_{j}|}/|x-x_{j}| - 
+%             Grad (e^{ik|x-x_{j}|}/|x-x_{j}|) . v_{j}
+%
+%   where c_{j} are the charge densities
+%   v_{j} are the dipole orientation vectors, and
+%   x_{j} are the source locations.
+%
+%   When x=x_{m}, the term corresponding to x_{m} is dropped
+%   from the sum.
+%
+%   The sum is evaluated directly - (slow code for testing)
+%
+%   Args:
+%       zk: complex
+%              Helmholtz parameter - k
+%       srcinfo: structure
+%               structure containing sourceinfo
+%       srcinfo.sources: double(3,n)    
+%              source locations (x_{j})
+%       srcinfo.nd: integer
+%              number of charge/dipole densities (optional)
+%              default - nd = 1
+%       srcinfo.charges: complex(nd,n) 
+%              charge densities (c_{j}) (optional)
+%              default - term corresponding to charges dropped
+%       srcinfo.dipoles: complex(nd,3,n) 
+%               dipole orientation vectors (v_{j}) (optional)
+%               default - term corresponding to dipoles dropped 
+%       targ: double(3,nt)
+%               target locations (x) 
+%       pgt:  integer
+%              target eval flag
+%              potential at targets evaluated if pgt = 1
+%              potenial and gradient at targets evaluated if pgt=2
+%
+%       Returns:
+%         U.pottarg  - potential at target locations if requested
+%         U.gradtarg - gradient at target locations if requested
+%              
+%
   sources = srcinfo.sources;
-  stmp = sources(:,1:ntest);
   [m,ns] = size(sources);
   assert(m==3,'The first dimension of sources must be 3');
   if(~isfield(srcinfo,'nd'))
@@ -13,30 +59,14 @@ function [U] = h3ddir(eps,zk,ntest,srcinfo,pg,targ,pgt)
 
   thresh = 1e-15;
 
-  pot = complex(zeros(nd,1)); 
-  grad = complex(zeros(nd*3,1));
-  
-
-  if(pg>=1), pot = complex(zeros(nd,ntest)); end;
-  if(pg == 2), grad = complex(zeros(nd*3,ntest)); end;
-
   pottarg = complex(zeros(nd,1));
   gradtarg = complex(zeros(nd*3,1));
-  if( nargin == 5 )
-    nt = 0;
-    iftarg = 0;
-    pgt = 0;
-    targ = zeros(3,1);
-  else
-    [m,nt] = size(targ);
-    iftarg = 1;
-    assert(m==3,'First dimension of targets must be 3');
-    ttmp = targ(:,1:ntest);
-    if(pgt >=1), pottarg = complex(zeros(nd,ntest)); end;
-    if(pgt == 2), gradtarg = complex(zeros(nd*3,ntest)); end;
-  end
+  [m,nt] = size(targ);
+  assert(m==3,'First dimension of targets must be 3');
+  if(pgt >=1), pottarg = complex(zeros(nd,nt)); end;
+  if(pgt == 2), gradtarg = complex(zeros(nd*3,nt)); end;
 
-  if(pg ==0 && pgt ==0), disp('Nothing to compute, set eigher pg or pgt to 1 or 2'); return; end;
+  if(pgt ==0), disp('Nothing to compute, set pgt to 1 or 2'); return; end;
 
   if(isfield(srcinfo,'charges'))
     ifcharge = 1;
@@ -61,120 +91,37 @@ function [U] = h3ddir(eps,zk,ntest,srcinfo,pg,targ,pgt)
 
   nd3 = 3*nd;
 
-  if(iftarg == 0 || (pgt ~=1 && pgt ~=2)) 
-    if(pg == 1)
-      if(ifcharge==1 && ifdipole == 0)
-        mex_id_ = 'h3ddirectcp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])';
-[pot] = fmm3d(mex_id_, nd, zk, sources, charges, ns, stmp, ntest, pot, thresh, 1, 1, 3, ns, nd, ns, 1, 3, ntest, 1, nd, ntest, 1);
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        mex_id_ = 'h3ddirectdp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])';
-[pot] = fmm3d(mex_id_, nd, zk, sources, dipoles, ns, stmp, ntest, pot, thresh, 1, 1, 3, ns, nd3, ns, 1, 3, ntest, 1, nd, ntest, 1);
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        mex_id_ = 'h3ddirectcdp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])';
-[pot] = fmm3d(mex_id_, nd, zk, sources, charges, dipoles, ns, stmp, ntest, pot, thresh, 1, 1, 3, ns, nd, ns, nd3, ns, 1, 3, ntest, 1, nd, ntest, 1);
-      end
-      U.pot = pot;
+  if(pgt == 1)
+    if(ifcharge==1 && ifdipole == 0)
+      mex_id_ = 'h3ddirectcp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])';
+[pottarg] = fmm3d(mex_id_, nd, zk, sources, charges, ns, targ, nt, pottarg, thresh, 1, 1, 3, ns, nd, ns, 1, 3, nt, 1, nd, nt, 1);
     end
-    if(pg == 2)
-      if(ifcharge==1 && ifdipole == 0)
-        mex_id_ = 'h3ddirectcg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
-[pot, grad] = fmm3d(mex_id_, nd, zk, sources, charges, ns, stmp, ntest, pot, grad, thresh, 1, 1, 3, ns, nd, ns, 1, 3, ntest, 1, nd, ntest, nd3, ntest, 1);
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        mex_id_ = 'h3ddirectdg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
-[pot, grad] = fmm3d(mex_id_, nd, zk, sources, dipoles, ns, stmp, ntest, pot, grad, thresh, 1, 1, 3, ns, nd3, ns, 1, 3, ntest, 1, nd, ntest, nd3, ntest, 1);
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        mex_id_ = 'h3ddirectcdg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
-[pot, grad] = fmm3d(mex_id_, nd, zk, sources, charges, dipoles, ns, stmp, ntest, pot, grad, thresh, 1, 1, 3, ns, nd, ns, nd3, ns, 1, 3, ntest, 1, nd, ntest, nd3, ntest, 1);
-      end
-      U.pot = pot;
-      U.grad = squeeze(reshape(grad,[nd,3,ntest]));
+    if(ifcharge==0 && ifdipole == 1)
+      mex_id_ = 'h3ddirectdp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])';
+[pottarg] = fmm3d(mex_id_, nd, zk, sources, dipoles, ns, targ, nt, pottarg, thresh, 1, 1, 3, ns, nd3, ns, 1, 3, nt, 1, nd, nt, 1);
     end
+    if(ifcharge==1 && ifdipole == 1)
+      mex_id_ = 'h3ddirectcdp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])';
+[pottarg] = fmm3d(mex_id_, nd, zk, sources, charges, dipoles, ns, targ, nt, pottarg, thresh, 1, 1, 3, ns, nd, ns, nd3, ns, 1, 3, nt, 1, nd, nt, 1);
+    end
+    U.pottarg = pottarg;
   end
-  if(iftarg == 1 && pg ~=1 && pg ~=2) 
-    if(pgt == 1)
-      if(ifcharge==1 && ifdipole == 0)
-        mex_id_ = 'h3ddirectcp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])';
-[pottarg] = fmm3d(mex_id_, nd, zk, sources, charges, ns, ttmp, ntest, pottarg, thresh, 1, 1, 3, ns, nd, ns, 1, 3, ntest, 1, nd, ntest, 1);
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        mex_id_ = 'h3ddirectdp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])';
-[pottarg] = fmm3d(mex_id_, nd, zk, sources, dipoles, ns, ttmp, ntest, pottarg, thresh, 1, 1, 3, ns, nd3, ns, 1, 3, ntest, 1, nd, ntest, 1);
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        mex_id_ = 'h3ddirectcdp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])';
-[pottarg] = fmm3d(mex_id_, nd, zk, sources, charges, dipoles, ns, ttmp, ntest, pottarg, thresh, 1, 1, 3, ns, nd, ns, nd3, ns, 1, 3, ntest, 1, nd, ntest, 1);
-      end
-      U.pottarg = pottarg;
+  if(pgt == 2)
+    if(ifcharge==1 && ifdipole == 0)
+      mex_id_ = 'h3ddirectcg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
+[pottarg, gradtarg] = fmm3d(mex_id_, nd, zk, sources, charges, ns, targ, nt, pottarg, gradtarg, thresh, 1, 1, 3, ns, nd, ns, 1, 3, nt, 1, nd, nt, nd3, nt, 1);
     end
-    if(pgt == 2)
-      if(ifcharge==1 && ifdipole == 0)
-        mex_id_ = 'h3ddirectcg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
-[pottarg, gradtarg] = fmm3d(mex_id_, nd, zk, sources, charges, ns, ttmp, ntest, pottarg, gradtarg, thresh, 1, 1, 3, ns, nd, ns, 1, 3, ntest, 1, nd, ntest, nd3, ntest, 1);
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        mex_id_ = 'h3ddirectdg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
-[pottarg, gradtarg] = fmm3d(mex_id_, nd, zk, sources, dipoles, ns, ttmp, ntest, pottarg, gradtarg, thresh, 1, 1, 3, ns, nd3, ns, 1, 3, ntest, 1, nd, ntest, nd3, ntest, 1);
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        mex_id_ = 'h3ddirectcdg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
-[pottarg, gradtarg] = fmm3d(mex_id_, nd, zk, sources, charges, dipoles, ns, ttmp, ntest, pottarg, gradtarg, thresh, 1, 1, 3, ns, nd, ns, nd3, ns, 1, 3, ntest, 1, nd, ntest, nd3, ntest, 1);
-      end
-      U.pottarg = pottarg;
-      U.gradtarg = squeeze(reshape(gradtarg,[nd,3,ntest]));
+    if(ifcharge==0 && ifdipole == 1)
+      mex_id_ = 'h3ddirectdg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
+[pottarg, gradtarg] = fmm3d(mex_id_, nd, zk, sources, dipoles, ns, targ, nt, pottarg, gradtarg, thresh, 1, 1, 3, ns, nd3, ns, 1, 3, nt, 1, nd, nt, nd3, nt, 1);
     end
-  end
-  if(iftarg == 1 && (pg ==1 || pg ==2))
-    assert(pg==pgt,'pg must be pgt');
-    if(pgt == 1)
-      if(ifcharge==1 && ifdipole == 0)
-        mex_id_ = 'h3ddirectcp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])';
-[pot] = fmm3d(mex_id_, nd, zk, sources, charges, ns, stmp, ntest, pot, thresh, 1, 1, 3, ns, nd, ns, 1, 3, ntest, 1, nd, ntest, 1);
-        mex_id_ = 'h3ddirectcp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])';
-[pottarg] = fmm3d(mex_id_, nd, zk, sources, charges, ns, ttmp, ntest, pottarg, thresh, 1, 1, 3, ns, nd, ns, 1, 3, ntest, 1, nd, ntest, 1);
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        mex_id_ = 'h3ddirectdp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])';
-[pot] = fmm3d(mex_id_, nd, zk, sources, dipoles, ns, stmp, ntest, pot, thresh, 1, 1, 3, ns, nd3, ns, 1, 3, ntest, 1, nd, ntest, 1);
-        mex_id_ = 'h3ddirectdp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])';
-[pottarg] = fmm3d(mex_id_, nd, zk, sources, dipoles, ns, ttmp, ntest, pottarg, thresh, 1, 1, 3, ns, nd3, ns, 1, 3, ntest, 1, nd, ntest, 1);
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        mex_id_ = 'h3ddirectcdp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])';
-[pot] = fmm3d(mex_id_, nd, zk, sources, charges, dipoles, ns, stmp, ntest, pot, thresh, 1, 1, 3, ns, nd, ns, nd3, ns, 1, 3, ntest, 1, nd, ntest, 1);
-        mex_id_ = 'h3ddirectcdp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])';
-[pottarg] = fmm3d(mex_id_, nd, zk, sources, charges, dipoles, ns, ttmp, ntest, pottarg, thresh, 1, 1, 3, ns, nd, ns, nd3, ns, 1, 3, ntest, 1, nd, ntest, 1);
-      end
-      U.pot = pot;
-      U.pottarg = pottarg;
+    if(ifcharge==1 && ifdipole == 1)
+      mex_id_ = 'h3ddirectcdg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
+[pottarg, gradtarg] = fmm3d(mex_id_, nd, zk, sources, charges, dipoles, ns, targ, nt, pottarg, gradtarg, thresh, 1, 1, 3, ns, nd, ns, nd3, ns, 1, 3, nt, 1, nd, nt, nd3, nt, 1);
     end
-    if(pgt == 2)
-      if(ifcharge==1 && ifdipole == 0)
-        mex_id_ = 'h3ddirectcg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
-[pot, grad] = fmm3d(mex_id_, nd, zk, sources, charges, ns, stmp, ntest, pot, grad, thresh, 1, 1, 3, ns, nd, ns, 1, 3, ntest, 1, nd, ntest, nd3, ntest, 1);
-        mex_id_ = 'h3ddirectcg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
-[pottarg, gradtarg] = fmm3d(mex_id_, nd, zk, sources, charges, ns, ttmp, ntest, pottarg, gradtarg, thresh, 1, 1, 3, ns, nd, ns, 1, 3, ntest, 1, nd, ntest, nd3, ntest, 1);
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        mex_id_ = 'h3ddirectdg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
-[pot, grad] = fmm3d(mex_id_, nd, zk, sources, dipoles, ns, stmp, ntest, pot, grad, thresh, 1, 1, 3, ns, nd3, ns, 1, 3, ntest, 1, nd, ntest, nd3, ntest, 1);
-        mex_id_ = 'h3ddirectdg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
-[pottarg, gradtarg] = fmm3d(mex_id_, nd, zk, sources, dipoles, ns, ttmp, ntest, pottarg, gradtarg, thresh, 1, 1, 3, ns, nd3, ns, 1, 3, ntest, 1, nd, ntest, nd3, ntest, 1);
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        mex_id_ = 'h3ddirectcdg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
-[pot, grad] = fmm3d(mex_id_, nd, zk, sources, charges, dipoles, ns, stmp, ntest, pot, grad, thresh, 1, 1, 3, ns, nd, ns, nd3, ns, 1, 3, ntest, 1, nd, ntest, nd3, ntest, 1);
-        mex_id_ = 'h3ddirectcdg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
-[pottarg, gradtarg] = fmm3d(mex_id_, nd, zk, sources, charges, dipoles, ns, ttmp, ntest, pottarg, gradtarg, thresh, 1, 1, 3, ns, nd, ns, nd3, ns, 1, 3, ntest, 1, nd, ntest, nd3, ntest, 1);
-      end
-      U.pot = pot;
-      U.grad = squeeze(reshape(grad,[nd,3,ntest]));
-      U.pottarg = pottarg;
-      U.gradtarg = squeeze(reshape(gradtarg,[nd,3,ntest]));
-    end
+    U.pottarg = pottarg;
+    U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
   end
 end
 
+% ---------------------------------------------------------------------

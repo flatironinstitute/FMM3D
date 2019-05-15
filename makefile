@@ -20,14 +20,14 @@ OMPFLAGS = -fopenmp
 MOMPFLAGS = -lgomp -D_OPENMP
 
 # flags for MATLAB MEX compilation..
-MFLAGS=-largeArrayDims -L/usr/local/Cellar/gcc/8.3.0/lib/gcc/8 -DMWF77_UNDERSCORE1 -lgfortran -lgomp -D_OPENMP -lm
+MFLAGS=-largeArrayDims -DMWF77_UNDERSCORE1 -lgfortran -lgomp -D_OPENMP -lm
 MWFLAGS=-c99complex 
 
 # location of MATLAB's mex compiler
 MEX=mex
 
 # For experts, location of Mwrap executable
-MWRAP=../../mwrap-0.33/mwrap
+MWRAP=mwrap
 
 # For your OS, override the above by placing make variables in make.inc
 -include make.inc
@@ -114,17 +114,19 @@ $(DYNAMICLIB): $(OBJS)
 # matlab..
 MWRAPFILE = fmm3d
 GATEWAY = $(MWRAPFILE)
-matlab:	
-	(cd matlab; $(MEX) $(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d)
+matlab:	$(STATICLIB) matlab/$(GATEWAY).c
+	$(MEX) matlab/$(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d
+
 
 mex: 
 	cd matlab; $(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY) -mb $(MWRAPFILE).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY) -c $(GATEWAY).c $(MWRAPFILE).mw;\
 	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output fmm3d
 
+#python
 python:
 	cd python; python setup.py develop; cd test; python test_hfmm.py;\
-	python3 test_rfmm.py;\
+	python test_rfmm.py;\
 
 # testing routines
 #
