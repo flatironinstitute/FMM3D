@@ -1745,7 +1745,7 @@ c
 c
       ier = 0
       ntot = ns + nt + nexpc
-      nbtmp = 16*ntot*dlog(ntot+0.0d0)/dlog(4+0.0d0)
+      nbtmp = 16*ntot*dlog(ntot+0.0d0)/dlog(8+0.0d0)
       nbmax = max(nbmax,nbtmp)
       nboxes = nbmax
       lcenters = nbmax

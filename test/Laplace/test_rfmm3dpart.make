@@ -8,7 +8,8 @@ HOST=macosx
 
 ifeq ($(HOST),macosx)
 FC = gfortran
-FFLAGS = -O3 -c -w -march=native  
+FFLAGS = -O3 -c -w -march=native -finteger-4-integer-8 -fdefault-integer-8 
+#FFLAGS = -O3 -c -w -march=native 
 FLINK = gfortran -w -o $(EXEC)
 FEND =  
 endif

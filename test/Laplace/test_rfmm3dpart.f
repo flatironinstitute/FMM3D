@@ -22,7 +22,7 @@ cc      initialize printing routine
 c
       call prini(6,13)
 
-      ns = 2000
+      ns = 2000 
       nt = 1999
 
       ntest = 10
@@ -38,7 +38,7 @@ c
       eps = 0.5d-9
 
       write(*,*) "=========================================="
-      write(*,*) "Testing suite for hfmm3dpart_vec"
+      write(*,*) "Testing suite for rfmm3dpart_vec"
       write(*,'(a,e11.5)') "Requested precision = ",eps
 
       open(unit=33,file='print_testres.txt',access='append')

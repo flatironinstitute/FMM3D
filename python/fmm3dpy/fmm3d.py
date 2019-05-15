@@ -17,7 +17,9 @@ def hfmm3d(*,eps,zk,sources,charges=None,dipvec=None,
       in three dimensions where the interaction kernel is given by e^{ikr}/r 
       and its gradients. 
 
-      u(x) = \sum_{j=1}^{N} c_{j} e^{ik |x-x_{j}|}/|x-x_{j}| + 
+      ::
+
+      u(x) = \sum_{j=1}^{N} c_{j} e^{ik |x-x_{j}|}/|x-x_{j}| - 
                    Grad( e^{ik |x-x_{j}|}/|x-x_{j}|) . v_{j} \, ,
 
       where c_{j} are the charge densities,  
@@ -60,7 +62,8 @@ def hfmm3d(*,eps,zk,sources,charges=None,dipvec=None,
           out.pottarg  - potential at target locations if requested
           out.gradtarg - gradient at target locations if requested
               
-
+        Example:
+          see ``hmmexample.py''
     """
     out = Output()
     assert sources.shape[0] == 3, "The first dimension of sources must be 3"
@@ -196,6 +199,9 @@ def lfmm3d(*,eps,sources,charges=None,dipvec=None,
       in three dimensions where the interaction kernel is given by 1/r 
       and its gradients. 
 
+
+      :: 
+
       u(x) = \sum_{j=1}^{N} c_{j} /|x-x_{j}| + 
                    Grad( 1/|x-x_{j}|) . v_{j} \, ,
 
@@ -236,8 +242,9 @@ def lfmm3d(*,eps,sources,charges=None,dipvec=None,
           out.grad - gradient at source locations if requested
           out.pottarg  - potential at target locations if requested
           out.gradtarg - gradient at target locations if requested
-              
-
+      
+        Example:
+          see ``rfmmexample.py''
     """
 
     out = Output()
@@ -373,6 +380,9 @@ def h3ddir(*,zk,sources,targets,charges=None,dipvec=None,
       in three dimensions where the interaction kernel is given by e^{ikr}/r 
       and its gradients. 
 
+
+      ::
+
       u(x) = \sum_{j=1}^{N} c_{j} e^{ik |x-x_{j}|}/|x-x_{j}| + 
                    Grad( e^{ik |x-x_{j}|}/|x-x_{j}|) . v_{j} \, ,
 
@@ -411,7 +421,8 @@ def h3ddir(*,zk,sources,targets,charges=None,dipvec=None,
           out.pottarg  - potential at target locations if requested
           out.gradtarg - gradient at target locations if requested
               
-
+        Example:
+          see ``hfmmexample.py''
     """
     out = Output()
     assert sources.shape[0] == 3, "The first dimension of sources must be 3"
@@ -473,6 +484,9 @@ def l3ddir(*,sources,targets,charges=None,dipvec=None,
       in three dimensions where the interaction kernel is given by 1/r 
       and its gradients. 
 
+
+      ::
+
       u(x) = \sum_{j=1}^{N} c_{j} /|x-x_{j}| + 
                    Grad( 1/|x-x_{j}|) . v_{j} \, ,
 
@@ -507,7 +521,8 @@ def l3ddir(*,sources,targets,charges=None,dipvec=None,
           out.pottarg  - potential at target locations if requested
           out.gradtarg - gradient at target locations if requested
               
-
+        Example:
+          see ``rfmmexample.py''
     """
     out = Output()
     assert sources.shape[0] == 3, "The first dimension of sources must be 3"

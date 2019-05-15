@@ -6,9 +6,7 @@
 Flatiron Institute Fast multipole methods in three dimensions (FMM3D)
 ====================================================
 
-.. image:: logo.png
-    :width: 45%
-.. image:: spreadpic.png
+.. image:: fmmlogo.png
     :width: 54%
 	    
 `FMM3D <https://github.com/flatironinstitute/FMM3D>`_ 

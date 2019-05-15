@@ -24,8 +24,8 @@ c
 
 
 
-      ns = 20000
-      nt = 20000
+      ns = 110000
+      nt = 110000
       allocate(source(3,ns),targ(3,nt))
 
       do i=1,ns
@@ -40,7 +40,7 @@ c
         targ(3,i) = hkrand(0)
       enddo
 
-      ncases = 8
+      ncases = 1
 
       allocate(timings(2,ncases))
 
@@ -105,6 +105,7 @@ c
       enddo
 
       call prin2('timings=*',timings,2*ncases)
+      stop
 
       open(unit=33,file='vec_speedup.txt',access='append')
  1100 format(2x,i3,2(2x,e11.5))      
