@@ -125,8 +125,7 @@ mex:
 
 #python
 python:
-	cd python; python setup.py develop; cd test; python test_hfmm.py;\
-	python test_rfmm.py;\
+	cd python && pip install -e . && cd test && pytest -s
 
 # testing routines
 #
@@ -160,7 +159,7 @@ clean: objclean
 	rm -f lib-static/*.a lib/*.so
 	rm -f python/*.so
 	rm -rf python/build
-	rm -rf fmm3dpy.egg-info/
+	rm -rf fmm3dpy.egg-info
 	
 	
 
