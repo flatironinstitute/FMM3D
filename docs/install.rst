@@ -1,8 +1,8 @@
 Installation
 ============
 
-Obtaining FINUFFT
-*****************
+Obtaining FMM3D
+***************
 
 Go to the github page https://github.com/flatironinstitute/FMM3D and
 follow instructions (eg see the green button).
@@ -21,8 +21,8 @@ For the basic libraries
 
 Optional:
 
-* for matlab/octave wrappers: MATLAB, or octave and its development libraries
-* for building new matlab/octave wrappers (experts only): ``mwrap``
+* for matlab wrappers: MATLAB
+* for building new matlab wrappers (experts only): ``mwrap``
 * for the python wrappers you will need ``python3`` and ``pip3``. 
 
 
@@ -32,7 +32,7 @@ Tips for installing dependencies on various operating systems
 On a Fedora/CentOS linux system, these dependencies can be installed as 
 follows::
 
-  sudo yum install make gcc gcc-c++ gcc-gfortran libgomp octave octave-devel
+  sudo yum install make gcc gcc-c++ gcc-gfortran libgomp 
 
 then see below for ``mwrap``.
 
@@ -42,7 +42,7 @@ then see below for ``mwrap``.
 
 On Ubuntu linux (assuming python3 as opposed to python)::
 
-  sudo apt-get install make build-essential gfortran python3 python3-pip octave liboctave-dev
+  sudo apt-get install make build-essential gfortran python3 python3-pip 
 
 On Mac OSX:
 
@@ -52,9 +52,6 @@ Install gcc, for instance using pre-compiled binaries from
 http://hpc.sourceforge.net/
 
 (Note: we are not exactly sure how to install python3 and pip3 on mac)
-
-Currently in Mac OSX, ``make lib`` fails to make the shared object library (.so);
-however the static (.a) library is of reasonable size and works fine.
 
 
 Installing MWrap
@@ -86,30 +83,20 @@ Compile and do a rapid (less than 1-second) test of FINUFFT via::
 This should compile the main libraries then run tests which should report 
 zero crashes and zero fails. 
 
-Use ``make perftest`` for larger FMM tests taking 15-30 seconds.
-
 Run ``make`` without arguments for full list of possible make tasks.
 
-Note that the library includes the C and fortran interfaces
-defined in ``src/fmm3d_c.h`` and ``fortran/fmm3d_f.h`` respectively.
 If there is an error in testing on a standard set-up,
 please file a bug report as a New Issue at https://github.com/flatironinstitute/FMM3D/issues
 
 Custom library compilation options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-You may want to make the library for other data types. 
-However, single-threaded vs multithreaded are
+Single-threaded vs multithreaded are
 built with the same name, so you will have to move them to other
 locations, or build a 2nd copy of the repo, if you want to keep both
 versions.
 
 You *must* do at least ``make objclean`` before changing openmp options.
-
-**Single precision**: append ``PREC=SINGLE`` to the make task.
-Single-precision saves half the RAM, and increases
-speed slightly (<20%). The  C++, C, and fortran demos are all tested in
-single precision. However, it will break matlab, octave, python interfaces.
 
 **Single-threaded**: append ``OMP=OFF`` to the make task.
 
@@ -122,7 +109,6 @@ Building examples and wrappers
 The ``examples`` and ``test`` directories are good places to see usage 
 examples.
 
-``make c`` to compile and run the C wrappers and examples.
 
 
 Building the python wrappers
@@ -132,9 +118,6 @@ First make sure you have python3 and pip3 (or python and pip) installed.
 
 You may then do ``make python3`` which calls
 pip3 for the install then runs some tests. 
-An additional test you could do is::
-
-  python3 run_speed_tests.py
 
 
 A few words about python environments
@@ -147,3 +130,15 @@ There can be confusion and conflicts between various versions of python and inst
   . env1/bin/activate
 
 Now you are in a virtual environment that starts from scratch. All pip installed packages will go inside the env1 directory. (You can get out of the environment by typing ``deactivate``)
+
+
+Building the matlab wrappers
+***************************
+
+First make sure you have matlab installed
+
+You may then do ``make matlab'' which links the .m files to the .c file in the matlab folder.
+
+To run tests, you can run ``matlab run_test.m'' and it should return with $0$ crashes
+
+Example codes are also demonstrated in ``hfmmexample.m'' and ``rfmmexample.m'' 

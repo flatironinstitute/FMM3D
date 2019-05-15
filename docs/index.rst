@@ -19,7 +19,7 @@ is written in Fortran (using OpenMP),
 and has wrappers to C, MATLAB, and python.
 As an example, given $M$ arbitrary points $y_j \in \mathbb{R}^{3}$ 
 and complex numbers $c_j$, with $j=1,\dots,M$, and 
-$N$ arbitrary points $x_{k} \in \mathhbb{R}^{3}$, the Laplace FMM
+$N$ arbitrary points $x_{k} \in \mathbb{R}^{3}$, the Laplace FMM
 evaluates the $N$ complex numbers
 
 .. math:: u_k = \sum_{j=1}^M \frac{c_j}{\| x_{k} - y_{j} \|} ~, 
@@ -60,7 +60,7 @@ faster.
 
    For very small repeated problems (less than 1000 input and output points),
    users should also consider a dense matrix-matrix multiplication against
-   the $N-$body interaction matrix using BLAS3 (eg ZGEMM).
+   the $N-$body interaction matrix using BLAS3 (eg DGEMM,ZGEMM).
    This is currently work in progress.
 
    
@@ -70,7 +70,7 @@ faster.
    install
    math
    matlab
-   pythoninterface
+   python
    
 
    
