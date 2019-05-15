@@ -17,16 +17,15 @@ def hfmm3d(*,eps,zk,sources,charges=None,dipvec=None,
       in three dimensions where the interaction kernel is given by e^{ikr}/r 
       and its gradients. 
 
-      ::
+      .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} e^{ik |x-x_{j}|}/|x-x_{j}| - 
-                   Grad( e^{ik |x-x_{j}|}/|x-x_{j}|) . v_{j} \, ,
+          u(x) = \sum_{j=1}^{N} c_{j} e^{ik |x-x_{j}|}/|x-x_{j}| - \\nabla( e^{ik |x-x_{j}|}/|x-x_{j}|) \cdot v_{j} \, ,
 
-      where c_{j} are the charge densities,  
-      v_{j} are the dipole orientation vectors, and 
-      x_{j} are the source locations.
+      where $c_{j}$ are the charge densities,  
+      $v_{j}$ are the dipole orientation vectors, and 
+      $x_{j}$ are the source locations.
 
-      When x=x_{m}, the term corresponding to x_{m} is dropped from the
+      When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the
       sum
 
 
@@ -56,14 +55,14 @@ def hfmm3d(*,eps,zk,sources,charges=None,dipvec=None,
         nd:   integer
                number of densities
 
-        Returns:
-          out.pot  - potential at source locations if requested
-          out.grad - gradient at source locations if requested
-          out.pottarg  - potential at target locations if requested
-          out.gradtarg - gradient at target locations if requested
+      Returns:
+        out.pot  - potential at source locations if requested
+        out.grad - gradient at source locations if requested
+        out.pottarg  - potential at target locations if requested
+        out.gradtarg - gradient at target locations if requested
               
-        Example:
-          see ``hmmexample.py''
+      Example:
+        see ``hmmexample.py''
     """
     out = Output()
     assert sources.shape[0] == 3, "The first dimension of sources must be 3"
@@ -200,16 +199,15 @@ def lfmm3d(*,eps,sources,charges=None,dipvec=None,
       and its gradients. 
 
 
-      :: 
+      .. math:: 
 
-      u(x) = \sum_{j=1}^{N} c_{j} /|x-x_{j}| + 
-                   Grad( 1/|x-x_{j}|) . v_{j} \, ,
+          u(x) = \sum_{j=1}^{N} c_{j} / |x-x_{j}| + \\nabla( 1/|x-x_{j}|) \cdot v_{j} \, ,
 
-      where c_{j} are the charge densities, 
-      v_{j} are the dipole orientation vectors, and 
-      x_{j} are the source locations.
+      where $c_{j}$ are the charge densities, 
+      $v_{j}$ are the dipole orientation vectors, and 
+      $x_{j}$ are the source locations.
 
-      When x=x_{m}, the term corresponding to x_{m} is dropped from the
+      When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the
       sum
 
 
@@ -237,14 +235,14 @@ def lfmm3d(*,eps,sources,charges=None,dipvec=None,
         nd:   integer
                number of densities
 
-        Returns:
-          out.pot  - potential at source locations if requested
-          out.grad - gradient at source locations if requested
-          out.pottarg  - potential at target locations if requested
-          out.gradtarg - gradient at target locations if requested
+      Returns:
+        out.pot  - potential at source locations if requested
+        out.grad - gradient at source locations if requested
+        out.pottarg  - potential at target locations if requested
+        out.gradtarg - gradient at target locations if requested
       
-        Example:
-          see ``rfmmexample.py''
+      Example:
+        see ``rfmmexample.py''
     """
 
     out = Output()
@@ -377,20 +375,19 @@ def h3ddir(*,zk,sources,targets,charges=None,dipvec=None,
           pgt=0,nd=1,thresh=1e-16):
     """
       This subroutine computes the N-body Helmholtz interactions
-      in three dimensions where the interaction kernel is given by e^{ikr}/r 
+      in three dimensions where the interaction kernel is given by $e^{ikr}/r$ 
       and its gradients. 
 
 
-      ::
+      .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} e^{ik |x-x_{j}|}/|x-x_{j}| + 
-                   Grad( e^{ik |x-x_{j}|}/|x-x_{j}|) . v_{j} \, ,
+          u(x) = \sum_{j=1}^{N} c_{j} e^{ik |x-x_{j}|}/|x-x_{j}| - \\nabla( e^{ik |x-x_{j}|}/|x-x_{j}|) \cdot v_{j} \, ,
 
-      where c_{j} are the charge densities,  
-      v_{j} are the dipole orientation vectors, and 
-      x_{j} are the source locations.
+      where $c_{j}$ are the charge densities,  
+      $v_{j}$ are the dipole orientation vectors, and 
+      $x_{j}$ are the source locations.
 
-      When |x-x_{m}|\leq thresh, the term corresponding to x_{m} is dropped from the
+      When |x-x_{m}| \leq thresh, the term corresponding to $x_{m}$ is dropped from the
       sum
 
 
@@ -417,12 +414,12 @@ def h3ddir(*,zk,sources,targets,charges=None,dipvec=None,
                number of densities
         thresh: contribution of source x_i, at location x ignored if |x-x_i|<=thresh
 
-        Returns:
-          out.pottarg  - potential at target locations if requested
-          out.gradtarg - gradient at target locations if requested
+      Returns:
+        out.pottarg  - potential at target locations if requested
+        out.gradtarg - gradient at target locations if requested
               
-        Example:
-          see ``hfmmexample.py''
+      Example:
+        see ``hfmmexample.py''
     """
     out = Output()
     assert sources.shape[0] == 3, "The first dimension of sources must be 3"
@@ -481,20 +478,19 @@ def l3ddir(*,sources,targets,charges=None,dipvec=None,
           pgt=0,nd=1,thresh=1e-16):
     """
       This subroutine computes the N-body Laplace interactions
-      in three dimensions where the interaction kernel is given by 1/r 
+      in three dimensions where the interaction kernel is given by $1/r$ 
       and its gradients. 
 
 
-      ::
+      .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} /|x-x_{j}| + 
-                   Grad( 1/|x-x_{j}|) . v_{j} \, ,
+          u(x) = \sum_{j=1}^{N} c_{j} /|x-x_{j}| -  \\nabla( 1/|x-x_{j}|) \cdot v_{j} \, ,
 
-      where c_{j} are the charge densities, 
-      v_{j} are the dipole orientation vectors, and 
-      x_{j} are the source locations.
+      where $c_{j}$ are the charge densities, 
+      $v_{j}$ are the dipole orientation vectors, and 
+      $x_{j}$ are the source locations.
 
-      When |x-x_{m}|leq thresh, the term corresponding to x_{m} is dropped from the
+      When |x-x_{m}|leq thresh, the term corresponding to $x_{m}$ is dropped from the
       sum
 
 
@@ -517,12 +513,12 @@ def l3ddir(*,sources,targets,charges=None,dipvec=None,
                number of densities
         thresh: contribution of source x_i, at location x ignored if |x-x_i|<=thresh
 
-        Returns:
-          out.pottarg  - potential at target locations if requested
-          out.gradtarg - gradient at target locations if requested
+      Returns:
+        out.pottarg  - potential at target locations if requested
+        out.gradtarg - gradient at target locations if requested
               
-        Example:
-          see ``rfmmexample.py''
+      Example:
+        see ``rfmmexample.py''
     """
     out = Output()
     assert sources.shape[0] == 3, "The first dimension of sources must be 3"

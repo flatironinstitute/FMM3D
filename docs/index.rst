@@ -69,14 +69,8 @@ faster.
 	   
    install
    math
-   dirs
-   usage
    matlab
    pythoninterface
-   related
-   issues
-   ackn
-   refs
    
 
    
