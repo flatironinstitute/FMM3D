@@ -158,6 +158,10 @@ test/rfmm3dpart_vec:
 
 clean: objclean
 	rm -f lib-static/*.a lib/*.so
+	rm -f python/*.so
+	rm -rf python/build
+	rm -rf fmm3dpy.egg-info/
+	
 	
 
 objclean: 
