@@ -12,8 +12,11 @@
 CC=gcc
 FC=gfortran
 
-CFLAGS=-fPIC -O3 -funroll-loops -march=native -fopenmp
-FFLAGS = $(CFLAGS)
+FFLAGS=-fPIC -O3 -funroll-loops -march=native 
+CFLAGS= -std=c99 
+CFLAGS+= $(FFLAGS) 
+
+CLINK = -lgfortran -lm
 
 # extra flags for multithreaded: C/Fortran, MATLAB
 OMPFLAGS = -fopenmp
@@ -49,8 +52,8 @@ COM = src/Common
 COMOBJS = $(COM)/besseljs3d.o $(COM)/cdjseval3d.o $(COM)/dfft.o \
 	$(COM)/fmmcommon.o $(COM)/legeexps.o $(COM)/prini.o \
 	$(COM)/rotgen.o $(COM)/rotproj.o $(COM)/rotviarecur.o \
-	$(COM)/tree_lr_3d.o $(COM)/yrecursion.o
-
+	$(COM)/tree_lr_3d.o $(COM)/yrecursion.o 
+ 
 # Helmholtz objects
 HELM = src/Helmholtz
 HOBJS = $(HELM)/h3dcommon.o $(HELM)/h3dterms.o $(HELM)/h3dtrans.o \
@@ -70,8 +73,8 @@ LOBJS = $(LAP)/lwtsexp_sep1.o $(LAP)/l3dterms.o $(LAP)/l3dtrans.o \
 TOBJS = $(COM)/hkrand.o $(COM)/dlaran.o
 
 # C Headers and objects
-COBJS = c/cprini.c
-CHEADERS = c/cprini.h c/utils.h c/hfmm3d.h
+COBJS = c/cprini.o c/utils.o
+CHEADERS = c/cprini.h c/utils.h c/hfmm3d_c.h
 
 OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
@@ -160,9 +163,11 @@ test/lfmm3d_vec:
 	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_vec.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d_vec 
 
 # C interface
-CH = c/test_hfmm3d
-c: $(COBJS) $(CHEADERS) $(OBJS)
-	$(CC) $(CFLAGS) $(CH).c $(COBJS) $(OBJS) 
+c: $(COBJS) $(OBJS) $(CHEADERS) c/hfmm3d
+
+c/hfmm3d:
+	$(CC) $(CFLAGS) c/test_hfmm3d.c $(COBJS) $(OBJS) $(CLINK) -o c/test_hfmm3d
+	time -p c/test_hfmm3d
 
 clean: objclean
 	rm -f lib-static/*.a lib/*.so

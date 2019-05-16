@@ -52,7 +52,7 @@ LIBOBJS = Common/cprini.o ../src/Common/d3hplratree.o ../src/Common/fmmcommon.o 
 	../src/Helmholtz/projections.o ../src/Common/rotproj.o \
 	../src/Common/dfft.o ../src/Helmholtz/h3dcommon.o \
 	../src/Common/rotviarecur.o ../src/Helmholtz/numphysfour.o 
-IDIRS = -ICommon -IHelmholtz -I../src
+IDIRS = -ICommon -I../src
 
 # implicit rules for objects (note -o ensures writes to same dir)
 %.o: %.c %.h
