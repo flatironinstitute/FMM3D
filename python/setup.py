@@ -6,11 +6,11 @@ pkg_name = "fmm3dpy"
 
 ## TODO: this should be automatically populated using "read directory, or whatever"
 ## TODO: fix problem with relative location for executable
-list_helm=['h3dcommon.f','helmrouts3d.f','hfmm3dpartwrap_vec.f','quadread.f',
-'h3dterms.f','hfmm3dpart.f','hpwrouts.f','h3dtrans.f','hfmm3dpartwrap.f','hwts3.f','projections.f',
+list_helm=['h3dcommon.f','helmrouts3d.f','hfmm3dwrap_vec.f','quadread.f',
+'h3dterms.f','hfmm3d.f','hpwrouts.f','h3dtrans.f','hfmm3dwrap.f','hwts3.f','projections.f',
 'numphysfour.f']
-list_lap=['l3dterms.f','l3dtrans.f','laprouts3d.f','lfmm3dpart.f','lpwrouts.f','lwtsexp_sep1.f',
-'lwtsexp_sep2.f','lfmm3dpartwrap.f','lfmm3dpartwrap_vec.f']
+list_lap=['l3dterms.f','l3dtrans.f','laprouts3d.f','lfmm3d.f','lpwrouts.f','lwtsexp_sep1.f',
+'lwtsexp_sep2.f','lfmm3dwrap.f','lfmm3dwrap_vec.f']
 list_common=['besseljs3d.f','tree_lr_3d.f','dlaran.f','hkrand.f','prini.f','rotgen.f','rotviarecur.f',
 'cdjseval3d.f','dfft.f','fmmcommon.f','legeexps.f','rotproj.f','yrecursion.f']
 

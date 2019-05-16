@@ -54,16 +54,16 @@ COMOBJS = $(COM)/besseljs3d.o $(COM)/cdjseval3d.o $(COM)/dfft.o \
 # Helmholtz objects
 HELM = src/Helmholtz
 HOBJS = $(HELM)/h3dcommon.o $(HELM)/h3dterms.o $(HELM)/h3dtrans.o \
-	$(HELM)/helmrouts3d.o $(HELM)/hfmm3dpart.o $(HELM)/hfmm3dpartwrap.o \
-	$(HELM)/hfmm3dpartwrap_vec.o $(HELM)/hpwrouts.o \
+	$(HELM)/helmrouts3d.o $(HELM)/hfmm3d.o $(HELM)/hfmm3dwrap.o \
+	$(HELM)/hfmm3dwrap_vec.o $(HELM)/hpwrouts.o \
 	$(HELM)/hwts3.o $(HELM)/numphysfour.o $(HELM)/projections.o \
 	$(HELM)/quadread.o
 
 # Laplace objects
 LAP = src/Laplace
 LOBJS = $(LAP)/lwtsexp_sep1.o $(LAP)/l3dterms.o $(LAP)/l3dtrans.o \
-	$(LAP)/laprouts3d.o $(LAP)/lfmm3dpart.o $(LAP)/lfmm3dpartwrap.o \
-	$(LAP)/lfmm3dpartwrap_vec.o $(LAP)/lwtsexp_sep2.o \
+	$(LAP)/laprouts3d.o $(LAP)/lfmm3d.o $(LAP)/lfmm3dwrap.o \
+	$(LAP)/lfmm3dwrap_vec.o $(LAP)/lwtsexp_sep2.o \
 	$(LAP)/lpwrouts.o
 
 # Test objects

@@ -57,8 +57,8 @@ SOURCES =  test_hfmm3d_vec.f \
   h3dterms.f \
   h3dtrans.f \
   helmrouts3d.f \
-  hfmm3dpart.f \
-  hfmm3dpartwrap_vec.f \
+  hfmm3d.f \
+  hfmm3dwrap_vec.f \
   hpwrouts.f \
   hwts3.f \
   fmmcommon.f \

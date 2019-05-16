@@ -5,12 +5,23 @@ See the installation notes for how to install these interface.
 
 Notes:
 
-  #. In the below, "float" and "complex" refer to double-precision.
+  - In the below, "float" and "complex" refer to double-precision.
 
-  #. The direct routines h3ddir/l3ddir are not optimal and are only
+  - The direct routines h3ddir/l3ddir are not optimal and are only
   meant to be used as testing routines for the fmm routines.
 
+hfmm3d
+######
 .. autofunction:: fmm3dpy.hfmm3d
+
+h3ddir
+######
 .. autofunction:: fmm3dpy.h3ddir
+
+lfmm3d
+######
 .. autofunction:: fmm3dpy.lfmm3d
+
+l3ddir
+######
 .. autofunction:: fmm3dpy.l3ddir

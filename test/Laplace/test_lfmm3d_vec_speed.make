@@ -56,8 +56,8 @@ SOURCES =  test_lfmm3d_vec_speed.f \
   l3dterms.f \
   l3dtrans.f \
   laprouts3d.f \
-  lfmm3dpart.f \
-  lfmm3dpartwrap_vec.f \
+  lfmm3d.f \
+  lfmm3dwrap_vec.f \
   lpwrouts.f \
   lwtsexp_sep1.f \
   lwtsexp_sep2.f \

@@ -44,7 +44,7 @@ vpath %.f = .:../../src:../../src/Laplace:../../src/Common
 
 .PHONY: all clean list
 
-SOURCES =  test_rfmm3dpart_vec.f \
+SOURCES =  test_lfmm3d_vec.f \
   tree_lr_3d.f \
   dlaran.f \
   hkrand.f \
@@ -56,8 +56,8 @@ SOURCES =  test_rfmm3dpart_vec.f \
   l3dterms.f \
   l3dtrans.f \
   laprouts3d.f \
-  lfmm3dpart.f \
-  rfmm3dpartwrap_vec.f \
+  lfmm3d.f \
+  lfmm3dwrap_vec.f \
   lpwrouts.f \
   lwtsexp_sep1.f \
   lwtsexp_sep2.f \
