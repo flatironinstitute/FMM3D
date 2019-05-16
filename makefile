@@ -27,7 +27,7 @@ MWFLAGS=-c99complex
 MEX=mex
 
 # For experts, location of Mwrap executable
-MWRAP=mwrap
+MWRAP=../../mwrap-0.33/mwrap
 
 # For your OS, override the above by placing make variables in make.inc
 -include make.inc
@@ -88,7 +88,7 @@ usage:
 	@echo "  make objclean - removal all object files, preserving lib & MEX"
 	@echo "  make clean - also remove lib, MEX, py, and demo executables"
 	@echo "For faster (multicore) making, append the flag -j"
-	@echo "  'make [tast] OMP=ON' for multi-threaded (otherwise single-threaded)"
+	@echo "  'make [task] OMP=OFF' for multi-threaded (otherwise single-threaded)"
 
 
 # implicit rules for objects (note -o ensures writes to correct dir)
@@ -102,9 +102,9 @@ usage:
 # build the library...
 lib: $(STATICLIB) $(DYNAMICLIB)
 ifeq ($(OMP),ON)
-	echo "$(STATICLIB) and $(DYNAMICLIB) built, multithread versions"
+	@echo "$(STATICLIB) and $(DYNAMICLIB) built, multithread versions"
 else
-	echo "$(STATICLIB) and $(DYNAMICLIB) built, single-threaded versions"
+	@echo "$(STATICLIB) and $(DYNAMICLIB) built, single-threaded versions"
 endif
 $(STATICLIB): $(OBJS) 
 	ar rcs $(STATICLIB) $(OBJS)
@@ -118,7 +118,7 @@ matlab:	$(STATICLIB) matlab/$(GATEWAY).c
 	$(MEX) matlab/$(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d
 
 
-mex: 
+mex:  $(STATICLIB)
 	cd matlab; $(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY) -mb $(MWRAPFILE).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY) -c $(GATEWAY).c $(MWRAPFILE).mw;\
 	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output fmm3d

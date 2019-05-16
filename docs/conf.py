@@ -57,7 +57,7 @@ master_doc = 'index'
 # General information about the project.
 project = u'fmm3d'
 copyright = u'2018-2019 The Simons Foundation, Inc. - All Rights Reserved'
-author = u'Zydrunas Gimbutas, Leslie Greengard, Jeremy Maglan, and Manas Rachh'
+author = u'Zydrunas Gimbutas, Leslie Greengard, Jeremy Magland, and Manas Rachh'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

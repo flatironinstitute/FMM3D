@@ -76,7 +76,7 @@ the compiler, then place your compiler and linking options in a new file
 ``make.inc``.
 For example such files see ``make.inc.*``. See ``makefile`` for what can be overridden.
 
-Compile and do a rapid (less than 1-second) test of FINUFFT via::
+Compile and do a rapid (less than 1-second) test of FMM3D via::
 
   make test
 

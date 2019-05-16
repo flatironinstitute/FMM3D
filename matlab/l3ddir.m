@@ -1,48 +1,50 @@
-function [U] = r3ddir(srcinfo,targ,pgt)
-% R3DDIR
+function [U] = l3ddir(srcinfo,targ,pgt)
+%l3ddir
+%******
 %
 %   This subroutine computes the N-body Laplace
 %   interactions and its gradients in three dimensions where 
 %   the interaction kernel is given by 1/r
 %   
-%   ::
+%   .. math::
 %
-%   u(x) = \sum_{j=1}^{N} c_{j} /|x-x_{j}| - 
-%             Grad (1/|x-x_{j}|) . v_{j} 
+%       u(x) = \sum_{j=1}^{N} c_{j} /|x-x_{j}| - \nabla (1/|x-x_{j}|) . v_{j} 
 %
-%   where c_{j} are the charge densities
-%   v_{j} are the dipole orientation vectors, and
-%   x_{j} are the source locations.
+%   where $c_{j}$ are the charge densities
+%   $v_{j}$ are the dipole orientation vectors, and
+%   $x_{j}$ are the source locations.
 %
-%   When x=x_{m}, the term corresponding to x_{m} is dropped
+%   When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped
 %   from the sum.
 %
 %   The sum is evaluated directly - (slow code for testing)
 %
 %   Args:
-%       srcinfo: structure
+%
+%   -    srcinfo: structure
 %               structure containing sourceinfo
-%       srcinfo.sources: double(3,n)    
+%   -    srcinfo.sources: double(3,n)    
 %              source locations (x_{j})
-%       srcinfo.nd: integer
+%   -    srcinfo.nd: integer
 %              number of charge/dipole densities (optional)
 %              default - nd = 1
-%       srcinfo.charges: double(nd,n) 
+%   -    srcinfo.charges: double(nd,n) 
 %              charge densities (c_{j}) (optional)
 %              default - term corresponding to charges dropped
-%       srcinfo.dipoles: double(nd,3,n) 
+%   -    srcinfo.dipoles: double(nd,3,n) 
 %               dipole orientation vectors (v_{j}) (optional)
 %               default - term corresponding to dipoles dropped 
-%       targ: double(3,nt)
+%   -    targ: double(3,nt)
 %               target locations (x) 
-%       pgt:  integer
+%   -    pgt:  integer
 %              target eval flag
 %              potential at targets evaluated if pgt = 1
 %              potenial and gradient at targets evaluated if pgt=2
 %
-%       Returns:
-%         U.pottarg  - potential at target locations if requested
-%         U.gradtarg - gradient at target locations if requested
+%   Returns:
+%
+%   -   U.pottarg  - potential at target locations if requested
+%   -   U.gradtarg - gradient at target locations if requested
 %              
 %
   sources = srcinfo.sources;
