@@ -69,13 +69,17 @@ LOBJS = $(LAP)/lwtsexp_sep1.o $(LAP)/l3dterms.o $(LAP)/l3dtrans.o \
 # Test objects
 TOBJS = $(COM)/hkrand.o $(COM)/dlaran.o
 
+# C Headers and objects
+COBJS = c/cprini.c
+CHEADERS = c/cprini.h c/utils.h c/hfmm3d.h
+
 OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
 .PHONY: usage lib examples test perftest python all
 
 default: usage
 
-all: lib examples test perftest python
+all: lib examples test perftest python c
 
 usage:
 	@echo "Makefile for FMM3D. Specify what to make:"
@@ -154,6 +158,11 @@ test/lfmm3d:
 
 test/lfmm3d_vec:
 	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_vec.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d_vec 
+
+# C interface
+CH = c/test_hfmm3d
+c: $(COBJS) $(CHEADERS) $(OBJS)
+	$(CC) $(CFLAGS) $(CH).c $(COBJS) $(OBJS) 
 
 clean: objclean
 	rm -f lib-static/*.a lib/*.so
