@@ -37,15 +37,14 @@ FLINK = ifort -w -o $(EXEC)
 
 endif
 
-
 OBJ_DIR = ../../build
 
 
-vpath %.f = .:../../src:../../src/Helmholtz:../../src/Common
+vpath %.f = .:../../src:../../src/Laplace:../../src/Common
 
 .PHONY: all clean list
 
-SOURCES =  test_hfmm3dpart_vec.f \
+SOURCES =  test_lfmm3d_vec_speed.f \
   tree_lr_3d.f \
   dlaran.f \
   hkrand.f \
@@ -54,21 +53,17 @@ SOURCES =  test_hfmm3dpart_vec.f \
   legeexps.f \
   rotviarecur.f \
   yrecursion.f \
-  h3dterms.f \
-  h3dtrans.f \
-  helmrouts3d.f \
-  hfmm3dpart.f \
-  hfmm3dpartwrap_vec.f \
-  hpwrouts.f \
-  hwts3.f \
+  l3dterms.f \
+  l3dtrans.f \
+  laprouts3d.f \
+  lfmm3dpart.f \
+  lfmm3dpartwrap_vec.f \
+  lpwrouts.f \
+  lwtsexp_sep1.f \
+  lwtsexp_sep2.f \
   fmmcommon.f \
-  quadread.f \
-  besseljs3d.f \
-  projections.f \
   rotproj.f \
   dfft.f \
-  h3dcommon.f \
-  numphysfour.f \
 
 
 OBJECTS = $(patsubst %.f,$(OBJ_DIR)/%.o,$(SOURCES))

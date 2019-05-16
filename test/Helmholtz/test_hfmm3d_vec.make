@@ -45,13 +45,12 @@ vpath %.f = .:../../src:../../src/Helmholtz:../../src/Common
 
 .PHONY: all clean list
 
-SOURCES =  test_hfmm3dpart_speed.f \
+SOURCES =  test_hfmm3d_vec.f \
   tree_lr_3d.f \
   dlaran.f \
   hkrand.f \
   prini.f \
   rotgen.f \
-  rotgen2.f \
   legeexps.f \
   rotviarecur.f \
   yrecursion.f \
@@ -59,7 +58,7 @@ SOURCES =  test_hfmm3dpart_speed.f \
   h3dtrans.f \
   helmrouts3d.f \
   hfmm3dpart.f \
-  hfmm3dpartwrap.f \
+  hfmm3dpartwrap_vec.f \
   hpwrouts.f \
   hwts3.f \
   fmmcommon.f \

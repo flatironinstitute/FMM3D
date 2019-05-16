@@ -242,7 +242,7 @@ def lfmm3d(*,eps,sources,charges=None,dipvec=None,
         out.gradtarg - gradient at target locations if requested
       
       Example:
-        see ``rfmmexample.py''
+        see ``lfmmexample.py''
     """
 
     out = Output()
@@ -272,101 +272,101 @@ def lfmm3d(*,eps,sources,charges=None,dipvec=None,
     if(iftarg == 0 or pgt != 1 or pgt !=2):
         if(pg == 1 and ifcharge == 1 and ifdipole == 0):
             if(nd > 1):
-                out.pot = lfmm.rfmm3dpartstoscp_vec(eps,sources,charges,nd)
+                out.pot = lfmm.lfmm3dpartstoscp_vec(eps,sources,charges,nd)
             if(nd == 1):
-                out.pot = lfmm.rfmm3dpartstoscp(eps,sources,charges)
+                out.pot = lfmm.lfmm3dpartstoscp(eps,sources,charges)
         if(pg == 2 and ifcharge == 1 and ifdipole == 0):
             if(nd > 1):
-                out.pot,out.grad = lfmm.rfmm3dpartstoscg_vec(eps,sources,charges,nd)
+                out.pot,out.grad = lfmm.lfmm3dpartstoscg_vec(eps,sources,charges,nd)
             if(nd == 1):
-                out.pot,out.grad = lfmm.rfmm3dpartstoscg(eps,sources,charges)
+                out.pot,out.grad = lfmm.lfmm3dpartstoscg(eps,sources,charges)
         if(pg == 1 and ifcharge == 0 and ifdipole == 1):
             if(nd > 1):
-                out.pot = lfmm.rfmm3dpartstosdp_vec(eps,sources,dipvec,nd)
+                out.pot = lfmm.lfmm3dpartstosdp_vec(eps,sources,dipvec,nd)
             if(nd == 1):
-                out.pot = lfmm.rfmm3dpartstosdp(eps,sources,dipvec)
+                out.pot = lfmm.lfmm3dpartstosdp(eps,sources,dipvec)
                 
         if(pg == 2 and ifcharge == 0 and ifdipole == 1):
             if(nd > 1):
-                out.pot,out.grad = lfmm.rfmm3dpartstosdg_vec(eps,sources,dipvec,nd)
+                out.pot,out.grad = lfmm.lfmm3dpartstosdg_vec(eps,sources,dipvec,nd)
             if(nd == 1):
-                out.pot,out.grad = lfmm.rfmm3dpartstosdg(eps,sources,dipvec)
+                out.pot,out.grad = lfmm.lfmm3dpartstosdg(eps,sources,dipvec)
         if(pg == 1 and ifcharge == 1 and ifdipole == 1):
             if(nd > 1):
-                out.pot = lfmm.rfmm3dpartstoscdp_vec(eps,sources,charges,dipvec,nd)
+                out.pot = lfmm.lfmm3dpartstoscdp_vec(eps,sources,charges,dipvec,nd)
             if(nd == 1):
-                out.pot = lfmm.rfmm3dpartstoscdp(eps,sources,charges,dipvec)
+                out.pot = lfmm.lfmm3dpartstoscdp(eps,sources,charges,dipvec)
         if(pg == 2 and ifcharge == 1 and ifdipole == 1):
             if(nd > 1):
-                out.pot,out.grad = lfmm.rfmm3dpartstoscdg_vec(eps,sources,charges,dipvec,nd)
+                out.pot,out.grad = lfmm.lfmm3dpartstoscdg_vec(eps,sources,charges,dipvec,nd)
             if(nd == 1):
-                out.pot,out.grad = lfmm.rfmm3dpartstoscdg(eps,sources,charges,dipvec)
+                out.pot,out.grad = lfmm.lfmm3dpartstoscdg(eps,sources,charges,dipvec)
     
     if(pg !=1 and pg !=2 and targets is not None):
         if(pgt == 1 and ifcharge == 1 and ifdipole == 0):
             if(nd > 1):
-                out.pottarg = lfmm.rfmm3dpartstotcp_vec(eps,sources,charges,targets,nd)
+                out.pottarg = lfmm.lfmm3dpartstotcp_vec(eps,sources,charges,targets,nd)
             if(nd == 1):
-                out.pottarg = lfmm.rfmm3dpartstotcp(eps,sources,charges,targets)
+                out.pottarg = lfmm.lfmm3dpartstotcp(eps,sources,charges,targets)
         if(pgt == 2 and ifcharge == 1 and ifdipole == 0):
             if(nd > 1):
-                out.pottarg,out.gradtarg = lfmm.rfmm3dpartstotcg_vec(eps,sources,charges,targets,nd)
+                out.pottarg,out.gradtarg = lfmm.lfmm3dpartstotcg_vec(eps,sources,charges,targets,nd)
             if(nd == 1):
-                out.pottarg,out.gradtarg = lfmm.rfmm3dpartstotcg(eps,sources,charges,targets)
+                out.pottarg,out.gradtarg = lfmm.lfmm3dpartstotcg(eps,sources,charges,targets)
         if(pgt == 1 and ifcharge == 0 and ifdipole == 1):
             if(nd > 1):
-                out.pottarg = lfmm.rfmm3dpartstotdp_vec(eps,sources,dipvec,targets,nd)
+                out.pottarg = lfmm.lfmm3dpartstotdp_vec(eps,sources,dipvec,targets,nd)
             if(nd == 1):
-                out.pottarg = lfmm.rfmm3dpartstotdp(eps,sources,dipvec,targets)
+                out.pottarg = lfmm.lfmm3dpartstotdp(eps,sources,dipvec,targets)
         if(pgt == 2 and ifcharge == 0 and ifdipole == 1):
             if(nd > 1):
-                out.pottarg,out.gradtarg = lfmm.rfmm3dpartstotdg_vec(eps,sources,dipvec,targets,nd)
+                out.pottarg,out.gradtarg = lfmm.lfmm3dpartstotdg_vec(eps,sources,dipvec,targets,nd)
             if(nd == 1):
-                out.pottarg,out.gradtarg = lfmm.rfmm3dpartstotdg(eps,sources,dipvec,targets)
+                out.pottarg,out.gradtarg = lfmm.lfmm3dpartstotdg(eps,sources,dipvec,targets)
         if(pgt == 1 and ifcharge == 1 and ifdipole == 1):
             if(nd > 1):
-                out.pottarg = lfmm.rfmm3dpartstotcdp_vec(eps,sources,charges,dipvec,targets,nd)
+                out.pottarg = lfmm.lfmm3dpartstotcdp_vec(eps,sources,charges,dipvec,targets,nd)
             if(nd == 1):
-                out.pottarg = lfmm.rfmm3dpartstotcdp(eps,sources,charges,dipvec,targets)
+                out.pottarg = lfmm.lfmm3dpartstotcdp(eps,sources,charges,dipvec,targets)
         if(pgt == 2 and ifcharge == 1 and ifdipole == 1):
             if(nd > 1):
-                out.pottarg,out.gradtarg = lfmm.rfmm3dpartstotcdg_vec(eps,sources,charges,dipvec,targets,nd)
+                out.pottarg,out.gradtarg = lfmm.lfmm3dpartstotcdg_vec(eps,sources,charges,dipvec,targets,nd)
             if(nd == 1):
-                out.pottarg,out.gradtarg = lfmm.rfmm3dpartstotcdg(eps,sources,charges,dipvec,targets)
+                out.pottarg,out.gradtarg = lfmm.lfmm3dpartstotcdg(eps,sources,charges,dipvec,targets)
     
 
     if((pg == 1 or pg == 2) and targets is not None):
         assert pg == pgt, "if both potential or potential at gradient are requested at sources and targets, then the same pg must be equal to pgt"
         if(pgt == 1 and ifcharge == 1 and ifdipole == 0):
             if(nd > 1):
-                out.pot,out.pottarg = lfmm.rfmm3dpartstostcp_vec(eps,sources,charges,targets,nd)
+                out.pot,out.pottarg = lfmm.lfmm3dpartstostcp_vec(eps,sources,charges,targets,nd)
             if(nd == 1):
-                out.pot,out.pottarg = lfmm.rfmm3dpartstostcp(eps,sources,charges,targets)
+                out.pot,out.pottarg = lfmm.lfmm3dpartstostcp(eps,sources,charges,targets)
         if(pgt == 2 and ifcharge == 1 and ifdipole == 0):
             if(nd > 1):
-                out.pot,out.grad,out.pottarg,out.gradtarg = lfmm.rfmm3dpartstostcg_vec(eps,sources,charges,targets,nd)
+                out.pot,out.grad,out.pottarg,out.gradtarg = lfmm.lfmm3dpartstostcg_vec(eps,sources,charges,targets,nd)
             if(nd == 1):
-                out.pot,out.grad,out.pottarg,out.gradtarg = lfmm.rfmm3dpartstostcg(eps,sources,charges,targets)
+                out.pot,out.grad,out.pottarg,out.gradtarg = lfmm.lfmm3dpartstostcg(eps,sources,charges,targets)
         if(pgt == 1 and ifcharge == 0 and ifdipole == 1):
             if(nd > 1):
-                out.pot,out.pottarg = lfmm.rfmm3dpartstostdp_vec(eps,sources,dipvec,targets,nd)
+                out.pot,out.pottarg = lfmm.lfmm3dpartstostdp_vec(eps,sources,dipvec,targets,nd)
             if(nd == 1):
-                out.pot,out.pottarg = lfmm.rfmm3dpartstostdp(eps,sources,dipvec,targets)
+                out.pot,out.pottarg = lfmm.lfmm3dpartstostdp(eps,sources,dipvec,targets)
         if(pgt == 2 and ifcharge == 0 and ifdipole == 1):
             if(nd > 1):
-                out.pot,out.grad,out.pottarg,out.gradtarg = lfmm.rfmm3dpartstostdg_vec(eps,sources,dipvec,targets,nd)
+                out.pot,out.grad,out.pottarg,out.gradtarg = lfmm.lfmm3dpartstostdg_vec(eps,sources,dipvec,targets,nd)
             if(nd == 1):
-                out.pot,out.grad,out.pottarg,out.gradtarg = lfmm.rfmm3dpartstostdg(eps,sources,dipvec,targets)
+                out.pot,out.grad,out.pottarg,out.gradtarg = lfmm.lfmm3dpartstostdg(eps,sources,dipvec,targets)
         if(pgt == 1 and ifcharge == 1 and ifdipole == 1):
             if(nd > 1):
-                out.pot,out.pottarg = lfmm.rfmm3dpartstostcdp_vec(eps,sources,charges,dipvec,targets,nd)
+                out.pot,out.pottarg = lfmm.lfmm3dpartstostcdp_vec(eps,sources,charges,dipvec,targets,nd)
             if(nd == 1):
-                out.pot,out.pottarg = lfmm.rfmm3dpartstostcdp(eps,sources,charges,dipvec,targets)
+                out.pot,out.pottarg = lfmm.lfmm3dpartstostcdp(eps,sources,charges,dipvec,targets)
         if(pgt == 2 and ifcharge == 1 and ifdipole == 1):
             if(nd > 1):
-                out.pot,out.grad,out.pottarg,out.gradtarg = lfmm.rfmm3dpartstostcdg_vec(eps,sources,charges,dipvec,targets,nd)
+                out.pot,out.grad,out.pottarg,out.gradtarg = lfmm.lfmm3dpartstostcdg_vec(eps,sources,charges,dipvec,targets,nd)
             if(nd == 1):
-                out.pot,out.grad,out.pottarg,out.gradtarg = lfmm.rfmm3dpartstostcdg(eps,sources,charges,dipvec,targets)
+                out.pot,out.grad,out.pottarg,out.gradtarg = lfmm.lfmm3dpartstostcdg(eps,sources,charges,dipvec,targets)
 
     return out
 

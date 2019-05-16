@@ -62,8 +62,8 @@ HOBJS = $(HELM)/h3dcommon.o $(HELM)/h3dterms.o $(HELM)/h3dtrans.o \
 # Laplace objects
 LAP = src/Laplace
 LOBJS = $(LAP)/lwtsexp_sep1.o $(LAP)/l3dterms.o $(LAP)/l3dtrans.o \
-	$(LAP)/laprouts3d.o $(LAP)/lfmm3dpart.o $(LAP)/rfmm3dpartwrap.o \
-	$(LAP)/rfmm3dpartwrap_vec.o $(LAP)/lwtsexp_sep2.o \
+	$(LAP)/laprouts3d.o $(LAP)/lfmm3dpart.o $(LAP)/lfmm3dpartwrap.o \
+	$(LAP)/lfmm3dpartwrap_vec.o $(LAP)/lwtsexp_sep2.o \
 	$(LAP)/lpwrouts.o
 
 # Test objects
@@ -129,7 +129,7 @@ python:
 
 # testing routines
 #
-test: $(STATICLIB) test/helmrouts test/hfmm3dpart test/hfmm3dpart_vec test/laprouts test/rfmm3dpart test/rfmm3dpart_vec
+test: $(STATICLIB) test/helmrouts test/hfmm3d test/hfmm3d_vec test/laprouts test/lfmm3d test/lfmm3d_vec
 	(cd test/Helmholtz; ./run_helmtest.sh)
 	(cd test/Laplace; ./run_laptest.sh)
 	cat print_testreshelm.txt
@@ -140,20 +140,20 @@ test: $(STATICLIB) test/helmrouts test/hfmm3dpart test/hfmm3dpart_vec test/lapro
 test/helmrouts: 
 	$(FC) $(FFLAGS) test/Helmholtz/test_helmrouts3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_helmrouts3d 
 
-test/hfmm3dpart:
-	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3dpart.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3dpart
+test/hfmm3d:
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d
 
-test/hfmm3dpart_vec:
-	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3dpart_vec.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3dpart_vec 
+test/hfmm3d_vec:
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_vec.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_vec 
 
 test/laprouts:
 	$(FC) $(FFLAGS) test/Laplace/test_laprouts3d.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_laprouts3d 
 
-test/rfmm3dpart:
-	$(FC) $(FFLAGS) test/Laplace/test_rfmm3dpart.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_rfmm3dpart
+test/lfmm3d:
+	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d
 
-test/rfmm3dpart_vec:
-	$(FC) $(FFLAGS) test/Laplace/test_rfmm3dpart_vec.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_rfmm3dpart_vec 
+test/lfmm3d_vec:
+	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_vec.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d_vec 
 
 clean: objclean
 	rm -f lib-static/*.a lib/*.so

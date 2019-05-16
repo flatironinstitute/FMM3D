@@ -41,7 +41,7 @@ c
       eps = 0.5d-9
 
       write(*,*) "=========================================="
-      write(*,*) "Testing suite for hfmm3dpart_vec"
+      write(*,*) "Testing suite for lfmm3dpart_vec"
       write(*,'(a,e11.5)') "Requested precision = ",eps
 
       open(unit=33,file='print_testres.txt',access='append')
@@ -102,7 +102,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstoscp_vec(nd,eps,ns,source,charge,pot)
+       call lfmm3dpartstoscp_vec(nd,eps,ns,source,charge,pot)
 
 
        ifcharge = 1
@@ -137,7 +137,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstoscg_vec(nd,eps,ns,source,charge,
+       call lfmm3dpartstoscg_vec(nd,eps,ns,source,charge,
      1      pot,grad)
 
        ifcharge = 1
@@ -171,7 +171,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstosdp_vec(nd,eps,ns,source,dipvec,
+       call lfmm3dpartstosdp_vec(nd,eps,ns,source,dipvec,
      1      pot)
 
        ifcharge = 0
@@ -203,7 +203,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstosdg_vec(nd,eps,ns,source,dipvec,
+       call lfmm3dpartstosdg_vec(nd,eps,ns,source,dipvec,
      1      pot,grad)
 
        ifcharge = 0
@@ -234,7 +234,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstoscdp_vec(nd,eps,ns,source,charge,dipvec,
+       call lfmm3dpartstoscdp_vec(nd,eps,ns,source,charge,dipvec,
      1      pot)
 
        ifcharge = 1
@@ -266,7 +266,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstoscdg_vec(nd,eps,ns,source,charge,dipvec,
+       call lfmm3dpartstoscdg_vec(nd,eps,ns,source,charge,dipvec,
      1      pot,grad)
 
        ifcharge = 1
@@ -299,7 +299,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstotcp_vec(nd,eps,ns,source,charge,
+       call lfmm3dpartstotcp_vec(nd,eps,ns,source,charge,
      1      nt,targ,pottarg)
 
        ifcharge = 1
@@ -331,7 +331,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstotcg_vec(nd,eps,ns,source,charge,
+       call lfmm3dpartstotcg_vec(nd,eps,ns,source,charge,
      1      nt,targ,pottarg,gradtarg)
 
        ifcharge = 1
@@ -365,7 +365,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstotdp_vec(nd,eps,ns,source,dipvec,
+       call lfmm3dpartstotdp_vec(nd,eps,ns,source,dipvec,
      1      nt,targ,pottarg)
 
        ifcharge = 0
@@ -397,7 +397,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstotdg_vec(nd,eps,ns,source,dipvec,
+       call lfmm3dpartstotdg_vec(nd,eps,ns,source,dipvec,
      1      nt,targ,pottarg,gradtarg)
 
        ifcharge = 0
@@ -428,7 +428,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstotcdp_vec(nd,eps,ns,source,charge,dipvec,
+       call lfmm3dpartstotcdp_vec(nd,eps,ns,source,charge,dipvec,
      1      nt,targ,pottarg)
 
        ifcharge = 1
@@ -460,7 +460,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstotcdg_vec(nd,eps,ns,source,charge,dipvec,
+       call lfmm3dpartstotcdg_vec(nd,eps,ns,source,charge,dipvec,
      1      nt,targ,pottarg,gradtarg)
 
        ifcharge = 1
@@ -491,7 +491,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstostcp_vec(nd,eps,ns,source,charge,
+       call lfmm3dpartstostcp_vec(nd,eps,ns,source,charge,
      1      pot,nt,targ,pottarg)
 
        ifcharge = 1
@@ -523,7 +523,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstostcg_vec(nd,eps,ns,source,charge,
+       call lfmm3dpartstostcg_vec(nd,eps,ns,source,charge,
      1      pot,grad,nt,targ,pottarg,gradtarg)
 
        ifcharge = 1
@@ -556,7 +556,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstostdp_vec(nd,eps,ns,source,dipvec,
+       call lfmm3dpartstostdp_vec(nd,eps,ns,source,dipvec,
      1      pot,nt,targ,pottarg)
 
        ifcharge = 0
@@ -588,7 +588,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstostdg_vec(nd,eps,ns,source,dipvec,
+       call lfmm3dpartstostdg_vec(nd,eps,ns,source,dipvec,
      1      pot,grad,nt,targ,pottarg,gradtarg)
 
        ifcharge = 0
@@ -619,7 +619,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstostcdp_vec(nd,eps,ns,source,charge,
+       call lfmm3dpartstostcdp_vec(nd,eps,ns,source,charge,
      1       dipvec,pot,nt,targ,pottarg)
 
        ifcharge = 1
@@ -651,7 +651,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call rfmm3dpartstostcdg_vec(nd,eps,ns,source,charge,
+       call lfmm3dpartstostcdg_vec(nd,eps,ns,source,charge,
      1    dipvec,pot,grad,nt,targ,pottarg,gradtarg)
 
        ifcharge = 1
@@ -679,9 +679,9 @@ c
       enddo
 
       write(*,'(a,i2,a,i2,a)') 'Successfully completed ',isum,
-     1   ' out of ',ntests,' tests in rfmm3dpart vec testing suite'
+     1   ' out of ',ntests,' tests in lfmm3dpart vec testing suite'
       write(33,'(a,i2,a,i2,a)') 'Successfully completed ',isum,
-     1   ' out of ',ntests,' tests in rfmm3dpart vec testing suite'
+     1   ' out of ',ntests,' tests in lfmm3dpart vec testing suite'
       close(33)
       
 

@@ -45,7 +45,7 @@ vpath %.f = .:../../src:../../src/Helmholtz:../../src/Common
 
 .PHONY: all clean list
 
-SOURCES =  test_hfmm3dpart_vec_speed.f \
+SOURCES =  test_hfmm3d_vec_speed.f \
   tree_lr_3d.f \
   dlaran.f \
   hkrand.f \

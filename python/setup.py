@@ -10,7 +10,7 @@ list_helm=['h3dcommon.f','helmrouts3d.f','hfmm3dpartwrap_vec.f','quadread.f',
 'h3dterms.f','hfmm3dpart.f','hpwrouts.f','h3dtrans.f','hfmm3dpartwrap.f','hwts3.f','projections.f',
 'numphysfour.f']
 list_lap=['l3dterms.f','l3dtrans.f','laprouts3d.f','lfmm3dpart.f','lpwrouts.f','lwtsexp_sep1.f',
-'lwtsexp_sep2.f','rfmm3dpartwrap.f','rfmm3dpartwrap_vec.f']
+'lwtsexp_sep2.f','lfmm3dpartwrap.f','lfmm3dpartwrap_vec.f']
 list_common=['besseljs3d.f','tree_lr_3d.f','dlaran.f','hkrand.f','prini.f','rotgen.f','rotviarecur.f',
 'cdjseval3d.f','dfft.f','fmmcommon.f','legeexps.f','rotproj.f','yrecursion.f']
 
@@ -31,8 +31,8 @@ for st in st_opts:
         for pg in p_opts:
             list_int_helm.append('hfmm3dpart'+st+cd+pg)
             list_int_helm_vec.append('hfmm3dpart'+st+cd+pg+'_vec')
-            list_int_lap.append('rfmm3dpart'+st+cd+pg)
-            list_int_lap_vec.append('rfmm3dpart'+st+cd+pg+'_vec')
+            list_int_lap.append('lfmm3dpart'+st+cd+pg)
+            list_int_lap_vec.append('lfmm3dpart'+st+cd+pg+'_vec')
 
 for cd in c_opts:
     for pg in p_opts:

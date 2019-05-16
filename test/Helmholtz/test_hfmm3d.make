@@ -1,9 +1,9 @@
 
 EXEC = int2
 
-HOST=macosx
+#HOST=macosx
 #HOST = linux-gfortran
-#HOST= linux-gfortran-openmp
+HOST= linux-gfortran-openmp
 #HOST = linux-ifort
 
 ifeq ($(HOST),macosx)
@@ -16,8 +16,8 @@ endif
 ifeq ($(HOST),linux-gfortran-openmp)
 				
 FC = gfortran
-FFLAGS = -O3 -c -w --openmp 
-FLINK = gfortran -w -o $(EXEC) --openmp
+FFLAGS = -O3 -c -w -march=native -ffast-math -fopenmp 
+FLINK = gfortran -w -o $(EXEC) -fopenmp
 
 endif
 
@@ -40,11 +40,11 @@ endif
 OBJ_DIR = ../../build
 
 
-vpath %.f = .:../../src:../../src/Laplace:../../src/Common
+vpath %.f = .:../../src:../../src/Helmholtz:../../src/Common
 
 .PHONY: all clean list
 
-SOURCES =  test_rfmm3dpart_vec_speed.f \
+SOURCES =  test_hfmm3d.f \
   tree_lr_3d.f \
   dlaran.f \
   hkrand.f \
@@ -53,17 +53,21 @@ SOURCES =  test_rfmm3dpart_vec_speed.f \
   legeexps.f \
   rotviarecur.f \
   yrecursion.f \
-  l3dterms.f \
-  l3dtrans.f \
-  laprouts3d.f \
-  lfmm3dpart.f \
-  rfmm3dpartwrap_vec.f \
-  lpwrouts.f \
-  lwtsexp_sep1.f \
-  lwtsexp_sep2.f \
+  h3dterms.f \
+  h3dtrans.f \
+  helmrouts3d.f \
+  hfmm3dpart.f \
+  hfmm3dpartwrap.f \
+  hpwrouts.f \
+  hwts3.f \
   fmmcommon.f \
+  besseljs3d.f \
+  projections.f \
   rotproj.f \
   dfft.f \
+  h3dcommon.f \
+  numphysfour.f \
+  quadread.f \
 
 
 OBJECTS = $(patsubst %.f,$(OBJ_DIR)/%.o,$(SOURCES))

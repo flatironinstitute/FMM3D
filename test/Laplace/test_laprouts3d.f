@@ -288,7 +288,7 @@ c    create local exp from sources
       enddo
 
       write(*,'(a,i1,a,i1,a)') 'Successfully completed ',isum,
-     1   ' out of ',ntest,' tests in helmrouts3d testing suite'
+     1   ' out of ',ntest,' tests in laprouts3d testing suite'
       write(33,'(a,i1,a,i1,a)') 'Successfully completed ',isum,
      1   ' out of ',ntest,' tests in helmrouts3d testing suite'
       close(33)

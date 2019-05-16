@@ -5,9 +5,9 @@ import numpy as np
 import numpy.linalg as la
 
 def main():
-    test_rfmm()
+    test_lfmm()
 
-def test_rfmm():
+def test_lfmm():
     ntests = 36
     testres = np.zeros(ntests)
     #
@@ -566,7 +566,7 @@ def test_rfmm():
         print("Failed sources to sources and targets, charges and dipoles, pot and grad, vectorized")
 
     if(sum(testres)==ntests):
-        print("all rfmm tests succeeded")
+        print("all lfmm tests succeeded")
 
 if __name__ == "__main__":
     main()
