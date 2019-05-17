@@ -44,12 +44,12 @@ analytic outgoing, incoming, and plane-wave
 expansions of the interaction kernel and associated translation
 operators. 
 This library is a modified version of the `FMMLIB3D <https://github.com/zgimbutas/fmmlib3d>`_
-software, Copyright (C) 2010-2012: Leslie Greengard and Zydrunas Gimbutas, and released under the 
-BSD license, with the
-following additions:
+software, Copyright (C) 2010-2012: Leslie Greengard and Zydrunas Gimbutas, released under the 
+BSD license. The major changes are the following:
 
--  Use of plane wave expansions for diagonalizing the outgoing to incoming translation operators
--  Vectorizing the FMM, to apply the same kernel with same source and target locations on multiple densities.
+-  The use of plane wave expansions for diagonalizing the outgoing to incoming translation operators
+-  Vectorization of the FMM, to apply the same kernel with same source and target locations on multiple densities.
+-  A redesign of the adaptive tree data structure
 
 For sources and targets distributed in the volume, this code is 4 times
 faster than the previous generation on a single CPU core, and for
