@@ -27,7 +27,7 @@ c
 
       ntest = 10
 
-      nd = 3
+      nd = 2
 
       allocate(source(3,ns),targ(3,nt))
       allocate(charge(nd,ns),dipvec(nd,3,ns))

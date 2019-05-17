@@ -17,7 +17,7 @@ c
 c    $Date$
 c    $Revision$
 c
-       subroutine lfmm3dpart(nd,eps,nsource,source,ifcharge,
+       subroutine lfmm3d(nd,eps,nsource,source,ifcharge,
      $    charge,ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,
      $    targ,ifpghtarg,pottarg,gradtarg,hesstarg)
 c

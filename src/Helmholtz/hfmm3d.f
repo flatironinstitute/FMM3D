@@ -27,7 +27,7 @@ c       the 1/(4\pi ) scaling.
 c
 c   
 c-----------------------------------------------------------
-        subroutine hfmm3dpart(nd,eps,zk,nsource,source,ifcharge,
+        subroutine hfmm3d(nd,eps,zk,nsource,source,ifcharge,
      $    charge,ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,
      $    targ,ifpghtarg,pottarg,gradtarg,hesstarg)
 c-----------------------------------------------------------------------

@@ -35,7 +35,7 @@ cf2py  intent(out) pot
 
       ntarg = 0
 
-      call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
@@ -78,7 +78,7 @@ cf2py  intent(out) pot,grad
       ntarg = 0
 
 
-      call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
@@ -124,7 +124,7 @@ cf2py  intent(out) pot
       ntarg = 0
 
 
-      call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
@@ -166,7 +166,7 @@ cf2py  intent(out) pot,grad
 
       ntarg = 0
 
-      call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
@@ -209,7 +209,7 @@ cf2py  intent(out) pot
 
       ntarg = 0
 
-      call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
@@ -255,7 +255,7 @@ cf2py  intent(out) pot,grad
 
       ntarg = 0
 
-      call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
@@ -297,7 +297,7 @@ cf2py  intent(out) pottarg
       ifpgh = 0
       ifpghtarg = 1
 
-      call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
@@ -339,7 +339,7 @@ cf2py  intent(out) pottarg,gradtarg
       ifpgh = 0
       ifpghtarg = 2
 
-      call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
@@ -381,7 +381,7 @@ cf2py  intent(out) pottarg
       ifpgh = 0
       ifpghtarg = 1
 
-      call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
@@ -423,7 +423,7 @@ cf2py  intent(out) pottarg,gradtarg
       ifpgh = 0
       ifpghtarg = 2
 
-      call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
@@ -464,7 +464,7 @@ cf2py  intent(out) pottarg
       ifpgh = 0
       ifpghtarg = 1
 
-      call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
@@ -506,7 +506,7 @@ cf2py  intent(out) pottarg,gradtarg
       ifpgh = 0
       ifpghtarg = 2
 
-      call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
@@ -548,7 +548,7 @@ cf2py  intent(out) pottarg
       ifpgh = 1
       ifpghtarg = 1
 
-      call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
@@ -590,7 +590,7 @@ cf2py  intent(out) pottarg,gradtarg
       ifpgh = 2
       ifpghtarg = 2
 
-      call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
@@ -634,7 +634,7 @@ cf2py  intent(out) pottarg
       ifpgh = 1
       ifpghtarg = 1
 
-      call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
@@ -677,7 +677,7 @@ cf2py  intent(out) pottarg,gradtarg
       ifpgh = 2
       ifpghtarg = 2
 
-      call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
@@ -719,7 +719,7 @@ cf2py  intent(out) pottarg
       ifpgh = 1
       ifpghtarg = 1
 
-      call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
@@ -761,7 +761,7 @@ cf2py  intent(out) pottarg,gradtarg
       ifpgh = 2
       ifpghtarg = 2
 
-      call lfmm3dpart(nd,eps,nsource,source,ifcharge,charge,
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
      2      ifpghtarg,pottarg,gradtarg,hesstarg)
 
