@@ -82,14 +82,14 @@ OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
 default: usage
 
-all: lib examples test perftest python c
+all: lib examples test perftest python c c-examples
 
 usage:
 	@echo "Makefile for FMM3D. Specify what to make:"
 	@echo "  make lib - compile the main library (in lib/ and lib-static/)"
-	@echo "  make examples - compile and run codes in examples/"
+	@echo "  make examples - compile and run fortran in examples/"
+	@echo "  make c-examples - compile and run fortran in c/"
 	@echo "  make test - compile and run quick math validation tests"
-	@echo "  make perftest - compile and run performance tests"
 	@echo "  make matlab - compile matlab interfaces"
 	@echo "  make python - compile and test python interfaces"
 	@echo "  make objclean - removal all object files, preserving lib & MEX"
@@ -162,6 +162,32 @@ test/lfmm3d:
 test/lfmm3d_vec:
 	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_vec.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d_vec 
 
+
+
+#
+##  examples
+#
+
+examples: $(STATICLIC) examples/ex1_helm examples/ex2_helm examples/ex1_lap examples/ex2_lap
+	time -p ./examples/example1_lap
+	time -p ./examples/example2_lap
+	time -p ./examples/example1_helm
+	time -p ./examples/example2_helm
+
+examples/ex1_lap:
+	$(FC) $(FFLAGS) examples/lfmm3d_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/example1_lap
+
+examples/ex2_lap:
+	$(FC) $(FFLAGS) examples/lfmm3d_vec_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/example2_lap
+
+examples/ex1_helm:
+	$(FC) $(FFLAGS) examples/hfmm3d_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/example1_helm
+
+examples/ex2_helm:
+	$(FC) $(FFLAGS) examples/hfmm3d_vec_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/example2_helm
+
+
+
 # C interface
 c: $(COBJS) $(OBJS) $(CHEADERS) c/lfmm3d c/hfmm3d
 
@@ -178,6 +204,10 @@ clean: objclean
 	rm -f python/*.so
 	rm -rf python/build
 	rm -rf fmm3dpy.egg-info
+	rm -f examples/example1_helm
+	rm -f examples/example2_helm
+	rm -f examples/example1_lap
+	rm -f examples/example2_lap
 	
 	
 
