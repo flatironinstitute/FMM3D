@@ -16,7 +16,7 @@ FFLAGS=-fPIC -O3 -funroll-loops -march=native
 CFLAGS= -std=c99 
 CFLAGS+= $(FFLAGS) 
 
-CLINK = -lgfortran -lm
+CLINK = -L/usr/local/Cellar/gcc/8.3.0/lib/gcc/8 -lgfortran -lm
 
 # extra flags for multithreaded: C/Fortran, MATLAB
 OMPFLAGS = -fopenmp
@@ -163,7 +163,11 @@ test/lfmm3d_vec:
 	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_vec.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d_vec 
 
 # C interface
-c: $(COBJS) $(OBJS) $(CHEADERS) c/hfmm3d
+c: $(COBJS) $(OBJS) $(CHEADERS) c/lfmm3d c/hfmm3d
+
+c/lfmm3d:
+	$(CC) $(CFLAGS) c/test_lfmm3d.c $(COBJS) $(OBJS) $(CLINK) -o c/test_lfmm3d
+	time -p c/test_lfmm3d
 
 c/hfmm3d:
 	$(CC) $(CFLAGS) c/test_hfmm3d.c $(COBJS) $(OBJS) $(CLINK) -o c/test_hfmm3d
