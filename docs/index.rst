@@ -43,7 +43,7 @@ clusters of source and target points at a hierarchy of scales using
 analytic outgoing, incoming, and plane-wave 
 expansions of the interaction kernel and associated translation
 operators. 
-This library is a modified version of the 'FMMLIB3D <https://github.com/zgimbutas/fmmlib3d>'_
+This library is a modified version of the `FMMLIB3D <https://github.com/zgimbutas/fmmlib3d>`_
 software, Copyright (C) 2010-2012: Leslie Greengard and Zydrunas Gimbutas, and released under the 
 BSD license, with the
 following additions:
