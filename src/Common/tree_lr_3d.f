@@ -352,6 +352,8 @@ c
 c
       lcenters = nboxes
 
+      ier = 0
+
       allocate(laddr(2,0:nlevels))
       allocate(ilevel(nboxes))
       allocate(iparenttemp(nboxes))
@@ -543,7 +545,7 @@ c     Reset nlevels, nboxes
       nboxes = 1
       do i = 1,nlmax
          if (irefine.eq.1) then
-            call subdivide_adap(src,ns,radsrc,trg,nt,expc,nexpc,
+            call subdivide_adap(ier,src,ns,radsrc,trg,nt,expc,nexpc,
      $                   radexp,idivflag,ndiv,
      $                   nlevels,nboxes,
      $                   centers,lcenters,boxsize,nbmax,nlmax,
@@ -555,7 +557,7 @@ c     Reset nlevels, nboxes
      $                   ihefirsttemp,ihelasttemp,
      $                   iefirsttemp,ielasttemp,nhungsrc,
      $                   nhungexp,irefine)
-
+            if(ier.ne.0) return  
          else
             exit
          endif
@@ -573,12 +575,13 @@ c     Set up computation of list1 and list2
      1     iparenttemp,nchild,ichildtemp,mnbors,nnbors,nbors)
 
       if(nlevels.ge.2) then
-      call d3hpfixtree(src,ns,radsrc,trg,nt,expc,nexpc,radexp,
+      call d3hpfixtree(ier,src,ns,radsrc,trg,nt,expc,nexpc,radexp,
      1     nlevels,nboxes,centers,boxsize,nbmax,laddr,ilevel,
      2     iparenttemp,nchild,ichildtemp,mnbors,nnbors,nbors,
      3     isourcetemp,itargettemp,iexpctemp,ihsfirsttemp,ihslasttemp,
      4     isfirsttemp,islasttemp,itfirsttemp,itlasttemp,ihefirsttemp,
      5     ihelasttemp,iefirsttemp,ielasttemp,nhungsrc,nhungexp)
+      if(ier.ne.0) return
       endif
  
       
@@ -758,7 +761,7 @@ C$OMP END PARALLEL DO
       end
 c--------------------------------------------------------------
 c
-      subroutine subdivide_adap(src,ns,radsrc,trg,nt,expc,nexpc,
+      subroutine subdivide_adap(ier,src,ns,radsrc,trg,nt,expc,nexpc,
      $                   radexp,idivflag,ndiv,
      $                   nlevels,nboxes,
      $                   centers,lcenters,boxsize,nbmax,nlmax,
@@ -771,7 +774,7 @@ c
      $                   iefirst,ielast,nhungsrc,
      $                   nhungexp,irefine)
       implicit none
-      integer ns,nt,nexpc,idivflag,ndiv,mhung
+      integer ier,ns,nt,nexpc,idivflag,ndiv,mhung
       integer nlevels,nboxes,lcenters,nbmax,nlmax
       integer irefine
       double precision src(3,ns),radsrc(ns)
@@ -1349,6 +1352,13 @@ c           Create the required boxes
                if(nsc(i)+ntc(i)+nexpcc(i).gt.0) then
 c                 Increment total number of boxes               
                   nboxes = nboxes + 1
+                  if(nboxes.gt.nbmax) then
+                    write(*,*) "Exceeding max number of boxes"
+                    write(*,*) "Exiting"
+                    ier = 12
+                    return
+                  endif
+
 c                 Increment number of children for the current box
                   nchild(ibox) = nchild(ibox)+1
 c                 Update the array of children for the current box
@@ -1668,7 +1678,8 @@ c------------------------------------------------------------------
       double precision expc(3,nexpc)
       double precision radexp(nexpc)
 c
-      double precision xmin,xmax,ymin,ymax,zmin,zmax,sizey, sizez
+      double precision xmin,xmax,ymin,ymax,zmin,zmax,sizex,sizey,sizez
+      double precision btmp
       integer ictr,ih,irefine,is,ie
       integer nss,nee,ntot,nbtmp
 
@@ -1714,6 +1725,10 @@ c
 c     nlmax         max number of levels
 c
 c     OUTPUT:
+c     ier           error code
+c                    ier = 0, normal execution
+c                    ier = 4, isep != 1 or 2 
+c                    ier = 8, sources and targets too close
 c     nlevels       number of levels
 c     nboxes        number of boxes
 c     mhung         max number of hung chunks
@@ -1822,11 +1837,20 @@ c
         if(expc(3,i) .lt. zmin) zmin=expc(3,i)
         if(expc(3,i) .gt. zmax) zmax=expc(3,i)
       enddo
-      boxsize(0)=xmax-xmin
+      sizex=xmax-xmin
       sizey=ymax-ymin
       sizez=zmax-zmin
+      boxsize(0) = sizex
       if(sizey .gt. boxsize(0)) boxsize(0)=sizey
       if(sizez .gt. boxsize(0)) boxsize(0)=sizez
+
+      btmp = sqrt(sizex**2+sizey**2+sizez**2)
+      if(boxsize(0)/btmp.le.1.0d-16) then
+        ier = 8
+        write(*,*) "Nothing to compute"
+        write(*,*) "Sources and targets too close"
+        write(*,*) "Exiting"
+      endif
 c
 c     initialize arrays at level 0
 c
@@ -1927,7 +1951,7 @@ c
 
       do i = 1,nlmax
          if (irefine.eq.1) then
-            call subdivide_adap(src,ns,radsrc,trg,nt,expc,nexpc,
+            call subdivide_adap(ier,src,ns,radsrc,trg,nt,expc,nexpc,
      $                   radexp,idivflag,ndiv,
      $                   nlevels,nboxes,
      $                   centers,lcenters,boxsize,nbmax,nlmax,
@@ -1939,6 +1963,7 @@ c
      $                   ihefirsttemp,ihelasttemp,
      $                   iefirsttemp,ielasttemp,nhungsrc,
      $                   nhungexp,irefine)
+            if(ier.ne.0) return
          else
             exit
          endif
@@ -1958,12 +1983,14 @@ c     Set up computation of list1 and list2
      1     iparenttemp,nchild,ichildtemp,mnbors,nnbors,nbors)
 
       if(nlevels.ge.2) then
-      call d3hpfixtree(src,ns,radsrc,trg,nt,expc,nexpc,radexp,
+      call d3hpfixtree(ier,src,ns,radsrc,trg,nt,expc,nexpc,radexp,
      1     nlevels,nboxes,centers,boxsize,nbmax,laddr,ilevel,
      2     iparenttemp,nchild,ichildtemp,mnbors,nnbors,nbors,
      3     isourcetemp,itargettemp,iexpctemp,ihsfirsttemp,ihslasttemp,
      4     isfirsttemp,islasttemp,itfirsttemp,itlasttemp,ihefirsttemp,
      5     ihelasttemp,iefirsttemp,ielasttemp,nhungsrc,nhungexp)
+
+      if(ier.ne.0) return
       endif
 
 
@@ -2566,7 +2593,7 @@ C$OMP END PARALLEL DO
       return
       end
 c-------------------------------------------------------------------      
-      subroutine d3hpfixtree(src,ns,radsrc,trg,nt,expc,nexpc,
+      subroutine d3hpfixtree(ier,src,ns,radsrc,trg,nt,expc,nexpc,
      $              radexp,nlevels,nboxes,
      $              centers,boxsize,nbmax,
      $              laddr,ilevel,iparent,nchild,ichild,
@@ -2712,6 +2739,7 @@ c                 expansion centers in box i
 
       implicit none
 c     Calling sequence variable declaration
+      integer ier
       integer ns,nt,nexpc
       double precision src(3,ns), trg(3,nt), expc(3,nexpc)
       double precision radsrc(ns),radexp(nexpc)
@@ -2873,7 +2901,7 @@ c        in the standard format
 
          laddrtail(1,ilev+1) = nboxes+1
 
-         call subdivide_flag(src,ns,radsrc,trg,nt,
+         call subdivide_flag(ier,src,ns,radsrc,trg,nt,
      $                   expc,nexpc,radexp,
      $                   ilev,nboxes,
      $                   centers,boxsize,nbmax,nlevels,
@@ -2885,6 +2913,7 @@ c        in the standard format
      $                   ihefirst,ihelast,
      $                   iefirst,ielast,nhungsrc,
      $                   nhungexp,iflag)
+         if(ier.ne.0) return
          laddrtail(2,ilev+1) = nboxes
       enddo
 c     Reorganize the tree to get it back in the standard format
@@ -2950,7 +2979,7 @@ c     will take care of handling the flag++ case
 c      Step 2: Subdivide all the boxes that need subdivision
 c      in the laddr set and the laddrtail set as well
          laddrtail(1,ilev+1) = nboxes + 1
-         call subdivide_flag(src,ns,radsrc,trg,nt,
+         call subdivide_flag(ier,src,ns,radsrc,trg,nt,
      $                   expc,nexpc,radexp,
      $                   ilev,nboxes,
      $                   centers,boxsize,nbmax,nlevels,
@@ -2962,8 +2991,9 @@ c      in the laddr set and the laddrtail set as well
      $                   ihefirst,ihelast,
      $                   iefirst,ielast,nhungsrc,
      $                   nhungexp,iflag)
+         if(ier.ne.0) return
 
-         call subdivide_flag(src,ns,radsrc,trg,nt,
+         call subdivide_flag(ier,src,ns,radsrc,trg,nt,
      $                   expc,nexpc,radexp,
      $                   ilev,nboxes,
      $                   centers,boxsize,nbmax,nlevels,
@@ -2975,6 +3005,7 @@ c      in the laddr set and the laddrtail set as well
      $                   ihefirst,ihelast,
      $                   iefirst,ielast,nhungsrc,
      $                   nhungexp,iflag)
+          if(ier.ne.0) return
           laddrtail(2,ilev+1) = nboxes         
 c      Step 3: Update the colleague information for the newly
 c      created boxes
@@ -3033,7 +3064,7 @@ c     Compute colleague information again
       return
       end
 c---------------------------------------------------------------
-      subroutine subdivide_flag(src,ns,radsrc,trg,nt,expc,nexpc,
+      subroutine subdivide_flag(ier,src,ns,radsrc,trg,nt,expc,nexpc,
      $                   radexp,
      $                   curlev,nboxes,
      $                   centers,boxsize,nbmax,nlevels,
@@ -3046,7 +3077,7 @@ c---------------------------------------------------------------
      $                   iefirst,ielast,nhungsrc,
      $                   nhungexp,iflag)
       implicit none
-      integer ns,nt,nexpc
+      integer ns,nt,nexpc,ier
       integer nlevels,nboxes,nbmax, curlev
       double precision src(3,ns),radsrc(ns)
       double precision trg(3,nt)
@@ -3608,6 +3639,13 @@ c           Create the required boxes
                if(nsc(i)+ntc(i)+nexpcc(i).gt.0) then
 c                 Increment total number of boxes               
                   nboxes = nboxes + 1
+                  if(nboxes.gt.nbmax) then
+                    write(*,*) "Exceeding max number of boxes"
+                    write(*,*) "Exiting"
+                    ier = 12
+                    return
+                  endif
+
 c                 Increment number of children for the current box
                   nchild(ibox) = nchild(ibox)+1
 c                 Update the array of children for the current box

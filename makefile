@@ -208,6 +208,7 @@ c-examples: $(COBJS) $(OBJS) $(CHEADERS) c/ex1_lap c/ex2_lap c/ex1_helm c/ex2_he
 	time -p c/example2_lap
 	time -p c/example1_helm
 	time -p c/example2_helm
+	rm fort.13
 
 c/ex1_lap:
 	$(CC) $(CFLAGS) c/lfmm3d_example.c $(COBJS) $(OBJS) $(CLINK) -o c/example1_lap

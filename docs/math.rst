@@ -1,5 +1,5 @@
-Mathematical definitions of transforms
-======================================
+Definitions 
+===========
 Let $\mathbf{I}_{A}$ denote the indicator function of a set $A$,
 and let $\varepsilon_{\textrm{mach}}$ denote machine precision ($2^{-52}$).
 Let $y_{i} \in \mathbb{R}^{3}$, $i=1,2,\ldots N$, denote a collection

@@ -43,7 +43,7 @@ clusters of source and target points at a hierarchy of scales using
 analytic outgoing, incoming, and plane-wave 
 expansions of the interaction kernel and associated translation
 operators. 
-This library is the a modified version of the FMM3D-library, with the
+This library is a modified version of the FMM3Dlib, with the
 following additions:
 
 -  Use of plane wave expansions for diagonalizing the outgoing to incoming translation operators
