@@ -17,9 +17,11 @@ c
 cc      initialize printing routine
 c
       call prini(6,13)
-      call prin2("This code is just for demonstration purposes.*",i,0)
+      write(*,*)
+      write(*,*)
+      write(*,*) "================================="
+      call prin2("This code is an example fortran driver*",i,0)
       call prin2("On output, the code prints sample pot,grad*",i,0)
-      call prin2("to ensure that the code has run currently*",i,0)
       write(*,*)
       write(*,*)
 

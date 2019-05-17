@@ -78,7 +78,7 @@ CHEADERS = c/cprini.h c/utils.h c/hfmm3d_c.h
 
 OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
-.PHONY: usage lib examples test perftest python all
+.PHONY: usage lib examples test perftest python all c c-examples
 
 default: usage
 
@@ -168,7 +168,7 @@ test/lfmm3d_vec:
 ##  examples
 #
 
-examples: $(STATICLIC) examples/ex1_helm examples/ex2_helm examples/ex1_lap examples/ex2_lap
+examples: $(STATICLIB) examples/ex1_helm examples/ex2_helm examples/ex1_lap examples/ex2_lap
 	time -p ./examples/example1_lap
 	time -p ./examples/example2_lap
 	time -p ./examples/example1_helm
@@ -199,6 +199,27 @@ c/hfmm3d:
 	$(CC) $(CFLAGS) c/test_hfmm3d.c $(COBJS) $(OBJS) $(CLINK) -o c/test_hfmm3d
 	time -p c/test_hfmm3d
 
+
+
+# C examples
+c-examples: $(COBJS) $(OBJS) $(CHEADERS) c/ex1_lap c/ex2_lap c/ex1_helm c/ex2_helm 
+	time -p c/example1_lap
+	time -p c/example2_lap
+	time -p c/example1_helm
+	time -p c/example2_helm
+
+c/ex1_lap:
+	$(CC) $(CFLAGS) c/lfmm3d_example.c $(COBJS) $(OBJS) $(CLINK) -o c/example1_lap
+
+c/ex2_lap:
+	$(CC) $(CFLAGS) c/lfmm3d_vec_example.c $(COBJS) $(OBJS) $(CLINK) -o c/example2_lap
+
+c/ex1_helm:
+	$(CC) $(CFLAGS) c/hfmm3d_example.c $(COBJS) $(OBJS) $(CLINK) -o c/example1_helm
+
+c/ex2_helm:
+	$(CC) $(CFLAGS) c/hfmm3d_vec_example.c $(COBJS) $(OBJS) $(CLINK) -o c/example2_helm
+
 clean: objclean
 	rm -f lib-static/*.a lib/*.so
 	rm -f python/*.so
@@ -208,9 +229,15 @@ clean: objclean
 	rm -f examples/example2_helm
 	rm -f examples/example1_lap
 	rm -f examples/example2_lap
+	rm -f c/example1_helm
+	rm -f c/example2_helm
+	rm -f c/example1_lap
+	rm -f c/example2_lap
+	rm -f c/test_hfmm3d
+	rm -f c/test_lfmm3d
 	
 	
 
 objclean: 
-	rm -f $(OBJS)
+	rm -f $(OBJS) $(COBJS) $(TOBJS)
 	rm -f test/*.o examples/*.o
