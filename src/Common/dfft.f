@@ -1,4 +1,7 @@
-C 
+C    Extracted from public domain code FFTPACK
+C    http://www.netlib.org/fftpack/ 
+C
+C
 C                       FFTPACK
 C 
 C * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
