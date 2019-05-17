@@ -16,7 +16,8 @@ FFLAGS=-fPIC -O3 -funroll-loops -march=native
 CFLAGS= -std=c99 
 CFLAGS+= $(FFLAGS) 
 
-CLINK = -L/usr/local/Cellar/gcc/8.3.0/lib/gcc/8 -lgfortran -lm
+#CLINK = -L/usr/local/Cellar/gcc/8.3.0/lib/gcc/8 -lgfortran -lm
+CLINK = -lgfortran -lm
 
 # extra flags for multithreaded: C/Fortran, MATLAB
 OMPFLAGS = -fopenmp
