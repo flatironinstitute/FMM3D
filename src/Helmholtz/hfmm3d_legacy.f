@@ -576,7 +576,6 @@ c      compute threshold based on boxsize
 c
 
 
-
       nd = 1
       do i=1,ns
         if(source(1,i).lt.xmin) xmin = source(1,i)
@@ -611,6 +610,7 @@ c
         write(*,*) "Exiting"
         return
       endif
+      thresh = abs(zk)*bsize*1.0d-16
 
 c
 c      compute potential at source
@@ -619,24 +619,167 @@ c
 
         if(ifpgh.eq.1) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
-          call h3ddirectcp(nd,zk,source,charge,ns,
-     1          source(1,i),1,pot(i),thresh)
-
+          do i=1,ns
+            call h3ddirectcp(nd,zk,source,charge,ns,
+     1            source(1,i),1,pottmp(i),thresh)
+          enddo
 C$OMP END PARALLEL DO
-
         endif
 
+        if(ifpgh.eq.2) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
+          do i=1,ns
+            call h3ddirectcg(nd,zk,source,charge,ns,
+     1            source(1,i),1,pottmp(i),gradtmp(1,i),thresh)
+          enddo
+C$OMP END PARALLEL DO
+        endif
+        
+
+        if(ifpghtarg.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
+          do i=1,nt
+            call h3ddirectcp(nd,zk,source,charge,ns,
+     1            targ(1,i),1,pottargtmp(i),thresh)
+          enddo
+C$OMP END PARALLEL DO
+        endif
+
+        if(ifpghtarg.eq.2) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
+          do i=1,nt
+            call h3ddirectcg(nd,zk,source,charge,ns,
+     1            targ(1,i),1,pottargtmp(i),
+     2            gradtargtmp(1,i),thresh)
+          enddo
+C$OMP END PARALLEL DO
+        endif
       endif
 
       if(ifcharge.eq.0.and.ifdipole.eq.1) then
+
+        if(ifpgh.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
+          do i=1,ns
+            call h3ddirectdp(nd,zk,source,dipvec_in,ns,
+     1            source(1,i),1,pottmp(i),thresh)
+          enddo
+C$OMP END PARALLEL DO
+        endif
+
+        if(ifpgh.eq.2) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
+          do i=1,ns
+            call h3ddirectdg(nd,zk,source,dipvec_in,ns,
+     1            source(1,i),1,pottmp(i),gradtmp(1,i),thresh)
+          enddo
+C$OMP END PARALLEL DO
+        endif
+        
+
+        if(ifpghtarg.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
+          do i=1,nt
+            call h3ddirectdp(nd,zk,source,dipvec_in,ns,
+     1            targ(1,i),1,pottargtmp(i),thresh)
+          enddo
+C$OMP END PARALLEL DO
+        endif
+
+        if(ifpghtarg.eq.2) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
+          do i=1,nt
+            call h3ddirectdg(nd,zk,source,dipvec_in,ns,
+     1            targ(1,i),1,pottargtmp(i),
+     2            gradtargtmp(1,i),thresh)
+          enddo
+C$OMP END PARALLEL DO
+        endif
 
       endif
 
       if(ifcharge.eq.1.and.ifdipole.eq.1) then
 
+        if(ifpgh.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
+          do i=1,ns
+            call h3ddirectcdp(nd,zk,source,charge,dipvec_in,ns,
+     1            source(1,i),1,pottmp(i),thresh)
+          enddo
+C$OMP END PARALLEL DO
+        endif
+
+        if(ifpgh.eq.2) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
+          do i=1,ns
+            call h3ddirectcdg(nd,zk,source,charge,dipvec_in,ns,
+     1            source(1,i),1,pottmp(i),gradtmp(1,i),thresh)
+          enddo
+C$OMP END PARALLEL DO
+        endif
+        
+
+        if(ifpghtarg.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
+          do i=1,nt
+            call h3ddirectcdp(nd,zk,source,charge,dipvec_in,ns,
+     1            targ(1,i),1,pottargtmp(i),thresh)
+          enddo
+C$OMP END PARALLEL DO
+        endif
+
+        if(ifpghtarg.eq.2) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
+          do i=1,nt
+            call h3ddirectcdg(nd,zk,source,charge,dipvec_in,ns,
+     1            targ(1,i),1,pottargtmp(i),
+     2            gradtargtmp(1,i),thresh)
+          enddo
+C$OMP END PARALLEL DO
+        endif
+
       endif
 
+c
+c       extract output arrays
+c
       
+      if(ifpot.eq.1) 
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
+        do i=1,ns
+           pot(i) = pottmp(i)
+        enddo
+C$OMP END PARALLEL DO
+      endif
+ 
+      if(iffld.eq.1) 
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
+        do i=1,ns
+           fld(1,i) = -gradtmp(1,i)
+           fld(2,i) = -gradtmp(2,i)
+           fld(3,i) = -gradtmp(3,i)
+        enddo
+C$OMP END PARALLEL DO
+      endif
+ 
+      
+      if(ifpottarg.eq.1) 
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
+        do i=1,nt
+           pottarg(i) = pottargtmp(i)
+        enddo
+C$OMP END PARALLEL DO
+      endif
+ 
+      if(iffldtarg.eq.1) 
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
+        do i=1,nt
+           fldtarg(1,i) = -gradtargtmp(1,i)
+           fldtarg(2,i) = -gradtargtmp(2,i)
+           fldtarg(3,i) = -gradtargtmp(3,i)
+        enddo
+C$OMP END PARALLEL DO
+      endif
  
       return
       end
