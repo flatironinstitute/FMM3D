@@ -1,21 +1,3 @@
-cc Copyright (C) 2017-2018: Leslie Greengard, Zydrunas Gimbutas, 
-cc and Manas Rachh
-cc Contact: greengard@cims.nyu.edu
-cc 
-cc This program is free software; you can redistribute it and/or modify 
-cc it under the terms of the GNU General Public License as published by 
-cc the Free Software Foundation; either version 2 of the License, or 
-cc (at your option) any later version.  This program is distributed in 
-cc the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
-cc even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
-cc PARTICULAR PURPOSE.  See the GNU General Public License for more 
-cc details. You should have received a copy of the GNU General Public 
-cc License along with this program; 
-cc if not, see <http://www.gnu.org/licenses/>.
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c
-c    $Date$
-c    $Revision$
 c       
 c       
 c       Generalized helmholtz FMM in R^3: evaluate all pairwise particle
@@ -33,12 +15,14 @@ c-----------------------------------------------------------
 c-----------------------------------------------------------------------
 c   INPUT PARAMETERS:
 c
-c   nd:    number of densities
+c   nd:    in: integer
+c             number of densities
 c   
-c   eps:   requested precision
+c   eps:   in: double precision
+c             requested precision
 c
-c   zk:    double complex: helmholtz parameter                
-c
+c   zk:    in: double complex
+c               helmholtz parameter                
 c
 c   nsource in: integer  
 c                number of sources

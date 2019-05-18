@@ -1,4 +1,8 @@
-        subroutine lreadall(eps,zk,nquad,cxs,cws,nfour,nphys,lw,ier)
+c
+c      read plane wave quadratures from file
+c
+
+      subroutine lreadall(eps,zk,nquad,cxs,cws,nfour,nphys,lw,ier)
 c
 cc        this subroutine computes lambda quadrature nodes and weights
 c         for given helmholtz parameter and the number of terms

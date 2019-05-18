@@ -1,4 +1,6 @@
 c
+c         Plane wave quadrature weights
+cc
         subroutine hwts3(ier,iprec,rk,cxs,cws,n)
         implicit real *8 (a-h,o-z)
         real *8 cx(1000),cy(1000)

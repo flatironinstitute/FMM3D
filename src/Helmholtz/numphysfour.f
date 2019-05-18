@@ -1,3 +1,8 @@
+c
+c         number of discretization nodes in tranverse
+c         direction of plane wave quadratures
+c
+
         subroutine numphysfour(iprec,iquad,nl,np,nf)
         implicit none
         integer iprec,iquad,nl,nf(nl),np(nl)
