@@ -1,22 +1,3 @@
-cc copyright (c) 2009-2012: Leslie Greengard, Zydrunas Gimbutas,
-cc    and Manas Rachh
-cc contact: greengard@cims.nyu.edu
-cc 
-cc this program is free software; you can redistribute it and/or modify 
-cc it under the terms of the gnu general public license as published by 
-cc the free software foundation; either version 2 of the license, or 
-cc (at your option) any later version.  this program is distributed in 
-cc the hope that it will be useful, but without any warranty; without 
-cc even the implied warranty of merchantability or fitness for a 
-cc particular purpose.  see the gnu general public license for more 
-cc details. you should have received a copy of the gnu general public 
-cc license along with this program; 
-cc if not, see <http://www.gnu.org/licenses/>.
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c
-c    $date$
-c    $revision$
-c
 c
 c      this file contains the basic subroutines for 
 c      forming and evaluating multipole expansions.
