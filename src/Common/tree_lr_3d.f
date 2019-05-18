@@ -1,6 +1,6 @@
 c
-c    Adaptive PTree - generate quad tree refined to finest level pruning
-c    empty boxes. Features include 
+c    generate level restricted oct tree refined 
+c    to finest level. Features include 
 c
 c     radsrc parameter (preventing sources with large radius 
 c                         from being pushed to the finest level)
@@ -17,7 +17,8 @@ c     isep           (separation parameter: isep = 1 or 2
 c                     based on whether to include neighbors
 c                     and self in list 1 or two neighbors
 c                     and self in list 2)
-c                     
+c     
+c     extraction of plane wave lists
 c
 c     mhung is the max number of hung chunks in a given box
 c

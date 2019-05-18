@@ -1,4 +1,34 @@
-
+c
+c
+c        a collection of common subroutines used in the fmm
+c           
+c          mpalloc - allocate workspace for multipole and local
+c                     expansions
+c
+c          dreorderf - permute a real array with given permutation
+c
+c          dreroderi - pertmute a real array with inverse of
+c                      given permutation
+c 
+c          mpzero - zero out a multipole/local expansion
+c  
+c          mpadd - add a multipole expansion to an existing one
+c
+c          mpscale - scale multipole expansion coeffs 
+c
+c          cart2polar - cartesian to polar coordinates
+c
+c          getpwrotmat - get a collection of rotation matrices
+c                  for pw stuff
+c
+c          getsqrtbinomialcoeffs - get square root of binomial
+c                         coeffs array
+c          bnlcft - binomial coeffs and square roots
+c          fstrtn - generate rotation matrix
+c          geterrstr - error string generator for something
+c
+c
+c
       subroutine mpalloc(nd,laddr,iaddr,nlevels,lmptot,nterms)
 c     This subroutine determines the size of the array
 c     to be allocated for the multipole expansions

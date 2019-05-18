@@ -1,4 +1,4 @@
-c
+c         random number generator
 c
         double precision function hkrand(iseed_hk)
         implicit double precision (a-h,o-z)

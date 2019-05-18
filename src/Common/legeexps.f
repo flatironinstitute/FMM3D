@@ -1,30 +1,3 @@
-cc Copyright (C) 2009: Vladimir Rokhlin
-cc 
-cc This program is free software; you can redistribute it and/or modify 
-cc it under the terms of the GNU General Public License as published by 
-cc the Free Software Foundation; either version 2 of the License, or 
-cc (at your option) any later version.  This program is distributed in 
-cc the hope that it will be useful, but WITHOUT ANY WARRANTY; without 
-cc even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
-cc PARTICULAR PURPOSE.  See the GNU General Public License for more 
-cc details. You should have received a copy of the GNU General Public 
-cc License along with this program; 
-cc if not, see <http://www.gnu.org/licenses/>.
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c
-c    $Date: 2011-11-17 00:00:34 -0500 (Thu, 17 Nov 2011) $
-c    $Revision: 2480 $
-c
-c
-c
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c
-c        this is the end of the debugging code and the beginning 
-c        of the legendre expansion routines
-c
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c
-c
 c
 c        This file contains a set of subroutines for the handling 
 c        of Legendre expansions. It contains 19 subroutines that are 

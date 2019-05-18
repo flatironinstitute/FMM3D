@@ -1,9 +1,3 @@
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c
-c    $Date: 2010-11-16 14:26:35 -0500 (Tue, 16 Nov 2010) $
-c    $Revision: 1452 $
-c
-c
 c
 ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 c       Printing routines
