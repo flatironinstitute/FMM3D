@@ -40,7 +40,6 @@ ifdipole
 ifpot = 1
 iffld = 1
 
-
 ntarget = min(10,nsource);
 target = source(:,1:nsource);
 target(1,:) = target(1,:) + 10;
