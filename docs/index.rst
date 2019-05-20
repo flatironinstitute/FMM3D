@@ -70,7 +70,10 @@ faster.
 	   
    install
    math
-   fortran-c
+   fortran-c1
+   fortran-c2
+   fortran-c3
+   fortran-c4
    matlab
    python
    legacy

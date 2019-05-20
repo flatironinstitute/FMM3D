@@ -133,7 +133,7 @@ mex:  $(STATICLIB)
 
 #python
 python:
-	cd python && pip install -e . && cd test && pytest -s
+	cd python && pip3 install -e . && cd test && pytest -s
 
 # testing routines
 #

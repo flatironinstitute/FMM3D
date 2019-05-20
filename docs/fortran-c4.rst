@@ -46,4 +46,4 @@ of any of the routines use
    "<subroutine name>_vec"
 
 
-.. include:: fortrandocs_helm_opt2.raw
+.. include:: fortrandocs_helm_opt4.raw

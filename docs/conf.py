@@ -15,12 +15,14 @@
 import sys
 import os
 import sphinx.ext.autodoc
-import numpy.core.multiarray
+#import numpy.core.multiarray
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('..'))
+sys.path.append(os.path.abspath('sphinxext'))
+sys.path.insert(0,os.path.abspath('../../texext'))
 
 # -- General configuration ------------------------------------------------
 
@@ -218,6 +220,7 @@ htmlhelp_basename = 'finufftdoc'
 # see https://samnicholls.net/2016/06/15/how-to-sphinx-readthedocs/
 def setup(app):
     app.add_stylesheet('theme_overrides.css')
+    app.add_stylesheet('custom.css')
 # it doesn't fail if this file not found in _static  :(
 
 # -- Options for LaTeX output ---------------------------------------------

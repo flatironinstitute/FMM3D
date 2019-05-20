@@ -1,9 +1,9 @@
 c     this file contains plane wave quadrature info
 c      for sepration by 1
 c    
-    subroutine vwts(x,w,n)
-	implicit real*8 (a-h,o-z)
-	dimension w(n),x(n)
+      subroutine vwts(x,w,n)
+	  implicit real*8 (a-h,o-z)
+      dimension w(n),x(n)
 c
 c
 c This routine returns a set of Gaussian nodes and weights for

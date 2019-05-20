@@ -1,0 +1,251 @@
+List of interfaces
+
+    -  Evaluation points: sources; Interaction: charges; Output: potential.
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstoscp(eps,zk,nsource,source,charge,pot)
+
+    For vectorized routines use: 
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstoscp_vec(nd,eps,zk,nsource,source,charge,pot)
+
+    -  Evaluation points: sources; Interaction: charges; Output: potential and gradient.
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstoscg(eps,zk,nsource,source,charge,pot,grad)
+
+    For vectorized routines use: 
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstoscg_vec(nd,eps,zk,nsource,source,charge,pot,grad)
+
+    -  Evaluation points: sources; Interaction: dipoles; Output: potential.
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstosdp(eps,zk,nsource,source,dipvec,pot)
+
+    For vectorized routines use: 
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstosdp_vec(nd,eps,zk,nsource,source,dipvec,pot)
+
+    -  Evaluation points: sources; Interaction: dipoles; Output: potential and gradient.
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstosdg(eps,zk,nsource,source,dipvec,pot,grad)
+
+    For vectorized routines use: 
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstosdg_vec(nd,eps,zk,nsource,source,dipvec,pot,grad)
+
+    -  Evaluation points: sources; Interaction: charges and dipoles; Output: potential.
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstoscdp(eps,zk,nsource,source,charge,dipvec,pot)
+
+    For vectorized routines use: 
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstoscdp_vec(nd,eps,zk,nsource,source,charge,dipvec,pot)
+
+    -  Evaluation points: sources; Interaction: charges and dipoles; Output: potential and gradient.
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstoscdg(eps,zk,nsource,source,charge,dipvec,pot,grad)
+
+    For vectorized routines use: 
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstoscdg_vec(nd,eps,zk,nsource,source,charge,dipvec,pot,grad)
+
+    -  Evaluation points: targets; Interaction: charges; Output: potential.
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstotcp(eps,zk,nsource,source,charge,ntarg,targ,pottarg)
+
+    For vectorized routines use: 
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstotcp_vec(nd,eps,zk,nsource,source,charge,ntarg,targ,pottarg)
+
+    -  Evaluation points: targets; Interaction: charges; Output: potential and gradient.
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstotcg(eps,zk,nsource,source,charge,ntarg,targ,pottarg,gradtarg)
+
+    For vectorized routines use: 
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstotcg_vec(nd,eps,zk,nsource,source,charge,ntarg,targ,pottarg,gradtarg)
+
+    -  Evaluation points: targets; Interaction: dipoles; Output: potential.
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstotdp(eps,zk,nsource,source,dipvec,ntarg,targ,pottarg)
+
+    For vectorized routines use: 
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstotdp_vec(nd,eps,zk,nsource,source,dipvec,ntarg,targ,pottarg)
+
+    -  Evaluation points: targets; Interaction: dipoles; Output: potential and gradient.
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstotdg(eps,zk,nsource,source,dipvec,ntarg,targ,pottarg,gradtarg)
+
+    For vectorized routines use: 
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstotdg_vec(nd,eps,zk,nsource,source,dipvec,ntarg,targ,pottarg,gradtarg)
+
+    -  Evaluation points: targets; Interaction: charges and dipoles; Output: potential.
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstotcdp(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pottarg)
+
+    For vectorized routines use: 
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstotcdp_vec(nd,eps,zk,nsource,source,charge,dipvec,ntarg,targ,pottarg)
+
+    -  Evaluation points: targets; Interaction: charges and dipoles; Output: potential and gradient.
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstotcdg(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pottarg,gradtarg)
+
+    For vectorized routines use: 
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstotcdg_vec(nd,eps,zk,nsource,source,charge,dipvec,ntarg,targ,pottarg,gradtarg)
+
+    -  Evaluation points:  sources and targets; Interaction: charges; Output: potential.
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstostcp(eps,zk,nsource,source,charge,ntarg,targ,pot,pottarg)
+
+    For vectorized routines use: 
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstostcp_vec(nd,eps,zk,nsource,source,charge,ntarg,targ,pot,pottarg)
+
+    -  Evaluation points:  sources and targets; Interaction: charges; Output: potential and gradient.
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstostcg(eps,zk,nsource,source,charge,ntarg,targ,pot,grad,pottarg,gradtarg)
+
+    For vectorized routines use: 
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstostcg_vec(nd,eps,zk,nsource,source,charge,ntarg,targ,pot,grad,pottarg,gradtarg)
+
+    -  Evaluation points:  sources and targets; Interaction: dipoles; Output: potential.
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstostdp(eps,zk,nsource,source,dipvec,ntarg,targ,pot,pottarg)
+
+    For vectorized routines use: 
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstostdp_vec(nd,eps,zk,nsource,source,dipvec,ntarg,targ,pot,pottarg)
+
+    -  Evaluation points:  sources and targets; Interaction: dipoles; Output: potential and gradient.
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstostdg(eps,zk,nsource,source,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+
+    For vectorized routines use: 
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstostdg_vec(nd,eps,zk,nsource,source,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+
+    -  Evaluation points:  sources and targets; Interaction: charges and dipoles; Output: potential.
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstostcdp(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pot,pottarg)
+
+    For vectorized routines use: 
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstostcdp_vec(nd,eps,zk,nsource,source,charge,dipvec,ntarg,targ,pot,pottarg)
+
+    -  Evaluation points:  sources and targets; Interaction: charges and dipoles; Output: potential and gradient.
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstostcdg(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+
+    For vectorized routines use: 
+
+    .. code:: fortran
+
+        subroutine hfmm3dpartstostcdg_vec(nd,eps,zk,nsource,source,charge,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+
+Input arguments:
+************************
+
+  -    nd: integer
+          number of charge/dipole densities
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    charge: double complex(nsource)
+          Charge strengths ($c_{j}$)
+  -    dipvec: double complex(3,nsource)
+          Dipole strengths ($v_{j}$)
+  -    ntarg: integer
+          Number of targets
+  -    targ: double precision(3,ntarg)
+          Target locations ($t_{i}$)
+
+
+Output arguments:
+
+  -    pot: double complex(nsource)
+          Potential at source locations ($u(x_{j})$)
+  -    grad: double complex(3,nsource)
+          Gradient at source locations ($\nabla u(x_{j})$)
+  -    pottarg: double complex(ntarg)
+          Potential at target locations ($u(t_{i})$)
+  -    gradtarg: double complex(3,ntarg)
+          Gradient at target locations ($\nabla u(t_{i})$)

@@ -1,0 +1,708 @@
+.. code:: fortran
+
+  subroutine hfmm3dpartstoscp(eps,zk,nsource,source,charge,pot)
+
+This subroutine evaluates the potential 
+
+
+  .. math::
+
+      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j})
+
+at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+
+Input arguments:
+
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    charge: double complex(nsource)
+          Charge strengths ($c_{j}$)
+
+
+Output arguments:
+
+  -    pot: double complex(nsource)
+          Potential at source locations ($u(x_{j})$)
+
+
+
+.. code:: fortran
+
+  subroutine hfmm3dpartstoscg(eps,zk,nsource,source,charge,pot,grad)
+
+This subroutine evaluates the potential and it's gradient 
+
+
+  .. math::
+
+      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j})
+
+at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+
+Input arguments:
+
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    charge: double complex(nsource)
+          Charge strengths ($c_{j}$)
+
+
+Output arguments:
+
+  -    pot: double complex(nsource)
+          Potential at source locations ($u(x_{j})$)
+  -    grad: double complex(3,nsource)
+          Gradient at source locations ($\nabla u(x_{j})$)
+
+
+
+.. code:: fortran
+
+  subroutine hfmm3dpartstosdp(eps,zk,nsource,source,dipvec,pot)
+
+This subroutine evaluates the potential 
+
+
+  .. math::
+
+      u(x) = \sum_{j=1}^{N} v_{j} \cdot \nabla G_{k}(x-x_{j})
+
+at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+
+Input arguments:
+
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    dipvec: double complex(3,nsource)
+          Dipole strengths ($v_{j}$)
+
+
+Output arguments:
+
+  -    pot: double complex(nsource)
+          Potential at source locations ($u(x_{j})$)
+
+
+
+.. code:: fortran
+
+  subroutine hfmm3dpartstosdg(eps,zk,nsource,source,dipvec,pot,grad)
+
+This subroutine evaluates the potential and it's gradient 
+
+
+  .. math::
+
+      u(x) = \sum_{j=1}^{N} v_{j} \cdot \nabla G_{k}(x-x_{j})
+
+at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+
+Input arguments:
+
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    dipvec: double complex(3,nsource)
+          Dipole strengths ($v_{j}$)
+
+
+Output arguments:
+
+  -    pot: double complex(nsource)
+          Potential at source locations ($u(x_{j})$)
+  -    grad: double complex(3,nsource)
+          Gradient at source locations ($\nabla u(x_{j})$)
+
+
+
+.. code:: fortran
+
+  subroutine hfmm3dpartstoscdp(eps,zk,nsource,source,charge,dipvec,pot)
+
+This subroutine evaluates the potential 
+
+
+  .. math::
+
+      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j}) + v_{j} \cdot \nabla G_{k}(x-x_{j})
+
+at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+
+Input arguments:
+
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    charge: double complex(nsource)
+          Charge strengths ($c_{j}$)
+  -    dipvec: double complex(3,nsource)
+          Dipole strengths ($v_{j}$)
+
+
+Output arguments:
+
+  -    pot: double complex(nsource)
+          Potential at source locations ($u(x_{j})$)
+
+
+
+.. code:: fortran
+
+  subroutine hfmm3dpartstoscdg(eps,zk,nsource,source,charge,dipvec,pot,grad)
+
+This subroutine evaluates the potential and it's gradient 
+
+
+  .. math::
+
+      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j}) + v_{j} \cdot \nabla G_{k}(x-x_{j})
+
+at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+
+Input arguments:
+
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    charge: double complex(nsource)
+          Charge strengths ($c_{j}$)
+  -    dipvec: double complex(3,nsource)
+          Dipole strengths ($v_{j}$)
+
+
+Output arguments:
+
+  -    pot: double complex(nsource)
+          Potential at source locations ($u(x_{j})$)
+  -    grad: double complex(3,nsource)
+          Gradient at source locations ($\nabla u(x_{j})$)
+
+
+
+.. code:: fortran
+
+  subroutine hfmm3dpartstotcp(eps,zk,nsource,source,charge,ntarg,targ,pottarg)
+
+This subroutine evaluates the potential 
+
+
+  .. math::
+
+      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j})
+
+at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+
+Input arguments:
+
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    charge: double complex(nsource)
+          Charge strengths ($c_{j}$)
+  -    ntarg: integer
+          Number of targets
+  -    targ: double precision(3,ntarg)
+          Target locations ($t_{i}$)
+
+
+Output arguments:
+
+  -    pottarg: double complex(ntarg)
+          Potential at target locations ($u(t_{i})$)
+
+
+
+.. code:: fortran
+
+  subroutine hfmm3dpartstotcg(eps,zk,nsource,source,charge,ntarg,targ,pottarg,gradtarg)
+
+This subroutine evaluates the potential and it's gradient 
+
+
+  .. math::
+
+      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j})
+
+at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+
+Input arguments:
+
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    charge: double complex(nsource)
+          Charge strengths ($c_{j}$)
+  -    ntarg: integer
+          Number of targets
+  -    targ: double precision(3,ntarg)
+          Target locations ($t_{i}$)
+
+
+Output arguments:
+
+  -    pottarg: double complex(ntarg)
+          Potential at target locations ($u(t_{i})$)
+  -    gradtarg: double complex(3,ntarg)
+          Gradient at target locations ($\nabla u(t_{i})$)
+
+
+
+.. code:: fortran
+
+  subroutine hfmm3dpartstotdp(eps,zk,nsource,source,dipvec,ntarg,targ,pottarg)
+
+This subroutine evaluates the potential 
+
+
+  .. math::
+
+      u(x) = \sum_{j=1}^{N} v_{j} \cdot \nabla G_{k}(x-x_{j})
+
+at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+
+Input arguments:
+
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    dipvec: double complex(3,nsource)
+          Dipole strengths ($v_{j}$)
+  -    ntarg: integer
+          Number of targets
+  -    targ: double precision(3,ntarg)
+          Target locations ($t_{i}$)
+
+
+Output arguments:
+
+  -    pottarg: double complex(ntarg)
+          Potential at target locations ($u(t_{i})$)
+
+
+
+.. code:: fortran
+
+  subroutine hfmm3dpartstotdg(eps,zk,nsource,source,dipvec,ntarg,targ,pottarg,gradtarg)
+
+This subroutine evaluates the potential and it's gradient 
+
+
+  .. math::
+
+      u(x) = \sum_{j=1}^{N} v_{j} \cdot \nabla G_{k}(x-x_{j})
+
+at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+
+Input arguments:
+
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    dipvec: double complex(3,nsource)
+          Dipole strengths ($v_{j}$)
+  -    ntarg: integer
+          Number of targets
+  -    targ: double precision(3,ntarg)
+          Target locations ($t_{i}$)
+
+
+Output arguments:
+
+  -    pottarg: double complex(ntarg)
+          Potential at target locations ($u(t_{i})$)
+  -    gradtarg: double complex(3,ntarg)
+          Gradient at target locations ($\nabla u(t_{i})$)
+
+
+
+.. code:: fortran
+
+  subroutine hfmm3dpartstotcdp(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pottarg)
+
+This subroutine evaluates the potential 
+
+
+  .. math::
+
+      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j}) + v_{j} \cdot \nabla G_{k}(x-x_{j})
+
+at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+
+Input arguments:
+
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    charge: double complex(nsource)
+          Charge strengths ($c_{j}$)
+  -    dipvec: double complex(3,nsource)
+          Dipole strengths ($v_{j}$)
+  -    ntarg: integer
+          Number of targets
+  -    targ: double precision(3,ntarg)
+          Target locations ($t_{i}$)
+
+
+Output arguments:
+
+  -    pottarg: double complex(ntarg)
+          Potential at target locations ($u(t_{i})$)
+
+
+
+.. code:: fortran
+
+  subroutine hfmm3dpartstotcdg(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pottarg,gradtarg)
+
+This subroutine evaluates the potential and it's gradient 
+
+
+  .. math::
+
+      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j}) + v_{j} \cdot \nabla G_{k}(x-x_{j})
+
+at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+
+Input arguments:
+
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    charge: double complex(nsource)
+          Charge strengths ($c_{j}$)
+  -    dipvec: double complex(3,nsource)
+          Dipole strengths ($v_{j}$)
+  -    ntarg: integer
+          Number of targets
+  -    targ: double precision(3,ntarg)
+          Target locations ($t_{i}$)
+
+
+Output arguments:
+
+  -    pottarg: double complex(ntarg)
+          Potential at target locations ($u(t_{i})$)
+  -    gradtarg: double complex(3,ntarg)
+          Gradient at target locations ($\nabla u(t_{i})$)
+
+
+
+.. code:: fortran
+
+  subroutine hfmm3dpartstostcp(eps,zk,nsource,source,charge,ntarg,targ,pot,pottarg)
+
+This subroutine evaluates the potential 
+
+
+  .. math::
+
+      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j})
+
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+
+Input arguments:
+
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    charge: double complex(nsource)
+          Charge strengths ($c_{j}$)
+  -    ntarg: integer
+          Number of targets
+  -    targ: double precision(3,ntarg)
+          Target locations ($t_{i}$)
+
+
+Output arguments:
+
+  -    pot: double complex(nsource)
+          Potential at source locations ($u(x_{j})$)
+  -    pottarg: double complex(ntarg)
+          Potential at target locations ($u(t_{i})$)
+
+
+
+.. code:: fortran
+
+  subroutine hfmm3dpartstostcg(eps,zk,nsource,source,charge,ntarg,targ,pot,grad,pottarg,gradtarg)
+
+This subroutine evaluates the potential and it's gradient 
+
+
+  .. math::
+
+      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j})
+
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+
+Input arguments:
+
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    charge: double complex(nsource)
+          Charge strengths ($c_{j}$)
+  -    ntarg: integer
+          Number of targets
+  -    targ: double precision(3,ntarg)
+          Target locations ($t_{i}$)
+
+
+Output arguments:
+
+  -    pot: double complex(nsource)
+          Potential at source locations ($u(x_{j})$)
+  -    grad: double complex(3,nsource)
+          Gradient at source locations ($\nabla u(x_{j})$)
+  -    pottarg: double complex(ntarg)
+          Potential at target locations ($u(t_{i})$)
+  -    gradtarg: double complex(3,ntarg)
+          Gradient at target locations ($\nabla u(t_{i})$)
+
+
+
+.. code:: fortran
+
+  subroutine hfmm3dpartstostdp(eps,zk,nsource,source,dipvec,ntarg,targ,pot,pottarg)
+
+This subroutine evaluates the potential 
+
+
+  .. math::
+
+      u(x) = \sum_{j=1}^{N} v_{j} \cdot \nabla G_{k}(x-x_{j})
+
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+
+Input arguments:
+
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    dipvec: double complex(3,nsource)
+          Dipole strengths ($v_{j}$)
+  -    ntarg: integer
+          Number of targets
+  -    targ: double precision(3,ntarg)
+          Target locations ($t_{i}$)
+
+
+Output arguments:
+
+  -    pot: double complex(nsource)
+          Potential at source locations ($u(x_{j})$)
+  -    pottarg: double complex(ntarg)
+          Potential at target locations ($u(t_{i})$)
+
+
+
+.. code:: fortran
+
+  subroutine hfmm3dpartstostdg(eps,zk,nsource,source,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+
+This subroutine evaluates the potential and it's gradient 
+
+
+  .. math::
+
+      u(x) = \sum_{j=1}^{N} v_{j} \cdot \nabla G_{k}(x-x_{j})
+
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+
+Input arguments:
+
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    dipvec: double complex(3,nsource)
+          Dipole strengths ($v_{j}$)
+  -    ntarg: integer
+          Number of targets
+  -    targ: double precision(3,ntarg)
+          Target locations ($t_{i}$)
+
+
+Output arguments:
+
+  -    pot: double complex(nsource)
+          Potential at source locations ($u(x_{j})$)
+  -    grad: double complex(3,nsource)
+          Gradient at source locations ($\nabla u(x_{j})$)
+  -    pottarg: double complex(ntarg)
+          Potential at target locations ($u(t_{i})$)
+  -    gradtarg: double complex(3,ntarg)
+          Gradient at target locations ($\nabla u(t_{i})$)
+
+
+
+.. code:: fortran
+
+  subroutine hfmm3dpartstostcdp(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pot,pottarg)
+
+This subroutine evaluates the potential 
+
+
+  .. math::
+
+      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j}) + v_{j} \cdot \nabla G_{k}(x-x_{j})
+
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+
+Input arguments:
+
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    charge: double complex(nsource)
+          Charge strengths ($c_{j}$)
+  -    dipvec: double complex(3,nsource)
+          Dipole strengths ($v_{j}$)
+  -    ntarg: integer
+          Number of targets
+  -    targ: double precision(3,ntarg)
+          Target locations ($t_{i}$)
+
+
+Output arguments:
+
+  -    pot: double complex(nsource)
+          Potential at source locations ($u(x_{j})$)
+  -    pottarg: double complex(ntarg)
+          Potential at target locations ($u(t_{i})$)
+
+
+
+.. code:: fortran
+
+  subroutine hfmm3dpartstostcdg(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+
+This subroutine evaluates the potential and it's gradient 
+
+
+  .. math::
+
+      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j}) + v_{j} \cdot \nabla G_{k}(x-x_{j})
+
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+
+Input arguments:
+
+  -    eps: double precision
+          precision requested
+  -    zk: double complex
+          Helmholtz parameter (k)
+  -    nsource: integer
+          Number of sources (nsource)
+  -    source: double precision(3,nsource)
+          Source locations ($x_{j}$)
+  -    charge: double complex(nsource)
+          Charge strengths ($c_{j}$)
+  -    dipvec: double complex(3,nsource)
+          Dipole strengths ($v_{j}$)
+  -    ntarg: integer
+          Number of targets
+  -    targ: double precision(3,ntarg)
+          Target locations ($t_{i}$)
+
+
+Output arguments:
+
+  -    pot: double complex(nsource)
+          Potential at source locations ($u(x_{j})$)
+  -    grad: double complex(3,nsource)
+          Gradient at source locations ($\nabla u(x_{j})$)
+  -    pottarg: double complex(ntarg)
+          Potential at target locations ($u(t_{i})$)
+  -    gradtarg: double complex(3,ntarg)
+          Gradient at target locations ($\nabla u(t_{i})$)
+
+
+
