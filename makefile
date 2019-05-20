@@ -79,11 +79,11 @@ CHEADERS = c/cprini.h c/utils.h c/hfmm3d_c.h
 
 OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
-.PHONY: usage lib examples test perftest python all c c-examples
+.PHONY: usage lib examples test perftest python all c c-examples matlab
 
 default: usage
 
-all: lib examples test perftest python c c-examples
+all: lib examples test perftest python c c-examples matlab
 
 usage:
 	@echo "Makefile for FMM3D. Specify what to make:"
