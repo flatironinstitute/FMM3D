@@ -280,6 +280,7 @@ c
       endif
 
       nd = 1
+
       call hfmm3d(nd,eps,zk,nsource,source,ifcharge,charge,
      1  ifdipole,dipvec_in,ifpgh,pottmp,gradtmp,hess,ntarg,
      2  targ,ifpghtarg,pottargtmp,gradtargtmp,hesstarg)
