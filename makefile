@@ -59,7 +59,7 @@ COMOBJS = $(COM)/besseljs3d.o $(COM)/cdjseval3d.o $(COM)/dfft.o \
 HELM = src/Helmholtz
 HOBJS = $(HELM)/h3dcommon.o $(HELM)/h3dterms.o $(HELM)/h3dtrans.o \
 	$(HELM)/helmrouts3d.o $(HELM)/hfmm3d.o $(HELM)/hfmm3dwrap.o \
-	$(HELM)/hfmm3dwrap_vec.o $(HELM)/hpwrouts.o \
+	$(HELM)/hfmm3dwrap_legacy.o $(HELM)/hfmm3dwrap_vec.o $(HELM)/hpwrouts.o \
 	$(HELM)/hwts3.o $(HELM)/numphysfour.o $(HELM)/projections.o \
 	$(HELM)/quadread.o
 
@@ -67,7 +67,7 @@ HOBJS = $(HELM)/h3dcommon.o $(HELM)/h3dterms.o $(HELM)/h3dtrans.o \
 LAP = src/Laplace
 LOBJS = $(LAP)/lwtsexp_sep1.o $(LAP)/l3dterms.o $(LAP)/l3dtrans.o \
 	$(LAP)/laprouts3d.o $(LAP)/lfmm3d.o $(LAP)/lfmm3dwrap.o \
-	$(LAP)/lfmm3dwrap_vec.o $(LAP)/lwtsexp_sep2.o \
+	$(LAP)/lfmm3dwrap_legacy.o $(LAP)/lfmm3dwrap_vec.o $(LAP)/lwtsexp_sep2.o \
 	$(LAP)/lpwrouts.o
 
 # Test objects
@@ -133,7 +133,7 @@ mex:  $(STATICLIB)
 
 #python
 python:
-	cd python && pip3 install -e . && cd test && pytest -s
+	cd python && pip install -e . && cd test && pytest -s
 
 # testing routines
 #
@@ -169,11 +169,14 @@ test/lfmm3d_vec:
 ##  examples
 #
 
-examples: $(STATICLIB) examples/ex1_helm examples/ex2_helm examples/ex1_lap examples/ex2_lap
+examples: $(STATICLIB) $(TOBJS) examples/ex1_helm examples/ex2_helm examples/ex3_helm \
+	examples/ex1_lap examples/ex2_lap examples/ex3_lap
 	time -p ./examples/example1_lap
 	time -p ./examples/example2_lap
+	time -p ./examples/example3_lap
 	time -p ./examples/example1_helm
 	time -p ./examples/example2_helm
+	time -p ./examples/example3_helm
 
 examples/ex1_lap:
 	$(FC) $(FFLAGS) examples/lfmm3d_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/example1_lap
@@ -181,11 +184,18 @@ examples/ex1_lap:
 examples/ex2_lap:
 	$(FC) $(FFLAGS) examples/lfmm3d_vec_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/example2_lap
 
+examples/ex3_lap:
+	$(FC) $(FFLAGS) examples/lfmm3d_legacy_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/example3_lap
+
+
 examples/ex1_helm:
 	$(FC) $(FFLAGS) examples/hfmm3d_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/example1_helm
 
 examples/ex2_helm:
 	$(FC) $(FFLAGS) examples/hfmm3d_vec_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/example2_helm
+
+examples/ex3_helm:
+	$(FC) $(FFLAGS) examples/hfmm3d_legacy_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/example3_helm
 
 
 
@@ -226,11 +236,13 @@ clean: objclean
 	rm -f lib-static/*.a lib/*.so
 	rm -f python/*.so
 	rm -rf python/build
-	rm -rf fmm3dpy.egg-info
+	rm -rf python/fmm3dpy.egg-info
 	rm -f examples/example1_helm
 	rm -f examples/example2_helm
+	rm -f examples/example3_helm
 	rm -f examples/example1_lap
 	rm -f examples/example2_lap
+	rm -f examples/example3_lap
 	rm -f c/example1_helm
 	rm -f c/example2_helm
 	rm -f c/example1_lap

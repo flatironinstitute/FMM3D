@@ -7,13 +7,13 @@ c     This file contains the main FMM routines and some related
 c     subroutines for evaluating Helmholtz potentials and fields due to
 c     point charges and dipoles.  (FORTRAN 90 VERSION)
 c
-c     hfmm3dpart - Helmholtz FMM in R^3: evaluate all pairwise particle
+c     lfmm3dpart - Helmholtz FMM in R^3: evaluate all pairwise particle
 c         interactions (ignoring self-interaction)
 c
-c     hfmm3dpartself - Helmholtz FMM in R^3: evaluate all pairwise particle
+c     lfmm3dpartself - Helmholtz FMM in R^3: evaluate all pairwise particle
 c         interactions (ignoring self-interaction)
 c
-c     hfmm3dparttarg - Helmholtz FMM in R^3: evaluate all pairwise
+c     lfmm3dparttarg - Helmholtz FMM in R^3: evaluate all pairwise
 c         particle interactions (ignoring self-interaction) +
 c         interactions with targets
 c
@@ -24,7 +24,7 @@ c
 c
 c
 c
-        subroutine hfmm3dpart(ier,iprec,zk,nsource,source,
+        subroutine lfmm3dpart(ier,iprec,nsource,source,
      $     ifcharge,charge,ifdipole,dipstr,dipvec,
      $     ifpot,pot,iffld,fld)
         implicit real *8 (a-h,o-z)
@@ -32,7 +32,7 @@ c
 c              
 c       Helmholtz FMM in R^3: evaluate all pairwise particle
 c       interactions (ignoring self-interaction). 
-c       We use (exp(ikr)/r) for the Green's function, without the 
+c       We use (1/r) for the Green's function, without the 
 c       (1/4 pi) scaling. Self-interactions are not included.
 c   
 c       The main FMM routine permits both evaluation at sources
@@ -45,7 +45,7 @@ c       See below for explanation of calling sequence arguments.
 c  
 c
         dimension source(3,1)
-        complex *16 charge(1),zk
+        complex *16 charge(1)
         complex *16 dipstr(1)
         dimension dipvec(3,1)
         complex *16 ima
@@ -63,7 +63,7 @@ c
         ifpottarg=0
         iffldtarg=0
 c
-        call hfmm3dparttarg(ier,iprec,zk,nsource,source,
+        call lfmm3dparttarg(ier,iprec,nsource,source,
      $     ifcharge,charge,ifdipole,dipstr,dipvec,
      $     ifpot,pot,iffld,fld,
      $     ntarg,targ,ifpottarg,pottarg,iffldtarg,fldtarg)
@@ -75,7 +75,7 @@ c
 c
 c
 c
-        subroutine hfmm3dpartself(ier,iprec,zk,nsource,source,
+        subroutine lfmm3dpartself(ier,iprec,nsource,source,
      $     ifcharge,charge,ifdipole,dipstr,dipvec,
      $     ifpot,pot,iffld,fld)
         implicit real *8 (a-h,o-z)
@@ -83,7 +83,7 @@ c
 c              
 c       Helmholtz FMM in R^3: evaluate all pairwise particle
 c       interactions (ignoring self-interaction). 
-c       We use (exp(ikr)/r) for the Green's function, without the 
+c       We use (1/r) for the Green's function, without the 
 c       (1/4 pi) scaling. Self-interactions are not included.
 c   
 c       The main FMM routine permits both evaluation at sources
@@ -96,7 +96,7 @@ c       See below for explanation of calling sequence arguments.
 c  
 c
         dimension source(3,1)
-        complex *16 charge(1),zk
+        complex *16 charge(1)
         complex *16 dipstr(1)
         dimension dipvec(3,1)
         complex *16 ima
@@ -114,7 +114,7 @@ c
         ifpottarg=0
         iffldtarg=0
 c
-        call hfmm3dparttarg(ier,iprec,zk,nsource,source,
+        call lfmm3dparttarg(ier,iprec,nsource,source,
      $     ifcharge,charge,ifdipole,dipstr,dipvec,
      $     ifpot,pot,iffld,fld,
      $     ntarg,targ,ifpottarg,pottarg,iffldtarg,fldtarg)
@@ -127,7 +127,7 @@ c
 c
 c
 
-      subroutine hfmm3dparttarg(ier,iprec,zk,nsource,source,
+      subroutine lfmm3dparttarg(ier,iprec,nsource,source,
      $     ifcharge,charge,ifdipole,dipstr,dipvec,
      $     ifpot,pot,iffld,fld,ntarg,targ,ifpottarg,pottarg,
      $     iffldtarg,fldtarg)
@@ -137,11 +137,11 @@ c       Helmholtz FMM in R^3: evaluate all pairwise particle
 c       interactions (ignoring self-interaction) 
 c       and interactions with targets.
 c
-c       We use (exp(ikr)/r) for the Green's function,
+c       We use (1/r) for the Green's function,
 c       without the (1/4 pi) scaling.  Self-interactions are not included.
 c   
 c       This is primarily a memory management code. 
-c       The actual work is carried out in subroutine hfmm3dparttargmain.
+c       The actual work is carried out in subroutine lfmm3dparttargmain.
 c
 c       INPUT PARAMETERS:
 c
@@ -156,7 +156,6 @@ c                  3 => tolerance =.5d-9
 c                  4 => tolerance =.5d-12
 c                  5 => tolerance =.5d-15
 c
-c       zk: complex *16: Helmholtz parameter
 c       nsource: integer:  number of sources
 c       source: real *8 (3,nsource):  source locations
 c       ifcharge:  charge computation flag
@@ -189,7 +188,6 @@ c       fldtarg: complex *16 (3,ntarget): field (-gradient) at target locations
 c
       integer ier,iprec,nsource
       integer ifcharge,ifdipole
-      double complex zk
       double precision source(3,nsource)
       
       double complex charge(*),dipstr(*)
@@ -203,6 +201,7 @@ c
       integer ntarg
       double precision targ(3,*)
       double complex, allocatable :: dipvec_in(:,:)
+      
       double complex, allocatable :: pottmp(:),gradtmp(:,:)
       double complex, allocatable :: pottargtmp(:),gradtargtmp(:,:)
 
@@ -279,8 +278,8 @@ c
         enddo
       endif
 
-      nd = 1
-      call hfmm3d(nd,eps,zk,nsource,source,ifcharge,charge,
+      nd = 2
+      call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
      1  ifdipole,dipvec_in,ifpgh,pottmp,gradtmp,hess,ntarg,
      2  targ,ifpghtarg,pottargtmp,gradtargtmp,hesstarg)
 
@@ -315,7 +314,7 @@ c
       end
 
 
-      subroutine h3dpartdirect(zk,ns,
+      subroutine l3dpartdirect(ns,
      $    source,ifcharge,charge,ifdipole,dipstr,dipvec,
      $     ifpot,pot,iffld,fld,nt,
      $     targ,ifpottarg,pottarg,iffldtarg,fldtarg)
@@ -326,12 +325,11 @@ c       Helmholtz interactions in R^3: evaluate all pairwise particle
 c       interactions (ignoring self-interaction) 
 c       and interactions with targets via direct O(N^2) algorithm.
 c
-c       We use (exp(ikr)/r) for the Green's function,
+c       We use (1/r) for the Green's function,
 c       without the (1/4 pi) scaling.  Self-interactions are not-included.
 c   
 c       INPUT PARAMETERS:
 c
-c       zk: complex *16: Helmholtz parameter
 c       ns: integer:  number of sources
 c       source: real *8 (3,nsource):  source locations
 c       ifcharge:  charge computation flag
@@ -360,7 +358,6 @@ c       fld: complex *16 (3,nsource): field (-gradient) at source locations
 c       pottarg: complex *16 (nt): potential at target locations 
 c       fldtarg: complex *16 (3,nt): field (-gradient) at target locations 
 c
-      double complex zk
       integer ns,ifcharge,ifdipole,ifpot,iffld,nt
       integer ifpottarg,iffldtarg
       double precision source(3,*), targ(3,*)
@@ -453,7 +450,7 @@ c      compute threshold based on boxsize
 c
 
 
-      nd = 1
+      nd = 2
       do i=1,ns
         if(source(1,i).lt.xmin) xmin = source(1,i)
         if(source(1,i).gt.xmax) xmax = source(1,i)
@@ -487,7 +484,7 @@ c
         write(*,*) "Exiting"
         return
       endif
-      thresh = abs(zk)*bsize*1.0d-16
+      thresh = bsize*1.0d-16
 
 c
 c      compute potential at source
@@ -497,7 +494,7 @@ c
         if(ifpgh.eq.1) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,ns
-            call h3ddirectcp(nd,zk,source,charge,ns,
+            call l3ddirectcp(nd,source,charge,ns,
      1            source(1,i),1,pottmp(i),thresh)
           enddo
 C$OMP END PARALLEL DO
@@ -506,7 +503,7 @@ C$OMP END PARALLEL DO
         if(ifpgh.eq.2) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,ns
-            call h3ddirectcg(nd,zk,source,charge,ns,
+            call l3ddirectcg(nd,source,charge,ns,
      1            source(1,i),1,pottmp(i),gradtmp(1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
@@ -516,7 +513,7 @@ C$OMP END PARALLEL DO
         if(ifpghtarg.eq.1) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,nt
-            call h3ddirectcp(nd,zk,source,charge,ns,
+            call l3ddirectcp(nd,source,charge,ns,
      1            targ(1,i),1,pottargtmp(i),thresh)
           enddo
 C$OMP END PARALLEL DO
@@ -525,7 +522,7 @@ C$OMP END PARALLEL DO
         if(ifpghtarg.eq.2) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,nt
-            call h3ddirectcg(nd,zk,source,charge,ns,
+            call l3ddirectcg(nd,source,charge,ns,
      1            targ(1,i),1,pottargtmp(i),
      2            gradtargtmp(1,i),thresh)
           enddo
@@ -538,7 +535,7 @@ C$OMP END PARALLEL DO
         if(ifpgh.eq.1) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,ns
-            call h3ddirectdp(nd,zk,source,dipvec_in,ns,
+            call l3ddirectdp(nd,source,dipvec_in,ns,
      1            source(1,i),1,pottmp(i),thresh)
           enddo
 C$OMP END PARALLEL DO
@@ -547,7 +544,7 @@ C$OMP END PARALLEL DO
         if(ifpgh.eq.2) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,ns
-            call h3ddirectdg(nd,zk,source,dipvec_in,ns,
+            call l3ddirectdg(nd,source,dipvec_in,ns,
      1            source(1,i),1,pottmp(i),gradtmp(1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
@@ -557,7 +554,7 @@ C$OMP END PARALLEL DO
         if(ifpghtarg.eq.1) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,nt
-            call h3ddirectdp(nd,zk,source,dipvec_in,ns,
+            call l3ddirectdp(nd,source,dipvec_in,ns,
      1            targ(1,i),1,pottargtmp(i),thresh)
           enddo
 C$OMP END PARALLEL DO
@@ -566,7 +563,7 @@ C$OMP END PARALLEL DO
         if(ifpghtarg.eq.2) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,nt
-            call h3ddirectdg(nd,zk,source,dipvec_in,ns,
+            call l3ddirectdg(nd,source,dipvec_in,ns,
      1            targ(1,i),1,pottargtmp(i),
      2            gradtargtmp(1,i),thresh)
           enddo
@@ -580,7 +577,7 @@ C$OMP END PARALLEL DO
         if(ifpgh.eq.1) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,ns
-            call h3ddirectcdp(nd,zk,source,charge,dipvec_in,ns,
+            call l3ddirectcdp(nd,source,charge,dipvec_in,ns,
      1            source(1,i),1,pottmp(i),thresh)
           enddo
 C$OMP END PARALLEL DO
@@ -589,7 +586,7 @@ C$OMP END PARALLEL DO
         if(ifpgh.eq.2) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,ns
-            call h3ddirectcdg(nd,zk,source,charge,dipvec_in,ns,
+            call l3ddirectcdg(nd,source,charge,dipvec_in,ns,
      1            source(1,i),1,pottmp(i),gradtmp(1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
@@ -599,7 +596,7 @@ C$OMP END PARALLEL DO
         if(ifpghtarg.eq.1) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,nt
-            call h3ddirectcdp(nd,zk,source,charge,dipvec_in,ns,
+            call l3ddirectcdp(nd,source,charge,dipvec_in,ns,
      1            targ(1,i),1,pottargtmp(i),thresh)
           enddo
 C$OMP END PARALLEL DO
@@ -608,7 +605,7 @@ C$OMP END PARALLEL DO
         if(ifpghtarg.eq.2) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,nt
-            call h3ddirectcdg(nd,zk,source,charge,dipvec_in,ns,
+            call l3ddirectcdg(nd,source,charge,dipvec_in,ns,
      1            targ(1,i),1,pottargtmp(i),
      2            gradtargtmp(1,i),thresh)
           enddo

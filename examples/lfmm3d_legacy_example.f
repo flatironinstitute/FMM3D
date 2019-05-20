@@ -25,7 +25,6 @@ c
       complex *16 ptemp,ftemp(3)
 c       
       complex *16 ima
-      complex *16 zk
       data ima/(0.0d0,1.0d0)/
 c
       done=1
@@ -48,10 +47,6 @@ c
       allocate(source(3,nsource),charge(nsource))
       allocate(dipstr(nsource),dipvec(3,nsource))
       allocate(pot(nsource),fld(3,nsource))
-c
-c     set Helmholtz parameter  (used only by H3D prefix routines)
-c
-      zk = 1.0d0 + ima*0.1d0
 c
 c     construct randomly located charge distribution on a unit sphere
 c 
@@ -116,7 +111,7 @@ C$        t1=omp_get_wtime()
 c       
 c     call FMM3D routine for sources and targets
 c
-        call hfmm3dparttarg(ier,iprec, zk,
+        call lfmm3dparttarg(ier,iprec, 
      $     nsource,source,ifcharge,charge,ifdipole,dipstr,dipvec,
      $     ifpot,pot,iffld,fld,ntarg,targ,
      $     ifpottarg,pottarg,iffldtarg,fldtarg)
@@ -170,7 +165,7 @@ c
         t1=second()
 C$        t1=omp_get_wtime()
       
-      call h3dpartdirect(zk,nsource,source,ifcharge,charge,ifdipole,
+      call l3dpartdirect(nsource,source,ifcharge,charge,ifdipole,
      1       dipstr,dipvec,ifpottmp,pot2,iffldtmp,fld2,m,source,
      2       ifpot,pot2,iffld,fld2)
 
@@ -191,12 +186,12 @@ c
      $     m/(t2-t1),1)
 c       
         if (ifpot .eq. 1)  then
-           call h3derror(pot,pot2,m,aerr,rerr)
+           call l3derror(pot,pot2,m,aerr,rerr)
            call prin2('relative L2 error in potential=*',rerr,1)
         endif
 c
         if (iffld .eq. 1) then
-           call h3derror(fld,fld2,3*m,aerr,rerr)
+           call l3derror(fld,fld2,3*m,aerr,rerr)
            call prin2('relative L2 error in field=*',rerr,1)
         endif
 
@@ -224,7 +219,7 @@ c
         t1=second()
 C$        t1=omp_get_wtime()
 c
-      call h3dpartdirect(zk,nsource,source,ifcharge,charge,ifdipole,
+      call l3dpartdirect(nsource,source,ifcharge,charge,ifdipole,
      1       dipstr,dipvec,ifpottmp,pot2,iffldtmp,fld2,m,targ,
      2       ifpottarg,pottarg2,iffldtarg,fldtarg2)
         t2=second()
@@ -252,12 +247,12 @@ c
      $     m/(t2-t1),1)
 c       
         if (ifpottarg .eq. 1) then
-           call h3derror(pottarg,pottarg2,m,aerr,rerr)
+           call l3derror(pottarg,pottarg2,m,aerr,rerr)
            call prin2('relative L2 error in target potential=*',rerr,1)
         endif
 c
         if (iffldtarg .eq. 1) then
-           call h3derror(fldtarg,fldtarg2,3*m,aerr,rerr)
+           call l3derror(fldtarg,fldtarg2,3*m,aerr,rerr)
            call prin2('relative L2 error in target field=*',rerr,1)
         endif
 c       
@@ -267,7 +262,7 @@ c
 c
 c
 c
-        subroutine h3derror(pot1,pot2,n,ae,re)
+        subroutine l3derror(pot1,pot2,n,ae,re)
         implicit real *8 (a-h,o-z)
 c
 c       evaluate absolute and relative errors
