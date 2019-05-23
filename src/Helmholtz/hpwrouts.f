@@ -169,9 +169,9 @@ c
 c***********************************************************************
       subroutine hmkfexp(nlambs,numfour,numphys,fexp,fexp2)
       implicit real *8 (a-h,o-z)
-      complex *16 ima
-      complex *16 fexp(1),fexp2(1)
-      integer  nlambs,numphys(nlambs),numfour(nlambs)
+      double complex ima
+      double complex fexp(*),fexp2(*)
+      integer  nlambs,numphys(*),numfour(*)
       data ima/(0.0d0,1.0d0)/
 c
 c     this subroutine computes the tables of exponentials needed
@@ -184,39 +184,35 @@ c***********************************************************************
       pi = 4*datan(1.0d0)
 
       next = 1
-      do 1600 i=1,nlambs
 
-	  nalpha = numphys(i)
-      halpha=2*pi/nalpha
+      do i=1,nlambs
+        nalpha = numphys(i)
+        halpha=2*pi/nalpha
 
-      do 1400 j=1,nalpha
-	  do 1200 mm = 1,numfour(i)
-
-      alpha=(j-1)*halpha
-      fexp(next) = cdexp(ima*mm*alpha)
-	  next = next + 1
-
-1200  continue
-1400  continue
-1600  continue
+        do j=1,nalpha
+          do mm = 1,numfour(i)
+            alpha=(j-1)*halpha
+            fexp(next) = exp(ima*mm*alpha)
+            next = next + 1
+          enddo
+        enddo
+      enddo
 
 
       next = 1
-      do 2600 i=1,nlambs
+      do i=1,nlambs
+ 
+        nalpha = numphys(i)
+        halpha=2*pi/nalpha
+        do mm = 1,numfour(i)
+          do j=1,nalpha
+            alpha=(j-1)*halpha
+            fexp2(next) = exp(-ima*mm*alpha)
+	        next = next + 1
+          enddo
+        enddo
+      enddo
 
-	  nalpha = numphys(i)
-      halpha=2*pi/nalpha
-
-	  do 2400 mm = 1,numfour(i)
-      do 2200 j=1,nalpha
-
-      alpha=(j-1)*halpha
-      fexp2(next) = cdexp(-ima*mm*alpha)
-	  next = next + 1
-
-2200  continue
-2400  continue
-2600  continue
 
       return
       end

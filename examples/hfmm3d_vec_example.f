@@ -8,10 +8,12 @@
       double precision eps
       double complex eye,zk
       integer i,j,k,idim
-      double precision hkrand
+      double precision hkrand,pi,thet,phi
       
 
       data eye/(0.0d0,1.0d0)/
+
+      pi = 4.0d0*atan(1.0d0)
 
 c
 cc      initialize printing routine
@@ -28,9 +30,9 @@ c
       zk = 2.2d0
 
       ns = 2000
-      nt = 1999
+      nt = 2000
       
-      nd = 5
+      nd = 1
 
       allocate(source(3,ns))
       allocate(targ(3,nt))
@@ -57,9 +59,11 @@ cc      generate sources uniformly in the unit cube
 c
 c
       do i=1,ns
-        source(1,i) = hkrand(0)**2
-        source(2,i) = hkrand(0)**2
-        source(3,i) = hkrand(0)**2
+        thet = hkrand(0)*pi
+        phi = hkrand(0)*2*pi
+        source(1,i) = sin(thet)*cos(phi) 
+        source(2,i) = sin(thet)*sin(phi)
+        source(3,i) = cos(thet)
 
         do idim=1,nd
           charge(idim,i) = hkrand(0) + eye*hkrand(0)
@@ -71,9 +75,9 @@ c
       enddo
 
       do i=1,nt
-        targ(1,i) = hkrand(0)
-        targ(2,i) = hkrand(0)
-        targ(3,i) = hkrand(0)
+        targ(1,i) = source(1,i) + 10.0d0
+        targ(2,i) = source(2,i)
+        targ(3,i) = source(3,i)
 
         do idim=1,nd
           pottarg(idim,i) = 0

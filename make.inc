@@ -3,7 +3,7 @@
 CC=gcc
 FC=ifort
 
-FFLAGS = -fPIC -O3 -xHost
+FFLAGS = -fPIC -O3 -xHost -debug all
 CFLAGS= -std=c99
 CFLAGS+= $(FFLAGS)
 

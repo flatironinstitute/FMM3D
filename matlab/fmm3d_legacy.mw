@@ -1,8 +1,8 @@
-@function [U]=hfmm3dpart(iprec,zk,nsource,source,ifcharge,charge,ifdipole,dipstr,dipvec,ifpot,iffld,ntarget,target,ifpottarg,iffldtarg)
-%HFMM3DPART Helmholtz particle target FMM in R^3.
+@function [U]=hfmm3dpart(iprec,zk,nsource,source,ifcharge,charge,ifdipole,dipstr,dipvec,ifpot,iffld,ntarg,targ,ifpottarg,iffldtarg)
+%HFMM3DPART Helmholtz particle targ FMM in R^3.
 %
 % Helmholtz FMM in R^3: evaluate all pairwise particle
-% interactions (ignoring self-interactions) and interactions with targets.
+% interactions (ignoring self-interactions) and interactions with targs.
 %
 % [U]=HFMM3DPART(IPREC,ZK,NSOURCE,SOURCE,...
 %         IFCHARGE,CHARGE,IFDIPOLE,DIPSTR,DIPVEC);
@@ -12,11 +12,11 @@
 %
 % [U]=HFMM3DPART(IPREC,ZK,NSOURCE,SOURCE,...
 %         IFCHARGE,CHARGE,IFDIPOLE,DIPSTR,DIPVEC,IFPOT,IFFLD,...
-%         NTARGET,TARGET);
+%         Ntarg,targ);
 %
 % [U]=HFMM3DPART(IPREC,ZK,NSOURCE,SOURCE,...
 %         IFCHARGE,CHARGE,IFDIPOLE,DIPSTR,DIPVEC,IFPOT,IFFLD,...
-%         NTARGET,TARGET,IFPOTTARG,IFFLDTARG);
+%         Ntarg,targ,IFPOTTARG,IFFLDTARG);
 %
 %
 % This subroutine evaluates the Helmholtz potential and field due
@@ -57,20 +57,20 @@
 % ifpot - potential computation flag, 1 => compute the potential, otherwise no
 % iffld - field computation flag, 1 => compute the field, otherwise no
 %
-% ntarget - number of targets
-% target - real (3,ntarget): target locations
+% ntarg - number of targs
+% targ - real (3,ntarg): targ locations
 %
-% ifpottarg - target potential computation flag, 
-%      1 => compute the target potential, otherwise no
-% iffldtarg - target field computation flag, 
-%      1 => compute the target field, otherwise no
+% ifpottarg - targ potential computation flag, 
+%      1 => compute the targ potential, otherwise no
+% iffldtarg - targ field computation flag, 
+%      1 => compute the targ field, otherwise no
 %
 % Output parameters: 
 %
 % U.pot - complex (nsource) - potential at source locations
 % U.fld - complex (3,nsource) - field (i.e. -gradient) at source locations
-% U.pottarg - complex (ntarget) - potential at target locations
-% U.fldtarg - complex (3,ntarget) - field (i.e. -gradient) at target locations
+% U.pottarg - complex (ntarg) - potential at targ locations
+% U.fldtarg - complex (3,ntarg) - field (i.e. -gradient) at targ locations
 %
 % U.ier - error return code
 %
@@ -83,15 +83,15 @@
 if( nargin == 9 ) 
   ifpot = 1;
   iffld = 1;
-  ntarget = 0;
-  target = zeros(3,1);
+  ntarg = 0;
+  targ = zeros(3,1);
   ifpottarg = 0;
   iffldtarg = 0;
 end
 
 if( nargin == 11 ) 
-  ntarget = 0;
-  target = zeros(3,1);
+  ntarg = 0;
+  targ = zeros(3,1);
   ifpottarg = 0;
   iffldtarg = 0;
 end
@@ -101,9 +101,9 @@ if( nargin == 13 )
   iffldtarg = 1;
 end
 
-ifcharge = ifcharge; ifdipole = ifdipole;
-ifpot = ifpot; iffld = iffld;
-ifpottarg = ifpottarg; iffldtarg = iffldtarg;
+ifcharge = double(ifcharge); ifdipole = double(ifdipole);
+ifpot = double(ifpot); iffld = double(iffld);
+ifpottarg = double(ifpottarg); iffldtarg = double(iffldtarg);
 
 pot=0;
 fld=zeros(3,1);
@@ -112,15 +112,15 @@ fldtarg=zeros(3,1);
 
 if( ifpot == 1 ), pot=zeros(1,nsource)+1i*zeros(1,nsource); end;
 if( iffld == 1 ), fld=zeros(3,nsource)+1i*zeros(3,nsource); end;
-if( ifpottarg == 1 ), pottarg=zeros(1,ntarget)+1i*zeros(1,ntarget); end;
-if( iffldtarg == 1 ), fldtarg=zeros(3,ntarget)+1i*zeros(3,ntarget); end;
+if( ifpottarg == 1 ), pottarg=zeros(1,ntarg)+1i*zeros(1,ntarg); end;
+if( iffldtarg == 1 ), fldtarg=zeros(3,ntarg)+1i*zeros(3,ntarg); end;
 
 ier=0;
 
-if( ntarget == 0 ) 
+if( ntarg == 0 ) 
 # FORTRAN hfmm3dpartself(inout int[1] ier, int[1] iprec, dcomplex[1] zk, int[1] nsource, double[3,nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double [3,nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld);
 else
-# FORTRAN hfmm3dparttarg(inout int[1] ier, int[1] iprec, dcomplex[1] zk, int[1] nsource, double[3,nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double [3,nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld, int[1] ntarget, double[] target, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
+# FORTRAN hfmm3dparttarg(inout int[1] ier, int[1] iprec, dcomplex[1] zk, int[1] nsource, double[3,nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double [3,nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld, int[1] ntarg, double[] targ, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
 end
 
 if( ifpot == 1 ), U.pot=pot; end
@@ -132,11 +132,11 @@ U.ier=ier;
 end
 
 
-@function [U]=h3dpartdirect(zk,nsource,source,ifcharge,charge,ifdipole,dipstr,dipvec,ifpot,iffld,ntarget,target,ifpottarg,iffldtarg)
+@function [U]=h3dpartdirect(zk,nsource,source,ifcharge,charge,ifdipole,dipstr,dipvec,ifpot,iffld,ntarg,targ,ifpottarg,iffldtarg)
 %HFMM3DPARTDIRECT Helmholtz interactions in R^3, direct evaluation.
 %
 % Helmholtz FMM in R^3: evaluate all pairwise particle
-% interactions (ignoring self-interactions) and interactions with targets.
+% interactions (ignoring self-interactions) and interactions with targs.
 %
 % [U]=H3DPARTDIRECT(ZK,NSOURCE,SOURCE,...
 %         IFCHARGE,CHARGE,IFDIPOLE,DIPSTR,DIPVEC);
@@ -146,11 +146,11 @@ end
 %
 % [U]=H3DPARTDIRECT(ZK,NSOURCE,SOURCE,...
 %         IFCHARGE,CHARGE,IFDIPOLE,DIPSTR,DIPVEC,IFPOT,IFFLD,...
-%         NTARGET,TARGET);
+%         Ntarg,targ);
 %
 % [U]=H3DPARTDIRECT(ZK,NSOURCE,SOURCE,...
 %         IFCHARGE,CHARGE,IFDIPOLE,DIPSTR,DIPVEC,IFPOT,IFFLD,...
-%         NTARGET,TARGET,IFPOTTARG,IFFLDTARG);
+%         Ntarg,targ,IFPOTTARG,IFFLDTARG);
 %
 %
 % This subroutine evaluates the Helmholtz potential and field due
@@ -180,20 +180,20 @@ end
 % ifpot - potential computation flag, 1 => compute the potential, otherwise no
 % iffld - field computation flag, 1 => compute the field, otherwise no
 %
-% ntarget - number of targets
-% target - real (3,ntarget): target locations
+% ntarg - number of targs
+% targ - real (3,ntarg): targ locations
 %
-% ifpottarg - target potential computation flag, 
-%      1 => compute the target potential, otherwise no
-% iffldtarg - target field computation flag, 
-%      1 => compute the target field, otherwise no
+% ifpottarg - targ potential computation flag, 
+%      1 => compute the targ potential, otherwise no
+% iffldtarg - targ field computation flag, 
+%      1 => compute the targ field, otherwise no
 %
 % Output parameters: 
 %
 % U.pot - complex (nsource) - potential at source locations
 % U.fld - complex (3,nsource) - field (i.e. -gradient) at source locations
-% U.pottarg - complex (ntarget) - potential at target locations
-% U.fldtarg - complex (3,ntarget) - field (i.e. -gradient) at target locations
+% U.pottarg - complex (ntarg) - potential at targ locations
+% U.fldtarg - complex (3,ntarg) - field (i.e. -gradient) at targ locations
 %
 % U.ier - error return code
 %
@@ -204,15 +204,15 @@ end
 if( nargin == 8 ) 
   ifpot = 1;
   iffld = 1;
-  ntarget = 0;
-  target = zeros(3,1);
+  ntarg = 0;
+  targ = zeros(3,1);
   ifpottarg = 0;
   iffldtarg = 0;
 end
 
 if( nargin == 10 ) 
-  ntarget = 0;
-  target = zeros(3,1);
+  ntarg = 0;
+  targ = zeros(3,1);
   ifpottarg = 0;
   iffldtarg = 0;
 end
@@ -233,12 +233,12 @@ fldtarg=zeros(3,1);
 
 if( ifpot == 1 ), pot=zeros(1,nsource)+1i*zeros(1,nsource); end;
 if( iffld == 1 ), fld=zeros(3,nsource)+1i*zeros(3,nsource); end;
-if( ifpottarg == 1 ), pottarg=zeros(1,ntarget)+1i*zeros(1,ntarget); end;
-if( iffldtarg == 1 ), fldtarg=zeros(3,ntarget)+1i*zeros(3,ntarget); end;
+if( ifpottarg == 1 ), pottarg=zeros(1,ntarg)+1i*zeros(1,ntarg); end;
+if( iffldtarg == 1 ), fldtarg=zeros(3,ntarg)+1i*zeros(3,ntarg); end;
 
 ier=0;
 
-# FORTRAN h3dpartdirect(dcomplex[1] zk, int[1] nsource, double[3,nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double [3,nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld, int[1] ntarget, double[] target, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
+# FORTRAN h3dpartdirect(dcomplex[1] zk, int[1] nsource, double[3,nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double [3,nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld, int[1] ntarg, double[] targ, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
 
 
 if( ifpot == 1 ), U.pot=pot; end
@@ -249,11 +249,11 @@ U.ier=ier;
 
 end
 
-@function [U]=lfmm3dpart(iprec,nsource,source,ifcharge,charge,ifdipole,dipstr,dipvec,ifpot,iffld,ntarget,target,ifpottarg,iffldtarg)
-%LFMM3DPART Laplace particle target FMM in R^3.
+@function [U]=lfmm3dpart(iprec,nsource,source,ifcharge,charge,ifdipole,dipstr,dipvec,ifpot,iffld,ntarg,targ,ifpottarg,iffldtarg)
+%LFMM3DPART Laplace particle targ FMM in R^3.
 %
 % Laplace FMM in R^3: evaluate all pairwise particle
-% interactions (ignoring self-interactions) and interactions with targets.
+% interactions (ignoring self-interactions) and interactions with targs.
 %
 % [U]=LFMM3DPART(IPREC,NSOURCE,SOURCE,...
 %         IFCHARGE,CHARGE,IFDIPOLE,DIPSTR,DIPVEC);
@@ -263,11 +263,11 @@ end
 %
 % [U]=LFMM3DPART(IPREC,NSOURCE,SOURCE,...
 %         IFCHARGE,CHARGE,IFDIPOLE,DIPSTR,DIPVEC,IFPOT,IFFLD,...
-%         NTARGET,TARGET);
+%         Ntarg,targ);
 %
 % [U]=LFMM3DPART(IPREC,NSOURCE,SOURCE,...
 %         IFCHARGE,CHARGE,IFDIPOLE,DIPSTR,DIPVEC,IFPOT,IFFLD,...
-%         NTARGET,TARGET,IFPOTTARG,IFFLDTARG);
+%         Ntarg,targ,IFPOTTARG,IFFLDTARG);
 %
 %
 % This subroutine evaluates the Laplace potential and field due
@@ -307,20 +307,20 @@ end
 % ifpot - potential computation flag, 1 => compute the potential, otherwise no
 % iffld - field computation flag, 1 => compute the field, otherwise no
 %
-% ntarget - number of targets
-% target - real (3,ntarget): target locations
+% ntarg - number of targs
+% targ - real (3,ntarg): targ locations
 %
-% ifpottarg - target potential computation flag, 
-%      1 => compute the target potential, otherwise no
-% iffldtarg - target field computation flag, 
-%      1 => compute the target field, otherwise no
+% ifpottarg - targ potential computation flag, 
+%      1 => compute the targ potential, otherwise no
+% iffldtarg - targ field computation flag, 
+%      1 => compute the targ field, otherwise no
 %
 % Output parameters: 
 %
 % U.pot - complex (nsource) - potential at source locations
 % U.fld - complex (3,nsource) - field (i.e. -gradient) at source locations
-% U.pottarg - complex (ntarget) - potential at target locations
-% U.fldtarg - complex (3,ntarget) - field (i.e. -gradient) at target locations
+% U.pottarg - complex (ntarg) - potential at targ locations
+% U.fldtarg - complex (3,ntarg) - field (i.e. -gradient) at targ locations
 %
 % U.ier - error return code
 %
@@ -334,15 +334,15 @@ end
 if( nargin == 8 ) 
   ifpot = 1;
   iffld = 1;
-  ntarget = 0;
-  target = zeros(3,1);
+  ntarg = 0;
+  targ = zeros(3,1);
   ifpottarg = 0;
   iffldtarg = 0;
 end
 
 if( nargin == 10 ) 
-  ntarget = 0;
-  target = zeros(3,1);
+  ntarg = 0;
+  targ = zeros(3,1);
   ifpottarg = 0;
   iffldtarg = 0;
 end
@@ -363,15 +363,15 @@ fldtarg=zeros(3,1);
 
 if( ifpot == 1 ), pot=zeros(1,nsource)+1i*zeros(1,nsource); end;
 if( iffld == 1 ), fld=zeros(3,nsource)+1i*zeros(3,nsource); end;
-if( ifpottarg == 1 ), pottarg=zeros(1,ntarget)+1i*zeros(1,ntarget); end;
-if( iffldtarg == 1 ), fldtarg=zeros(3,ntarget)+1i*zeros(3,ntarget); end;
+if( ifpottarg == 1 ), pottarg=zeros(1,ntarg)+1i*zeros(1,ntarg); end;
+if( iffldtarg == 1 ), fldtarg=zeros(3,ntarg)+1i*zeros(3,ntarg); end;
 
 ier=0;
 
-if( ntarget == 0 ) 
+if( ntarg == 0 ) 
 # FORTRAN lfmm3dpartself(inout int[1] ier, int[1] iprec, int[1] nsource, double[3,nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double [3,nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld);
 else
-# FORTRAN lfmm3dparttarg(inout int[1] ier, int[1] iprec, int[1] nsource, double[3,nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double [3,nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld, int[1] ntarget, double[] target, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
+# FORTRAN lfmm3dparttarg(inout int[1] ier, int[1] iprec, int[1] nsource, double[3,nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double [3,nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld, int[1] ntarg, double[] targ, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
 end
 
 if( ifpot == 1 ), U.pot=pot; end
@@ -384,11 +384,11 @@ end
 
 
 
-@function [U]=l3dpartdirect(nsource,source,ifcharge,charge,ifdipole,dipstr,dipvec,ifpot,iffld,ntarget,target,ifpottarg,iffldtarg)
+@function [U]=l3dpartdirect(nsource,source,ifcharge,charge,ifdipole,dipstr,dipvec,ifpot,iffld,ntarg,targ,ifpottarg,iffldtarg)
 %LFMM3DPARTDIRECT Laplace interactions in R^3, direct evaluation.
 %
 % Laplace FMM in R^3: evaluate all pairwise particle
-% interactions (ignoring self-interactions) and interactions with targets.
+% interactions (ignoring self-interactions) and interactions with targs.
 %
 % [U]=L3DPARTDIRECT(NSOURCE,SOURCE,...
 %         IFCHARGE,CHARGE,IFDIPOLE,DIPSTR,DIPVEC);
@@ -398,11 +398,11 @@ end
 %
 % [U]=L3DPARTDIRECT(NSOURCE,SOURCE,...
 %         IFCHARGE,CHARGE,IFDIPOLE,DIPSTR,DIPVEC,IFPOT,IFFLD,...
-%         NTARGET,TARGET);
+%         Ntarg,targ);
 %
 % [U]=L3DPARTDIRECT(NSOURCE,SOURCE,...
 %         IFCHARGE,CHARGE,IFDIPOLE,DIPSTR,DIPVEC,IFPOT,IFFLD,...
-%         NTARGET,TARGET,IFPOTTARG,IFFLDTARG);
+%         Ntarg,targ,IFPOTTARG,IFFLDTARG);
 %
 %
 % This subroutine evaluates the Laplace potential and field due
@@ -431,20 +431,20 @@ end
 % ifpot - potential computation flag, 1 => compute the potential, otherwise no
 % iffld - field computation flag, 1 => compute the field, otherwise no
 %
-% ntarget - number of targets
-% target - real (3,ntarget): target locations
+% ntarg - number of targs
+% targ - real (3,ntarg): targ locations
 %
-% ifpottarg - target potential computation flag, 
-%      1 => compute the target potential, otherwise no
-% iffldtarg - target field computation flag, 
-%      1 => compute the target field, otherwise no
+% ifpottarg - targ potential computation flag, 
+%      1 => compute the targ potential, otherwise no
+% iffldtarg - targ field computation flag, 
+%      1 => compute the targ field, otherwise no
 %
 % Output parameters: 
 %
 % U.pot - complex (nsource) - potential at source locations
 % U.fld - complex (3,nsource) - field (i.e. -gradient) at source locations
-% U.pottarg - complex (ntarget) - potential at target locations
-% U.fldtarg - complex (3,ntarget) - field (i.e. -gradient) at target locations
+% U.pottarg - complex (ntarg) - potential at targ locations
+% U.fldtarg - complex (3,ntarg) - field (i.e. -gradient) at targ locations
 %
 % U.ier - error return code
 %
@@ -453,15 +453,15 @@ end
 if( nargin == 7 ) 
   ifpot = 1;
   iffld = 1;
-  ntarget = 0;
-  target = zeros(3,1);
+  ntarg = 0;
+  targ = zeros(3,1);
   ifpottarg = 0;
   iffldtarg = 0;
 end
 
 if( nargin == 9 ) 
-  ntarget = 0;
-  target = zeros(3,1);
+  ntarg = 0;
+  targ = zeros(3,1);
   ifpottarg = 0;
   iffldtarg = 0;
 end
@@ -482,12 +482,12 @@ fldtarg=zeros(3,1);
 
 if( ifpot == 1 ), pot=zeros(1,nsource)+1i*zeros(1,nsource); end;
 if( iffld == 1 ), fld=zeros(3,nsource)+1i*zeros(3,nsource); end;
-if( ifpottarg == 1 ), pottarg=zeros(1,ntarget)+1i*zeros(1,ntarget); end;
-if( iffldtarg == 1 ), fldtarg=zeros(3,ntarget)+1i*zeros(3,ntarget); end;
+if( ifpottarg == 1 ), pottarg=zeros(1,ntarg)+1i*zeros(1,ntarg); end;
+if( iffldtarg == 1 ), fldtarg=zeros(3,ntarg)+1i*zeros(3,ntarg); end;
 
 ier=0;
 
-# FORTRAN l3dpartdirect(int[1] nsource, double[3,nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double [3,nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld, int[1] ntarget, double[] target, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
+# FORTRAN l3dpartdirect(int[1] nsource, double[3,nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double [3,nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld, int[1] ntarg, double[] targ, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
 
 
 if( ifpot == 1 ), U.pot=pot; end

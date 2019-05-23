@@ -12,25 +12,25 @@
 CC=gcc
 FC=gfortran
 
-FFLAGS=-fPIC -O3 -funroll-loops -march=native 
+FFLAGS= -fPIC -O3 
 CFLAGS= -std=c99 
 CFLAGS+= $(FFLAGS) 
 
-CLINK = -lgfortran -lm
+CLINK = -lgfortran -lm -ldl
 
 # extra flags for multithreaded: C/Fortran, MATLAB
-OMPFLAGS = -fopenmp
+OMPFLAGS = --openmp
 MOMPFLAGS = -lgomp -D_OPENMP
 
 # flags for MATLAB MEX compilation..
-MFLAGS=-largeArrayDims -DMWF77_UNDERSCORE1 -lgfortran -lm  
+MFLAGS= -lgfortran -DMWF77_UNDERSCORE1 -lm  -ldl
 MWFLAGS=-c99complex 
 
 # location of MATLAB's mex compiler
 MEX=mex
 
 # For experts, location of Mwrap executable
-MWRAP=../../mwrap-0.33/mwrap
+MWRAP=../../fmmlib3d/mwrap
 
 
 # multi-threaded libs & flags needed
@@ -123,13 +123,13 @@ $(DYNAMICLIB): $(OBJS)
 
 # matlab..
 MWRAPFILE = fmm3d
-MWRAPFILE2 = fmm3d_legacy
+MWRAPFILE2 = fmm3d2
 GATEWAY = $(MWRAPFILE)
 GATEWAY2 = $(MWRAPFILE2)
 
 matlab:	$(STATICLIB) matlab/$(GATEWAY).c matlab/$(GATEWAY2).c
 	$(MEX) matlab/$(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d $(MEX_LIBS);
-	$(MEX) matlab/$(GATEWAY2).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d_legacy $(MEXLIBS);
+	$(MEX) matlab/$(GATEWAY2).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d2 $(MEXLIBS);
 
 
 mex:  $(STATICLIB)
@@ -138,7 +138,7 @@ mex:  $(STATICLIB)
 	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output fmm3d $(MEX_LIBS); \
 	$(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY2) -mb $(MWRAPFILE2).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY2) -c $(GATEWAY2).c $(MWRAPFILE2).mw;\
-	$(MEX) $(GATEWAY2).c ../$(STATICLIB) $(MFLAGS) -output fmm3d_legacy $(MEX_LIBS);
+	$(MEX) $(GATEWAY2).c ../$(STATICLIB) $(MFLAGS) -output fmm3d2 $(MEX_LIBS);
 
 #python
 python:
@@ -258,6 +258,10 @@ clean: objclean
 	rm -f c/lfmm3d_vec_example
 	rm -f c/test_hfmm3d
 	rm -f c/test_lfmm3d
+
+debug: $(STATICLIB) $(TOBJS) examples/ex2_helm
+	time -p examples/hfmm3d_vec_example
+	valgrind examples/hfmm3d_vec_example
 	
 	
 

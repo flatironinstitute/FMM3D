@@ -100,13 +100,14 @@ c------------------------------------------------------------------
 
       integer nsource,ntarg
 
-      double precision source(3,*),targ(3,*)
-      double complex charge(nd,*)
+      double precision source(3,nsource),targ(3,ntarg)
+      double complex charge(nd,nsource)
 
-      double complex dipvec(nd,3,*)
+      double complex dipvec(nd,3,nsource)
 
-      double complex pot(nd,*),grad(nd,3,*),pottarg(nd,3,*),
-     1     gradtarg(nd,3,*),hess(nd,6,*),hesstarg(nd,6,*)
+      double complex pot(nd,nsource),grad(nd,3,nsource),
+     1     pottarg(nd,3,ntarg),
+     1     gradtarg(nd,3,ntarg),hess(nd,6,*),hesstarg(nd,6,*)
 
 c       Tree variables
       integer ltree,mhung,idivflag,ndiv,isep,nboxes,nbmax,nlevels
@@ -153,6 +154,9 @@ cc        other temporary variables
 c
        integer i,iert,ifprint,ilev,idim,ier
        double precision time1,time2,omp_get_wtime,second
+
+       
+
 
 c
 cc       figure out tree structure
@@ -422,7 +426,7 @@ c
      1              lmptot is *', lmptot,1)
          stop
       endif
-     
+
 
 c     Memory allocation is complete. 
 c     Call main fmm routine
@@ -565,7 +569,6 @@ c
       integer e1(20),e3(5),e5(5),e7(5),w2(5),w4(5),w6(5),w8(5)
 
       integer ntmax, nexpmax, nlams, nmax, nthmax, nphmax
-      parameter (ntmax = 1000)
       double precision, allocatable :: carray(:,:), dc(:,:)
       double precision, allocatable :: rdplus(:,:,:)
       double precision, allocatable :: rdminus(:,:,:), rdsq3(:,:,:)
@@ -575,14 +578,14 @@ c
       double precision, allocatable :: zmone(:)
       integer nn,nnn
   
-      double complex rlams(ntmax), whts(ntmax)
+      double complex, allocatable :: rlams(:),whts(:)
 
       double complex, allocatable :: rlsc(:,:,:)
-      integer nfourier(ntmax), nphysical(ntmax)
+      integer, allocatable :: nfourier(:), nphysical(:)
       integer nexptot, nexptotp
       double complex, allocatable :: xshift(:,:),yshift(:,:),zshift(:,:)
 
-      double complex fexp(100000), fexpback(100000)
+      double complex, allocatable :: fexp(:),fexpback(:)
 
       double complex, allocatable :: mexp(:,:,:,:)
       double complex, allocatable :: tmp(:,:,:)
@@ -639,6 +642,11 @@ c     temp variables
       integer nlfbox,ier
 
 
+      ntmax = 1000
+      allocate(nfourier(ntmax),nphysical(ntmax))
+      allocate(rlams(ntmax),whts(ntmax))
+
+
       pi = 4.0d0*atan(1.0d0)
 
       nmax = 0
@@ -656,6 +664,9 @@ c      which satisfy |zk*r| < thresh
 c      where r is the disance between them
 
       thresh = 1.0d-16*abs(zk)*boxsize(0)
+
+      call prini(6,13)
+      write(13,*) thresh
 
 
       allocate(zeyep(-nmax:nmax),zmone(0:2*nmax))
@@ -745,6 +756,7 @@ c    initialize legendre function evaluation routines
       nlege = 100
       lw7 = 40000
       call ylgndrfwini(nlege,wlege,lw7,lused7)
+
 
 c
 c
@@ -985,19 +997,23 @@ c
       
          zk2 = zk*boxsize(ilev)
          if(real(zk2).le.pi.and.imag(zk2).le.0.02d0) then
+            ier = 0
             call lreadall(eps,zk2,nlams,rlams,whts,nfourier,
      1           nphysical,ntmax,ier)
-
+            
             nphmax = 0
             nthmax = 0
             nexptotp = 0
             nexptot = 0
+            nn = 0
             do i=1,nlams
                nexptotp = nexptotp + nphysical(i)
                nexptot = nexptot + 2*nfourier(i)+1
+               nn = nn + nfourier(i)*nphysical(i)
                if(nfourier(i).gt.nthmax) nthmax = nfourier(i)
                if(nphysical(i).gt.nphmax) nphmax = nphysical(i)
             enddo
+            allocate(fexp(nn),fexpback(nn))
 
             allocate(xshift(-5:5,nexptotp))
             allocate(yshift(-5:5,nexptotp))
@@ -1030,6 +1046,7 @@ c     generate rotation matrices and carray
             call hrlscini(rlsc,nlams,rlams,zk2,nterms(ilev))
             call hmkexps(rlams,nlams,nphysical,nexptotp,zk2,xshift,
      1           yshift,zshift)
+            
             call hmkfexp(nlams,nfourier,nphysical,fexp,fexpback)
 c
 cc      zero out mexp
@@ -1224,6 +1241,7 @@ C$OMP END PARALLEL DO
             deallocate(carray,dc,rdplus,rdminus,rdsq3,rdmsq3)
 
             deallocate(mexpf1,mexpf2,mexpp1,mexpp2,mexppall,mexp)
+            deallocate(fexp,fexpback)
 
          endif
 
@@ -1940,13 +1958,6 @@ C$        time2=omp_get_wtime()
 
       if(ifprint.ge.1) call prin2('sum(timeinfo)=*',d,1)
 
-      ifwrite = 0
-      if(ifwrite.eq.1) then
- 1100 format(2(2x,i6),e11.5)
-        open(unit=33,file='../../res/restmp.txt',access='append')
-        write(33,*) nsource,ntarg,d
-        close(33)
-      endif
 
       return
       end
