@@ -101,9 +101,9 @@ if( nargin == 13 )
   iffldtarg = 1;
 end
 
-ifcharge = double(ifcharge); ifdipole = double(ifdipole);
-ifpot = double(ifpot); iffld = double(iffld);
-ifpottarg = double(ifpottarg); iffldtarg = double(iffldtarg);
+ifcharge = ifcharge; ifdipole = ifdipole;
+ifpot = ifpot; iffld = iffld;
+ifpottarg = ifpottarg; iffldtarg = iffldtarg;
 
 pot=0;
 fld=zeros(3,1);

@@ -2,7 +2,7 @@
 %  Test Helmholtz particle FMMs in R^3
 %
 
-zk = 1
+zk = complex(1);
 
 nsource = 2000
 
@@ -29,9 +29,9 @@ end
 %
 
 ifcharge=1;
-charge = rand(1,nsource);
+charge = complex(rand(1,nsource));
 ifdipole=1;
-dipstr = rand(1,nsource);
+dipstr = complex(rand(1,nsource));
 dipvec = rand(3,nsource);
 
 
@@ -39,7 +39,6 @@ ifcharge
 ifdipole
 ifpot = 1
 iffld = 1
-
 
 ntarget = min(10,nsource);
 target = source(:,1:nsource);

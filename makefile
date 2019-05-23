@@ -12,7 +12,7 @@
 CC=gcc
 FC=gfortran
 
-FFLAGS=-fPIC -O3 -funroll-loops -march=native 
+FFLAGS=-fPIC -O3 -funroll-loops -march=native  
 CFLAGS= -std=c99 
 CFLAGS+= $(FFLAGS) 
 
@@ -24,7 +24,7 @@ OMPFLAGS = -fopenmp
 MOMPFLAGS = -lgomp -D_OPENMP
 
 # flags for MATLAB MEX compilation..
-MFLAGS=-largeArrayDims -DMWF77_UNDERSCORE1 -lgfortran -lgomp -D_OPENMP -lm
+MFLAGS=-largeArrayDims -DMWF77_UNDERSCORE1 -lgfortran -lgomp -D_OPENMP -lm  
 MWFLAGS=-c99complex 
 
 # location of MATLAB's mex compiler
@@ -79,11 +79,11 @@ CHEADERS = c/cprini.h c/utils.h c/hfmm3d_c.h
 
 OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
-.PHONY: usage lib examples test perftest python all c c-examples
+.PHONY: usage lib examples test perftest python all c c-examples matlab
 
 default: usage
 
-all: lib examples test perftest python c c-examples
+all: lib examples test perftest python c c-examples matlab
 
 usage:
 	@echo "Makefile for FMM3D. Specify what to make:"
@@ -121,15 +121,22 @@ $(DYNAMICLIB): $(OBJS)
 
 # matlab..
 MWRAPFILE = fmm3d
+MWRAPFILE2 = fmm3d_legacy
 GATEWAY = $(MWRAPFILE)
-matlab:	$(STATICLIB) matlab/$(GATEWAY).c
-	$(MEX) matlab/$(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d
+GATEWAY2 = $(MWRAPFILE2)
+
+matlab:	$(STATICLIB) matlab/$(GATEWAY).c matlab/$(GATEWAY2).c
+	$(MEX) matlab/$(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d;
+	$(MEX) matlab/$(GATEWAY2).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d_legacy;
 
 
 mex:  $(STATICLIB)
 	cd matlab; $(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY) -mb $(MWRAPFILE).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY) -c $(GATEWAY).c $(MWRAPFILE).mw;\
-	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output fmm3d
+	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output fmm3d;\
+	$(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY2) -mb $(MWRAPFILE2).mw;\
+	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY2) -c $(GATEWAY2).c $(MWRAPFILE2).mw;\
+	$(MEX) $(GATEWAY2).c ../$(STATICLIB) $(MFLAGS) -output fmm3d_legacy;
 
 #python
 python:
