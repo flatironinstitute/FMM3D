@@ -225,11 +225,13 @@ c
 
       if(ifdipole.eq.1) then
          allocate(dipvec_in(3,nsource))
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
          do i=1,nsource
            dipvec_in(1,i) = dipstr(i)*dipvec(1,i)
            dipvec_in(2,i) = dipstr(i)*dipvec(2,i)
            dipvec_in(3,i) = dipstr(i)*dipvec(3,i)
          enddo
+C$OMP END PARALLEL DO        
       endif
       if(ifdipole.ne.1) allocate(dipvec_in(3,1))
 
@@ -239,21 +241,25 @@ c
 
       if(ifpgh.eq.1) then
         allocate(pottmp(nsource),gradtmp(3,1))
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
         do i=1,nsource
           pottmp(i) = 0
         enddo
+C$OMP END PARALLEL DO        
         gradtmp(1,1)= 0
         gradtmp(2,1)= 0
         gradtmp(3,1)= 0
       endif
       if(ifpgh.eq.2) then
         allocate(pottmp(nsource),gradtmp(3,nsource))
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
         do i=1,nsource
           pottmp(i) = 0
           gradtmp(1,i)= 0
           gradtmp(2,i)= 0
           gradtmp(3,i)= 0
         enddo
+C$OMP END PARALLEL DO        
       endif
 
       if(ifpottarg.eq.1) ifpghtarg = 1
@@ -261,21 +267,25 @@ c
 
       if(ifpghtarg.eq.1) then
         allocate(pottargtmp(nsource),gradtargtmp(3,1))
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
         do i=1,ntarg
           pottargtmp(i) = 0
         enddo
+C$OMP END PARALLEL DO        
         gradtargtmp(1,1)= 0
         gradtargtmp(2,1)= 0
         gradtargtmp(3,1)= 0
       endif
       if(ifpghtarg.eq.2) then
         allocate(pottargtmp(nsource),gradtargtmp(3,nsource))
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
         do i=1,ntarg
           pottargtmp(i) = 0
           gradtargtmp(1,i)= 0
           gradtargtmp(2,i)= 0
           gradtargtmp(3,i)= 0
         enddo
+C$OMP END PARALLEL DO        
       endif
 
       nd = 2
@@ -284,29 +294,37 @@ c
      2  targ,ifpghtarg,pottargtmp,gradtargtmp,hesstarg)
 
       if(ifpot.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
         do i=1,nsource
           pot(i) = pottmp(i)
         enddo
+C$OMP END PARALLEL DO        
       endif
       if(iffld.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
         do i=1,nsource
           fld(1,i) = -gradtmp(1,i)
           fld(2,i) = -gradtmp(2,i)
           fld(3,i) = -gradtmp(3,i)
         enddo
+C$OMP END PARALLEL DO        
       endif
 
       if(ifpottarg.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
         do i=1,ntarg
           pottarg(i) = pottargtmp(i)
         enddo
+C$OMP END PARALLEL DO        
       endif
       if(iffldtarg.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
         do i=1,ntarg
           fldtarg(1,i) = -gradtargtmp(1,i)
           fldtarg(2,i) = -gradtargtmp(2,i)
           fldtarg(3,i) = -gradtargtmp(3,i)
         enddo
+C$OMP END PARALLEL DO        
       endif
 
 
@@ -451,6 +469,13 @@ c
 
 
       nd = 2
+
+      xmin = source(1,1)
+      xmax = source(1,1)
+      ymin = source(2,1)
+      ymax = source(2,1)
+      zmin = source(3,1)
+      zmax = source(3,1)
       do i=1,ns
         if(source(1,i).lt.xmin) xmin = source(1,i)
         if(source(1,i).gt.xmax) xmax = source(1,i)

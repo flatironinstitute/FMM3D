@@ -1,3 +1,5 @@
+clear srcinfo
+
 ns = 2000;
 srcinfo.sources = rand(3,ns);
 srcinfo.charges = rand(1,ns)+1i*rand(1,ns);
@@ -593,4 +595,7 @@ ra = norm(p2)^2 + norm(tp2)^2 + norm(g2)^2 + norm(tg2)^2;
 errs(36) = sqrt(err/ra);
 assert(errs(36)<eps,'Failed source to target, charge+dipole, grad vec test');
 ipass(36) = 1;
+
+isum = sum(ipass);
+fprintf("Successfully cleared %d out of 36 tests in laplace testing suite\n",isum);
 

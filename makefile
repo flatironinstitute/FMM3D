@@ -119,7 +119,7 @@ endif
 $(STATICLIB): $(OBJS) 
 	ar rcs $(STATICLIB) $(OBJS)
 $(DYNAMICLIB): $(OBJS) 
-	$(FC) -shared $(OMPFLAGS) $(OBJS) -o $(DYNAMICLIB)
+	$(FC) -shared $(OBJS) -o $(DYNAMICLIB)
 
 # matlab..
 MWRAPFILE = fmm3d

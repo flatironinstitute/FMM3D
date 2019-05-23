@@ -10,7 +10,7 @@ CFLAGS+= $(FFLAGS)
 OMPFLAGS = -qopenmp
 
 MFLAGS=-largeArrayDims -DMWF77_UNDERSCORE1 LDFLAGS='${LDFLAGS} -Wl,-rpath,${LD_LIBRARY_PATH}'
-MEX_LIBS= -L${LD_LIBRARY_PATH} -lsvml -lifcore -limf -lintlc -liomp5 -lm 
+MEX_LIBS= -L${LD_LIBRARY_PATH} -lsvml -lifcore -limf -lintlc -lm 
 
 ifneq ($(OMP),OFF)
 CFLAGS += $(OMPFLAGS)

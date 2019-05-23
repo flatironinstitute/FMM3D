@@ -108,6 +108,7 @@ c
           dipvec(3,i)=hkrand(0)
         enddo
       endif
+
 c
 c     initialize timing call
 c
@@ -169,7 +170,16 @@ c
 
         call cpu_time(t1)
 C$        t1=omp_get_wtime()
+     
       
+      call prinf('m=*',m,1)
+      call prinf('nsource=*',nsource,1)
+      call prin2('source=*',source,12)
+      call prinf('ifcharge=*',ifcharge,1)
+      call prinf('ifdipole=*',ifdipole,1)
+      call prinf('m=*',m,1)
+      call prinf('ifpot=*',ifpot,1)
+      call prinf('iffld=*',iffld,1)
       call h3dpartdirect(zk,nsource,source,ifcharge,charge,ifdipole,
      1       dipstr,dipvec,ifpottmp,pot2,iffldtmp,fld2,m,source,
      2       ifpot,pot2,iffld,fld2)

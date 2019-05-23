@@ -201,7 +201,7 @@ c
 
       integer nd,ifpgh,ifpghtarg
       integer ntarg
-      double precision targ(3,*)
+      double precision targ(3,ntarg)
       double complex, allocatable :: dipvec_in(:,:)
       double complex, allocatable :: pottmp(:),gradtmp(:,:)
       double complex, allocatable :: pottargtmp(:),gradtargtmp(:,:)
@@ -226,11 +226,13 @@ c
 
       if(ifdipole.eq.1) then
          allocate(dipvec_in(3,nsource))
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
          do i=1,nsource
            dipvec_in(1,i) = dipstr(i)*dipvec(1,i)
            dipvec_in(2,i) = dipstr(i)*dipvec(2,i)
            dipvec_in(3,i) = dipstr(i)*dipvec(3,i)
          enddo
+C$OMP END PARALLEL DO        
       endif
       if(ifdipole.ne.1) allocate(dipvec_in(3,1))
 
@@ -240,21 +242,25 @@ c
 
       if(ifpgh.eq.1) then
         allocate(pottmp(nsource),gradtmp(3,1))
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
         do i=1,nsource
           pottmp(i) = 0
         enddo
+C$OMP END PARALLEL DO        
         gradtmp(1,1)= 0
         gradtmp(2,1)= 0
         gradtmp(3,1)= 0
       endif
       if(ifpgh.eq.2) then
         allocate(pottmp(nsource),gradtmp(3,nsource))
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
         do i=1,nsource
           pottmp(i) = 0
           gradtmp(1,i)= 0
           gradtmp(2,i)= 0
           gradtmp(3,i)= 0
         enddo
+C$OMP END PARALLEL DO        
       endif
 
       if(ifpottarg.eq.1) ifpghtarg = 1
@@ -262,21 +268,25 @@ c
 
       if(ifpghtarg.eq.1) then
         allocate(pottargtmp(nsource),gradtargtmp(3,1))
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
         do i=1,ntarg
           pottargtmp(i) = 0
         enddo
+C$OMP END PARALLEL DO        
         gradtargtmp(1,1)= 0
         gradtargtmp(2,1)= 0
         gradtargtmp(3,1)= 0
       endif
       if(ifpghtarg.eq.2) then
         allocate(pottargtmp(nsource),gradtargtmp(3,nsource))
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
         do i=1,ntarg
           pottargtmp(i) = 0
           gradtargtmp(1,i)= 0
           gradtargtmp(2,i)= 0
           gradtargtmp(3,i)= 0
         enddo
+C$OMP END PARALLEL DO        
       endif
 
       nd = 1
@@ -286,29 +296,37 @@ c
      2  targ,ifpghtarg,pottargtmp,gradtargtmp,hesstarg)
 
       if(ifpot.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
         do i=1,nsource
           pot(i) = pottmp(i)
         enddo
+C$OMP END PARALLEL DO        
       endif
       if(iffld.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
         do i=1,nsource
           fld(1,i) = -gradtmp(1,i)
           fld(2,i) = -gradtmp(2,i)
           fld(3,i) = -gradtmp(3,i)
         enddo
+C$OMP END PARALLEL DO        
       endif
 
       if(ifpottarg.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
         do i=1,ntarg
           pottarg(i) = pottargtmp(i)
         enddo
+C$OMP END PARALLEL DO        
       endif
       if(iffldtarg.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
         do i=1,ntarg
           fldtarg(1,i) = -gradtargtmp(1,i)
           fldtarg(2,i) = -gradtargtmp(2,i)
           fldtarg(3,i) = -gradtargtmp(3,i)
         enddo
+C$OMP END PARALLEL DO        
       endif
 
 
@@ -375,7 +393,7 @@ c
       double complex, allocatable :: dipvec_in(:,:)
       double precision thresh
 
-      integer i,j,nd
+      integer i,j,nd,n
       integer ifpgh,ifpghtarg
 
       double precision xmin,xmax,ymin,ymax,zmin,zmax
@@ -455,6 +473,14 @@ c
 
 
       nd = 1
+
+      xmin = source(1,1)
+      xmax = source(1,1)
+      ymin = source(2,1)
+      ymax = source(2,1)
+      zmin = source(3,1)
+      zmax = source(3,1)
+
       do i=1,ns
         if(source(1,i).lt.xmin) xmin = source(1,i)
         if(source(1,i).gt.xmax) xmax = source(1,i)
@@ -490,16 +516,19 @@ c
       endif
       thresh = abs(zk)*bsize*1.0d-16
 
+
+
 c
 c      compute potential at source
-c  
+c 
+      n = 1
       if(ifcharge.eq.1.and.ifdipole.eq.0) then
 
         if(ifpgh.eq.1) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,ns
             call h3ddirectcp(nd,zk,source,charge,ns,
-     1            source(1,i),1,pottmp(i),thresh)
+     1            source(1,i),n,pottmp(i),thresh)
           enddo
 C$OMP END PARALLEL DO
         endif
@@ -508,7 +537,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,ns
             call h3ddirectcg(nd,zk,source,charge,ns,
-     1            source(1,i),1,pottmp(i),gradtmp(1,i),thresh)
+     1            source(1,i),n,pottmp(i),gradtmp(1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
         endif
@@ -518,7 +547,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,nt
             call h3ddirectcp(nd,zk,source,charge,ns,
-     1            targ(1,i),1,pottargtmp(i),thresh)
+     1            targ(1,i),n,pottargtmp(i),thresh)
           enddo
 C$OMP END PARALLEL DO
         endif
@@ -527,7 +556,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,nt
             call h3ddirectcg(nd,zk,source,charge,ns,
-     1            targ(1,i),1,pottargtmp(i),
+     1            targ(1,i),n,pottargtmp(i),
      2            gradtargtmp(1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
@@ -540,7 +569,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,ns
             call h3ddirectdp(nd,zk,source,dipvec_in,ns,
-     1            source(1,i),1,pottmp(i),thresh)
+     1            source(1,i),n,pottmp(i),thresh)
           enddo
 C$OMP END PARALLEL DO
         endif
@@ -549,7 +578,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,ns
             call h3ddirectdg(nd,zk,source,dipvec_in,ns,
-     1            source(1,i),1,pottmp(i),gradtmp(1,i),thresh)
+     1            source(1,i),n,pottmp(i),gradtmp(1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
         endif
@@ -559,7 +588,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,nt
             call h3ddirectdp(nd,zk,source,dipvec_in,ns,
-     1            targ(1,i),1,pottargtmp(i),thresh)
+     1            targ(1,i),n,pottargtmp(i),thresh)
           enddo
 C$OMP END PARALLEL DO
         endif
@@ -568,7 +597,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,nt
             call h3ddirectdg(nd,zk,source,dipvec_in,ns,
-     1            targ(1,i),1,pottargtmp(i),
+     1            targ(1,i),n,pottargtmp(i),
      2            gradtargtmp(1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
@@ -582,7 +611,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,ns
             call h3ddirectcdp(nd,zk,source,charge,dipvec_in,ns,
-     1            source(1,i),1,pottmp(i),thresh)
+     1            source(1,i),n,pottmp(i),thresh)
           enddo
 C$OMP END PARALLEL DO
         endif
@@ -591,7 +620,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,ns
             call h3ddirectcdg(nd,zk,source,charge,dipvec_in,ns,
-     1            source(1,i),1,pottmp(i),gradtmp(1,i),thresh)
+     1            source(1,i),n,pottmp(i),gradtmp(1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
         endif
@@ -601,7 +630,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,nt
             call h3ddirectcdp(nd,zk,source,charge,dipvec_in,ns,
-     1            targ(1,i),1,pottargtmp(i),thresh)
+     1            targ(1,i),n,pottargtmp(i),thresh)
           enddo
 C$OMP END PARALLEL DO
         endif
@@ -610,7 +639,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,nt
             call h3ddirectcdg(nd,zk,source,charge,dipvec_in,ns,
-     1            targ(1,i),1,pottargtmp(i),
+     1            targ(1,i),n,pottargtmp(i),
      2            gradtargtmp(1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
