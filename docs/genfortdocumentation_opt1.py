@@ -1,7 +1,7 @@
 from numpy import *
 
 intro = "This subroutine evaluates the "
-pgstr = ["potential ", "potential and it's gradient "]
+pgstr = ["potential ", "potential and its gradient "]
 intro2 = "\n\n  .. math::\n\n"
 eq_start = "u(x) = \sum_{j=1}^{N} "
 str1 = "c_{j} G_{k}(x-x_{j})"

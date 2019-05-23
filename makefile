@@ -171,31 +171,31 @@ test/lfmm3d_vec:
 
 examples: $(STATICLIB) $(TOBJS) examples/ex1_helm examples/ex2_helm examples/ex3_helm \
 	examples/ex1_lap examples/ex2_lap examples/ex3_lap
-	time -p ./examples/example1_lap
-	time -p ./examples/example2_lap
-	time -p ./examples/example3_lap
-	time -p ./examples/example1_helm
-	time -p ./examples/example2_helm
-	time -p ./examples/example3_helm
+	time -p ./examples/lfmm3d_example
+	time -p ./examples/lfmm3d_vec_example
+	time -p ./examples/lfmm3d_legacy_example
+	time -p ./examples/hfmm3d_example
+	time -p ./examples/hfmm3d_vec_example
+	time -p ./examples/hfmm3d_legacy_example
 
 examples/ex1_lap:
-	$(FC) $(FFLAGS) examples/lfmm3d_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/example1_lap
+	$(FC) $(FFLAGS) examples/lfmm3d_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/lfmm3d_example
 
 examples/ex2_lap:
-	$(FC) $(FFLAGS) examples/lfmm3d_vec_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/example2_lap
+	$(FC) $(FFLAGS) examples/lfmm3d_vec_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/lfmm3d_vec_example
 
 examples/ex3_lap:
-	$(FC) $(FFLAGS) examples/lfmm3d_legacy_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/example3_lap
+	$(FC) $(FFLAGS) examples/lfmm3d_legacy_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/lfmm3d_legacy_example
 
 
 examples/ex1_helm:
-	$(FC) $(FFLAGS) examples/hfmm3d_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/example1_helm
+	$(FC) $(FFLAGS) examples/hfmm3d_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_example
 
 examples/ex2_helm:
-	$(FC) $(FFLAGS) examples/hfmm3d_vec_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/example2_helm
+	$(FC) $(FFLAGS) examples/hfmm3d_vec_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_vec_example
 
 examples/ex3_helm:
-	$(FC) $(FFLAGS) examples/hfmm3d_legacy_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/example3_helm
+	$(FC) $(FFLAGS) examples/hfmm3d_legacy_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_legacy_example
 
 
 
@@ -214,39 +214,39 @@ c/hfmm3d:
 
 # C examples
 c-examples: $(COBJS) $(OBJS) $(CHEADERS) c/ex1_lap c/ex2_lap c/ex1_helm c/ex2_helm 
-	time -p c/example1_lap
-	time -p c/example2_lap
-	time -p c/example1_helm
-	time -p c/example2_helm
+	time -p c/lfmm3d_example
+	time -p c/lfmm3d_vec_example
+	time -p c/hfmm3d_example
+	time -p c/hfmm3d_vec_example
 	rm fort.13
 
 c/ex1_lap:
-	$(CC) $(CFLAGS) c/lfmm3d_example.c $(COBJS) $(OBJS) $(CLINK) -o c/example1_lap
+	$(CC) $(CFLAGS) c/lfmm3d_example.c $(COBJS) $(OBJS) $(CLINK) -o c/lfmm3d_example
 
 c/ex2_lap:
-	$(CC) $(CFLAGS) c/lfmm3d_vec_example.c $(COBJS) $(OBJS) $(CLINK) -o c/example2_lap
+	$(CC) $(CFLAGS) c/lfmm3d_vec_example.c $(COBJS) $(OBJS) $(CLINK) -o c/lfmm3d_vec_example
 
 c/ex1_helm:
-	$(CC) $(CFLAGS) c/hfmm3d_example.c $(COBJS) $(OBJS) $(CLINK) -o c/example1_helm
+	$(CC) $(CFLAGS) c/hfmm3d_example.c $(COBJS) $(OBJS) $(CLINK) -o c/hfmm3d_example
 
 c/ex2_helm:
-	$(CC) $(CFLAGS) c/hfmm3d_vec_example.c $(COBJS) $(OBJS) $(CLINK) -o c/example2_helm
+	$(CC) $(CFLAGS) c/hfmm3d_vec_example.c $(COBJS) $(OBJS) $(CLINK) -o c/hfmm3d_vec_example
 
 clean: objclean
 	rm -f lib-static/*.a lib/*.so
 	rm -f python/*.so
 	rm -rf python/build
 	rm -rf python/fmm3dpy.egg-info
-	rm -f examples/example1_helm
-	rm -f examples/example2_helm
-	rm -f examples/example3_helm
-	rm -f examples/example1_lap
-	rm -f examples/example2_lap
-	rm -f examples/example3_lap
-	rm -f c/example1_helm
-	rm -f c/example2_helm
-	rm -f c/example1_lap
-	rm -f c/example2_lap
+	rm -f examples/lfmm3d_example
+	rm -f examples/lfmm3d_vec_example
+	rm -f examples/lfmm3d_legacy_example
+	rm -f examples/hfmm3d_example
+	rm -f examples/hfmm3d_vec_example
+	rm -f examples/hfmm3d_legacy_example
+	rm -f c/hfmm3d_example
+	rm -f c/hfmm3d_vec_example
+	rm -f c/lfmm3d_example
+	rm -f c/lfmm3d_vec_example
 	rm -f c/test_hfmm3d
 	rm -f c/test_lfmm3d
 	
@@ -254,4 +254,4 @@ clean: objclean
 
 objclean: 
 	rm -f $(OBJS) $(COBJS) $(TOBJS)
-	rm -f test/*.o examples/*.o
+	rm -f test/*.o examples/*.o c/*.o

@@ -9,7 +9,7 @@ This subroutine evaluates the potential
 
       u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j})
 
-at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
@@ -36,14 +36,14 @@ Output arguments:
 
   subroutine hfmm3dpartstoscg(eps,zk,nsource,source,charge,pot,grad)
 
-This subroutine evaluates the potential and it's gradient 
+This subroutine evaluates the potential and its gradient 
 
 
   .. math::
 
       u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j})
 
-at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
@@ -79,7 +79,7 @@ This subroutine evaluates the potential
 
       u(x) = \sum_{j=1}^{N} v_{j} \cdot \nabla G_{k}(x-x_{j})
 
-at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
@@ -106,14 +106,14 @@ Output arguments:
 
   subroutine hfmm3dpartstosdg(eps,zk,nsource,source,dipvec,pot,grad)
 
-This subroutine evaluates the potential and it's gradient 
+This subroutine evaluates the potential and its gradient 
 
 
   .. math::
 
       u(x) = \sum_{j=1}^{N} v_{j} \cdot \nabla G_{k}(x-x_{j})
 
-at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
@@ -149,7 +149,7 @@ This subroutine evaluates the potential
 
       u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j}) + v_{j} \cdot \nabla G_{k}(x-x_{j})
 
-at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
@@ -178,14 +178,14 @@ Output arguments:
 
   subroutine hfmm3dpartstoscdg(eps,zk,nsource,source,charge,dipvec,pot,grad)
 
-This subroutine evaluates the potential and it's gradient 
+This subroutine evaluates the potential and its gradient 
 
 
   .. math::
 
       u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j}) + v_{j} \cdot \nabla G_{k}(x-x_{j})
 
-at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
@@ -223,7 +223,7 @@ This subroutine evaluates the potential
 
       u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j})
 
-at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
@@ -254,14 +254,14 @@ Output arguments:
 
   subroutine hfmm3dpartstotcg(eps,zk,nsource,source,charge,ntarg,targ,pottarg,gradtarg)
 
-This subroutine evaluates the potential and it's gradient 
+This subroutine evaluates the potential and its gradient 
 
 
   .. math::
 
       u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j})
 
-at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
@@ -301,7 +301,7 @@ This subroutine evaluates the potential
 
       u(x) = \sum_{j=1}^{N} v_{j} \cdot \nabla G_{k}(x-x_{j})
 
-at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
@@ -332,14 +332,14 @@ Output arguments:
 
   subroutine hfmm3dpartstotdg(eps,zk,nsource,source,dipvec,ntarg,targ,pottarg,gradtarg)
 
-This subroutine evaluates the potential and it's gradient 
+This subroutine evaluates the potential and its gradient 
 
 
   .. math::
 
       u(x) = \sum_{j=1}^{N} v_{j} \cdot \nabla G_{k}(x-x_{j})
 
-at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
@@ -379,7 +379,7 @@ This subroutine evaluates the potential
 
       u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j}) + v_{j} \cdot \nabla G_{k}(x-x_{j})
 
-at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
@@ -412,14 +412,14 @@ Output arguments:
 
   subroutine hfmm3dpartstotcdg(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pottarg,gradtarg)
 
-This subroutine evaluates the potential and it's gradient 
+This subroutine evaluates the potential and its gradient 
 
 
   .. math::
 
       u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j}) + v_{j} \cdot \nabla G_{k}(x-x_{j})
 
-at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
@@ -461,7 +461,7 @@ This subroutine evaluates the potential
 
       u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j})
 
-at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
@@ -494,14 +494,14 @@ Output arguments:
 
   subroutine hfmm3dpartstostcg(eps,zk,nsource,source,charge,ntarg,targ,pot,grad,pottarg,gradtarg)
 
-This subroutine evaluates the potential and it's gradient 
+This subroutine evaluates the potential and its gradient 
 
 
   .. math::
 
       u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j})
 
-at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
@@ -545,7 +545,7 @@ This subroutine evaluates the potential
 
       u(x) = \sum_{j=1}^{N} v_{j} \cdot \nabla G_{k}(x-x_{j})
 
-at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
@@ -578,14 +578,14 @@ Output arguments:
 
   subroutine hfmm3dpartstostdg(eps,zk,nsource,source,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
 
-This subroutine evaluates the potential and it's gradient 
+This subroutine evaluates the potential and its gradient 
 
 
   .. math::
 
       u(x) = \sum_{j=1}^{N} v_{j} \cdot \nabla G_{k}(x-x_{j})
 
-at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
@@ -629,7 +629,7 @@ This subroutine evaluates the potential
 
       u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j}) + v_{j} \cdot \nabla G_{k}(x-x_{j})
 
-at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
@@ -664,14 +664,14 @@ Output arguments:
 
   subroutine hfmm3dpartstostcdg(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
 
-This subroutine evaluates the potential and it's gradient 
+This subroutine evaluates the potential and its gradient 
 
 
   .. math::
 
       u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j}) + v_{j} \cdot \nabla G_{k}(x-x_{j})
 
-at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
