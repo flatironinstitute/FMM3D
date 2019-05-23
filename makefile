@@ -12,11 +12,10 @@
 CC=gcc
 FC=gfortran
 
-FFLAGS=-fPIC -O3 -funroll-loops -march=native  
+FFLAGS=-fPIC -O3 -funroll-loops -march=native 
 CFLAGS= -std=c99 
 CFLAGS+= $(FFLAGS) 
 
-#CLINK = -L/usr/local/Cellar/gcc/8.3.0/lib/gcc/8 -lgfortran -lm
 CLINK = -lgfortran -lm
 
 # extra flags for multithreaded: C/Fortran, MATLAB
@@ -24,7 +23,7 @@ OMPFLAGS = -fopenmp
 MOMPFLAGS = -lgomp -D_OPENMP
 
 # flags for MATLAB MEX compilation..
-MFLAGS=-largeArrayDims -DMWF77_UNDERSCORE1 -lgfortran -lgomp -D_OPENMP -lm  
+MFLAGS=-largeArrayDims -DMWF77_UNDERSCORE1 -lgfortran -lm  
 MWFLAGS=-c99complex 
 
 # location of MATLAB's mex compiler
@@ -33,14 +32,17 @@ MEX=mex
 # For experts, location of Mwrap executable
 MWRAP=../../mwrap-0.33/mwrap
 
-# For your OS, override the above by placing make variables in make.inc
--include make.inc
 
 # multi-threaded libs & flags needed
-ifeq ($(OMP),on)
+ifneq ($(OMP),OFF)
 CFLAGS += $(OMPFLAGS)
 FFLAGS += $(OMPFLAGS)
+MFLAGS += $(MOMPFLAGS)
 endif
+
+# For your OS, override the above by placing make variables in make.inc
+#-include make.inc
+
 
 LIBNAME=libfmm3d
 DYNAMICLIB = lib/$(LIBNAME).so
@@ -96,7 +98,7 @@ usage:
 	@echo "  make objclean - removal all object files, preserving lib & MEX"
 	@echo "  make clean - also remove lib, MEX, py, and demo executables"
 	@echo "For faster (multicore) making, append the flag -j"
-	@echo "  'make [task] OMP=OFF' for multi-threaded (otherwise single-threaded)"
+	@echo "  'make [task] OMP=OFF' for single-threaded (otherwise multi-threaded. Note python interfaces are always multithreaded)"
 
 
 # implicit rules for objects (note -o ensures writes to correct dir)
@@ -109,7 +111,7 @@ usage:
 
 # build the library...
 lib: $(STATICLIB) $(DYNAMICLIB)
-ifeq ($(OMP),ON)
+ifneq ($(OMP),OFF)
 	@echo "$(STATICLIB) and $(DYNAMICLIB) built, multithread versions"
 else
 	@echo "$(STATICLIB) and $(DYNAMICLIB) built, single-threaded versions"
@@ -126,17 +128,17 @@ GATEWAY = $(MWRAPFILE)
 GATEWAY2 = $(MWRAPFILE2)
 
 matlab:	$(STATICLIB) matlab/$(GATEWAY).c matlab/$(GATEWAY2).c
-	$(MEX) matlab/$(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d;
-	$(MEX) matlab/$(GATEWAY2).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d_legacy;
+	$(MEX) matlab/$(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d $(MEX_LIBS);
+	$(MEX) matlab/$(GATEWAY2).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d_legacy $(MEXLIBS);
 
 
 mex:  $(STATICLIB)
 	cd matlab; $(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY) -mb $(MWRAPFILE).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY) -c $(GATEWAY).c $(MWRAPFILE).mw;\
-	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output fmm3d;\
+	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output fmm3d $(MEX_LIBS); \
 	$(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY2) -mb $(MWRAPFILE2).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY2) -c $(GATEWAY2).c $(MWRAPFILE2).mw;\
-	$(MEX) $(GATEWAY2).c ../$(STATICLIB) $(MFLAGS) -output fmm3d_legacy;
+	$(MEX) $(GATEWAY2).c ../$(STATICLIB) $(MFLAGS) -output fmm3d_legacy $(MEX_LIBS);
 
 #python
 python:

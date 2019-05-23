@@ -419,7 +419,7 @@ c
 c     Memory allocation is complete. 
 c     Call main fmm routine
 
-      time1=second()
+      call cpu_time(time1)
 C$      time1=omp_get_wtime()
       call lfmm3dmain(nd,eps,
      $   nsource,sourcesort,
@@ -434,7 +434,7 @@ C$      time1=omp_get_wtime()
      $   ifpghtarg,pottargsort,gradtargsort,hesstargsort,ntj,
      $   texpssort,scjsort)
 
-      time2=second()
+      call cpu_time(time2)
 C$        time2=omp_get_wtime()
       if( ifprint .eq. 1 ) call prin2('time in fmm main=*',
      1   time2-time1,1)
@@ -806,7 +806,7 @@ c
 c
       if(ifprint .ge. 1) 
      $   call prinf('=== STEP 1 (form mp) ====*',i,0)
-        time1=second()
+        call cpu_time(time1)
 C$        time1=omp_get_wtime()
 c
 c       ... step 1, locate all charges, assign them to boxes, and
@@ -882,7 +882,7 @@ C$OMP END PARALLEL DO
 
 
 
-      time2=second()
+      call cpu_time(time2)
 C$    time2=omp_get_wtime()
       timeinfo(1)=time2-time1
 
@@ -890,7 +890,7 @@ C$    time2=omp_get_wtime()
 
       if(ifprint.ge.1)
      $   call prinf('=== STEP 2 (form lo) ===*',i,0)
-      time1=second()
+      call cpu_time(time1)
 C$    time1=omp_get_wtime()
 
 
@@ -982,7 +982,7 @@ C$OMP END PARALLEL DO
       enddo
       endif
 
-      time2=second()
+      call cpu_time(time2)
 C$    time2=omp_get_wtime()
       timeinfo(2)=time2-time1
 
@@ -993,7 +993,7 @@ C$    time2=omp_get_wtime()
 c       
       if(ifprint .ge. 1)
      $      call prinf('=== STEP 3 (merge mp) ====*',i,0)
-      time1=second()
+      call cpu_time(time1)
 C$    time1=omp_get_wtime()
 c
       do ilev=nlevels-1,0,-1
@@ -1018,7 +1018,7 @@ C$OMP$PRIVATE(ibox,i,jbox,istart,iend,npts)
 C$OMP END PARALLEL DO         
       enddo
 
-      time2=second()
+      call cpu_time(time2)
 C$    time2=omp_get_wtime()
       timeinfo(3)=time2-time1
 
@@ -1027,7 +1027,7 @@ C$    time2=omp_get_wtime()
 c      ... step 4, convert multipole expansions into local
 c       expansions
 
-      time1 = second()
+      call cpu_time(time1)
 C$        time1=omp_get_wtime()
 
 c
@@ -1216,7 +1216,7 @@ C$OMP$PRIVATE(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
          enddo
 C$OMP END PARALLEL DO         
       enddo
-      time2 = second()
+      call cpu_time(time2)
 C$        time2=omp_get_wtime()
       timeinfo(4) = time2-time1
 
@@ -1224,7 +1224,7 @@ C$        time2=omp_get_wtime()
       if(ifprint.ge.1)
      $    call prinf('=== Step 5 (split loc) ===*',i,0)
 
-      time1 = second()
+      call cpu_time(time1)
 C$        time1=omp_get_wtime()
       do ilev = 2,nlevels-1
 
@@ -1264,7 +1264,7 @@ C$OMP$PRIVATE(ibox,i,jbox,istart,iend,npts)
          enddo
 C$OMP END PARALLEL DO         
       enddo
-      time2 = second()
+      call cpu_time(time2)
 C$        time2=omp_get_wtime()
       timeinfo(5) = time2-time1
 
@@ -1272,7 +1272,7 @@ C$        time2=omp_get_wtime()
 
       if(ifprint.ge.1)
      $    call prinf('=== step 6 (mp eval) ===*',i,0)
-      time1 = second()
+      call cpu_time(time1)
 C$        time1=omp_get_wtime()
 
    
@@ -1404,7 +1404,7 @@ C$OMP END PARALLEL DO
       enddo
 
 
-      time2 = second()
+      call cpu_time(time2)
 C$        time2=omp_get_wtime()
       timeinfo(6) = time2-time1
 
@@ -1415,7 +1415,7 @@ C$        time2=omp_get_wtime()
 c     ... step 7, evaluate all local expansions
 c
 
-      time1 = second()
+      call cpu_time(time1)
 C$        time1=omp_get_wtime()
 C
 
@@ -1525,14 +1525,14 @@ C$OMP END PARALLEL DO
       enddo
 
     
-      time2 = second()
+      call cpu_time(time2)
 C$        time2=omp_get_wtime()
       timeinfo(7) = time2 - time1
 
 
       if(ifprint .ge. 1)
      $     call prinf('=== STEP 8 (direct) =====*',i,0)
-      time1=second()
+      call cpu_time(time1)
 C$        time1=omp_get_wtime()
 
 c
@@ -1865,7 +1865,7 @@ C$OMP END PARALLEL DO
         endif
       enddo
  
-      time2 = second()
+      call cpu_time(time2)
 C$        time2=omp_get_wtime()
       timeinfo(8) = time2-time1
       if(ifprint.ge.1) call prin2('timeinfo=*',timeinfo,8)

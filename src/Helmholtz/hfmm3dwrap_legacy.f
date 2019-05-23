@@ -192,12 +192,12 @@ c
       double complex zk
       double precision source(3,nsource)
       
-      double complex charge(*),dipstr(*)
-      double precision dipvec(3,*)
+      double complex charge(nsource),dipstr(nsource)
+      double precision dipvec(3,nsource)
 
       integer ifpot,iffld,ifpottarg,iffldtarg
-      double complex  pot(*),fld(3,*)
-      double complex  pottarg(*),fldtarg(3,*)
+      double complex  pot(nsource),fld(3,nsource)
+      double complex  pottarg(ntarg),fldtarg(3,ntarg)
 
       integer nd,ifpgh,ifpghtarg
       integer ntarg
@@ -364,10 +364,10 @@ c
       double complex zk
       integer ns,ifcharge,ifdipole,ifpot,iffld,nt
       integer ifpottarg,iffldtarg
-      double precision source(3,*), targ(3,*)
-      double complex charge(*),dipstr(*)
-      double precision dipvec(3,*)
-      double complex pot(*),fld(3,*),pottarg(*),fldtarg(3,*)
+      double precision source(3,1), targ(3,1)
+      double complex charge(1),dipstr(1)
+      double precision dipvec(3,1)
+      double complex pot(1),fld(3,1),pottarg(1),fldtarg(3,1)
 
       double complex, allocatable :: pottmp(:),gradtmp(:,:)
       double complex, allocatable :: pottargtmp(:),gradtargtmp(:,:)

@@ -12,7 +12,7 @@ disp("Example 1: source to source, charge, pot+grad");
 disp(" ");
 disp(" ");
 
-ns = 2000;
+ns = 20000;
 srcinfo.sources = rand(3,ns);
 srcinfo.charges = rand(1,ns)+1i*rand(1,ns);
 
@@ -35,8 +35,8 @@ disp("Example 2: source to source+target, charge+dipole, multiple densities, pot
 disp(" ");
 disp(" ");
 
-ns = 2000;
-nt = 1999;
+ns = 20000;
+nt = 19990;
 
 nd = 5;
 srcinfo.nd = nd;

@@ -1,7 +1,7 @@
-HOST = gcc
+#HOST = gcc
 #HOST = gcc-openmp
 #HOST = intel
-#HOST = intel-openmp
+HOST = intel-openmp
 
 PROJECT = hfmm3d_example
 
@@ -29,7 +29,7 @@ endif
 
 ifeq ($(HOST),intel-openmp)
     FC = ifort
-    FFLAGS= -xW -O3 - xW -ip -xHost --openmp
+    FFLAGS= -O3 -ip -xHost -qopenmp
 endif
 
 
@@ -61,5 +61,5 @@ all: $(OBJECTS)
 
 	
 
-objclean: 
-	rm -f $(OBJECTS) example1_helm
+clean: 
+	rm -f $(OBJECTS) $(PROJECT)

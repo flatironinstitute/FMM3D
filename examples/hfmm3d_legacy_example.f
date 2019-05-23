@@ -111,7 +111,7 @@ c
 c
 c     initialize timing call
 c
-        t1=second()
+        call cpu_time(t1)
 C$        t1=omp_get_wtime()
 c       
 c     call FMM3D routine for sources and targets
@@ -124,7 +124,7 @@ c
 c       
 c     get time for FMM call
 c
-        t2=second()
+        call cpu_time(t2)
 C$        t2=omp_get_wtime()
 c       
 c       
@@ -167,7 +167,7 @@ c
       ifpottmp = 0
       iffldtmp = 0
 
-        t1=second()
+        call cpu_time(t1)
 C$        t1=omp_get_wtime()
       
       call h3dpartdirect(zk,nsource,source,ifcharge,charge,ifdipole,
@@ -175,7 +175,7 @@ C$        t1=omp_get_wtime()
      2       ifpot,pot2,iffld,fld2)
 
       
-        t2=second()
+        call cpu_time(t2)
 C$        t2=omp_get_wtime()
 c
 c       ifprint=1 turns on printing of first m values of potential and field
@@ -221,13 +221,13 @@ c
 
 
 
-        t1=second()
+        call cpu_time(t1)
 C$        t1=omp_get_wtime()
 c
       call h3dpartdirect(zk,nsource,source,ifcharge,charge,ifdipole,
      1       dipstr,dipvec,ifpottmp,pot2,iffldtmp,fld2,m,targ,
      2       ifpottarg,pottarg2,iffldtarg,fldtarg2)
-        t2=second()
+        call cpu_time(t2)
 C$        t2=omp_get_wtime()
 c
 c
