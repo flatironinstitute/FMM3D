@@ -2,7 +2,7 @@
 %  Test Helmholtz particle FMMs in R^3
 %
 
-zk = complex(1);
+zk = complex(1.1);
 
 nsource = 2000
 
@@ -29,10 +29,14 @@ end
 %
 
 ifcharge=1;
-charge = complex(rand(1,nsource));
+charge = rand(1,nsource);
+disp(class(charge))
+
 ifdipole=1;
 dipstr = complex(rand(1,nsource));
 dipvec = rand(3,nsource);
+
+
 
 
 ifcharge
@@ -62,7 +66,7 @@ disp('')
 'Helmholtz particle target FMM in R^3'
 
 tic
-iprec=1
+iprec=2
 [U]=hfmm3dpart(iprec,zk,nsource,source,ifcharge,charge,ifdipole,dipstr,dipvec,ifpot,iffld,ntarget,target,ifpottarg,iffldtarg);
 total_time=toc
 
@@ -114,5 +118,15 @@ rel_error_fldtarg = ...
     norm(F.fldtarg,2)
 end
 %%%break;
+
+fileID = fopen('debuginfo','w');
+fprintf(fileID,'%5d \n',nsource);
+fprintf(fileID,'%5d \n',ntarget);
+fprintf(fileID,'%22.15e %22.15e %22.15e \n',source);
+fprintf(fileID,'%22.15e %22.15e %22.15e \n',target);
+fprintf(fileID,'%22.15e %22.15e \n',[real(charge(:)),imag(charge(:))].');
+fprintf(fileID,'%22.15e %22.15e \n',[real(dipstr(:)),imag(dipstr(:))]');
+fprintf(fileID,'%22.15e %22.15e %22.15e \n',dipvec);
+fclose(fileID);
 
 

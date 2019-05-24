@@ -1,8 +1,8 @@
-function [U]=lfmm3dpart(iprec,nsource,source,ifcharge,charge,ifdipole,dipstr,dipvec,ifpot,iffld,ntarget,target,ifpottarg,iffldtarg)
-%LFMM3DPART Laplace particle target FMM in R^3.
+function [U]=lfmm3dpart(iprec,nsource,source,ifcharge,charge,ifdipole,dipstr,dipvec,ifpot,iffld,ntarg,targ,ifpottarg,iffldtarg)
+%LFMM3DPART Laplace particle targ FMM in R^3.
 %
 % Laplace FMM in R^3: evaluate all pairwise particle
-% interactions (ignoring self-interactions) and interactions with targets.
+% interactions (ignoring self-interactions) and interactions with targs.
 %
 % [U]=LFMM3DPART(IPREC,NSOURCE,SOURCE,...
 %         IFCHARGE,CHARGE,IFDIPOLE,DIPSTR,DIPVEC);
@@ -12,11 +12,11 @@ function [U]=lfmm3dpart(iprec,nsource,source,ifcharge,charge,ifdipole,dipstr,dip
 %
 % [U]=LFMM3DPART(IPREC,NSOURCE,SOURCE,...
 %         IFCHARGE,CHARGE,IFDIPOLE,DIPSTR,DIPVEC,IFPOT,IFFLD,...
-%         NTARGET,TARGET);
+%         Ntarg,targ);
 %
 % [U]=LFMM3DPART(IPREC,NSOURCE,SOURCE,...
 %         IFCHARGE,CHARGE,IFDIPOLE,DIPSTR,DIPVEC,IFPOT,IFFLD,...
-%         NTARGET,TARGET,IFPOTTARG,IFFLDTARG);
+%         Ntarg,targ,IFPOTTARG,IFFLDTARG);
 %
 %
 % This subroutine evaluates the Laplace potential and field due
@@ -56,20 +56,20 @@ function [U]=lfmm3dpart(iprec,nsource,source,ifcharge,charge,ifdipole,dipstr,dip
 % ifpot - potential computation flag, 1 => compute the potential, otherwise no
 % iffld - field computation flag, 1 => compute the field, otherwise no
 %
-% ntarget - number of targets
-% target - real (3,ntarget): target locations
+% ntarg - number of targs
+% targ - real (3,ntarg): targ locations
 %
-% ifpottarg - target potential computation flag, 
-%      1 => compute the target potential, otherwise no
-% iffldtarg - target field computation flag, 
-%      1 => compute the target field, otherwise no
+% ifpottarg - targ potential computation flag, 
+%      1 => compute the targ potential, otherwise no
+% iffldtarg - targ field computation flag, 
+%      1 => compute the targ field, otherwise no
 %
 % Output parameters: 
 %
 % U.pot - complex (nsource) - potential at source locations
 % U.fld - complex (3,nsource) - field (i.e. -gradient) at source locations
-% U.pottarg - complex (ntarget) - potential at target locations
-% U.fldtarg - complex (3,ntarget) - field (i.e. -gradient) at target locations
+% U.pottarg - complex (ntarg) - potential at targ locations
+% U.fldtarg - complex (3,ntarg) - field (i.e. -gradient) at targ locations
 %
 % U.ier - error return code
 %
@@ -83,15 +83,15 @@ function [U]=lfmm3dpart(iprec,nsource,source,ifcharge,charge,ifdipole,dipstr,dip
 if( nargin == 8 ) 
   ifpot = 1;
   iffld = 1;
-  ntarget = 0;
-  target = zeros(3,1);
+  ntarg = 0;
+  targ = zeros(3,1);
   ifpottarg = 0;
   iffldtarg = 0;
 end
 
 if( nargin == 10 ) 
-  ntarget = 0;
-  target = zeros(3,1);
+  ntarg = 0;
+  targ = zeros(3,1);
   ifpottarg = 0;
   iffldtarg = 0;
 end
@@ -110,19 +110,19 @@ fld=zeros(3,1);
 pottarg=0;
 fldtarg=zeros(3,1);
 
-if( ifpot == 1 ), pot=zeros(1,nsource)+1i*zeros(1,nsource); end;
-if( iffld == 1 ), fld=zeros(3,nsource)+1i*zeros(3,nsource); end;
-if( ifpottarg == 1 ), pottarg=zeros(1,ntarget)+1i*zeros(1,ntarget); end;
-if( iffldtarg == 1 ), fldtarg=zeros(3,ntarget)+1i*zeros(3,ntarget); end;
+if( ifpot == 1 ), pot=complex(zeros(1,nsource)); end;
+if( iffld == 1 ), fld=complex(zeros(3,nsource)); end;
+if( ifpottarg == 1 ), pottarg=complex(zeros(1,ntarg)); end;
+if( iffldtarg == 1 ), fldtarg=complex(zeros(3,ntarg)); end;
 
 ier=0;
 
-if( ntarget == 0 ) 
+if( ntarg == 0 ) 
 mex_id_ = 'lfmm3dpartself(io int[x], i int[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[])';
 [ier, pot, fld] = fmm3d_legacy(mex_id_, ier, iprec, nsource, source, ifcharge, charge, ifdipole, dipstr, dipvec, ifpot, pot, iffld, fld, 1, 1, 1, 3, nsource, 1, 1, 3, nsource, 1, 1);
 else
 mex_id_ = 'lfmm3dparttarg(io int[x], i int[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])';
-[ier, pot, fld, pottarg, fldtarg] = fmm3d_legacy(mex_id_, ier, iprec, nsource, source, ifcharge, charge, ifdipole, dipstr, dipvec, ifpot, pot, iffld, fld, ntarget, target, ifpottarg, pottarg, iffldtarg, fldtarg, 1, 1, 1, 3, nsource, 1, 1, 3, nsource, 1, 1, 1, 1, 1);
+[ier, pot, fld, pottarg, fldtarg] = fmm3d_legacy(mex_id_, ier, iprec, nsource, source, ifcharge, charge, ifdipole, dipstr, dipvec, ifpot, pot, iffld, fld, ntarg, targ, ifpottarg, pottarg, iffldtarg, fldtarg, 1, 1, 1, 3, nsource, 1, 1, 3, nsource, 1, 1, 1, 1, 1);
 end
 
 if( ifpot == 1 ), U.pot=pot; end

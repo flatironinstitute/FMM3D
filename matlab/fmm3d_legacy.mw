@@ -110,10 +110,10 @@ fld=zeros(3,1);
 pottarg=0;
 fldtarg=zeros(3,1);
 
-if( ifpot == 1 ), pot=zeros(1,nsource)+1i*zeros(1,nsource); end;
-if( iffld == 1 ), fld=zeros(3,nsource)+1i*zeros(3,nsource); end;
-if( ifpottarg == 1 ), pottarg=zeros(1,ntarg)+1i*zeros(1,ntarg); end;
-if( iffldtarg == 1 ), fldtarg=zeros(3,ntarg)+1i*zeros(3,ntarg); end;
+if( ifpot == 1 ), pot=complex(zeros(1,nsource)); end;
+if( iffld == 1 ), fld=complex(zeros(3,nsource)); end;
+if( ifpottarg == 1 ), pottarg=complex(zeros(1,ntarg)); end;
+if( iffldtarg == 1 ), fldtarg=complex(zeros(3,ntarg)); end;
 
 ier=0;
 
@@ -231,10 +231,10 @@ fld=zeros(3,1);
 pottarg=0;
 fldtarg=zeros(3,1);
 
-if( ifpot == 1 ), pot=zeros(1,nsource)+1i*zeros(1,nsource); end;
-if( iffld == 1 ), fld=zeros(3,nsource)+1i*zeros(3,nsource); end;
-if( ifpottarg == 1 ), pottarg=zeros(1,ntarg)+1i*zeros(1,ntarg); end;
-if( iffldtarg == 1 ), fldtarg=zeros(3,ntarg)+1i*zeros(3,ntarg); end;
+if( ifpot == 1 ), pot=complex(zeros(1,nsource)); end;
+if( iffld == 1 ), fld=complex(zeros(3,nsource)); end;
+if( ifpottarg == 1 ), pottarg=complex(zeros(1,ntarg)); end;
+if( iffldtarg == 1 ), fldtarg=complex(zeros(3,ntarg)); end;
 
 ier=0;
 
@@ -361,10 +361,10 @@ fld=zeros(3,1);
 pottarg=0;
 fldtarg=zeros(3,1);
 
-if( ifpot == 1 ), pot=zeros(1,nsource)+1i*zeros(1,nsource); end;
-if( iffld == 1 ), fld=zeros(3,nsource)+1i*zeros(3,nsource); end;
-if( ifpottarg == 1 ), pottarg=zeros(1,ntarg)+1i*zeros(1,ntarg); end;
-if( iffldtarg == 1 ), fldtarg=zeros(3,ntarg)+1i*zeros(3,ntarg); end;
+if( ifpot == 1 ), pot=complex(zeros(1,nsource)); end;
+if( iffld == 1 ), fld=complex(zeros(3,nsource)); end;
+if( ifpottarg == 1 ), pottarg=complex(zeros(1,ntarg)); end;
+if( iffldtarg == 1 ), fldtarg=complex(zeros(3,ntarg)); end;
 
 ier=0;
 
@@ -480,10 +480,10 @@ fld=zeros(3,1);
 pottarg=0;
 fldtarg=zeros(3,1);
 
-if( ifpot == 1 ), pot=zeros(1,nsource)+1i*zeros(1,nsource); end;
-if( iffld == 1 ), fld=zeros(3,nsource)+1i*zeros(3,nsource); end;
-if( ifpottarg == 1 ), pottarg=zeros(1,ntarg)+1i*zeros(1,ntarg); end;
-if( iffldtarg == 1 ), fldtarg=zeros(3,ntarg)+1i*zeros(3,ntarg); end;
+if( ifpot == 1 ), pot=complex(zeros(1,nsource)); end;
+if( iffld == 1 ), fld=complex(zeros(3,nsource)); end;
+if( ifpottarg == 1 ), pottarg=complex(zeros(1,ntarg)); end;
+if( iffldtarg == 1 ), fldtarg=complex(zeros(3,ntarg)); end;
 
 ier=0;
 
