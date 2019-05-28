@@ -1,22 +1,35 @@
+.. _lscp:
+
+lfmm3dstoscp
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Evaluation points: Sources
+- Interaction kernel: Charges
+- Outputs requested: Potential
+
 .. code:: fortran
 
-  subroutine hfmm3dpartstoscp(eps,zk,nsource,source,charge,pot)
+  subroutine lfmm3dstoscp(eps,nsource,source,charge,pot)
+
+.. code:: fortran
+
+  subroutine lfmm3dstoscp_vec(nd,eps,nsource,source,charge,pot)
 
 This subroutine evaluates the potential 
 
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j})
+      u(x) = \sum_{j=1}^{N} \frac{c_{j}}{\|x-x_{j}\|}
 
 at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
+  -    nd: integer
+          number of densities
   -    eps: double precision
           precision requested
-  -    zk: double complex
-          Helmholtz parameter (k)
   -    nsource: integer
           Number of sources (nsource)
   -    source: double precision(3,nsource)
@@ -31,26 +44,47 @@ Output arguments:
           Potential at source locations ($u(x_{j})$)
 
 
+.. container:: rttext
+
+  `Back to Laplace FMM <fortran-c.html#lap>`__
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+.. _lscg:
+
+lfmm3dstoscg
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Evaluation points: Sources
+- Interaction kernel: Charges
+- Outputs requested: Potential and Gradient
 
 .. code:: fortran
 
-  subroutine hfmm3dpartstoscg(eps,zk,nsource,source,charge,pot,grad)
+  subroutine lfmm3dstoscg(eps,nsource,source,charge,pot,grad)
+
+.. code:: fortran
+
+  subroutine lfmm3dstoscg_vec(nd,eps,nsource,source,charge,pot,grad)
 
 This subroutine evaluates the potential and its gradient 
 
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j})
+      u(x) = \sum_{j=1}^{N} \frac{c_{j}}{\|x-x_{j}\|}
 
 at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
+  -    nd: integer
+          number of densities
   -    eps: double precision
           precision requested
-  -    zk: double complex
-          Helmholtz parameter (k)
   -    nsource: integer
           Number of sources (nsource)
   -    source: double precision(3,nsource)
@@ -67,26 +101,47 @@ Output arguments:
           Gradient at source locations ($\nabla u(x_{j})$)
 
 
+.. container:: rttext
+
+  `Back to Laplace FMM <fortran-c.html#lap>`__
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+.. _lsdp:
+
+lfmm3dstosdp
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Evaluation points: Sources
+- Interaction kernel: Dipoles
+- Outputs requested: Potential
 
 .. code:: fortran
 
-  subroutine hfmm3dpartstosdp(eps,zk,nsource,source,dipvec,pot)
+  subroutine lfmm3dstosdp(eps,nsource,source,dipvec,pot)
+
+.. code:: fortran
+
+  subroutine lfmm3dstosdp_vec(nd,eps,nsource,source,dipvec,pot)
 
 This subroutine evaluates the potential 
 
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} v_{j} \cdot \nabla G_{k}(x-x_{j})
+      u(x) = -\sum_{j=1}^{N} v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)
 
 at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
+  -    nd: integer
+          number of densities
   -    eps: double precision
           precision requested
-  -    zk: double complex
-          Helmholtz parameter (k)
   -    nsource: integer
           Number of sources (nsource)
   -    source: double precision(3,nsource)
@@ -101,26 +156,47 @@ Output arguments:
           Potential at source locations ($u(x_{j})$)
 
 
+.. container:: rttext
+
+  `Back to Laplace FMM <fortran-c.html#lap>`__
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+.. _lsdg:
+
+lfmm3dstosdg
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Evaluation points: Sources
+- Interaction kernel: Dipoles
+- Outputs requested: Potential and Gradient
 
 .. code:: fortran
 
-  subroutine hfmm3dpartstosdg(eps,zk,nsource,source,dipvec,pot,grad)
+  subroutine lfmm3dstosdg(eps,nsource,source,dipvec,pot,grad)
+
+.. code:: fortran
+
+  subroutine lfmm3dstosdg_vec(nd,eps,nsource,source,dipvec,pot,grad)
 
 This subroutine evaluates the potential and its gradient 
 
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} v_{j} \cdot \nabla G_{k}(x-x_{j})
+      u(x) = -\sum_{j=1}^{N} v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)
 
 at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
+  -    nd: integer
+          number of densities
   -    eps: double precision
           precision requested
-  -    zk: double complex
-          Helmholtz parameter (k)
   -    nsource: integer
           Number of sources (nsource)
   -    source: double precision(3,nsource)
@@ -137,26 +213,47 @@ Output arguments:
           Gradient at source locations ($\nabla u(x_{j})$)
 
 
+.. container:: rttext
+
+  `Back to Laplace FMM <fortran-c.html#lap>`__
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+.. _lscdp:
+
+lfmm3dstoscdp
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Evaluation points: Sources
+- Interaction kernel: Charges and Dipoles
+- Outputs requested: Potential
 
 .. code:: fortran
 
-  subroutine hfmm3dpartstoscdp(eps,zk,nsource,source,charge,dipvec,pot)
+  subroutine lfmm3dstoscdp(eps,nsource,source,charge,dipvec,pot)
+
+.. code:: fortran
+
+  subroutine lfmm3dstoscdp_vec(nd,eps,nsource,source,charge,dipvec,pot)
 
 This subroutine evaluates the potential 
 
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j}) + v_{j} \cdot \nabla G_{k}(x-x_{j})
+      u(x) = \sum_{j=1}^{N} \frac{c_{j}}{\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)
 
 at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
+  -    nd: integer
+          number of densities
   -    eps: double precision
           precision requested
-  -    zk: double complex
-          Helmholtz parameter (k)
   -    nsource: integer
           Number of sources (nsource)
   -    source: double precision(3,nsource)
@@ -173,26 +270,47 @@ Output arguments:
           Potential at source locations ($u(x_{j})$)
 
 
+.. container:: rttext
+
+  `Back to Laplace FMM <fortran-c.html#lap>`__
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+.. _lscdg:
+
+lfmm3dstoscdg
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Evaluation points: Sources
+- Interaction kernel: Charges and Dipoles
+- Outputs requested: Potential and Gradient
 
 .. code:: fortran
 
-  subroutine hfmm3dpartstoscdg(eps,zk,nsource,source,charge,dipvec,pot,grad)
+  subroutine lfmm3dstoscdg(eps,nsource,source,charge,dipvec,pot,grad)
+
+.. code:: fortran
+
+  subroutine lfmm3dstoscdg_vec(nd,eps,nsource,source,charge,dipvec,pot,grad)
 
 This subroutine evaluates the potential and its gradient 
 
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j}) + v_{j} \cdot \nabla G_{k}(x-x_{j})
+      u(x) = \sum_{j=1}^{N} \frac{c_{j}}{\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)
 
 at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
+  -    nd: integer
+          number of densities
   -    eps: double precision
           precision requested
-  -    zk: double complex
-          Helmholtz parameter (k)
   -    nsource: integer
           Number of sources (nsource)
   -    source: double precision(3,nsource)
@@ -211,26 +329,47 @@ Output arguments:
           Gradient at source locations ($\nabla u(x_{j})$)
 
 
+.. container:: rttext
+
+  `Back to Laplace FMM <fortran-c.html#lap>`__
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+.. _ltcp:
+
+lfmm3dstotcp
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Evaluation points: Targets
+- Interaction kernel: Charges
+- Outputs requested: Potential
 
 .. code:: fortran
 
-  subroutine hfmm3dpartstotcp(eps,zk,nsource,source,charge,ntarg,targ,pottarg)
+  subroutine lfmm3dstotcp(eps,nsource,source,charge,ntarg,targ,pottarg)
+
+.. code:: fortran
+
+  subroutine lfmm3dstotcp_vec(nd,eps,nsource,source,charge,ntarg,targ,pottarg)
 
 This subroutine evaluates the potential 
 
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j})
+      u(x) = \sum_{j=1}^{N} \frac{c_{j}}{\|x-x_{j}\|}
 
 at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
+  -    nd: integer
+          number of densities
   -    eps: double precision
           precision requested
-  -    zk: double complex
-          Helmholtz parameter (k)
   -    nsource: integer
           Number of sources (nsource)
   -    source: double precision(3,nsource)
@@ -249,26 +388,47 @@ Output arguments:
           Potential at target locations ($u(t_{i})$)
 
 
+.. container:: rttext
+
+  `Back to Laplace FMM <fortran-c.html#lap>`__
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+.. _ltcg:
+
+lfmm3dstotcg
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Evaluation points: Targets
+- Interaction kernel: Charges
+- Outputs requested: Potential and Gradient
 
 .. code:: fortran
 
-  subroutine hfmm3dpartstotcg(eps,zk,nsource,source,charge,ntarg,targ,pottarg,gradtarg)
+  subroutine lfmm3dstotcg(eps,nsource,source,charge,ntarg,targ,pottarg,gradtarg)
+
+.. code:: fortran
+
+  subroutine lfmm3dstotcg_vec(nd,eps,nsource,source,charge,ntarg,targ,pottarg,gradtarg)
 
 This subroutine evaluates the potential and its gradient 
 
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j})
+      u(x) = \sum_{j=1}^{N} \frac{c_{j}}{\|x-x_{j}\|}
 
 at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
+  -    nd: integer
+          number of densities
   -    eps: double precision
           precision requested
-  -    zk: double complex
-          Helmholtz parameter (k)
   -    nsource: integer
           Number of sources (nsource)
   -    source: double precision(3,nsource)
@@ -289,26 +449,47 @@ Output arguments:
           Gradient at target locations ($\nabla u(t_{i})$)
 
 
+.. container:: rttext
+
+  `Back to Laplace FMM <fortran-c.html#lap>`__
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+.. _ltdp:
+
+lfmm3dstotdp
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Evaluation points: Targets
+- Interaction kernel: Dipoles
+- Outputs requested: Potential
 
 .. code:: fortran
 
-  subroutine hfmm3dpartstotdp(eps,zk,nsource,source,dipvec,ntarg,targ,pottarg)
+  subroutine lfmm3dstotdp(eps,nsource,source,dipvec,ntarg,targ,pottarg)
+
+.. code:: fortran
+
+  subroutine lfmm3dstotdp_vec(nd,eps,nsource,source,dipvec,ntarg,targ,pottarg)
 
 This subroutine evaluates the potential 
 
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} v_{j} \cdot \nabla G_{k}(x-x_{j})
+      u(x) = -\sum_{j=1}^{N} v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)
 
 at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
+  -    nd: integer
+          number of densities
   -    eps: double precision
           precision requested
-  -    zk: double complex
-          Helmholtz parameter (k)
   -    nsource: integer
           Number of sources (nsource)
   -    source: double precision(3,nsource)
@@ -327,26 +508,47 @@ Output arguments:
           Potential at target locations ($u(t_{i})$)
 
 
+.. container:: rttext
+
+  `Back to Laplace FMM <fortran-c.html#lap>`__
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+.. _ltdg:
+
+lfmm3dstotdg
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Evaluation points: Targets
+- Interaction kernel: Dipoles
+- Outputs requested: Potential and Gradient
 
 .. code:: fortran
 
-  subroutine hfmm3dpartstotdg(eps,zk,nsource,source,dipvec,ntarg,targ,pottarg,gradtarg)
+  subroutine lfmm3dstotdg(eps,nsource,source,dipvec,ntarg,targ,pottarg,gradtarg)
+
+.. code:: fortran
+
+  subroutine lfmm3dstotdg_vec(nd,eps,nsource,source,dipvec,ntarg,targ,pottarg,gradtarg)
 
 This subroutine evaluates the potential and its gradient 
 
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} v_{j} \cdot \nabla G_{k}(x-x_{j})
+      u(x) = -\sum_{j=1}^{N} v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)
 
 at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
+  -    nd: integer
+          number of densities
   -    eps: double precision
           precision requested
-  -    zk: double complex
-          Helmholtz parameter (k)
   -    nsource: integer
           Number of sources (nsource)
   -    source: double precision(3,nsource)
@@ -367,26 +569,47 @@ Output arguments:
           Gradient at target locations ($\nabla u(t_{i})$)
 
 
+.. container:: rttext
+
+  `Back to Laplace FMM <fortran-c.html#lap>`__
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+.. _ltcdp:
+
+lfmm3dstotcdp
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Evaluation points: Targets
+- Interaction kernel: Charges and Dipoles
+- Outputs requested: Potential
 
 .. code:: fortran
 
-  subroutine hfmm3dpartstotcdp(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pottarg)
+  subroutine lfmm3dstotcdp(eps,nsource,source,charge,dipvec,ntarg,targ,pottarg)
+
+.. code:: fortran
+
+  subroutine lfmm3dstotcdp_vec(nd,eps,nsource,source,charge,dipvec,ntarg,targ,pottarg)
 
 This subroutine evaluates the potential 
 
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j}) + v_{j} \cdot \nabla G_{k}(x-x_{j})
+      u(x) = \sum_{j=1}^{N} \frac{c_{j}}{\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)
 
 at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
+  -    nd: integer
+          number of densities
   -    eps: double precision
           precision requested
-  -    zk: double complex
-          Helmholtz parameter (k)
   -    nsource: integer
           Number of sources (nsource)
   -    source: double precision(3,nsource)
@@ -407,26 +630,47 @@ Output arguments:
           Potential at target locations ($u(t_{i})$)
 
 
+.. container:: rttext
+
+  `Back to Laplace FMM <fortran-c.html#lap>`__
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+.. _ltcdg:
+
+lfmm3dstotcdg
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Evaluation points: Targets
+- Interaction kernel: Charges and Dipoles
+- Outputs requested: Potential and Gradient
 
 .. code:: fortran
 
-  subroutine hfmm3dpartstotcdg(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pottarg,gradtarg)
+  subroutine lfmm3dstotcdg(eps,nsource,source,charge,dipvec,ntarg,targ,pottarg,gradtarg)
+
+.. code:: fortran
+
+  subroutine lfmm3dstotcdg_vec(nd,eps,nsource,source,charge,dipvec,ntarg,targ,pottarg,gradtarg)
 
 This subroutine evaluates the potential and its gradient 
 
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j}) + v_{j} \cdot \nabla G_{k}(x-x_{j})
+      u(x) = \sum_{j=1}^{N} \frac{c_{j}}{\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)
 
 at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
+  -    nd: integer
+          number of densities
   -    eps: double precision
           precision requested
-  -    zk: double complex
-          Helmholtz parameter (k)
   -    nsource: integer
           Number of sources (nsource)
   -    source: double precision(3,nsource)
@@ -449,26 +693,47 @@ Output arguments:
           Gradient at target locations ($\nabla u(t_{i})$)
 
 
+.. container:: rttext
+
+  `Back to Laplace FMM <fortran-c.html#lap>`__
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+.. _lstcp:
+
+lfmm3dstostcp
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Evaluation points: Sources and Targets
+- Interaction kernel: Charges
+- Outputs requested: Potential
 
 .. code:: fortran
 
-  subroutine hfmm3dpartstostcp(eps,zk,nsource,source,charge,ntarg,targ,pot,pottarg)
+  subroutine lfmm3dstostcp(eps,nsource,source,charge,ntarg,targ,pot,pottarg)
+
+.. code:: fortran
+
+  subroutine lfmm3dstostcp_vec(nd,eps,nsource,source,charge,ntarg,targ,pot,pottarg)
 
 This subroutine evaluates the potential 
 
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j})
+      u(x) = \sum_{j=1}^{N} \frac{c_{j}}{\|x-x_{j}\|}
 
 at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
+  -    nd: integer
+          number of densities
   -    eps: double precision
           precision requested
-  -    zk: double complex
-          Helmholtz parameter (k)
   -    nsource: integer
           Number of sources (nsource)
   -    source: double precision(3,nsource)
@@ -489,26 +754,47 @@ Output arguments:
           Potential at target locations ($u(t_{i})$)
 
 
+.. container:: rttext
+
+  `Back to Laplace FMM <fortran-c.html#lap>`__
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+.. _lstcg:
+
+lfmm3dstostcg
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Evaluation points: Sources and Targets
+- Interaction kernel: Charges
+- Outputs requested: Potential and Gradient
 
 .. code:: fortran
 
-  subroutine hfmm3dpartstostcg(eps,zk,nsource,source,charge,ntarg,targ,pot,grad,pottarg,gradtarg)
+  subroutine lfmm3dstostcg(eps,nsource,source,charge,ntarg,targ,pot,grad,pottarg,gradtarg)
+
+.. code:: fortran
+
+  subroutine lfmm3dstostcg_vec(nd,eps,nsource,source,charge,ntarg,targ,pot,grad,pottarg,gradtarg)
 
 This subroutine evaluates the potential and its gradient 
 
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j})
+      u(x) = \sum_{j=1}^{N} \frac{c_{j}}{\|x-x_{j}\|}
 
 at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
+  -    nd: integer
+          number of densities
   -    eps: double precision
           precision requested
-  -    zk: double complex
-          Helmholtz parameter (k)
   -    nsource: integer
           Number of sources (nsource)
   -    source: double precision(3,nsource)
@@ -533,26 +819,47 @@ Output arguments:
           Gradient at target locations ($\nabla u(t_{i})$)
 
 
+.. container:: rttext
+
+  `Back to Laplace FMM <fortran-c.html#lap>`__
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+.. _lstdp:
+
+lfmm3dstostdp
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Evaluation points: Sources and Targets
+- Interaction kernel: Dipoles
+- Outputs requested: Potential
 
 .. code:: fortran
 
-  subroutine hfmm3dpartstostdp(eps,zk,nsource,source,dipvec,ntarg,targ,pot,pottarg)
+  subroutine lfmm3dstostdp(eps,nsource,source,dipvec,ntarg,targ,pot,pottarg)
+
+.. code:: fortran
+
+  subroutine lfmm3dstostdp_vec(nd,eps,nsource,source,dipvec,ntarg,targ,pot,pottarg)
 
 This subroutine evaluates the potential 
 
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} v_{j} \cdot \nabla G_{k}(x-x_{j})
+      u(x) = -\sum_{j=1}^{N} v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)
 
 at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
+  -    nd: integer
+          number of densities
   -    eps: double precision
           precision requested
-  -    zk: double complex
-          Helmholtz parameter (k)
   -    nsource: integer
           Number of sources (nsource)
   -    source: double precision(3,nsource)
@@ -573,26 +880,47 @@ Output arguments:
           Potential at target locations ($u(t_{i})$)
 
 
+.. container:: rttext
+
+  `Back to Laplace FMM <fortran-c.html#lap>`__
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+.. _lstdg:
+
+lfmm3dstostdg
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Evaluation points: Sources and Targets
+- Interaction kernel: Dipoles
+- Outputs requested: Potential and Gradient
 
 .. code:: fortran
 
-  subroutine hfmm3dpartstostdg(eps,zk,nsource,source,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+  subroutine lfmm3dstostdg(eps,nsource,source,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+
+.. code:: fortran
+
+  subroutine lfmm3dstostdg_vec(nd,eps,nsource,source,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
 
 This subroutine evaluates the potential and its gradient 
 
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} v_{j} \cdot \nabla G_{k}(x-x_{j})
+      u(x) = -\sum_{j=1}^{N} v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)
 
 at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
+  -    nd: integer
+          number of densities
   -    eps: double precision
           precision requested
-  -    zk: double complex
-          Helmholtz parameter (k)
   -    nsource: integer
           Number of sources (nsource)
   -    source: double precision(3,nsource)
@@ -617,26 +945,47 @@ Output arguments:
           Gradient at target locations ($\nabla u(t_{i})$)
 
 
+.. container:: rttext
+
+  `Back to Laplace FMM <fortran-c.html#lap>`__
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+.. _lstcdp:
+
+lfmm3dstostcdp
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Evaluation points: Sources and Targets
+- Interaction kernel: Charges and Dipoles
+- Outputs requested: Potential
 
 .. code:: fortran
 
-  subroutine hfmm3dpartstostcdp(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pot,pottarg)
+  subroutine lfmm3dstostcdp(eps,nsource,source,charge,dipvec,ntarg,targ,pot,pottarg)
+
+.. code:: fortran
+
+  subroutine lfmm3dstostcdp_vec(nd,eps,nsource,source,charge,dipvec,ntarg,targ,pot,pottarg)
 
 This subroutine evaluates the potential 
 
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j}) + v_{j} \cdot \nabla G_{k}(x-x_{j})
+      u(x) = \sum_{j=1}^{N} \frac{c_{j}}{\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)
 
 at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
+  -    nd: integer
+          number of densities
   -    eps: double precision
           precision requested
-  -    zk: double complex
-          Helmholtz parameter (k)
   -    nsource: integer
           Number of sources (nsource)
   -    source: double precision(3,nsource)
@@ -659,26 +1008,47 @@ Output arguments:
           Potential at target locations ($u(t_{i})$)
 
 
+.. container:: rttext
+
+  `Back to Laplace FMM <fortran-c.html#lap>`__
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+.. _lstcdg:
+
+lfmm3dstostcdg
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+- Evaluation points: Sources and Targets
+- Interaction kernel: Charges and Dipoles
+- Outputs requested: Potential and Gradient
 
 .. code:: fortran
 
-  subroutine hfmm3dpartstostcdg(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+  subroutine lfmm3dstostcdg(eps,nsource,source,charge,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+
+.. code:: fortran
+
+  subroutine lfmm3dstostcdg_vec(nd,eps,nsource,source,charge,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
 
 This subroutine evaluates the potential and its gradient 
 
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-x_{j}) + v_{j} \cdot \nabla G_{k}(x-x_{j})
+      u(x) = \sum_{j=1}^{N} \frac{c_{j}}{\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)
 
 at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
 
 Input arguments:
 
+  -    nd: integer
+          number of densities
   -    eps: double precision
           precision requested
-  -    zk: double complex
-          Helmholtz parameter (k)
   -    nsource: integer
           Number of sources (nsource)
   -    source: double precision(3,nsource)
@@ -704,5 +1074,13 @@ Output arguments:
   -    gradtarg: double complex(3,ntarg)
           Gradient at target locations ($\nabla u(t_{i})$)
 
+
+.. container:: rttext
+
+  `Back to Laplace FMM <fortran-c.html#lap>`__
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
 
 

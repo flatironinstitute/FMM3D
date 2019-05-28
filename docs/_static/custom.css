@@ -1,12 +1,3 @@
-.toggle .header {
-    display: block;
-    clear: both;
-}
+.center {text-align: center;}
 
-.toggle .header:after {
-    content: " ▶";
-}
-
-.toggle .header.open:after {
-    content: " ▼";
-}
+.rttext {text-align: right;}
