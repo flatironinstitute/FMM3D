@@ -1,6 +1,6 @@
 # makefile overrides to use Intel ICC compiler, double prec only.
 
-CC=gcc
+CC=icc
 FC=ifort
 
 FFLAGS = -fPIC -O3 -xHost -debug all

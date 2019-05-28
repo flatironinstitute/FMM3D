@@ -67,7 +67,7 @@ c
       enddo
 
 
-      call hfmm3dpartstoscg(eps,zk,ns,source,charge,
+      call hfmm3d_s_c_g(eps,zk,ns,source,charge,
      1      pot,grad)
       call prin2("pot at sources=*",pot,12)
       call prin2("grad at sources=*",grad,12)

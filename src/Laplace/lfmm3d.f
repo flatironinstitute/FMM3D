@@ -573,25 +573,23 @@ c     temp variables
       double precision pottmp,fldtmp(3),hesstmp(3)
 
 c     PW variables
-      integer ntmax, nexpmax, nlams, nmax, nthmax, nphmax,nmax2
-      parameter (ntmax = 40)
-      parameter (nexpmax = 1600)
+      integer nexpmax, nlams, nmax, nthmax, nphmax,nmax2
       integer lca
       double precision, allocatable :: carray(:,:), dc(:,:)
       double precision, allocatable :: cs(:,:),fact(:),rdplus(:,:,:)
       double precision, allocatable :: rdminus(:,:,:), rdsq3(:,:,:)
       double precision, allocatable :: rdmsq3(:,:,:)
   
-      double precision rlams(ntmax), whts(ntmax)
+      double precision, allocatable :: rlams(:),whts(:)
 
       double precision, allocatable :: rlsc(:,:,:)
-      integer nfourier(ntmax), nphysical(ntmax)
+      integer, allocatable :: nfourier(:), nphysical(:)
       integer nexptot, nexptotp
       double complex, allocatable :: xshift(:,:)
       double complex, allocatable :: yshift(:,:)
       double precision, allocatable :: zshift(:,:)
 
-      double complex fexpe(50000), fexpo(50000), fexpback(100000)
+      double complex, allocatable :: fexpe(:),fexpo(:),fexpback(:)
       double complex, allocatable :: mexp(:,:,:,:)
       double complex, allocatable :: mexpf1(:,:),mexpf2(:,:)
       double complex, allocatable ::
@@ -639,6 +637,9 @@ c     Initialize routines for plane wave mp loc translation
          if(eps.lt.0.5d-9) nlams = 29
       endif
 
+      allocate(rlams(nlams),whts(nlams))
+      allocate(nphysical(nlams),nfourier(nlams))
+
       nmax = 0
       do i=0,nlevels
          if(nmax.lt.nterms(i)) nmax = nterms(i)
@@ -683,12 +684,16 @@ c     Compute total number of plane waves
       nexptot = 0
       nthmax = 0
       nphmax = 0
+      nn = 0
       do i=1,nlams
          nexptot = nexptot + nfourier(i)
          nexptotp = nexptotp + nphysical(i)
          if(nfourier(i).gt.nthmax) nthmax = nfourier(i)
          if(nphysical(i).gt.nphmax) nphmax = nphysical(i)
+         nn = nn + nphysical(i)*nfourier(i)
       enddo
+
+      allocate(fexpe(nn),fexpo(nn),fexpback(nn))
       allocate(tmp(nd,0:nmax,-nmax:nmax))
 
       allocate(xshift(-5:5,nexptotp))

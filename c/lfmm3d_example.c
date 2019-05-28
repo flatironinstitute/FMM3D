@@ -36,7 +36,7 @@ int main(int argc, char **argv)
   cprin_skipline(2);
 
 // call the fmm routine
-  lfmm3dpartstoscg_(&eps, &ns, source, charge, pot, grad);
+  lfmm3d_s_c_g_(&eps, &ns, source, charge, pot, grad);
 
 
   cprind("pot=",pot,12);

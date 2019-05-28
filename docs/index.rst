@@ -15,16 +15,16 @@ is a set of libraries to compute $N-$ body interactions
 for Laplace, and Helmholtz 
 to a specified precision, in three dimensions,
 on a multi-core shared-memory machine.
-The library has a very simple interface, 
-is written in Fortran (using OpenMP),
+The library has very simple interfaces, 
+is written in Fortran,
 and has wrappers to C, MATLAB, and python.
 As an example, given $M$ arbitrary points $y_j \in \mathbb{R}^{3}$ 
 and complex numbers $c_j$, with $j=1,\dots,M$, and 
-$N$ arbitrary points $x_{k} \in \mathbb{R}^{3}$, the Laplace FMM
+$N$ arbitrary points $x_{\ell} \in \mathbb{R}^{3}$, the Laplace FMM
 evaluates the $N$ complex numbers
 
 .. math:: u_{\ell} = \sum_{j=1}^M \frac{c_j}{| x_{\ell} - y_{j}|} ~, 
-   \qquad \mbox{ for } \; k=1,2,\ldots N ~.
+   \qquad \mbox{ for } \; \ell=1,2,\ldots N ~.
    :label: lapcp
 
 The $y_j$ can be interpreted as source locations, $c_j$

@@ -312,48 +312,48 @@ mxWrapReturnZDef   (mxWrapReturn_dcomplex, dcomplex,
                     real_dcomplex, imag_dcomplex)
 
 #if defined(MWF77_CAPS)
-#define MWF77_hfmm3dpartstoscp_vec HFMM3DPARTSTOSCP_VEC
-#define MWF77_hfmm3dpartstosdp_vec HFMM3DPARTSTOSDP_VEC
-#define MWF77_hfmm3dpartstoscdp_vec HFMM3DPARTSTOSCDP_VEC
-#define MWF77_hfmm3dpartstoscg_vec HFMM3DPARTSTOSCG_VEC
-#define MWF77_hfmm3dpartstosdg_vec HFMM3DPARTSTOSDG_VEC
-#define MWF77_hfmm3dpartstoscdg_vec HFMM3DPARTSTOSCDG_VEC
-#define MWF77_hfmm3dpartstotcp_vec HFMM3DPARTSTOTCP_VEC
-#define MWF77_hfmm3dpartstotdp_vec HFMM3DPARTSTOTDP_VEC
-#define MWF77_hfmm3dpartstotcdp_vec HFMM3DPARTSTOTCDP_VEC
-#define MWF77_hfmm3dpartstotcg_vec HFMM3DPARTSTOTCG_VEC
-#define MWF77_hfmm3dpartstotdg_vec HFMM3DPARTSTOTDG_VEC
-#define MWF77_hfmm3dpartstotcdg_vec HFMM3DPARTSTOTCDG_VEC
-#define MWF77_hfmm3dpartstostcp_vec HFMM3DPARTSTOSTCP_VEC
-#define MWF77_hfmm3dpartstostdp_vec HFMM3DPARTSTOSTDP_VEC
-#define MWF77_hfmm3dpartstostcdp_vec HFMM3DPARTSTOSTCDP_VEC
-#define MWF77_hfmm3dpartstostcg_vec HFMM3DPARTSTOSTCG_VEC
-#define MWF77_hfmm3dpartstostdg_vec HFMM3DPARTSTOSTDG_VEC
-#define MWF77_hfmm3dpartstostcdg_vec HFMM3DPARTSTOSTCDG_VEC
+#define MWF77_hfmm3d_s_c_p_vec HFMM3D_S_C_P_VEC
+#define MWF77_hfmm3d_s_d_p_vec HFMM3D_S_D_P_VEC
+#define MWF77_hfmm3d_s_cd_p_vec HFMM3D_S_CD_P_VEC
+#define MWF77_hfmm3d_s_c_g_vec HFMM3D_S_C_G_VEC
+#define MWF77_hfmm3d_s_d_g_vec HFMM3D_S_D_G_VEC
+#define MWF77_hfmm3d_s_cd_g_vec HFMM3D_S_CD_G_VEC
+#define MWF77_hfmm3d_t_c_p_vec HFMM3D_T_C_P_VEC
+#define MWF77_hfmm3d_t_d_p_vec HFMM3D_T_D_P_VEC
+#define MWF77_hfmm3d_t_cd_p_vec HFMM3D_T_CD_P_VEC
+#define MWF77_hfmm3d_t_c_g_vec HFMM3D_T_C_G_VEC
+#define MWF77_hfmm3d_t_d_g_vec HFMM3D_T_D_G_VEC
+#define MWF77_hfmm3d_t_cd_g_vec HFMM3D_T_CD_G_VEC
+#define MWF77_hfmm3d_st_c_p_vec HFMM3D_ST_C_P_VEC
+#define MWF77_hfmm3d_st_d_p_vec HFMM3D_ST_D_P_VEC
+#define MWF77_hfmm3d_st_cd_p_vec HFMM3D_ST_CD_P_VEC
+#define MWF77_hfmm3d_st_c_g_vec HFMM3D_ST_C_G_VEC
+#define MWF77_hfmm3d_st_d_g_vec HFMM3D_ST_D_G_VEC
+#define MWF77_hfmm3d_st_cd_g_vec HFMM3D_ST_CD_G_VEC
 #define MWF77_h3ddirectcp H3DDIRECTCP
 #define MWF77_h3ddirectdp H3DDIRECTDP
 #define MWF77_h3ddirectcdp H3DDIRECTCDP
 #define MWF77_h3ddirectcg H3DDIRECTCG
 #define MWF77_h3ddirectdg H3DDIRECTDG
 #define MWF77_h3ddirectcdg H3DDIRECTCDG
-#define MWF77_lfmm3dpartstoscp_vec LFMM3DPARTSTOSCP_VEC
-#define MWF77_lfmm3dpartstosdp_vec LFMM3DPARTSTOSDP_VEC
-#define MWF77_lfmm3dpartstoscdp_vec LFMM3DPARTSTOSCDP_VEC
-#define MWF77_lfmm3dpartstoscg_vec LFMM3DPARTSTOSCG_VEC
-#define MWF77_lfmm3dpartstosdg_vec LFMM3DPARTSTOSDG_VEC
-#define MWF77_lfmm3dpartstoscdg_vec LFMM3DPARTSTOSCDG_VEC
-#define MWF77_lfmm3dpartstotcp_vec LFMM3DPARTSTOTCP_VEC
-#define MWF77_lfmm3dpartstotdp_vec LFMM3DPARTSTOTDP_VEC
-#define MWF77_lfmm3dpartstotcdp_vec LFMM3DPARTSTOTCDP_VEC
-#define MWF77_lfmm3dpartstotcg_vec LFMM3DPARTSTOTCG_VEC
-#define MWF77_lfmm3dpartstotdg_vec LFMM3DPARTSTOTDG_VEC
-#define MWF77_lfmm3dpartstotcdg_vec LFMM3DPARTSTOTCDG_VEC
-#define MWF77_lfmm3dpartstostcp_vec LFMM3DPARTSTOSTCP_VEC
-#define MWF77_lfmm3dpartstostdp_vec LFMM3DPARTSTOSTDP_VEC
-#define MWF77_lfmm3dpartstostcdp_vec LFMM3DPARTSTOSTCDP_VEC
-#define MWF77_lfmm3dpartstostcg_vec LFMM3DPARTSTOSTCG_VEC
-#define MWF77_lfmm3dpartstostdg_vec LFMM3DPARTSTOSTDG_VEC
-#define MWF77_lfmm3dpartstostcdg_vec LFMM3DPARTSTOSTCDG_VEC
+#define MWF77_lfmm3d_s_c_p_vec LFMM3D_S_C_P_VEC
+#define MWF77_lfmm3d_s_d_p_vec LFMM3D_S_D_P_VEC
+#define MWF77_lfmm3d_s_cd_p_vec LFMM3D_S_CD_P_VEC
+#define MWF77_lfmm3d_s_c_g_vec LFMM3D_S_C_G_VEC
+#define MWF77_lfmm3d_s_d_g_vec LFMM3D_S_D_G_VEC
+#define MWF77_lfmm3d_s_cd_g_vec LFMM3D_S_CD_G_VEC
+#define MWF77_lfmm3d_t_c_p_vec LFMM3D_T_C_P_VEC
+#define MWF77_lfmm3d_t_d_p_vec LFMM3D_T_D_P_VEC
+#define MWF77_lfmm3d_t_cd_p_vec LFMM3D_T_CD_P_VEC
+#define MWF77_lfmm3d_t_c_g_vec LFMM3D_T_C_G_VEC
+#define MWF77_lfmm3d_t_d_g_vec LFMM3D_T_D_G_VEC
+#define MWF77_lfmm3d_t_cd_g_vec LFMM3D_T_CD_G_VEC
+#define MWF77_lfmm3d_st_c_p_vec LFMM3D_ST_C_P_VEC
+#define MWF77_lfmm3d_st_d_p_vec LFMM3D_ST_D_P_VEC
+#define MWF77_lfmm3d_st_cd_p_vec LFMM3D_ST_CD_P_VEC
+#define MWF77_lfmm3d_st_c_g_vec LFMM3D_ST_C_G_VEC
+#define MWF77_lfmm3d_st_d_g_vec LFMM3D_ST_D_G_VEC
+#define MWF77_lfmm3d_st_cd_g_vec LFMM3D_ST_CD_G_VEC
 #define MWF77_l3ddirectcp L3DDIRECTCP
 #define MWF77_l3ddirectdp L3DDIRECTDP
 #define MWF77_l3ddirectcdp L3DDIRECTCDP
@@ -361,48 +361,48 @@ mxWrapReturnZDef   (mxWrapReturn_dcomplex, dcomplex,
 #define MWF77_l3ddirectdg L3DDIRECTDG
 #define MWF77_l3ddirectcdg L3DDIRECTCDG
 #elif defined(MWF77_UNDERSCORE1)
-#define MWF77_hfmm3dpartstoscp_vec hfmm3dpartstoscp_vec_
-#define MWF77_hfmm3dpartstosdp_vec hfmm3dpartstosdp_vec_
-#define MWF77_hfmm3dpartstoscdp_vec hfmm3dpartstoscdp_vec_
-#define MWF77_hfmm3dpartstoscg_vec hfmm3dpartstoscg_vec_
-#define MWF77_hfmm3dpartstosdg_vec hfmm3dpartstosdg_vec_
-#define MWF77_hfmm3dpartstoscdg_vec hfmm3dpartstoscdg_vec_
-#define MWF77_hfmm3dpartstotcp_vec hfmm3dpartstotcp_vec_
-#define MWF77_hfmm3dpartstotdp_vec hfmm3dpartstotdp_vec_
-#define MWF77_hfmm3dpartstotcdp_vec hfmm3dpartstotcdp_vec_
-#define MWF77_hfmm3dpartstotcg_vec hfmm3dpartstotcg_vec_
-#define MWF77_hfmm3dpartstotdg_vec hfmm3dpartstotdg_vec_
-#define MWF77_hfmm3dpartstotcdg_vec hfmm3dpartstotcdg_vec_
-#define MWF77_hfmm3dpartstostcp_vec hfmm3dpartstostcp_vec_
-#define MWF77_hfmm3dpartstostdp_vec hfmm3dpartstostdp_vec_
-#define MWF77_hfmm3dpartstostcdp_vec hfmm3dpartstostcdp_vec_
-#define MWF77_hfmm3dpartstostcg_vec hfmm3dpartstostcg_vec_
-#define MWF77_hfmm3dpartstostdg_vec hfmm3dpartstostdg_vec_
-#define MWF77_hfmm3dpartstostcdg_vec hfmm3dpartstostcdg_vec_
+#define MWF77_hfmm3d_s_c_p_vec hfmm3d_s_c_p_vec_
+#define MWF77_hfmm3d_s_d_p_vec hfmm3d_s_d_p_vec_
+#define MWF77_hfmm3d_s_cd_p_vec hfmm3d_s_cd_p_vec_
+#define MWF77_hfmm3d_s_c_g_vec hfmm3d_s_c_g_vec_
+#define MWF77_hfmm3d_s_d_g_vec hfmm3d_s_d_g_vec_
+#define MWF77_hfmm3d_s_cd_g_vec hfmm3d_s_cd_g_vec_
+#define MWF77_hfmm3d_t_c_p_vec hfmm3d_t_c_p_vec_
+#define MWF77_hfmm3d_t_d_p_vec hfmm3d_t_d_p_vec_
+#define MWF77_hfmm3d_t_cd_p_vec hfmm3d_t_cd_p_vec_
+#define MWF77_hfmm3d_t_c_g_vec hfmm3d_t_c_g_vec_
+#define MWF77_hfmm3d_t_d_g_vec hfmm3d_t_d_g_vec_
+#define MWF77_hfmm3d_t_cd_g_vec hfmm3d_t_cd_g_vec_
+#define MWF77_hfmm3d_st_c_p_vec hfmm3d_st_c_p_vec_
+#define MWF77_hfmm3d_st_d_p_vec hfmm3d_st_d_p_vec_
+#define MWF77_hfmm3d_st_cd_p_vec hfmm3d_st_cd_p_vec_
+#define MWF77_hfmm3d_st_c_g_vec hfmm3d_st_c_g_vec_
+#define MWF77_hfmm3d_st_d_g_vec hfmm3d_st_d_g_vec_
+#define MWF77_hfmm3d_st_cd_g_vec hfmm3d_st_cd_g_vec_
 #define MWF77_h3ddirectcp h3ddirectcp_
 #define MWF77_h3ddirectdp h3ddirectdp_
 #define MWF77_h3ddirectcdp h3ddirectcdp_
 #define MWF77_h3ddirectcg h3ddirectcg_
 #define MWF77_h3ddirectdg h3ddirectdg_
 #define MWF77_h3ddirectcdg h3ddirectcdg_
-#define MWF77_lfmm3dpartstoscp_vec lfmm3dpartstoscp_vec_
-#define MWF77_lfmm3dpartstosdp_vec lfmm3dpartstosdp_vec_
-#define MWF77_lfmm3dpartstoscdp_vec lfmm3dpartstoscdp_vec_
-#define MWF77_lfmm3dpartstoscg_vec lfmm3dpartstoscg_vec_
-#define MWF77_lfmm3dpartstosdg_vec lfmm3dpartstosdg_vec_
-#define MWF77_lfmm3dpartstoscdg_vec lfmm3dpartstoscdg_vec_
-#define MWF77_lfmm3dpartstotcp_vec lfmm3dpartstotcp_vec_
-#define MWF77_lfmm3dpartstotdp_vec lfmm3dpartstotdp_vec_
-#define MWF77_lfmm3dpartstotcdp_vec lfmm3dpartstotcdp_vec_
-#define MWF77_lfmm3dpartstotcg_vec lfmm3dpartstotcg_vec_
-#define MWF77_lfmm3dpartstotdg_vec lfmm3dpartstotdg_vec_
-#define MWF77_lfmm3dpartstotcdg_vec lfmm3dpartstotcdg_vec_
-#define MWF77_lfmm3dpartstostcp_vec lfmm3dpartstostcp_vec_
-#define MWF77_lfmm3dpartstostdp_vec lfmm3dpartstostdp_vec_
-#define MWF77_lfmm3dpartstostcdp_vec lfmm3dpartstostcdp_vec_
-#define MWF77_lfmm3dpartstostcg_vec lfmm3dpartstostcg_vec_
-#define MWF77_lfmm3dpartstostdg_vec lfmm3dpartstostdg_vec_
-#define MWF77_lfmm3dpartstostcdg_vec lfmm3dpartstostcdg_vec_
+#define MWF77_lfmm3d_s_c_p_vec lfmm3d_s_c_p_vec_
+#define MWF77_lfmm3d_s_d_p_vec lfmm3d_s_d_p_vec_
+#define MWF77_lfmm3d_s_cd_p_vec lfmm3d_s_cd_p_vec_
+#define MWF77_lfmm3d_s_c_g_vec lfmm3d_s_c_g_vec_
+#define MWF77_lfmm3d_s_d_g_vec lfmm3d_s_d_g_vec_
+#define MWF77_lfmm3d_s_cd_g_vec lfmm3d_s_cd_g_vec_
+#define MWF77_lfmm3d_t_c_p_vec lfmm3d_t_c_p_vec_
+#define MWF77_lfmm3d_t_d_p_vec lfmm3d_t_d_p_vec_
+#define MWF77_lfmm3d_t_cd_p_vec lfmm3d_t_cd_p_vec_
+#define MWF77_lfmm3d_t_c_g_vec lfmm3d_t_c_g_vec_
+#define MWF77_lfmm3d_t_d_g_vec lfmm3d_t_d_g_vec_
+#define MWF77_lfmm3d_t_cd_g_vec lfmm3d_t_cd_g_vec_
+#define MWF77_lfmm3d_st_c_p_vec lfmm3d_st_c_p_vec_
+#define MWF77_lfmm3d_st_d_p_vec lfmm3d_st_d_p_vec_
+#define MWF77_lfmm3d_st_cd_p_vec lfmm3d_st_cd_p_vec_
+#define MWF77_lfmm3d_st_c_g_vec lfmm3d_st_c_g_vec_
+#define MWF77_lfmm3d_st_d_g_vec lfmm3d_st_d_g_vec_
+#define MWF77_lfmm3d_st_cd_g_vec lfmm3d_st_cd_g_vec_
 #define MWF77_l3ddirectcp l3ddirectcp_
 #define MWF77_l3ddirectdp l3ddirectdp_
 #define MWF77_l3ddirectcdp l3ddirectcdp_
@@ -410,48 +410,48 @@ mxWrapReturnZDef   (mxWrapReturn_dcomplex, dcomplex,
 #define MWF77_l3ddirectdg l3ddirectdg_
 #define MWF77_l3ddirectcdg l3ddirectcdg_
 #else /* f2c convention */
-#define MWF77_hfmm3dpartstoscp_vec hfmm3dpartstoscp_vec__
-#define MWF77_hfmm3dpartstosdp_vec hfmm3dpartstosdp_vec__
-#define MWF77_hfmm3dpartstoscdp_vec hfmm3dpartstoscdp_vec__
-#define MWF77_hfmm3dpartstoscg_vec hfmm3dpartstoscg_vec__
-#define MWF77_hfmm3dpartstosdg_vec hfmm3dpartstosdg_vec__
-#define MWF77_hfmm3dpartstoscdg_vec hfmm3dpartstoscdg_vec__
-#define MWF77_hfmm3dpartstotcp_vec hfmm3dpartstotcp_vec__
-#define MWF77_hfmm3dpartstotdp_vec hfmm3dpartstotdp_vec__
-#define MWF77_hfmm3dpartstotcdp_vec hfmm3dpartstotcdp_vec__
-#define MWF77_hfmm3dpartstotcg_vec hfmm3dpartstotcg_vec__
-#define MWF77_hfmm3dpartstotdg_vec hfmm3dpartstotdg_vec__
-#define MWF77_hfmm3dpartstotcdg_vec hfmm3dpartstotcdg_vec__
-#define MWF77_hfmm3dpartstostcp_vec hfmm3dpartstostcp_vec__
-#define MWF77_hfmm3dpartstostdp_vec hfmm3dpartstostdp_vec__
-#define MWF77_hfmm3dpartstostcdp_vec hfmm3dpartstostcdp_vec__
-#define MWF77_hfmm3dpartstostcg_vec hfmm3dpartstostcg_vec__
-#define MWF77_hfmm3dpartstostdg_vec hfmm3dpartstostdg_vec__
-#define MWF77_hfmm3dpartstostcdg_vec hfmm3dpartstostcdg_vec__
+#define MWF77_hfmm3d_s_c_p_vec hfmm3d_s_c_p_vec__
+#define MWF77_hfmm3d_s_d_p_vec hfmm3d_s_d_p_vec__
+#define MWF77_hfmm3d_s_cd_p_vec hfmm3d_s_cd_p_vec__
+#define MWF77_hfmm3d_s_c_g_vec hfmm3d_s_c_g_vec__
+#define MWF77_hfmm3d_s_d_g_vec hfmm3d_s_d_g_vec__
+#define MWF77_hfmm3d_s_cd_g_vec hfmm3d_s_cd_g_vec__
+#define MWF77_hfmm3d_t_c_p_vec hfmm3d_t_c_p_vec__
+#define MWF77_hfmm3d_t_d_p_vec hfmm3d_t_d_p_vec__
+#define MWF77_hfmm3d_t_cd_p_vec hfmm3d_t_cd_p_vec__
+#define MWF77_hfmm3d_t_c_g_vec hfmm3d_t_c_g_vec__
+#define MWF77_hfmm3d_t_d_g_vec hfmm3d_t_d_g_vec__
+#define MWF77_hfmm3d_t_cd_g_vec hfmm3d_t_cd_g_vec__
+#define MWF77_hfmm3d_st_c_p_vec hfmm3d_st_c_p_vec__
+#define MWF77_hfmm3d_st_d_p_vec hfmm3d_st_d_p_vec__
+#define MWF77_hfmm3d_st_cd_p_vec hfmm3d_st_cd_p_vec__
+#define MWF77_hfmm3d_st_c_g_vec hfmm3d_st_c_g_vec__
+#define MWF77_hfmm3d_st_d_g_vec hfmm3d_st_d_g_vec__
+#define MWF77_hfmm3d_st_cd_g_vec hfmm3d_st_cd_g_vec__
 #define MWF77_h3ddirectcp h3ddirectcp_
 #define MWF77_h3ddirectdp h3ddirectdp_
 #define MWF77_h3ddirectcdp h3ddirectcdp_
 #define MWF77_h3ddirectcg h3ddirectcg_
 #define MWF77_h3ddirectdg h3ddirectdg_
 #define MWF77_h3ddirectcdg h3ddirectcdg_
-#define MWF77_lfmm3dpartstoscp_vec lfmm3dpartstoscp_vec__
-#define MWF77_lfmm3dpartstosdp_vec lfmm3dpartstosdp_vec__
-#define MWF77_lfmm3dpartstoscdp_vec lfmm3dpartstoscdp_vec__
-#define MWF77_lfmm3dpartstoscg_vec lfmm3dpartstoscg_vec__
-#define MWF77_lfmm3dpartstosdg_vec lfmm3dpartstosdg_vec__
-#define MWF77_lfmm3dpartstoscdg_vec lfmm3dpartstoscdg_vec__
-#define MWF77_lfmm3dpartstotcp_vec lfmm3dpartstotcp_vec__
-#define MWF77_lfmm3dpartstotdp_vec lfmm3dpartstotdp_vec__
-#define MWF77_lfmm3dpartstotcdp_vec lfmm3dpartstotcdp_vec__
-#define MWF77_lfmm3dpartstotcg_vec lfmm3dpartstotcg_vec__
-#define MWF77_lfmm3dpartstotdg_vec lfmm3dpartstotdg_vec__
-#define MWF77_lfmm3dpartstotcdg_vec lfmm3dpartstotcdg_vec__
-#define MWF77_lfmm3dpartstostcp_vec lfmm3dpartstostcp_vec__
-#define MWF77_lfmm3dpartstostdp_vec lfmm3dpartstostdp_vec__
-#define MWF77_lfmm3dpartstostcdp_vec lfmm3dpartstostcdp_vec__
-#define MWF77_lfmm3dpartstostcg_vec lfmm3dpartstostcg_vec__
-#define MWF77_lfmm3dpartstostdg_vec lfmm3dpartstostdg_vec__
-#define MWF77_lfmm3dpartstostcdg_vec lfmm3dpartstostcdg_vec__
+#define MWF77_lfmm3d_s_c_p_vec lfmm3d_s_c_p_vec__
+#define MWF77_lfmm3d_s_d_p_vec lfmm3d_s_d_p_vec__
+#define MWF77_lfmm3d_s_cd_p_vec lfmm3d_s_cd_p_vec__
+#define MWF77_lfmm3d_s_c_g_vec lfmm3d_s_c_g_vec__
+#define MWF77_lfmm3d_s_d_g_vec lfmm3d_s_d_g_vec__
+#define MWF77_lfmm3d_s_cd_g_vec lfmm3d_s_cd_g_vec__
+#define MWF77_lfmm3d_t_c_p_vec lfmm3d_t_c_p_vec__
+#define MWF77_lfmm3d_t_d_p_vec lfmm3d_t_d_p_vec__
+#define MWF77_lfmm3d_t_cd_p_vec lfmm3d_t_cd_p_vec__
+#define MWF77_lfmm3d_t_c_g_vec lfmm3d_t_c_g_vec__
+#define MWF77_lfmm3d_t_d_g_vec lfmm3d_t_d_g_vec__
+#define MWF77_lfmm3d_t_cd_g_vec lfmm3d_t_cd_g_vec__
+#define MWF77_lfmm3d_st_c_p_vec lfmm3d_st_c_p_vec__
+#define MWF77_lfmm3d_st_d_p_vec lfmm3d_st_d_p_vec__
+#define MWF77_lfmm3d_st_cd_p_vec lfmm3d_st_cd_p_vec__
+#define MWF77_lfmm3d_st_c_g_vec lfmm3d_st_c_g_vec__
+#define MWF77_lfmm3d_st_d_g_vec lfmm3d_st_d_g_vec__
+#define MWF77_lfmm3d_st_cd_g_vec lfmm3d_st_cd_g_vec__
 #define MWF77_l3ddirectcp l3ddirectcp_
 #define MWF77_l3ddirectdp l3ddirectdp_
 #define MWF77_l3ddirectcdp l3ddirectcdp_
@@ -468,48 +468,48 @@ extern "C" { /* Prevent C++ name mangling */
 #define MWF77_RETURN int
 #endif
 
-MWF77_RETURN MWF77_hfmm3dpartstoscp_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*);
-MWF77_RETURN MWF77_hfmm3dpartstosdp_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*);
-MWF77_RETURN MWF77_hfmm3dpartstoscdp_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, dcomplex*);
-MWF77_RETURN MWF77_hfmm3dpartstoscg_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, dcomplex*);
-MWF77_RETURN MWF77_hfmm3dpartstosdg_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, dcomplex*);
-MWF77_RETURN MWF77_hfmm3dpartstoscdg_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, dcomplex*, dcomplex*);
-MWF77_RETURN MWF77_hfmm3dpartstotcp_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, int*, double*, dcomplex*);
-MWF77_RETURN MWF77_hfmm3dpartstotdp_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, int*, double*, dcomplex*);
-MWF77_RETURN MWF77_hfmm3dpartstotcdp_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, int*, double*, dcomplex*);
-MWF77_RETURN MWF77_hfmm3dpartstotcg_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*);
-MWF77_RETURN MWF77_hfmm3dpartstotdg_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*);
-MWF77_RETURN MWF77_hfmm3dpartstotcdg_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, int*, double*, dcomplex*, dcomplex*);
-MWF77_RETURN MWF77_hfmm3dpartstostcp_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, int*, double*, dcomplex*);
-MWF77_RETURN MWF77_hfmm3dpartstostdp_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, int*, double*, dcomplex*);
-MWF77_RETURN MWF77_hfmm3dpartstostcdp_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, dcomplex*, int*, double*, dcomplex*);
-MWF77_RETURN MWF77_hfmm3dpartstostcg_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, dcomplex*, int*, double*, dcomplex*, dcomplex*);
-MWF77_RETURN MWF77_hfmm3dpartstostdg_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, dcomplex*, int*, double*, dcomplex*, dcomplex*);
-MWF77_RETURN MWF77_hfmm3dpartstostcdg_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, dcomplex*, dcomplex*, int*, double*, dcomplex*, dcomplex*);
+MWF77_RETURN MWF77_hfmm3d_s_c_p_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*);
+MWF77_RETURN MWF77_hfmm3d_s_d_p_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*);
+MWF77_RETURN MWF77_hfmm3d_s_cd_p_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, dcomplex*);
+MWF77_RETURN MWF77_hfmm3d_s_c_g_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, dcomplex*);
+MWF77_RETURN MWF77_hfmm3d_s_d_g_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, dcomplex*);
+MWF77_RETURN MWF77_hfmm3d_s_cd_g_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, dcomplex*, dcomplex*);
+MWF77_RETURN MWF77_hfmm3d_t_c_p_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, int*, double*, dcomplex*);
+MWF77_RETURN MWF77_hfmm3d_t_d_p_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, int*, double*, dcomplex*);
+MWF77_RETURN MWF77_hfmm3d_t_cd_p_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, int*, double*, dcomplex*);
+MWF77_RETURN MWF77_hfmm3d_t_c_g_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*);
+MWF77_RETURN MWF77_hfmm3d_t_d_g_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*);
+MWF77_RETURN MWF77_hfmm3d_t_cd_g_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, int*, double*, dcomplex*, dcomplex*);
+MWF77_RETURN MWF77_hfmm3d_st_c_p_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, int*, double*, dcomplex*);
+MWF77_RETURN MWF77_hfmm3d_st_d_p_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, int*, double*, dcomplex*);
+MWF77_RETURN MWF77_hfmm3d_st_cd_p_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, dcomplex*, int*, double*, dcomplex*);
+MWF77_RETURN MWF77_hfmm3d_st_c_g_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, dcomplex*, int*, double*, dcomplex*, dcomplex*);
+MWF77_RETURN MWF77_hfmm3d_st_d_g_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, dcomplex*, int*, double*, dcomplex*, dcomplex*);
+MWF77_RETURN MWF77_hfmm3d_st_cd_g_vec(int*, double*, dcomplex*, int*, double*, dcomplex*, dcomplex*, dcomplex*, dcomplex*, int*, double*, dcomplex*, dcomplex*);
 MWF77_RETURN MWF77_h3ddirectcp(int*, dcomplex*, double*, dcomplex*, int*, double*, int*, dcomplex*, double*);
 MWF77_RETURN MWF77_h3ddirectdp(int*, dcomplex*, double*, dcomplex*, int*, double*, int*, dcomplex*, double*);
 MWF77_RETURN MWF77_h3ddirectcdp(int*, dcomplex*, double*, dcomplex*, dcomplex*, int*, double*, int*, dcomplex*, double*);
 MWF77_RETURN MWF77_h3ddirectcg(int*, dcomplex*, double*, dcomplex*, int*, double*, int*, dcomplex*, dcomplex*, double*);
 MWF77_RETURN MWF77_h3ddirectdg(int*, dcomplex*, double*, dcomplex*, int*, double*, int*, dcomplex*, dcomplex*, double*);
 MWF77_RETURN MWF77_h3ddirectcdg(int*, dcomplex*, double*, dcomplex*, dcomplex*, int*, double*, int*, dcomplex*, dcomplex*, double*);
-MWF77_RETURN MWF77_lfmm3dpartstoscp_vec(int*, double*, int*, double*, double*, double*);
-MWF77_RETURN MWF77_lfmm3dpartstosdp_vec(int*, double*, int*, double*, double*, double*);
-MWF77_RETURN MWF77_lfmm3dpartstoscdp_vec(int*, double*, int*, double*, double*, double*, double*);
-MWF77_RETURN MWF77_lfmm3dpartstoscg_vec(int*, double*, int*, double*, double*, double*, double*);
-MWF77_RETURN MWF77_lfmm3dpartstosdg_vec(int*, double*, int*, double*, double*, double*, double*);
-MWF77_RETURN MWF77_lfmm3dpartstoscdg_vec(int*, double*, int*, double*, double*, double*, double*, double*);
-MWF77_RETURN MWF77_lfmm3dpartstotcp_vec(int*, double*, int*, double*, double*, int*, double*, double*);
-MWF77_RETURN MWF77_lfmm3dpartstotdp_vec(int*, double*, int*, double*, double*, int*, double*, double*);
-MWF77_RETURN MWF77_lfmm3dpartstotcdp_vec(int*, double*, int*, double*, double*, double*, int*, double*, double*);
-MWF77_RETURN MWF77_lfmm3dpartstotcg_vec(int*, double*, int*, double*, double*, int*, double*, double*, double*);
-MWF77_RETURN MWF77_lfmm3dpartstotdg_vec(int*, double*, int*, double*, double*, int*, double*, double*, double*);
-MWF77_RETURN MWF77_lfmm3dpartstotcdg_vec(int*, double*, int*, double*, double*, double*, int*, double*, double*, double*);
-MWF77_RETURN MWF77_lfmm3dpartstostcp_vec(int*, double*, int*, double*, double*, double*, int*, double*, double*);
-MWF77_RETURN MWF77_lfmm3dpartstostdp_vec(int*, double*, int*, double*, double*, double*, int*, double*, double*);
-MWF77_RETURN MWF77_lfmm3dpartstostcdp_vec(int*, double*, int*, double*, double*, double*, double*, int*, double*, double*);
-MWF77_RETURN MWF77_lfmm3dpartstostcg_vec(int*, double*, int*, double*, double*, double*, double*, int*, double*, double*, double*);
-MWF77_RETURN MWF77_lfmm3dpartstostdg_vec(int*, double*, int*, double*, double*, double*, double*, int*, double*, double*, double*);
-MWF77_RETURN MWF77_lfmm3dpartstostcdg_vec(int*, double*, int*, double*, double*, double*, double*, double*, int*, double*, double*, double*);
+MWF77_RETURN MWF77_lfmm3d_s_c_p_vec(int*, double*, int*, double*, double*, double*);
+MWF77_RETURN MWF77_lfmm3d_s_d_p_vec(int*, double*, int*, double*, double*, double*);
+MWF77_RETURN MWF77_lfmm3d_s_cd_p_vec(int*, double*, int*, double*, double*, double*, double*);
+MWF77_RETURN MWF77_lfmm3d_s_c_g_vec(int*, double*, int*, double*, double*, double*, double*);
+MWF77_RETURN MWF77_lfmm3d_s_d_g_vec(int*, double*, int*, double*, double*, double*, double*);
+MWF77_RETURN MWF77_lfmm3d_s_cd_g_vec(int*, double*, int*, double*, double*, double*, double*, double*);
+MWF77_RETURN MWF77_lfmm3d_t_c_p_vec(int*, double*, int*, double*, double*, int*, double*, double*);
+MWF77_RETURN MWF77_lfmm3d_t_d_p_vec(int*, double*, int*, double*, double*, int*, double*, double*);
+MWF77_RETURN MWF77_lfmm3d_t_cd_p_vec(int*, double*, int*, double*, double*, double*, int*, double*, double*);
+MWF77_RETURN MWF77_lfmm3d_t_c_g_vec(int*, double*, int*, double*, double*, int*, double*, double*, double*);
+MWF77_RETURN MWF77_lfmm3d_t_d_g_vec(int*, double*, int*, double*, double*, int*, double*, double*, double*);
+MWF77_RETURN MWF77_lfmm3d_t_cd_g_vec(int*, double*, int*, double*, double*, double*, int*, double*, double*, double*);
+MWF77_RETURN MWF77_lfmm3d_st_c_p_vec(int*, double*, int*, double*, double*, double*, int*, double*, double*);
+MWF77_RETURN MWF77_lfmm3d_st_d_p_vec(int*, double*, int*, double*, double*, double*, int*, double*, double*);
+MWF77_RETURN MWF77_lfmm3d_st_cd_p_vec(int*, double*, int*, double*, double*, double*, double*, int*, double*, double*);
+MWF77_RETURN MWF77_lfmm3d_st_c_g_vec(int*, double*, int*, double*, double*, double*, double*, int*, double*, double*, double*);
+MWF77_RETURN MWF77_lfmm3d_st_d_g_vec(int*, double*, int*, double*, double*, double*, double*, int*, double*, double*, double*);
+MWF77_RETURN MWF77_lfmm3d_st_cd_g_vec(int*, double*, int*, double*, double*, double*, double*, double*, int*, double*, double*, double*);
 MWF77_RETURN MWF77_l3ddirectcp(int*, double*, double*, int*, double*, int*, double*, double*);
 MWF77_RETURN MWF77_l3ddirectdp(int*, double*, double*, int*, double*, int*, double*, double*);
 MWF77_RETURN MWF77_l3ddirectcdp(int*, double*, double*, double*, int*, double*, int*, double*, double*);
@@ -522,9 +522,9 @@ MWF77_RETURN MWF77_l3ddirectcdg(int*, double*, double*, double*, int*, double*, 
 #endif
 
 /* ---- fmm3d.mw: 146 ----
- * hfmm3dpartstoscp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, inout dcomplex[nd, ns] pot);
+ * hfmm3d_s_c_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, inout dcomplex[nd, ns] pot);
  */
-const char* stubids1_ = "hfmm3dpartstoscp_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], io dcomplex[xx])";
+const char* stubids1_ = "hfmm3d_s_c_p_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], io dcomplex[xx])";
 
 void mexStub1(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -633,7 +633,7 @@ void mexStub1(int nlhs, mxArray* plhs[],
         in6_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[1]++;
-    MWF77_hfmm3dpartstoscp_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_);
+    MWF77_hfmm3d_s_c_p_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_);
     plhs[0] = mxCreateDoubleMatrix(dim15_, dim16_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[0], in6_, dim15_*dim16_);
 
@@ -648,9 +648,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 149 ----
- * hfmm3dpartstosdp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd3, ns] dipoles, inout dcomplex[nd, ns] pot);
+ * hfmm3d_s_d_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd3, ns] dipoles, inout dcomplex[nd, ns] pot);
  */
-const char* stubids2_ = "hfmm3dpartstosdp_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], io dcomplex[xx])";
+const char* stubids2_ = "hfmm3d_s_d_p_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], io dcomplex[xx])";
 
 void mexStub2(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -759,7 +759,7 @@ void mexStub2(int nlhs, mxArray* plhs[],
         in6_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[2]++;
-    MWF77_hfmm3dpartstosdp_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_);
+    MWF77_hfmm3d_s_d_p_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_);
     plhs[0] = mxCreateDoubleMatrix(dim15_, dim16_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[0], in6_, dim15_*dim16_);
 
@@ -774,9 +774,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 152 ----
- * hfmm3dpartstoscdp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, dcomplex[nd3, ns] dipoles, inout dcomplex[nd, ns] pot);
+ * hfmm3d_s_cd_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, dcomplex[nd3, ns] dipoles, inout dcomplex[nd, ns] pot);
  */
-const char* stubids3_ = "hfmm3dpartstoscdp_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i dcomplex[xx], io dcomplex[xx])";
+const char* stubids3_ = "hfmm3d_s_cd_p_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i dcomplex[xx], io dcomplex[xx])";
 
 void mexStub3(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -902,7 +902,7 @@ void mexStub3(int nlhs, mxArray* plhs[],
         in7_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[3]++;
-    MWF77_hfmm3dpartstoscdp_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_);
+    MWF77_hfmm3d_s_cd_p_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_);
     plhs[0] = mxCreateDoubleMatrix(dim18_, dim19_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[0], in7_, dim18_*dim19_);
 
@@ -918,9 +918,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 158 ----
- * hfmm3dpartstoscg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, inout dcomplex[nd, ns] pot, inout dcomplex[nd3, ns] grad);
+ * hfmm3d_s_c_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, inout dcomplex[nd, ns] pot, inout dcomplex[nd3, ns] grad);
  */
-const char* stubids4_ = "hfmm3dpartstoscg_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], io dcomplex[xx], io dcomplex[xx])";
+const char* stubids4_ = "hfmm3d_s_c_g_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], io dcomplex[xx], io dcomplex[xx])";
 
 void mexStub4(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -1046,7 +1046,7 @@ void mexStub4(int nlhs, mxArray* plhs[],
         in7_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[4]++;
-    MWF77_hfmm3dpartstoscg_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_);
+    MWF77_hfmm3d_s_c_g_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_);
     plhs[0] = mxCreateDoubleMatrix(dim16_, dim17_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[0], in6_, dim16_*dim17_);
     plhs[1] = mxCreateDoubleMatrix(dim18_, dim19_, mxCOMPLEX);
@@ -1064,9 +1064,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 161 ----
- * hfmm3dpartstosdg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd3, ns] dipoles, inout dcomplex[nd, ns] pot, inout dcomplex[nd3, ns] grad);
+ * hfmm3d_s_d_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd3, ns] dipoles, inout dcomplex[nd, ns] pot, inout dcomplex[nd3, ns] grad);
  */
-const char* stubids5_ = "hfmm3dpartstosdg_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], io dcomplex[xx], io dcomplex[xx])";
+const char* stubids5_ = "hfmm3d_s_d_g_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], io dcomplex[xx], io dcomplex[xx])";
 
 void mexStub5(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -1192,7 +1192,7 @@ void mexStub5(int nlhs, mxArray* plhs[],
         in7_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[5]++;
-    MWF77_hfmm3dpartstosdg_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_);
+    MWF77_hfmm3d_s_d_g_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_);
     plhs[0] = mxCreateDoubleMatrix(dim16_, dim17_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[0], in6_, dim16_*dim17_);
     plhs[1] = mxCreateDoubleMatrix(dim18_, dim19_, mxCOMPLEX);
@@ -1210,9 +1210,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 164 ----
- * hfmm3dpartstoscdg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, dcomplex[nd3, ns] dipoles, inout dcomplex[nd, ns] pot, inout dcomplex[nd3, ns] grad);
+ * hfmm3d_s_cd_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, dcomplex[nd3, ns] dipoles, inout dcomplex[nd, ns] pot, inout dcomplex[nd3, ns] grad);
  */
-const char* stubids6_ = "hfmm3dpartstoscdg_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i dcomplex[xx], io dcomplex[xx], io dcomplex[xx])";
+const char* stubids6_ = "hfmm3d_s_cd_g_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i dcomplex[xx], io dcomplex[xx], io dcomplex[xx])";
 
 void mexStub6(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -1355,7 +1355,7 @@ void mexStub6(int nlhs, mxArray* plhs[],
         in8_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[6]++;
-    MWF77_hfmm3dpartstoscdg_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_);
+    MWF77_hfmm3d_s_cd_g_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_);
     plhs[0] = mxCreateDoubleMatrix(dim19_, dim20_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[0], in7_, dim19_*dim20_);
     plhs[1] = mxCreateDoubleMatrix(dim21_, dim22_, mxCOMPLEX);
@@ -1374,9 +1374,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 173 ----
- * hfmm3dpartstotcp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg);
+ * hfmm3d_t_c_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg);
  */
-const char* stubids7_ = "hfmm3dpartstotcp_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], io dcomplex[xx])";
+const char* stubids7_ = "hfmm3d_t_c_p_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], io dcomplex[xx])";
 
 void mexStub7(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -1513,7 +1513,7 @@ void mexStub7(int nlhs, mxArray* plhs[],
         in8_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[7]++;
-    MWF77_hfmm3dpartstotcp_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_);
+    MWF77_hfmm3d_t_c_p_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_);
     plhs[0] = mxCreateDoubleMatrix(dim20_, dim21_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[0], in8_, dim20_*dim21_);
 
@@ -1529,9 +1529,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 176 ----
- * hfmm3dpartstotdp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd3, ns] dipoles, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg);
+ * hfmm3d_t_d_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd3, ns] dipoles, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg);
  */
-const char* stubids8_ = "hfmm3dpartstotdp_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], io dcomplex[xx])";
+const char* stubids8_ = "hfmm3d_t_d_p_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], io dcomplex[xx])";
 
 void mexStub8(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -1668,7 +1668,7 @@ void mexStub8(int nlhs, mxArray* plhs[],
         in8_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[8]++;
-    MWF77_hfmm3dpartstotdp_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_);
+    MWF77_hfmm3d_t_d_p_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_);
     plhs[0] = mxCreateDoubleMatrix(dim20_, dim21_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[0], in8_, dim20_*dim21_);
 
@@ -1684,9 +1684,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 179 ----
- * hfmm3dpartstotcdp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, dcomplex[nd3, ns] dipoles, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg);
+ * hfmm3d_t_cd_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, dcomplex[nd3, ns] dipoles, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg);
  */
-const char* stubids9_ = "hfmm3dpartstotcdp_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int[x], i double[xx], io dcomplex[xx])";
+const char* stubids9_ = "hfmm3d_t_cd_p_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int[x], i double[xx], io dcomplex[xx])";
 
 void mexStub9(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -1840,7 +1840,7 @@ void mexStub9(int nlhs, mxArray* plhs[],
         in9_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[9]++;
-    MWF77_hfmm3dpartstotcdp_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_);
+    MWF77_hfmm3d_t_cd_p_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_);
     plhs[0] = mxCreateDoubleMatrix(dim23_, dim24_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[0], in9_, dim23_*dim24_);
 
@@ -1857,9 +1857,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 185 ----
- * hfmm3dpartstotcg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg);
+ * hfmm3d_t_c_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg);
  */
-const char* stubids10_ = "hfmm3dpartstotcg_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], io dcomplex[xx], io dcomplex[xx])";
+const char* stubids10_ = "hfmm3d_t_c_g_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], io dcomplex[xx], io dcomplex[xx])";
 
 void mexStub10(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -2013,7 +2013,7 @@ void mexStub10(int nlhs, mxArray* plhs[],
         in9_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[10]++;
-    MWF77_hfmm3dpartstotcg_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_);
+    MWF77_hfmm3d_t_c_g_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_);
     plhs[0] = mxCreateDoubleMatrix(dim21_, dim22_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[0], in8_, dim21_*dim22_);
     plhs[1] = mxCreateDoubleMatrix(dim23_, dim24_, mxCOMPLEX);
@@ -2032,9 +2032,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 188 ----
- * hfmm3dpartstotdg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd3, ns] dipoles, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg);
+ * hfmm3d_t_d_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd3, ns] dipoles, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg);
  */
-const char* stubids11_ = "hfmm3dpartstotdg_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], io dcomplex[xx], io dcomplex[xx])";
+const char* stubids11_ = "hfmm3d_t_d_g_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], io dcomplex[xx], io dcomplex[xx])";
 
 void mexStub11(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -2188,7 +2188,7 @@ void mexStub11(int nlhs, mxArray* plhs[],
         in9_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[11]++;
-    MWF77_hfmm3dpartstotdg_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_);
+    MWF77_hfmm3d_t_d_g_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_);
     plhs[0] = mxCreateDoubleMatrix(dim21_, dim22_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[0], in8_, dim21_*dim22_);
     plhs[1] = mxCreateDoubleMatrix(dim23_, dim24_, mxCOMPLEX);
@@ -2207,9 +2207,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 191 ----
- * hfmm3dpartstotcdg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, dcomplex[nd3, ns] dipoles, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg);
+ * hfmm3d_t_cd_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, dcomplex[nd3, ns] dipoles, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg);
  */
-const char* stubids12_ = "hfmm3dpartstotcdg_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int[x], i double[xx], io dcomplex[xx], io dcomplex[xx])";
+const char* stubids12_ = "hfmm3d_t_cd_g_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int[x], i double[xx], io dcomplex[xx], io dcomplex[xx])";
 
 void mexStub12(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -2380,7 +2380,7 @@ void mexStub12(int nlhs, mxArray* plhs[],
         in10_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[12]++;
-    MWF77_hfmm3dpartstotcdg_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_, in10_);
+    MWF77_hfmm3d_t_cd_g_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_, in10_);
     plhs[0] = mxCreateDoubleMatrix(dim24_, dim25_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[0], in9_, dim24_*dim25_);
     plhs[1] = mxCreateDoubleMatrix(dim26_, dim27_, mxCOMPLEX);
@@ -2400,9 +2400,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 201 ----
- * hfmm3dpartstostcp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, inout dcomplex[nd, ns] pot, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg);
+ * hfmm3d_st_c_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, inout dcomplex[nd, ns] pot, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg);
  */
-const char* stubids13_ = "hfmm3dpartstostcp_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], io dcomplex[xx], i int[x], i double[xx], io dcomplex[xx])";
+const char* stubids13_ = "hfmm3d_st_c_p_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], io dcomplex[xx], i int[x], i double[xx], io dcomplex[xx])";
 
 void mexStub13(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -2556,7 +2556,7 @@ void mexStub13(int nlhs, mxArray* plhs[],
         in9_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[13]++;
-    MWF77_hfmm3dpartstostcp_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_);
+    MWF77_hfmm3d_st_c_p_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_);
     plhs[0] = mxCreateDoubleMatrix(dim18_, dim19_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[0], in6_, dim18_*dim19_);
     plhs[1] = mxCreateDoubleMatrix(dim23_, dim24_, mxCOMPLEX);
@@ -2575,9 +2575,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 204 ----
- * hfmm3dpartstostdp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd3, ns] dipoles, inout dcomplex[nd, ns] pot, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg);
+ * hfmm3d_st_d_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd3, ns] dipoles, inout dcomplex[nd, ns] pot, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg);
  */
-const char* stubids14_ = "hfmm3dpartstostdp_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], io dcomplex[xx], i int[x], i double[xx], io dcomplex[xx])";
+const char* stubids14_ = "hfmm3d_st_d_p_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], io dcomplex[xx], i int[x], i double[xx], io dcomplex[xx])";
 
 void mexStub14(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -2731,7 +2731,7 @@ void mexStub14(int nlhs, mxArray* plhs[],
         in9_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[14]++;
-    MWF77_hfmm3dpartstostdp_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_);
+    MWF77_hfmm3d_st_d_p_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_);
     plhs[0] = mxCreateDoubleMatrix(dim18_, dim19_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[0], in6_, dim18_*dim19_);
     plhs[1] = mxCreateDoubleMatrix(dim23_, dim24_, mxCOMPLEX);
@@ -2750,9 +2750,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 207 ----
- * hfmm3dpartstostcdp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, dcomplex[nd3, ns] dipoles, inout dcomplex[nd, ns] pot, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg);
+ * hfmm3d_st_cd_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, dcomplex[nd3, ns] dipoles, inout dcomplex[nd, ns] pot, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg);
  */
-const char* stubids15_ = "hfmm3dpartstostcdp_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i dcomplex[xx], io dcomplex[xx], i int[x], i double[xx], io dcomplex[xx])";
+const char* stubids15_ = "hfmm3d_st_cd_p_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i dcomplex[xx], io dcomplex[xx], i int[x], i double[xx], io dcomplex[xx])";
 
 void mexStub15(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -2923,7 +2923,7 @@ void mexStub15(int nlhs, mxArray* plhs[],
         in10_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[15]++;
-    MWF77_hfmm3dpartstostcdp_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_, in10_);
+    MWF77_hfmm3d_st_cd_p_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_, in10_);
     plhs[0] = mxCreateDoubleMatrix(dim21_, dim22_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[0], in7_, dim21_*dim22_);
     plhs[1] = mxCreateDoubleMatrix(dim26_, dim27_, mxCOMPLEX);
@@ -2943,9 +2943,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 214 ----
- * hfmm3dpartstostcg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, inout dcomplex[nd, ns] pot, inout dcomplex[nd3, ns] grad, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg);
+ * hfmm3d_st_c_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, inout dcomplex[nd, ns] pot, inout dcomplex[nd3, ns] grad, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg);
  */
-const char* stubids16_ = "hfmm3dpartstostcg_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], io dcomplex[xx], io dcomplex[xx], i int[x], i double[xx], io dcomplex[xx], io dcomplex[xx])";
+const char* stubids16_ = "hfmm3d_st_c_g_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], io dcomplex[xx], io dcomplex[xx], i int[x], i double[xx], io dcomplex[xx], io dcomplex[xx])";
 
 void mexStub16(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -3133,7 +3133,7 @@ void mexStub16(int nlhs, mxArray* plhs[],
         in11_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[16]++;
-    MWF77_hfmm3dpartstostcg_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_, in10_, in11_);
+    MWF77_hfmm3d_st_c_g_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_, in10_, in11_);
     plhs[0] = mxCreateDoubleMatrix(dim20_, dim21_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[0], in6_, dim20_*dim21_);
     plhs[1] = mxCreateDoubleMatrix(dim22_, dim23_, mxCOMPLEX);
@@ -3158,9 +3158,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 217 ----
- * hfmm3dpartstostdg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd3, ns] dipoles, inout dcomplex[nd, ns] pot, inout dcomplex[nd3, ns] grad, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg);
+ * hfmm3d_st_d_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd3, ns] dipoles, inout dcomplex[nd, ns] pot, inout dcomplex[nd3, ns] grad, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg);
  */
-const char* stubids17_ = "hfmm3dpartstostdg_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], io dcomplex[xx], io dcomplex[xx], i int[x], i double[xx], io dcomplex[xx], io dcomplex[xx])";
+const char* stubids17_ = "hfmm3d_st_d_g_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], io dcomplex[xx], io dcomplex[xx], i int[x], i double[xx], io dcomplex[xx], io dcomplex[xx])";
 
 void mexStub17(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -3348,7 +3348,7 @@ void mexStub17(int nlhs, mxArray* plhs[],
         in11_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[17]++;
-    MWF77_hfmm3dpartstostdg_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_, in10_, in11_);
+    MWF77_hfmm3d_st_d_g_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_, in10_, in11_);
     plhs[0] = mxCreateDoubleMatrix(dim20_, dim21_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[0], in6_, dim20_*dim21_);
     plhs[1] = mxCreateDoubleMatrix(dim22_, dim23_, mxCOMPLEX);
@@ -3373,9 +3373,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 220 ----
- * hfmm3dpartstostcdg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, dcomplex[nd3, ns] dipoles, inout dcomplex[nd, ns] pot, inout dcomplex[nd3, ns] grad, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg);
+ * hfmm3d_st_cd_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, dcomplex[nd, ns] charges, dcomplex[nd3, ns] dipoles, inout dcomplex[nd, ns] pot, inout dcomplex[nd3, ns] grad, int[1] nt, double[3, nt] targ, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg);
  */
-const char* stubids18_ = "hfmm3dpartstostcdg_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i dcomplex[xx], io dcomplex[xx], io dcomplex[xx], i int[x], i double[xx], io dcomplex[xx], io dcomplex[xx])";
+const char* stubids18_ = "hfmm3d_st_cd_g_vec(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i dcomplex[xx], i dcomplex[xx], io dcomplex[xx], io dcomplex[xx], i int[x], i double[xx], io dcomplex[xx], io dcomplex[xx])";
 
 void mexStub18(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -3580,7 +3580,7 @@ void mexStub18(int nlhs, mxArray* plhs[],
         in12_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[18]++;
-    MWF77_hfmm3dpartstostcdg_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_, in10_, in11_, in12_);
+    MWF77_hfmm3d_st_cd_g_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_, in10_, in11_, in12_);
     plhs[0] = mxCreateDoubleMatrix(dim23_, dim24_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[0], in7_, dim23_*dim24_);
     plhs[1] = mxCreateDoubleMatrix(dim25_, dim26_, mxCOMPLEX);
@@ -4632,9 +4632,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 472 ----
- * lfmm3dpartstoscp_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, inout double[nd, ns] pot);
+ * lfmm3d_s_c_p_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, inout double[nd, ns] pot);
  */
-const char* stubids25_ = "lfmm3dpartstoscp_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], io double[xx])";
+const char* stubids25_ = "lfmm3d_s_c_p_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], io double[xx])";
 
 void mexStub25(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -4728,7 +4728,7 @@ void mexStub25(int nlhs, mxArray* plhs[],
         in5_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[25]++;
-    MWF77_lfmm3dpartstoscp_vec(in0_, in1_, in2_, in3_, in4_, in5_);
+    MWF77_lfmm3d_s_c_p_vec(in0_, in1_, in2_, in3_, in4_, in5_);
     plhs[0] = mxCreateDoubleMatrix(dim13_, dim14_, mxREAL);
     mxWrapCopy_double(plhs[0], in5_, dim13_*dim14_);
 
@@ -4741,9 +4741,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 475 ----
- * lfmm3dpartstosdp_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd3, ns] dipoles, inout double[nd, ns] pot);
+ * lfmm3d_s_d_p_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd3, ns] dipoles, inout double[nd, ns] pot);
  */
-const char* stubids26_ = "lfmm3dpartstosdp_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], io double[xx])";
+const char* stubids26_ = "lfmm3d_s_d_p_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], io double[xx])";
 
 void mexStub26(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -4837,7 +4837,7 @@ void mexStub26(int nlhs, mxArray* plhs[],
         in5_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[26]++;
-    MWF77_lfmm3dpartstosdp_vec(in0_, in1_, in2_, in3_, in4_, in5_);
+    MWF77_lfmm3d_s_d_p_vec(in0_, in1_, in2_, in3_, in4_, in5_);
     plhs[0] = mxCreateDoubleMatrix(dim13_, dim14_, mxREAL);
     mxWrapCopy_double(plhs[0], in5_, dim13_*dim14_);
 
@@ -4850,9 +4850,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 478 ----
- * lfmm3dpartstoscdp_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, inout double[nd, ns] pot);
+ * lfmm3d_s_cd_p_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, inout double[nd, ns] pot);
  */
-const char* stubids27_ = "lfmm3dpartstoscdp_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i double[xx], io double[xx])";
+const char* stubids27_ = "lfmm3d_s_cd_p_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i double[xx], io double[xx])";
 
 void mexStub27(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -4961,7 +4961,7 @@ void mexStub27(int nlhs, mxArray* plhs[],
         in6_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[27]++;
-    MWF77_lfmm3dpartstoscdp_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_);
+    MWF77_lfmm3d_s_cd_p_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_);
     plhs[0] = mxCreateDoubleMatrix(dim16_, dim17_, mxREAL);
     mxWrapCopy_double(plhs[0], in6_, dim16_*dim17_);
 
@@ -4974,9 +4974,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 484 ----
- * lfmm3dpartstoscg_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, inout double[nd, ns] pot, inout double[nd3, ns] grad);
+ * lfmm3d_s_c_g_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, inout double[nd, ns] pot, inout double[nd3, ns] grad);
  */
-const char* stubids28_ = "lfmm3dpartstoscg_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], io double[xx], io double[xx])";
+const char* stubids28_ = "lfmm3d_s_c_g_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], io double[xx], io double[xx])";
 
 void mexStub28(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -5087,7 +5087,7 @@ void mexStub28(int nlhs, mxArray* plhs[],
         in6_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[28]++;
-    MWF77_lfmm3dpartstoscg_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_);
+    MWF77_lfmm3d_s_c_g_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_);
     plhs[0] = mxCreateDoubleMatrix(dim14_, dim15_, mxREAL);
     mxWrapCopy_double(plhs[0], in5_, dim14_*dim15_);
     plhs[1] = mxCreateDoubleMatrix(dim16_, dim17_, mxREAL);
@@ -5103,9 +5103,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 487 ----
- * lfmm3dpartstosdg_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd3, ns] dipoles, inout double[nd, ns] pot, inout double[nd3, ns] grad);
+ * lfmm3d_s_d_g_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd3, ns] dipoles, inout double[nd, ns] pot, inout double[nd3, ns] grad);
  */
-const char* stubids29_ = "lfmm3dpartstosdg_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], io double[xx], io double[xx])";
+const char* stubids29_ = "lfmm3d_s_d_g_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], io double[xx], io double[xx])";
 
 void mexStub29(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -5216,7 +5216,7 @@ void mexStub29(int nlhs, mxArray* plhs[],
         in6_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[29]++;
-    MWF77_lfmm3dpartstosdg_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_);
+    MWF77_lfmm3d_s_d_g_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_);
     plhs[0] = mxCreateDoubleMatrix(dim14_, dim15_, mxREAL);
     mxWrapCopy_double(plhs[0], in5_, dim14_*dim15_);
     plhs[1] = mxCreateDoubleMatrix(dim16_, dim17_, mxREAL);
@@ -5232,9 +5232,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 490 ----
- * lfmm3dpartstoscdg_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, inout double[nd, ns] pot, inout double[nd3, ns] grad);
+ * lfmm3d_s_cd_g_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, inout double[nd, ns] pot, inout double[nd3, ns] grad);
  */
-const char* stubids30_ = "lfmm3dpartstoscdg_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i double[xx], io double[xx], io double[xx])";
+const char* stubids30_ = "lfmm3d_s_cd_g_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i double[xx], io double[xx], io double[xx])";
 
 void mexStub30(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -5360,7 +5360,7 @@ void mexStub30(int nlhs, mxArray* plhs[],
         in7_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[30]++;
-    MWF77_lfmm3dpartstoscdg_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_);
+    MWF77_lfmm3d_s_cd_g_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_);
     plhs[0] = mxCreateDoubleMatrix(dim17_, dim18_, mxREAL);
     mxWrapCopy_double(plhs[0], in6_, dim17_*dim18_);
     plhs[1] = mxCreateDoubleMatrix(dim19_, dim20_, mxREAL);
@@ -5376,9 +5376,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 499 ----
- * lfmm3dpartstotcp_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg);
+ * lfmm3d_t_c_p_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg);
  */
-const char* stubids31_ = "lfmm3dpartstotcp_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i int[x], i double[xx], io double[xx])";
+const char* stubids31_ = "lfmm3d_t_c_p_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i int[x], i double[xx], io double[xx])";
 
 void mexStub31(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -5500,7 +5500,7 @@ void mexStub31(int nlhs, mxArray* plhs[],
         in7_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[31]++;
-    MWF77_lfmm3dpartstotcp_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_);
+    MWF77_lfmm3d_t_c_p_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_);
     plhs[0] = mxCreateDoubleMatrix(dim18_, dim19_, mxREAL);
     mxWrapCopy_double(plhs[0], in7_, dim18_*dim19_);
 
@@ -5514,9 +5514,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 502 ----
- * lfmm3dpartstotdp_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd3, ns] dipoles, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg);
+ * lfmm3d_t_d_p_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd3, ns] dipoles, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg);
  */
-const char* stubids32_ = "lfmm3dpartstotdp_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i int[x], i double[xx], io double[xx])";
+const char* stubids32_ = "lfmm3d_t_d_p_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i int[x], i double[xx], io double[xx])";
 
 void mexStub32(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -5638,7 +5638,7 @@ void mexStub32(int nlhs, mxArray* plhs[],
         in7_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[32]++;
-    MWF77_lfmm3dpartstotdp_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_);
+    MWF77_lfmm3d_t_d_p_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_);
     plhs[0] = mxCreateDoubleMatrix(dim18_, dim19_, mxREAL);
     mxWrapCopy_double(plhs[0], in7_, dim18_*dim19_);
 
@@ -5652,9 +5652,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 505 ----
- * lfmm3dpartstotcdp_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg);
+ * lfmm3d_t_cd_p_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg);
  */
-const char* stubids33_ = "lfmm3dpartstotcdp_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i double[xx], i int[x], i double[xx], io double[xx])";
+const char* stubids33_ = "lfmm3d_t_cd_p_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i double[xx], i int[x], i double[xx], io double[xx])";
 
 void mexStub33(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -5791,7 +5791,7 @@ void mexStub33(int nlhs, mxArray* plhs[],
         in8_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[33]++;
-    MWF77_lfmm3dpartstotcdp_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_);
+    MWF77_lfmm3d_t_cd_p_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_);
     plhs[0] = mxCreateDoubleMatrix(dim21_, dim22_, mxREAL);
     mxWrapCopy_double(plhs[0], in8_, dim21_*dim22_);
 
@@ -5805,9 +5805,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 511 ----
- * lfmm3dpartstotcg_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg);
+ * lfmm3d_t_c_g_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg);
  */
-const char* stubids34_ = "lfmm3dpartstotcg_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i int[x], i double[xx], io double[xx], io double[xx])";
+const char* stubids34_ = "lfmm3d_t_c_g_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i int[x], i double[xx], io double[xx], io double[xx])";
 
 void mexStub34(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -5946,7 +5946,7 @@ void mexStub34(int nlhs, mxArray* plhs[],
         in8_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[34]++;
-    MWF77_lfmm3dpartstotcg_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_);
+    MWF77_lfmm3d_t_c_g_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_);
     plhs[0] = mxCreateDoubleMatrix(dim19_, dim20_, mxREAL);
     mxWrapCopy_double(plhs[0], in7_, dim19_*dim20_);
     plhs[1] = mxCreateDoubleMatrix(dim21_, dim22_, mxREAL);
@@ -5963,9 +5963,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 514 ----
- * lfmm3dpartstotdg_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd3, ns] dipoles, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg);
+ * lfmm3d_t_d_g_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd3, ns] dipoles, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg);
  */
-const char* stubids35_ = "lfmm3dpartstotdg_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i int[x], i double[xx], io double[xx], io double[xx])";
+const char* stubids35_ = "lfmm3d_t_d_g_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i int[x], i double[xx], io double[xx], io double[xx])";
 
 void mexStub35(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -6104,7 +6104,7 @@ void mexStub35(int nlhs, mxArray* plhs[],
         in8_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[35]++;
-    MWF77_lfmm3dpartstotdg_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_);
+    MWF77_lfmm3d_t_d_g_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_);
     plhs[0] = mxCreateDoubleMatrix(dim19_, dim20_, mxREAL);
     mxWrapCopy_double(plhs[0], in7_, dim19_*dim20_);
     plhs[1] = mxCreateDoubleMatrix(dim21_, dim22_, mxREAL);
@@ -6121,9 +6121,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 517 ----
- * lfmm3dpartstotcdg_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg);
+ * lfmm3d_t_cd_g_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg);
  */
-const char* stubids36_ = "lfmm3dpartstotcdg_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i double[xx], i int[x], i double[xx], io double[xx], io double[xx])";
+const char* stubids36_ = "lfmm3d_t_cd_g_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i double[xx], i int[x], i double[xx], io double[xx], io double[xx])";
 
 void mexStub36(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -6277,7 +6277,7 @@ void mexStub36(int nlhs, mxArray* plhs[],
         in9_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[36]++;
-    MWF77_lfmm3dpartstotcdg_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_);
+    MWF77_lfmm3d_t_cd_g_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_);
     plhs[0] = mxCreateDoubleMatrix(dim22_, dim23_, mxREAL);
     mxWrapCopy_double(plhs[0], in8_, dim22_*dim23_);
     plhs[1] = mxCreateDoubleMatrix(dim24_, dim25_, mxREAL);
@@ -6294,9 +6294,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 527 ----
- * lfmm3dpartstostcp_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, inout double[nd, ns] pot, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg);
+ * lfmm3d_st_c_p_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, inout double[nd, ns] pot, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg);
  */
-const char* stubids37_ = "lfmm3dpartstostcp_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], io double[xx], i int[x], i double[xx], io double[xx])";
+const char* stubids37_ = "lfmm3d_st_c_p_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], io double[xx], i int[x], i double[xx], io double[xx])";
 
 void mexStub37(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -6435,7 +6435,7 @@ void mexStub37(int nlhs, mxArray* plhs[],
         in8_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[37]++;
-    MWF77_lfmm3dpartstostcp_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_);
+    MWF77_lfmm3d_st_c_p_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_);
     plhs[0] = mxCreateDoubleMatrix(dim16_, dim17_, mxREAL);
     mxWrapCopy_double(plhs[0], in5_, dim16_*dim17_);
     plhs[1] = mxCreateDoubleMatrix(dim21_, dim22_, mxREAL);
@@ -6452,9 +6452,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 530 ----
- * lfmm3dpartstostdp_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd3, ns] dipoles, inout double[nd, ns] pot, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg);
+ * lfmm3d_st_d_p_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd3, ns] dipoles, inout double[nd, ns] pot, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg);
  */
-const char* stubids38_ = "lfmm3dpartstostdp_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], io double[xx], i int[x], i double[xx], io double[xx])";
+const char* stubids38_ = "lfmm3d_st_d_p_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], io double[xx], i int[x], i double[xx], io double[xx])";
 
 void mexStub38(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -6593,7 +6593,7 @@ void mexStub38(int nlhs, mxArray* plhs[],
         in8_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[38]++;
-    MWF77_lfmm3dpartstostdp_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_);
+    MWF77_lfmm3d_st_d_p_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_);
     plhs[0] = mxCreateDoubleMatrix(dim16_, dim17_, mxREAL);
     mxWrapCopy_double(plhs[0], in5_, dim16_*dim17_);
     plhs[1] = mxCreateDoubleMatrix(dim21_, dim22_, mxREAL);
@@ -6610,9 +6610,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 533 ----
- * lfmm3dpartstostcdp_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, inout double[nd, ns] pot, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg);
+ * lfmm3d_st_cd_p_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, inout double[nd, ns] pot, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg);
  */
-const char* stubids39_ = "lfmm3dpartstostcdp_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i double[xx], io double[xx], i int[x], i double[xx], io double[xx])";
+const char* stubids39_ = "lfmm3d_st_cd_p_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i double[xx], io double[xx], i int[x], i double[xx], io double[xx])";
 
 void mexStub39(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -6766,7 +6766,7 @@ void mexStub39(int nlhs, mxArray* plhs[],
         in9_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[39]++;
-    MWF77_lfmm3dpartstostcdp_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_);
+    MWF77_lfmm3d_st_cd_p_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_);
     plhs[0] = mxCreateDoubleMatrix(dim19_, dim20_, mxREAL);
     mxWrapCopy_double(plhs[0], in6_, dim19_*dim20_);
     plhs[1] = mxCreateDoubleMatrix(dim24_, dim25_, mxREAL);
@@ -6783,9 +6783,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 540 ----
- * lfmm3dpartstostcg_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, inout double[nd, ns] pot, inout double[nd3, ns] grad, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg);
+ * lfmm3d_st_c_g_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, inout double[nd, ns] pot, inout double[nd3, ns] grad, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg);
  */
-const char* stubids40_ = "lfmm3dpartstostcg_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], io double[xx], io double[xx], i int[x], i double[xx], io double[xx], io double[xx])";
+const char* stubids40_ = "lfmm3d_st_c_g_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], io double[xx], io double[xx], i int[x], i double[xx], io double[xx], io double[xx])";
 
 void mexStub40(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -6958,7 +6958,7 @@ void mexStub40(int nlhs, mxArray* plhs[],
         in10_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[40]++;
-    MWF77_lfmm3dpartstostcg_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_, in10_);
+    MWF77_lfmm3d_st_c_g_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_, in10_);
     plhs[0] = mxCreateDoubleMatrix(dim18_, dim19_, mxREAL);
     mxWrapCopy_double(plhs[0], in5_, dim18_*dim19_);
     plhs[1] = mxCreateDoubleMatrix(dim20_, dim21_, mxREAL);
@@ -6981,9 +6981,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 543 ----
- * lfmm3dpartstostdg_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd3, ns] dipoles, inout double[nd, ns] pot, inout double[nd3, ns] grad, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg);
+ * lfmm3d_st_d_g_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd3, ns] dipoles, inout double[nd, ns] pot, inout double[nd3, ns] grad, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg);
  */
-const char* stubids41_ = "lfmm3dpartstostdg_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], io double[xx], io double[xx], i int[x], i double[xx], io double[xx], io double[xx])";
+const char* stubids41_ = "lfmm3d_st_d_g_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], io double[xx], io double[xx], i int[x], i double[xx], io double[xx], io double[xx])";
 
 void mexStub41(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -7156,7 +7156,7 @@ void mexStub41(int nlhs, mxArray* plhs[],
         in10_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[41]++;
-    MWF77_lfmm3dpartstostdg_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_, in10_);
+    MWF77_lfmm3d_st_d_g_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_, in10_);
     plhs[0] = mxCreateDoubleMatrix(dim18_, dim19_, mxREAL);
     mxWrapCopy_double(plhs[0], in5_, dim18_*dim19_);
     plhs[1] = mxCreateDoubleMatrix(dim20_, dim21_, mxREAL);
@@ -7179,9 +7179,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 546 ----
- * lfmm3dpartstostcdg_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, inout double[nd, ns] pot, inout double[nd3, ns] grad, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg);
+ * lfmm3d_st_cd_g_vec(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, inout double[nd, ns] pot, inout double[nd3, ns] grad, int[1] nt, double[3, nt] targ, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg);
  */
-const char* stubids42_ = "lfmm3dpartstostcdg_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i double[xx], io double[xx], io double[xx], i int[x], i double[xx], io double[xx], io double[xx])";
+const char* stubids42_ = "lfmm3d_st_cd_g_vec(i int[x], i double[x], i int[x], i double[xx], i double[xx], i double[xx], io double[xx], io double[xx], i int[x], i double[xx], io double[xx], io double[xx])";
 
 void mexStub42(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -7369,7 +7369,7 @@ void mexStub42(int nlhs, mxArray* plhs[],
         in11_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[42]++;
-    MWF77_lfmm3dpartstostcdg_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_, in10_, in11_);
+    MWF77_lfmm3d_st_cd_g_vec(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_, in10_, in11_);
     plhs[0] = mxCreateDoubleMatrix(dim21_, dim22_, mxREAL);
     mxWrapCopy_double(plhs[0], in6_, dim21_*dim22_);
     plhs[1] = mxCreateDoubleMatrix(dim23_, dim24_, mxREAL);

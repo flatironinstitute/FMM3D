@@ -1,19 +1,17 @@
 .. _lscp:
 
-lfmm3dstoscp
+lfmm3d_s_c_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources
 - Interaction kernel: Charges
 - Outputs requested: Potential
 
-.. code:: fortran
-
-  subroutine lfmm3dstoscp(eps,nsource,source,charge,pot)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine lfmm3dstoscp_vec(nd,eps,nsource,source,charge,pot)
+  subroutine lfmm3d_s_c_p(eps,nsource,source,charge,pot)
 
 This subroutine evaluates the potential 
 
@@ -42,6 +40,20 @@ Output arguments:
 
   -    pot: double complex(nsource)
           Potential at source locations ($u(x_{j})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine lfmm3d_s_c_p_vec(nd,eps,nsource,source,charge,pot)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -55,20 +67,18 @@ Output arguments:
 
 .. _lscg:
 
-lfmm3dstoscg
+lfmm3d_s_c_g
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources
 - Interaction kernel: Charges
 - Outputs requested: Potential and Gradient
 
-.. code:: fortran
-
-  subroutine lfmm3dstoscg(eps,nsource,source,charge,pot,grad)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine lfmm3dstoscg_vec(nd,eps,nsource,source,charge,pot,grad)
+  subroutine lfmm3d_s_c_g(eps,nsource,source,charge,pot,grad)
 
 This subroutine evaluates the potential and its gradient 
 
@@ -99,6 +109,20 @@ Output arguments:
           Potential at source locations ($u(x_{j})$)
   -    grad: double complex(3,nsource)
           Gradient at source locations ($\nabla u(x_{j})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine lfmm3d_s_c_g_vec(nd,eps,nsource,source,charge,pot,grad)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -112,20 +136,18 @@ Output arguments:
 
 .. _lsdp:
 
-lfmm3dstosdp
+lfmm3d_s_d_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources
 - Interaction kernel: Dipoles
 - Outputs requested: Potential
 
-.. code:: fortran
-
-  subroutine lfmm3dstosdp(eps,nsource,source,dipvec,pot)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine lfmm3dstosdp_vec(nd,eps,nsource,source,dipvec,pot)
+  subroutine lfmm3d_s_d_p(eps,nsource,source,dipvec,pot)
 
 This subroutine evaluates the potential 
 
@@ -154,6 +176,20 @@ Output arguments:
 
   -    pot: double complex(nsource)
           Potential at source locations ($u(x_{j})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine lfmm3d_s_d_p_vec(nd,eps,nsource,source,dipvec,pot)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -167,20 +203,18 @@ Output arguments:
 
 .. _lsdg:
 
-lfmm3dstosdg
+lfmm3d_s_d_g
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources
 - Interaction kernel: Dipoles
 - Outputs requested: Potential and Gradient
 
-.. code:: fortran
-
-  subroutine lfmm3dstosdg(eps,nsource,source,dipvec,pot,grad)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine lfmm3dstosdg_vec(nd,eps,nsource,source,dipvec,pot,grad)
+  subroutine lfmm3d_s_d_g(eps,nsource,source,dipvec,pot,grad)
 
 This subroutine evaluates the potential and its gradient 
 
@@ -211,6 +245,20 @@ Output arguments:
           Potential at source locations ($u(x_{j})$)
   -    grad: double complex(3,nsource)
           Gradient at source locations ($\nabla u(x_{j})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine lfmm3d_s_d_g_vec(nd,eps,nsource,source,dipvec,pot,grad)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -224,20 +272,18 @@ Output arguments:
 
 .. _lscdp:
 
-lfmm3dstoscdp
+lfmm3d_s_cd_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources
 - Interaction kernel: Charges and Dipoles
 - Outputs requested: Potential
 
-.. code:: fortran
-
-  subroutine lfmm3dstoscdp(eps,nsource,source,charge,dipvec,pot)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine lfmm3dstoscdp_vec(nd,eps,nsource,source,charge,dipvec,pot)
+  subroutine lfmm3d_s_cd_p(eps,nsource,source,charge,dipvec,pot)
 
 This subroutine evaluates the potential 
 
@@ -268,6 +314,20 @@ Output arguments:
 
   -    pot: double complex(nsource)
           Potential at source locations ($u(x_{j})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine lfmm3d_s_cd_p_vec(nd,eps,nsource,source,charge,dipvec,pot)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -281,20 +341,18 @@ Output arguments:
 
 .. _lscdg:
 
-lfmm3dstoscdg
+lfmm3d_s_cd_g
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources
 - Interaction kernel: Charges and Dipoles
 - Outputs requested: Potential and Gradient
 
-.. code:: fortran
-
-  subroutine lfmm3dstoscdg(eps,nsource,source,charge,dipvec,pot,grad)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine lfmm3dstoscdg_vec(nd,eps,nsource,source,charge,dipvec,pot,grad)
+  subroutine lfmm3d_s_cd_g(eps,nsource,source,charge,dipvec,pot,grad)
 
 This subroutine evaluates the potential and its gradient 
 
@@ -329,6 +387,20 @@ Output arguments:
           Gradient at source locations ($\nabla u(x_{j})$)
 
 
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine lfmm3d_s_cd_g_vec(nd,eps,nsource,source,charge,dipvec,pot,grad)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
+
+
 .. container:: rttext
 
   `Back to Laplace FMM <fortran-c.html#lap>`__
@@ -340,20 +412,18 @@ Output arguments:
 
 .. _ltcp:
 
-lfmm3dstotcp
+lfmm3d_t_c_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Targets
 - Interaction kernel: Charges
 - Outputs requested: Potential
 
-.. code:: fortran
-
-  subroutine lfmm3dstotcp(eps,nsource,source,charge,ntarg,targ,pottarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine lfmm3dstotcp_vec(nd,eps,nsource,source,charge,ntarg,targ,pottarg)
+  subroutine lfmm3d_t_c_p(eps,nsource,source,charge,ntarg,targ,pottarg)
 
 This subroutine evaluates the potential 
 
@@ -386,6 +456,20 @@ Output arguments:
 
   -    pottarg: double complex(ntarg)
           Potential at target locations ($u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine lfmm3d_t_c_p_vec(nd,eps,nsource,source,charge,ntarg,targ,pottarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -399,20 +483,18 @@ Output arguments:
 
 .. _ltcg:
 
-lfmm3dstotcg
+lfmm3d_t_c_g
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Targets
 - Interaction kernel: Charges
 - Outputs requested: Potential and Gradient
 
-.. code:: fortran
-
-  subroutine lfmm3dstotcg(eps,nsource,source,charge,ntarg,targ,pottarg,gradtarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine lfmm3dstotcg_vec(nd,eps,nsource,source,charge,ntarg,targ,pottarg,gradtarg)
+  subroutine lfmm3d_t_c_g(eps,nsource,source,charge,ntarg,targ,pottarg,gradtarg)
 
 This subroutine evaluates the potential and its gradient 
 
@@ -447,6 +529,20 @@ Output arguments:
           Potential at target locations ($u(t_{i})$)
   -    gradtarg: double complex(3,ntarg)
           Gradient at target locations ($\nabla u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine lfmm3d_t_c_g_vec(nd,eps,nsource,source,charge,ntarg,targ,pottarg,gradtarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -460,20 +556,18 @@ Output arguments:
 
 .. _ltdp:
 
-lfmm3dstotdp
+lfmm3d_t_d_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Targets
 - Interaction kernel: Dipoles
 - Outputs requested: Potential
 
-.. code:: fortran
-
-  subroutine lfmm3dstotdp(eps,nsource,source,dipvec,ntarg,targ,pottarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine lfmm3dstotdp_vec(nd,eps,nsource,source,dipvec,ntarg,targ,pottarg)
+  subroutine lfmm3d_t_d_p(eps,nsource,source,dipvec,ntarg,targ,pottarg)
 
 This subroutine evaluates the potential 
 
@@ -506,6 +600,20 @@ Output arguments:
 
   -    pottarg: double complex(ntarg)
           Potential at target locations ($u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine lfmm3d_t_d_p_vec(nd,eps,nsource,source,dipvec,ntarg,targ,pottarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -519,20 +627,18 @@ Output arguments:
 
 .. _ltdg:
 
-lfmm3dstotdg
+lfmm3d_t_d_g
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Targets
 - Interaction kernel: Dipoles
 - Outputs requested: Potential and Gradient
 
-.. code:: fortran
-
-  subroutine lfmm3dstotdg(eps,nsource,source,dipvec,ntarg,targ,pottarg,gradtarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine lfmm3dstotdg_vec(nd,eps,nsource,source,dipvec,ntarg,targ,pottarg,gradtarg)
+  subroutine lfmm3d_t_d_g(eps,nsource,source,dipvec,ntarg,targ,pottarg,gradtarg)
 
 This subroutine evaluates the potential and its gradient 
 
@@ -567,6 +673,20 @@ Output arguments:
           Potential at target locations ($u(t_{i})$)
   -    gradtarg: double complex(3,ntarg)
           Gradient at target locations ($\nabla u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine lfmm3d_t_d_g_vec(nd,eps,nsource,source,dipvec,ntarg,targ,pottarg,gradtarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -580,20 +700,18 @@ Output arguments:
 
 .. _ltcdp:
 
-lfmm3dstotcdp
+lfmm3d_t_cd_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Targets
 - Interaction kernel: Charges and Dipoles
 - Outputs requested: Potential
 
-.. code:: fortran
-
-  subroutine lfmm3dstotcdp(eps,nsource,source,charge,dipvec,ntarg,targ,pottarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine lfmm3dstotcdp_vec(nd,eps,nsource,source,charge,dipvec,ntarg,targ,pottarg)
+  subroutine lfmm3d_t_cd_p(eps,nsource,source,charge,dipvec,ntarg,targ,pottarg)
 
 This subroutine evaluates the potential 
 
@@ -628,6 +746,20 @@ Output arguments:
 
   -    pottarg: double complex(ntarg)
           Potential at target locations ($u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine lfmm3d_t_cd_p_vec(nd,eps,nsource,source,charge,dipvec,ntarg,targ,pottarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -641,20 +773,18 @@ Output arguments:
 
 .. _ltcdg:
 
-lfmm3dstotcdg
+lfmm3d_t_cd_g
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Targets
 - Interaction kernel: Charges and Dipoles
 - Outputs requested: Potential and Gradient
 
-.. code:: fortran
-
-  subroutine lfmm3dstotcdg(eps,nsource,source,charge,dipvec,ntarg,targ,pottarg,gradtarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine lfmm3dstotcdg_vec(nd,eps,nsource,source,charge,dipvec,ntarg,targ,pottarg,gradtarg)
+  subroutine lfmm3d_t_cd_g(eps,nsource,source,charge,dipvec,ntarg,targ,pottarg,gradtarg)
 
 This subroutine evaluates the potential and its gradient 
 
@@ -693,6 +823,20 @@ Output arguments:
           Gradient at target locations ($\nabla u(t_{i})$)
 
 
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine lfmm3d_t_cd_g_vec(nd,eps,nsource,source,charge,dipvec,ntarg,targ,pottarg,gradtarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
+
+
 .. container:: rttext
 
   `Back to Laplace FMM <fortran-c.html#lap>`__
@@ -704,20 +848,18 @@ Output arguments:
 
 .. _lstcp:
 
-lfmm3dstostcp
+lfmm3d_st_c_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources and Targets
 - Interaction kernel: Charges
 - Outputs requested: Potential
 
-.. code:: fortran
-
-  subroutine lfmm3dstostcp(eps,nsource,source,charge,ntarg,targ,pot,pottarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine lfmm3dstostcp_vec(nd,eps,nsource,source,charge,ntarg,targ,pot,pottarg)
+  subroutine lfmm3d_st_c_p(eps,nsource,source,charge,ntarg,targ,pot,pottarg)
 
 This subroutine evaluates the potential 
 
@@ -752,6 +894,20 @@ Output arguments:
           Potential at source locations ($u(x_{j})$)
   -    pottarg: double complex(ntarg)
           Potential at target locations ($u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine lfmm3d_st_c_p_vec(nd,eps,nsource,source,charge,ntarg,targ,pot,pottarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -765,20 +921,18 @@ Output arguments:
 
 .. _lstcg:
 
-lfmm3dstostcg
+lfmm3d_st_c_g
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources and Targets
 - Interaction kernel: Charges
 - Outputs requested: Potential and Gradient
 
-.. code:: fortran
-
-  subroutine lfmm3dstostcg(eps,nsource,source,charge,ntarg,targ,pot,grad,pottarg,gradtarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine lfmm3dstostcg_vec(nd,eps,nsource,source,charge,ntarg,targ,pot,grad,pottarg,gradtarg)
+  subroutine lfmm3d_st_c_g(eps,nsource,source,charge,ntarg,targ,pot,grad,pottarg,gradtarg)
 
 This subroutine evaluates the potential and its gradient 
 
@@ -819,6 +973,20 @@ Output arguments:
           Gradient at target locations ($\nabla u(t_{i})$)
 
 
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine lfmm3d_st_c_g_vec(nd,eps,nsource,source,charge,ntarg,targ,pot,grad,pottarg,gradtarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
+
+
 .. container:: rttext
 
   `Back to Laplace FMM <fortran-c.html#lap>`__
@@ -830,20 +998,18 @@ Output arguments:
 
 .. _lstdp:
 
-lfmm3dstostdp
+lfmm3d_st_d_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources and Targets
 - Interaction kernel: Dipoles
 - Outputs requested: Potential
 
-.. code:: fortran
-
-  subroutine lfmm3dstostdp(eps,nsource,source,dipvec,ntarg,targ,pot,pottarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine lfmm3dstostdp_vec(nd,eps,nsource,source,dipvec,ntarg,targ,pot,pottarg)
+  subroutine lfmm3d_st_d_p(eps,nsource,source,dipvec,ntarg,targ,pot,pottarg)
 
 This subroutine evaluates the potential 
 
@@ -878,6 +1044,20 @@ Output arguments:
           Potential at source locations ($u(x_{j})$)
   -    pottarg: double complex(ntarg)
           Potential at target locations ($u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine lfmm3d_st_d_p_vec(nd,eps,nsource,source,dipvec,ntarg,targ,pot,pottarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -891,20 +1071,18 @@ Output arguments:
 
 .. _lstdg:
 
-lfmm3dstostdg
+lfmm3d_st_d_g
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources and Targets
 - Interaction kernel: Dipoles
 - Outputs requested: Potential and Gradient
 
-.. code:: fortran
-
-  subroutine lfmm3dstostdg(eps,nsource,source,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine lfmm3dstostdg_vec(nd,eps,nsource,source,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+  subroutine lfmm3d_st_d_g(eps,nsource,source,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
 
 This subroutine evaluates the potential and its gradient 
 
@@ -945,6 +1123,20 @@ Output arguments:
           Gradient at target locations ($\nabla u(t_{i})$)
 
 
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine lfmm3d_st_d_g_vec(nd,eps,nsource,source,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
+
+
 .. container:: rttext
 
   `Back to Laplace FMM <fortran-c.html#lap>`__
@@ -956,20 +1148,18 @@ Output arguments:
 
 .. _lstcdp:
 
-lfmm3dstostcdp
+lfmm3d_st_cd_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources and Targets
 - Interaction kernel: Charges and Dipoles
 - Outputs requested: Potential
 
-.. code:: fortran
-
-  subroutine lfmm3dstostcdp(eps,nsource,source,charge,dipvec,ntarg,targ,pot,pottarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine lfmm3dstostcdp_vec(nd,eps,nsource,source,charge,dipvec,ntarg,targ,pot,pottarg)
+  subroutine lfmm3d_st_cd_p(eps,nsource,source,charge,dipvec,ntarg,targ,pot,pottarg)
 
 This subroutine evaluates the potential 
 
@@ -1008,6 +1198,20 @@ Output arguments:
           Potential at target locations ($u(t_{i})$)
 
 
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine lfmm3d_st_cd_p_vec(nd,eps,nsource,source,charge,dipvec,ntarg,targ,pot,pottarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
+
+
 .. container:: rttext
 
   `Back to Laplace FMM <fortran-c.html#lap>`__
@@ -1019,20 +1223,18 @@ Output arguments:
 
 .. _lstcdg:
 
-lfmm3dstostcdg
+lfmm3d_st_cd_g
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources and Targets
 - Interaction kernel: Charges and Dipoles
 - Outputs requested: Potential and Gradient
 
-.. code:: fortran
-
-  subroutine lfmm3dstostcdg(eps,nsource,source,charge,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine lfmm3dstostcdg_vec(nd,eps,nsource,source,charge,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+  subroutine lfmm3d_st_cd_g(eps,nsource,source,charge,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
 
 This subroutine evaluates the potential and its gradient 
 
@@ -1073,6 +1275,20 @@ Output arguments:
           Potential at target locations ($u(t_{i})$)
   -    gradtarg: double complex(3,ntarg)
           Gradient at target locations ($\nabla u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine lfmm3d_st_cd_g_vec(nd,eps,nsource,source,charge,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext

@@ -51,7 +51,7 @@ int main(int argc, char **argv)
   cprin_skipline(2);
 
 // call the fmm routine
-  hfmm3dpartstostcdp_vec_(&nd, &eps, &zk, &ns, source, charge, dipvec, 
+  hfmm3d_st_cd_p_vec_(&nd, &eps, &zk, &ns, source, charge, dipvec, 
     pot, &nt, targ, pottarg);
 
 

@@ -34,11 +34,11 @@ gradtarg_txt =["-    gradtarg: double complex(3,ntarg)","Gradient at target loca
 sp1 = "  "
 sp2 = "          "
 
-c_opts = ['c','d','cd']
+c_opts = ['_c','_d','_cd']
 c_opts2 = ['Charges','Dipoles', 'Charges and Dipoles']
-st_opts = ['stos','stot','stost']
+st_opts = ['_s','_t','_st']
 st_opts2 = ['Sources','Targets','Sources and Targets']
-p_opts = ['p','g']
+p_opts = ['_p','_g']
 p_opts2 = ['Potential','Potential and Gradient']
 
 
@@ -69,7 +69,7 @@ for i in range(3):
                 subname=subname+'pot,grad,pottarg,gradtarg)'
 
             
-            str_ini = 'h'+st_opts[i][3::]+c_opts[j]+p_opts[k]
+            str_ini = 'h'+st_opts[i][1::]+c_opts[j][1::]+p_opts[k][1::]
 
             subname3 = 'hfmm3d'+st_opts[i]+c_opts[j]+p_opts[k]
             f1.writelines('.. _'+str_ini+':\n\n')
@@ -77,14 +77,12 @@ for i in range(3):
             f1.writelines('- Evaluation points: '+st_opts2[i]+'\n')
             f1.writelines('- Interaction kernel: '+c_opts2[j]+'\n')
             f1.writelines('- Outputs requested: '+p_opts2[k]+'\n\n')
+            f1.writelines('-------------------------------------\n\n')
             f1.writelines('.. code:: fortran\n\n')
             f1.writelines(sp1+subname0+subname+'\n\n')
-            f1.writelines('.. code:: fortran\n\n')
-            f1.writelines(sp1+subname1+subname+'\n\n')
             f1.writelines(intro+pgstr[k]+'\n'+intro2)
             f1.writelines("      "+eq_cjs[j]+"\n\n"+stflag[i]+" "+intro3+"\n\n")
             f1.writelines(inp_args+"\n\n")
-            f1.writelines(sp1+nd_txt[0]+"\n"+sp2+nd_txt[1]+"\n")
             f1.writelines(sp1+eps_txt[0]+"\n"+sp2+eps_txt[1]+"\n")
             f1.writelines(sp1+zk_txt[0]+"\n"+sp2+zk_txt[1]+"\n")
             f1.writelines(sp1+ns_txt[0]+"\n"+sp2+ns_txt[1]+"\n")
@@ -109,6 +107,11 @@ for i in range(3):
                 f1.writelines(sp1+pottarg_txt[0]+"\n"+sp2+pottarg_txt[1]+"\n")
                 if(k==1):
                     f1.writelines(sp1+gradtarg_txt[0]+"\n"+sp2+gradtarg_txt[1]+"\n")
+            f1.writelines("\n\n--------------------------------\n\nVectorized version: \n\n")
+            f1.writelines('.. code:: fortran\n\n')
+            f1.writelines(sp1+subname1+subname+'\n\n')
+            f1.writelines(inp_args+"\n\n")
+            f1.writelines(sp1+nd_txt[0]+"\n"+sp2+nd_txt[1]+"\n")
             f1.writelines("\n\n.. container:: rttext\n\n  `Back to Helmholtz FMM <fortran-c.html#helm>`__")
             f1.writelines("\n\n.. container:: rttext\n\n  `Back to top <fortran-c.html#fcexmp>`__\n\n\n")
 
@@ -151,7 +154,7 @@ for i in range(3):
                 subname=subname+'pot,grad,pottarg,gradtarg)'
 
             
-            str_ini = 'l'+st_opts[i][3::]+c_opts[j]+p_opts[k]
+            str_ini = 'l'+st_opts[i][1::]+c_opts[j][1::]+p_opts[k][1::]
 
             subname3 = 'lfmm3d'+st_opts[i]+c_opts[j]+p_opts[k]
             f1.writelines('.. _'+str_ini+':\n\n')
@@ -159,10 +162,9 @@ for i in range(3):
             f1.writelines('- Evaluation points: '+st_opts2[i]+'\n')
             f1.writelines('- Interaction kernel: '+c_opts2[j]+'\n')
             f1.writelines('- Outputs requested: '+p_opts2[k]+'\n\n')
+            f1.writelines('-------------------------------------\n\n')
             f1.writelines('.. code:: fortran\n\n')
             f1.writelines(sp1+subname0+subname+'\n\n')
-            f1.writelines('.. code:: fortran\n\n')
-            f1.writelines(sp1+subname1+subname+'\n\n')
             f1.writelines(intro+pgstr[k]+'\n'+intro2)
             f1.writelines("      "+eq_cjs[j]+"\n\n"+stflag[i]+" "+intro3+"\n\n")
             f1.writelines(inp_args+"\n\n")
@@ -190,6 +192,11 @@ for i in range(3):
                 f1.writelines(sp1+pottarg_txt[0]+"\n"+sp2+pottarg_txt[1]+"\n")
                 if(k==1):
                     f1.writelines(sp1+gradtarg_txt[0]+"\n"+sp2+gradtarg_txt[1]+"\n")
+            f1.writelines("\n\n--------------------------------\n\nVectorized version: \n\n")
+            f1.writelines('.. code:: fortran\n\n')
+            f1.writelines(sp1+subname1+subname+'\n\n')
+            f1.writelines(inp_args+"\n\n")
+            f1.writelines(sp1+nd_txt[0]+"\n"+sp2+nd_txt[1]+"\n")
             f1.writelines("\n\n.. container:: rttext\n\n  `Back to Laplace FMM <fortran-c.html#lap>`__")
             f1.writelines("\n\n.. container:: rttext\n\n  `Back to top <fortran-c.html#fcexmp>`__\n\n\n")
 

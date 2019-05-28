@@ -1,19 +1,17 @@
 .. _hscp:
 
-hfmm3dstoscp
+hfmm3d_s_c_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources
 - Interaction kernel: Charges
 - Outputs requested: Potential
 
-.. code:: fortran
-
-  subroutine hfmm3dstoscp(eps,zk,nsource,source,charge,pot)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine hfmm3dstoscp_vec(nd,eps,zk,nsource,source,charge,pot)
+  subroutine hfmm3d_s_c_p(eps,zk,nsource,source,charge,pot)
 
 This subroutine evaluates the potential 
 
@@ -26,8 +24,6 @@ at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_
 
 Input arguments:
 
-  -    nd: integer
-          number of densities
   -    eps: double precision
           precision requested
   -    zk: double complex
@@ -44,6 +40,20 @@ Output arguments:
 
   -    pot: double complex(nsource)
           Potential at source locations ($u(x_{j})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine hfmm3d_s_c_p_vec(nd,eps,zk,nsource,source,charge,pot)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -57,20 +67,18 @@ Output arguments:
 
 .. _hscg:
 
-hfmm3dstoscg
+hfmm3d_s_c_g
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources
 - Interaction kernel: Charges
 - Outputs requested: Potential and Gradient
 
-.. code:: fortran
-
-  subroutine hfmm3dstoscg(eps,zk,nsource,source,charge,pot,grad)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine hfmm3dstoscg_vec(nd,eps,zk,nsource,source,charge,pot,grad)
+  subroutine hfmm3d_s_c_g(eps,zk,nsource,source,charge,pot,grad)
 
 This subroutine evaluates the potential and its gradient 
 
@@ -83,8 +91,6 @@ at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_
 
 Input arguments:
 
-  -    nd: integer
-          number of densities
   -    eps: double precision
           precision requested
   -    zk: double complex
@@ -103,6 +109,20 @@ Output arguments:
           Potential at source locations ($u(x_{j})$)
   -    grad: double complex(3,nsource)
           Gradient at source locations ($\nabla u(x_{j})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine hfmm3d_s_c_g_vec(nd,eps,zk,nsource,source,charge,pot,grad)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -116,20 +136,18 @@ Output arguments:
 
 .. _hsdp:
 
-hfmm3dstosdp
+hfmm3d_s_d_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources
 - Interaction kernel: Dipoles
 - Outputs requested: Potential
 
-.. code:: fortran
-
-  subroutine hfmm3dstosdp(eps,zk,nsource,source,dipvec,pot)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine hfmm3dstosdp_vec(nd,eps,zk,nsource,source,dipvec,pot)
+  subroutine hfmm3d_s_d_p(eps,zk,nsource,source,dipvec,pot)
 
 This subroutine evaluates the potential 
 
@@ -142,8 +160,6 @@ at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_
 
 Input arguments:
 
-  -    nd: integer
-          number of densities
   -    eps: double precision
           precision requested
   -    zk: double complex
@@ -160,6 +176,20 @@ Output arguments:
 
   -    pot: double complex(nsource)
           Potential at source locations ($u(x_{j})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine hfmm3d_s_d_p_vec(nd,eps,zk,nsource,source,dipvec,pot)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -173,20 +203,18 @@ Output arguments:
 
 .. _hsdg:
 
-hfmm3dstosdg
+hfmm3d_s_d_g
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources
 - Interaction kernel: Dipoles
 - Outputs requested: Potential and Gradient
 
-.. code:: fortran
-
-  subroutine hfmm3dstosdg(eps,zk,nsource,source,dipvec,pot,grad)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine hfmm3dstosdg_vec(nd,eps,zk,nsource,source,dipvec,pot,grad)
+  subroutine hfmm3d_s_d_g(eps,zk,nsource,source,dipvec,pot,grad)
 
 This subroutine evaluates the potential and its gradient 
 
@@ -199,8 +227,6 @@ at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_
 
 Input arguments:
 
-  -    nd: integer
-          number of densities
   -    eps: double precision
           precision requested
   -    zk: double complex
@@ -219,6 +245,20 @@ Output arguments:
           Potential at source locations ($u(x_{j})$)
   -    grad: double complex(3,nsource)
           Gradient at source locations ($\nabla u(x_{j})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine hfmm3d_s_d_g_vec(nd,eps,zk,nsource,source,dipvec,pot,grad)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -232,20 +272,18 @@ Output arguments:
 
 .. _hscdp:
 
-hfmm3dstoscdp
+hfmm3d_s_cd_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources
 - Interaction kernel: Charges and Dipoles
 - Outputs requested: Potential
 
-.. code:: fortran
-
-  subroutine hfmm3dstoscdp(eps,zk,nsource,source,charge,dipvec,pot)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine hfmm3dstoscdp_vec(nd,eps,zk,nsource,source,charge,dipvec,pot)
+  subroutine hfmm3d_s_cd_p(eps,zk,nsource,source,charge,dipvec,pot)
 
 This subroutine evaluates the potential 
 
@@ -258,8 +296,6 @@ at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_
 
 Input arguments:
 
-  -    nd: integer
-          number of densities
   -    eps: double precision
           precision requested
   -    zk: double complex
@@ -278,6 +314,20 @@ Output arguments:
 
   -    pot: double complex(nsource)
           Potential at source locations ($u(x_{j})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine hfmm3d_s_cd_p_vec(nd,eps,zk,nsource,source,charge,dipvec,pot)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -291,20 +341,18 @@ Output arguments:
 
 .. _hscdg:
 
-hfmm3dstoscdg
+hfmm3d_s_cd_g
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources
 - Interaction kernel: Charges and Dipoles
 - Outputs requested: Potential and Gradient
 
-.. code:: fortran
-
-  subroutine hfmm3dstoscdg(eps,zk,nsource,source,charge,dipvec,pot,grad)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine hfmm3dstoscdg_vec(nd,eps,zk,nsource,source,charge,dipvec,pot,grad)
+  subroutine hfmm3d_s_cd_g(eps,zk,nsource,source,charge,dipvec,pot,grad)
 
 This subroutine evaluates the potential and its gradient 
 
@@ -317,8 +365,6 @@ at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_
 
 Input arguments:
 
-  -    nd: integer
-          number of densities
   -    eps: double precision
           precision requested
   -    zk: double complex
@@ -339,6 +385,20 @@ Output arguments:
           Potential at source locations ($u(x_{j})$)
   -    grad: double complex(3,nsource)
           Gradient at source locations ($\nabla u(x_{j})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine hfmm3d_s_cd_g_vec(nd,eps,zk,nsource,source,charge,dipvec,pot,grad)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -352,20 +412,18 @@ Output arguments:
 
 .. _htcp:
 
-hfmm3dstotcp
+hfmm3d_t_c_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Targets
 - Interaction kernel: Charges
 - Outputs requested: Potential
 
-.. code:: fortran
-
-  subroutine hfmm3dstotcp(eps,zk,nsource,source,charge,ntarg,targ,pottarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine hfmm3dstotcp_vec(nd,eps,zk,nsource,source,charge,ntarg,targ,pottarg)
+  subroutine hfmm3d_t_c_p(eps,zk,nsource,source,charge,ntarg,targ,pottarg)
 
 This subroutine evaluates the potential 
 
@@ -378,8 +436,6 @@ at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_
 
 Input arguments:
 
-  -    nd: integer
-          number of densities
   -    eps: double precision
           precision requested
   -    zk: double complex
@@ -400,6 +456,20 @@ Output arguments:
 
   -    pottarg: double complex(ntarg)
           Potential at target locations ($u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine hfmm3d_t_c_p_vec(nd,eps,zk,nsource,source,charge,ntarg,targ,pottarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -413,20 +483,18 @@ Output arguments:
 
 .. _htcg:
 
-hfmm3dstotcg
+hfmm3d_t_c_g
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Targets
 - Interaction kernel: Charges
 - Outputs requested: Potential and Gradient
 
-.. code:: fortran
-
-  subroutine hfmm3dstotcg(eps,zk,nsource,source,charge,ntarg,targ,pottarg,gradtarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine hfmm3dstotcg_vec(nd,eps,zk,nsource,source,charge,ntarg,targ,pottarg,gradtarg)
+  subroutine hfmm3d_t_c_g(eps,zk,nsource,source,charge,ntarg,targ,pottarg,gradtarg)
 
 This subroutine evaluates the potential and its gradient 
 
@@ -439,8 +507,6 @@ at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_
 
 Input arguments:
 
-  -    nd: integer
-          number of densities
   -    eps: double precision
           precision requested
   -    zk: double complex
@@ -463,6 +529,20 @@ Output arguments:
           Potential at target locations ($u(t_{i})$)
   -    gradtarg: double complex(3,ntarg)
           Gradient at target locations ($\nabla u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine hfmm3d_t_c_g_vec(nd,eps,zk,nsource,source,charge,ntarg,targ,pottarg,gradtarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -476,20 +556,18 @@ Output arguments:
 
 .. _htdp:
 
-hfmm3dstotdp
+hfmm3d_t_d_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Targets
 - Interaction kernel: Dipoles
 - Outputs requested: Potential
 
-.. code:: fortran
-
-  subroutine hfmm3dstotdp(eps,zk,nsource,source,dipvec,ntarg,targ,pottarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine hfmm3dstotdp_vec(nd,eps,zk,nsource,source,dipvec,ntarg,targ,pottarg)
+  subroutine hfmm3d_t_d_p(eps,zk,nsource,source,dipvec,ntarg,targ,pottarg)
 
 This subroutine evaluates the potential 
 
@@ -502,8 +580,6 @@ at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_
 
 Input arguments:
 
-  -    nd: integer
-          number of densities
   -    eps: double precision
           precision requested
   -    zk: double complex
@@ -524,6 +600,20 @@ Output arguments:
 
   -    pottarg: double complex(ntarg)
           Potential at target locations ($u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine hfmm3d_t_d_p_vec(nd,eps,zk,nsource,source,dipvec,ntarg,targ,pottarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -537,20 +627,18 @@ Output arguments:
 
 .. _htdg:
 
-hfmm3dstotdg
+hfmm3d_t_d_g
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Targets
 - Interaction kernel: Dipoles
 - Outputs requested: Potential and Gradient
 
-.. code:: fortran
-
-  subroutine hfmm3dstotdg(eps,zk,nsource,source,dipvec,ntarg,targ,pottarg,gradtarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine hfmm3dstotdg_vec(nd,eps,zk,nsource,source,dipvec,ntarg,targ,pottarg,gradtarg)
+  subroutine hfmm3d_t_d_g(eps,zk,nsource,source,dipvec,ntarg,targ,pottarg,gradtarg)
 
 This subroutine evaluates the potential and its gradient 
 
@@ -563,8 +651,6 @@ at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_
 
 Input arguments:
 
-  -    nd: integer
-          number of densities
   -    eps: double precision
           precision requested
   -    zk: double complex
@@ -587,6 +673,20 @@ Output arguments:
           Potential at target locations ($u(t_{i})$)
   -    gradtarg: double complex(3,ntarg)
           Gradient at target locations ($\nabla u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine hfmm3d_t_d_g_vec(nd,eps,zk,nsource,source,dipvec,ntarg,targ,pottarg,gradtarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -600,20 +700,18 @@ Output arguments:
 
 .. _htcdp:
 
-hfmm3dstotcdp
+hfmm3d_t_cd_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Targets
 - Interaction kernel: Charges and Dipoles
 - Outputs requested: Potential
 
-.. code:: fortran
-
-  subroutine hfmm3dstotcdp(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pottarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine hfmm3dstotcdp_vec(nd,eps,zk,nsource,source,charge,dipvec,ntarg,targ,pottarg)
+  subroutine hfmm3d_t_cd_p(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pottarg)
 
 This subroutine evaluates the potential 
 
@@ -626,8 +724,6 @@ at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_
 
 Input arguments:
 
-  -    nd: integer
-          number of densities
   -    eps: double precision
           precision requested
   -    zk: double complex
@@ -650,6 +746,20 @@ Output arguments:
 
   -    pottarg: double complex(ntarg)
           Potential at target locations ($u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine hfmm3d_t_cd_p_vec(nd,eps,zk,nsource,source,charge,dipvec,ntarg,targ,pottarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -663,20 +773,18 @@ Output arguments:
 
 .. _htcdg:
 
-hfmm3dstotcdg
+hfmm3d_t_cd_g
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Targets
 - Interaction kernel: Charges and Dipoles
 - Outputs requested: Potential and Gradient
 
-.. code:: fortran
-
-  subroutine hfmm3dstotcdg(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pottarg,gradtarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine hfmm3dstotcdg_vec(nd,eps,zk,nsource,source,charge,dipvec,ntarg,targ,pottarg,gradtarg)
+  subroutine hfmm3d_t_cd_g(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pottarg,gradtarg)
 
 This subroutine evaluates the potential and its gradient 
 
@@ -689,8 +797,6 @@ at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_
 
 Input arguments:
 
-  -    nd: integer
-          number of densities
   -    eps: double precision
           precision requested
   -    zk: double complex
@@ -715,6 +821,20 @@ Output arguments:
           Potential at target locations ($u(t_{i})$)
   -    gradtarg: double complex(3,ntarg)
           Gradient at target locations ($\nabla u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine hfmm3d_t_cd_g_vec(nd,eps,zk,nsource,source,charge,dipvec,ntarg,targ,pottarg,gradtarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -728,20 +848,18 @@ Output arguments:
 
 .. _hstcp:
 
-hfmm3dstostcp
+hfmm3d_st_c_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources and Targets
 - Interaction kernel: Charges
 - Outputs requested: Potential
 
-.. code:: fortran
-
-  subroutine hfmm3dstostcp(eps,zk,nsource,source,charge,ntarg,targ,pot,pottarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine hfmm3dstostcp_vec(nd,eps,zk,nsource,source,charge,ntarg,targ,pot,pottarg)
+  subroutine hfmm3d_st_c_p(eps,zk,nsource,source,charge,ntarg,targ,pot,pottarg)
 
 This subroutine evaluates the potential 
 
@@ -754,8 +872,6 @@ at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term cor
 
 Input arguments:
 
-  -    nd: integer
-          number of densities
   -    eps: double precision
           precision requested
   -    zk: double complex
@@ -778,6 +894,20 @@ Output arguments:
           Potential at source locations ($u(x_{j})$)
   -    pottarg: double complex(ntarg)
           Potential at target locations ($u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine hfmm3d_st_c_p_vec(nd,eps,zk,nsource,source,charge,ntarg,targ,pot,pottarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -791,20 +921,18 @@ Output arguments:
 
 .. _hstcg:
 
-hfmm3dstostcg
+hfmm3d_st_c_g
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources and Targets
 - Interaction kernel: Charges
 - Outputs requested: Potential and Gradient
 
-.. code:: fortran
-
-  subroutine hfmm3dstostcg(eps,zk,nsource,source,charge,ntarg,targ,pot,grad,pottarg,gradtarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine hfmm3dstostcg_vec(nd,eps,zk,nsource,source,charge,ntarg,targ,pot,grad,pottarg,gradtarg)
+  subroutine hfmm3d_st_c_g(eps,zk,nsource,source,charge,ntarg,targ,pot,grad,pottarg,gradtarg)
 
 This subroutine evaluates the potential and its gradient 
 
@@ -817,8 +945,6 @@ at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term cor
 
 Input arguments:
 
-  -    nd: integer
-          number of densities
   -    eps: double precision
           precision requested
   -    zk: double complex
@@ -845,6 +971,20 @@ Output arguments:
           Potential at target locations ($u(t_{i})$)
   -    gradtarg: double complex(3,ntarg)
           Gradient at target locations ($\nabla u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine hfmm3d_st_c_g_vec(nd,eps,zk,nsource,source,charge,ntarg,targ,pot,grad,pottarg,gradtarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -858,20 +998,18 @@ Output arguments:
 
 .. _hstdp:
 
-hfmm3dstostdp
+hfmm3d_st_d_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources and Targets
 - Interaction kernel: Dipoles
 - Outputs requested: Potential
 
-.. code:: fortran
-
-  subroutine hfmm3dstostdp(eps,zk,nsource,source,dipvec,ntarg,targ,pot,pottarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine hfmm3dstostdp_vec(nd,eps,zk,nsource,source,dipvec,ntarg,targ,pot,pottarg)
+  subroutine hfmm3d_st_d_p(eps,zk,nsource,source,dipvec,ntarg,targ,pot,pottarg)
 
 This subroutine evaluates the potential 
 
@@ -884,8 +1022,6 @@ at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term cor
 
 Input arguments:
 
-  -    nd: integer
-          number of densities
   -    eps: double precision
           precision requested
   -    zk: double complex
@@ -908,6 +1044,20 @@ Output arguments:
           Potential at source locations ($u(x_{j})$)
   -    pottarg: double complex(ntarg)
           Potential at target locations ($u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine hfmm3d_st_d_p_vec(nd,eps,zk,nsource,source,dipvec,ntarg,targ,pot,pottarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -921,20 +1071,18 @@ Output arguments:
 
 .. _hstdg:
 
-hfmm3dstostdg
+hfmm3d_st_d_g
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources and Targets
 - Interaction kernel: Dipoles
 - Outputs requested: Potential and Gradient
 
-.. code:: fortran
-
-  subroutine hfmm3dstostdg(eps,zk,nsource,source,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine hfmm3dstostdg_vec(nd,eps,zk,nsource,source,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+  subroutine hfmm3d_st_d_g(eps,zk,nsource,source,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
 
 This subroutine evaluates the potential and its gradient 
 
@@ -947,8 +1095,6 @@ at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term cor
 
 Input arguments:
 
-  -    nd: integer
-          number of densities
   -    eps: double precision
           precision requested
   -    zk: double complex
@@ -975,6 +1121,20 @@ Output arguments:
           Potential at target locations ($u(t_{i})$)
   -    gradtarg: double complex(3,ntarg)
           Gradient at target locations ($\nabla u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine hfmm3d_st_d_g_vec(nd,eps,zk,nsource,source,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext
@@ -988,20 +1148,18 @@ Output arguments:
 
 .. _hstcdp:
 
-hfmm3dstostcdp
+hfmm3d_st_cd_p
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources and Targets
 - Interaction kernel: Charges and Dipoles
 - Outputs requested: Potential
 
-.. code:: fortran
-
-  subroutine hfmm3dstostcdp(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pot,pottarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine hfmm3dstostcdp_vec(nd,eps,zk,nsource,source,charge,dipvec,ntarg,targ,pot,pottarg)
+  subroutine hfmm3d_st_cd_p(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pot,pottarg)
 
 This subroutine evaluates the potential 
 
@@ -1014,8 +1172,6 @@ at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term cor
 
 Input arguments:
 
-  -    nd: integer
-          number of densities
   -    eps: double precision
           precision requested
   -    zk: double complex
@@ -1042,6 +1198,20 @@ Output arguments:
           Potential at target locations ($u(t_{i})$)
 
 
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine hfmm3d_st_cd_p_vec(nd,eps,zk,nsource,source,charge,dipvec,ntarg,targ,pot,pottarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
+
+
 .. container:: rttext
 
   `Back to Helmholtz FMM <fortran-c.html#helm>`__
@@ -1053,20 +1223,18 @@ Output arguments:
 
 .. _hstcdg:
 
-hfmm3dstostcdg
+hfmm3d_st_cd_g
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Evaluation points: Sources and Targets
 - Interaction kernel: Charges and Dipoles
 - Outputs requested: Potential and Gradient
 
-.. code:: fortran
-
-  subroutine hfmm3dstostcdg(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+-------------------------------------
 
 .. code:: fortran
 
-  subroutine hfmm3dstostcdg_vec(nd,eps,zk,nsource,source,charge,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+  subroutine hfmm3d_st_cd_g(eps,zk,nsource,source,charge,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
 
 This subroutine evaluates the potential and its gradient 
 
@@ -1079,8 +1247,6 @@ at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term cor
 
 Input arguments:
 
-  -    nd: integer
-          number of densities
   -    eps: double precision
           precision requested
   -    zk: double complex
@@ -1109,6 +1275,20 @@ Output arguments:
           Potential at target locations ($u(t_{i})$)
   -    gradtarg: double complex(3,ntarg)
           Gradient at target locations ($\nabla u(t_{i})$)
+
+
+--------------------------------
+
+Vectorized version: 
+
+.. code:: fortran
+
+  subroutine hfmm3d_st_cd_g_vec(nd,eps,zk,nsource,source,charge,dipvec,ntarg,targ,pot,grad,pottarg,gradtarg)
+
+Input arguments:
+
+  -    nd: integer
+          number of densities
 
 
 .. container:: rttext

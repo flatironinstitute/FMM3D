@@ -143,25 +143,25 @@ end
   if(iftarg == 0 || (pgt ~=1 && pgt ~=2)) 
     if(pg == 1)
       if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN hfmm3dpartstoscp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, inout dcomplex[nd,ns] pot); 
+        # FORTRAN hfmm3d_s_c_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, inout dcomplex[nd,ns] pot); 
       end
       if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN hfmm3dpartstosdp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot); 
+        # FORTRAN hfmm3d_s_d_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot); 
       end
       if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN hfmm3dpartstoscdp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot); 
+        # FORTRAN hfmm3d_s_cd_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot); 
       end
       U.pot = pot;
     end
     if(pg == 2)
       if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN hfmm3dpartstoscg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad); 
+        # FORTRAN hfmm3d_s_c_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad); 
       end
       if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN hfmm3dpartstosdg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad); 
+        # FORTRAN hfmm3d_s_d_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad); 
       end
       if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN hfmm3dpartstoscdg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, inout dcomplex [nd3,ns] grad); 
+        # FORTRAN hfmm3d_s_cd_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, inout dcomplex [nd3,ns] grad); 
       end
       U.pot = pot;
       U.grad = squeeze(reshape(grad,[nd,3,ns]));
@@ -170,25 +170,25 @@ end
   if(iftarg == 1 && pg ~=1 && pg ~=2) 
     if(pgt == 1)
       if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN hfmm3dpartstotcp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg); 
+        # FORTRAN hfmm3d_t_c_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg); 
       end
       if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN hfmm3dpartstotdp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg); 
+        # FORTRAN hfmm3d_t_d_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg); 
       end
       if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN hfmm3dpartstotcdp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg); 
+        # FORTRAN hfmm3d_t_cd_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg); 
       end
       U.pottarg = pottarg;
     end
     if(pgt == 2)
       if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN hfmm3dpartstotcg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex[nd3,nt] gradtarg); 
+        # FORTRAN hfmm3d_t_c_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex[nd3,nt] gradtarg); 
       end
       if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN hfmm3dpartstotdg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex[nd3,nt] gradtarg); 
+        # FORTRAN hfmm3d_t_d_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex[nd3,nt] gradtarg); 
       end
       if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN hfmm3dpartstotcdg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex [nd3,nt] gradtarg); 
+        # FORTRAN hfmm3d_t_cd_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex [nd3,nt] gradtarg); 
       end
       U.pottarg = pottarg;
       U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
@@ -198,26 +198,26 @@ end
     assert(pg==pgt,'pg must be pgt');
     if(pgt == 1)
       if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN hfmm3dpartstostcp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, inout dcomplex[nd,ns] pot, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg); 
+        # FORTRAN hfmm3d_st_c_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, inout dcomplex[nd,ns] pot, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg); 
       end
       if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN hfmm3dpartstostdp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg); 
+        # FORTRAN hfmm3d_st_d_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg); 
       end
       if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN hfmm3dpartstostcdp_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg); 
+        # FORTRAN hfmm3d_st_cd_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg); 
       end
       U.pot = pot;
       U.pottarg = pottarg;
     end
     if(pgt == 2)
       if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN hfmm3dpartstostcg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex[nd3,nt] gradtarg); 
+        # FORTRAN hfmm3d_st_c_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex[nd3,nt] gradtarg); 
       end
       if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN hfmm3dpartstostdg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex[nd3,nt] gradtarg); 
+        # FORTRAN hfmm3d_st_d_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex[nd3,nt] gradtarg); 
       end
       if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN hfmm3dpartstostcdg_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex [nd3,nt] gradtarg); 
+        # FORTRAN hfmm3d_st_cd_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex [nd3,nt] gradtarg); 
       end
       U.pot = pot;
       U.grad = squeeze(reshape(grad,[nd,3,ns]));
@@ -469,25 +469,25 @@ end
   if(iftarg == 0 || (pgt ~=1 && pgt ~=2)) 
     if(pg == 1)
       if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN lfmm3dpartstoscp_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot); 
+        # FORTRAN lfmm3d_s_c_p_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot); 
       end
       if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN lfmm3dpartstosdp_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot); 
+        # FORTRAN lfmm3d_s_d_p_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot); 
       end
       if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN lfmm3dpartstoscdp_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot); 
+        # FORTRAN lfmm3d_s_cd_p_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot); 
       end
       U.pot = pot;
     end
     if(pg == 2)
       if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN lfmm3dpartstoscg_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot, inout double[nd3,ns] grad); 
+        # FORTRAN lfmm3d_s_c_g_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot, inout double[nd3,ns] grad); 
       end
       if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN lfmm3dpartstosdg_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double[nd3,ns] grad); 
+        # FORTRAN lfmm3d_s_d_g_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double[nd3,ns] grad); 
       end
       if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN lfmm3dpartstoscdg_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double [nd3,ns] grad); 
+        # FORTRAN lfmm3d_s_cd_g_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double [nd3,ns] grad); 
       end
       U.pot = pot;
       U.grad = squeeze(reshape(grad,[nd,3,ns]));
@@ -496,25 +496,25 @@ end
   if(iftarg == 1 && pg ~=1 && pg ~=2) 
     if(pgt == 1)
       if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN lfmm3dpartstotcp_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg); 
+        # FORTRAN lfmm3d_t_c_p_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg); 
       end
       if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN lfmm3dpartstotdp_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg); 
+        # FORTRAN lfmm3d_t_d_p_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg); 
       end
       if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN lfmm3dpartstotcdp_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg); 
+        # FORTRAN lfmm3d_t_cd_p_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg); 
       end
       U.pottarg = pottarg;
     end
     if(pgt == 2)
       if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN lfmm3dpartstotcg_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg); 
+        # FORTRAN lfmm3d_t_c_g_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg); 
       end
       if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN lfmm3dpartstotdg_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg); 
+        # FORTRAN lfmm3d_t_d_g_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg); 
       end
       if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN lfmm3dpartstotcdg_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double [nd3,nt] gradtarg); 
+        # FORTRAN lfmm3d_t_cd_g_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double [nd3,nt] gradtarg); 
       end
       U.pottarg = pottarg;
       U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
@@ -524,26 +524,26 @@ end
     assert(pg==pgt,'pg must be pgt');
     if(pgt == 1)
       if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN lfmm3dpartstostcp_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg); 
+        # FORTRAN lfmm3d_st_c_p_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg); 
       end
       if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN lfmm3dpartstostdp_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg); 
+        # FORTRAN lfmm3d_st_d_p_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg); 
       end
       if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN lfmm3dpartstostcdp_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg); 
+        # FORTRAN lfmm3d_st_cd_p_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg); 
       end
       U.pot = pot;
       U.pottarg = pottarg;
     end
     if(pgt == 2)
       if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN lfmm3dpartstostcg_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot, inout double[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg); 
+        # FORTRAN lfmm3d_st_c_g_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot, inout double[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg); 
       end
       if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN lfmm3dpartstostdg_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg); 
+        # FORTRAN lfmm3d_st_d_g_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg); 
       end
       if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN lfmm3dpartstostcdg_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double [nd3,nt] gradtarg); 
+        # FORTRAN lfmm3d_st_cd_g_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double [nd3,nt] gradtarg); 
       end
       U.pot = pot;
       U.grad = squeeze(reshape(grad,[nd,3,ns]));

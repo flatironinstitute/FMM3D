@@ -4,7 +4,7 @@
 
 zk = complex(1.1);
 
-nsource = 2000
+nsource = 20000
 
 source = zeros(3,nsource);
 
@@ -46,7 +46,7 @@ iffld = 1
 
 ntarget = min(10,nsource);
 target = source(:,1:nsource);
-target(1,:) = target(1,:) + 10;
+target(1,:) = target(1,:) + 0.2;
 [ndim,ntarget] = size(target);
 %%%ntarget = 0;
 

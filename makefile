@@ -23,14 +23,14 @@ OMPFLAGS = --openmp
 MOMPFLAGS = -lgomp -D_OPENMP
 
 # flags for MATLAB MEX compilation..
-MFLAGS=-largeArrayDims -L/usr/local/Cellar/gcc/8.3.0/lib/gcc/8 -lgfortran -DMWF77_UNDERSCORE1 -lm  -ldl
+MFLAGS=-largeArrayDims -lgfortran -DMWF77_UNDERSCORE1 -lm  -ldl
 MWFLAGS=-c99complex 
 
 # location of MATLAB's mex compiler
-MEX=/Applications/MATLAB_R2019a.app/bin/mex
+MEX=mex
 
 # For experts, location of Mwrap executable
-MWRAP=mwrap
+MWRAP=../../mwrap-0.33/mwrap
 
 
 # multi-threaded libs & flags needed

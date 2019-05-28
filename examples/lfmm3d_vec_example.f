@@ -77,7 +77,7 @@ c
       enddo
 
 
-       call lfmm3dpartstostcdp_vec(nd,eps,ns,source,charge,
+       call lfmm3d_st_cd_p_vec(nd,eps,ns,source,charge,
      1      dipvec,pot,nt,targ,pottarg)
 
        call prin2("potential at sources=*",pot,12)

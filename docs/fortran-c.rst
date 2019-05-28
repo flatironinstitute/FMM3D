@@ -26,26 +26,26 @@ and the collection of $x$ at which the potential
 and its gradient are evaluated are referred to as the
 evalution points.
      
-
-The subroutine names take the following form:
+There are 36 different Fortran wrappers for the Laplace FMM 
+to account for The subroutine names take the following form:
 
 .. highlights::  
    
-   "lfmm3d_a_b_c"
+   "lfmm3d_<eval-pts>_<int-ker>_<out>"
 
-    - <1>: evaluation points. Collection of `x' where $u$ and its gradient
+    - <eval-pts>: evaluation points. Collection of `x` where $u$ and its gradient is to be evaluated
 
-        - stos: Evaluate $u$ and its gradient at the source locations $x_{i}$ 
-        - stot: Evaluate $u$ and its gradient at $t_{i}$, a collection of target locations specified  by the user.
-        - stost: Evaluate $u$ and its gradient at both source and target locations $x_{i}$ and $t_{i}$.
+        - s: Evaluate $u$ and its gradient at the source locations $x_{i}$ 
+        - t: Evaluate $u$ and its gradient at $t_{i}$, a collection of target locations specified  by the user.
+        - st: Evaluate $u$ and its gradient at both source and target locations $x_{i}$ and $t_{i}$.
 
-    - <2>: kind of interaction (charges/dipoles/both). The charge interactions are given by $c_{j}/\|x-x_{j}\| $, and the dipole interactions are given by $-v_{j} \cdot \nabla (1/\|x-x_{j}\|)$
+    - <int-ker>: kernel of interaction (charges/dipoles/both). The charge interactions are given by $c_{j}/\|x-x_{j}\| $, and the dipole interactions are given by $-v_{j} \cdot \nabla (1/\|x-x_{j}\|)$
 
         - c: charges
         - d: dipoles
         - cd: charges + dipoles
  
-    - <3>: Flag for evaluating potential or potential + gradient
+    - <out>: Flag for evaluating potential or potential + gradient
 
         - p: on output only $u$ is evaluated
         - g: on output both $u$ and its gradient are evaluated
@@ -149,21 +149,22 @@ The subroutine names take the following form:
 
 .. highlights::  
    
-   hfmm3dpart<1><2><3>
+   
+   "hfmm3d_<eval-pts>_<int-ker>_<out>"
 
-    - <1>: evaluation points. Collection of `x' where $u$ and its gradient
+    - <eval-pts>: evaluation points. Collection of `x` where $u$ and its gradient is to be evaluated
 
-        - stos: Evaluate $u$ and its gradient at the source locations $x_{i}$ 
-        - stot: Evaluate $u$ and its gradient at $t_{i}$, a collection of target locations specified  by the user.
-        - stost: Evaluate $u$ and its gradient at both source and target locations $x_{i}$ and $t_{i}$.
+        - s: Evaluate $u$ and its gradient at the source locations $x_{i}$ 
+        - t: Evaluate $u$ and its gradient at $t_{i}$, a collection of target locations specified  by the user.
+        - st: Evaluate $u$ and its gradient at both source and target locations $x_{i}$ and $t_{i}$.
 
-    - <2>: kind of interaction (charges/dipoles/both). The charge interactions are given by $c_{j} e^{ik\|x-x_{j}\|}/\|x-x_{j}\|$, and the dipole interactions are given by $-v_{j} \cdot \nabla (e^{ik\|x-x_{j}\|}/\|x-x_{j}\|)$
+    - <int-ker>: kernel of interaction (charges/dipoles/both). The charge interactions are given by $c_{j}/\|x-x_{j}\| $, and the dipole interactions are given by $-v_{j} \cdot \nabla (1/\|x-x_{j}\|)$
 
         - c: charges
         - d: dipoles
         - cd: charges + dipoles
  
-    - <3>: Flag for evaluating potential or potential + gradient
+    - <out>: Flag for evaluating potential or potential + gradient
 
         - p: on output only $u$ is evaluated
         - g: on output both $u$ and its gradient are evaluated

@@ -1,10 +1,12 @@
  ---------------------------------------------------------------------
-hfmm3d
-******
+::
 
-   This subroutine computes the N-body Helmholtz
-   interactions and its gradients in three dimensions where 
-   the interaction kernel is given by e^{ikr}/r
+ hfmm3d
+
+
+This subroutine computes the N-body Helmholtz
+interactions and its gradients in three dimensions where 
+the interaction kernel is given by e^{ikr}/r
  
    .. math::
 
