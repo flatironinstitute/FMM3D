@@ -84,7 +84,7 @@ int main(int argc, char **argv)
   pg = 1;
   pgt = 0;
 
-  lfmm3dpartstoscp_(&eps, &ns, source, charge, pot);
+  lfmm3d_s_c_p_(&eps, &ns, source, charge, pot);
 
   dzero(ntest,potex);
   l3ddirectcp_(&nd, source, charge, &ns, source, &ntest, potex, &thresh);
@@ -113,7 +113,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 0;
-  lfmm3dpartstoscg_(&eps, &ns, source, charge, pot, grad);
+  lfmm3d_s_c_g_(&eps, &ns, source, charge, pot, grad);
 
   dzero(ntest,potex);
   dzero(3*ntest,gradex);
@@ -143,7 +143,7 @@ int main(int argc, char **argv)
 
   pg = 1;
   pgt = 0;
-  lfmm3dpartstosdp_(&eps, &ns, source, dipvec, pot);
+  lfmm3d_s_d_p_(&eps, &ns, source, dipvec, pot);
 
   dzero(ntest,potex);
   l3ddirectdp_(&nd, source, dipvec, &ns, source, &ntest, potex, &thresh);
@@ -172,7 +172,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 0;
-  lfmm3dpartstosdg_(&eps, &ns, source, dipvec, pot, grad);
+  lfmm3d_s_d_g_(&eps, &ns, source, dipvec, pot, grad);
 
   dzero(ntest,potex);
   dzero(3*ntest,gradex);
@@ -200,7 +200,7 @@ int main(int argc, char **argv)
 
   pg = 1;
   pgt = 0;
-  lfmm3dpartstoscdp_(&eps, &ns, source, charge, dipvec, pot);
+  lfmm3d_s_cd_p_(&eps, &ns, source, charge, dipvec, pot);
 
   dzero(ntest,potex);
   l3ddirectcdp_(&nd, source, charge, dipvec, &ns, source, &ntest, potex, &thresh);
@@ -229,7 +229,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 0;
-  lfmm3dpartstoscdg_(&eps, &ns, source, charge, dipvec, pot, grad);
+  lfmm3d_s_cd_g_(&eps, &ns, source, charge, dipvec, pot, grad);
 
   dzero(ntest,potex);
   dzero(3*ntest,gradex);
@@ -259,7 +259,7 @@ int main(int argc, char **argv)
   pg = 0;
   pgt = 1;
 
-  lfmm3dpartstotcp_(&eps, &ns, source, charge, &nt, targ, pottarg);
+  lfmm3d_t_c_p_(&eps, &ns, source, charge, &nt, targ, pottarg);
 
   dzero(ntest,pottargex);
   l3ddirectcp_(&nd, source, charge, &ns, targ, &ntest, 
@@ -290,7 +290,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 2;
-  lfmm3dpartstotcg_(&eps, &ns, source, charge, &nt, targ, 
+  lfmm3d_t_c_g_(&eps, &ns, source, charge, &nt, targ, 
       pottarg, gradtarg);
 
   dzero(ntest,pottargex);
@@ -322,7 +322,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 1;
-  lfmm3dpartstotdp_(&eps, &ns, source, dipvec, &nt, targ, pottarg);
+  lfmm3d_t_d_p_(&eps, &ns, source, dipvec, &nt, targ, pottarg);
 
   dzero(ntest,pottargex);
   l3ddirectdp_(&nd, source, dipvec, &ns, 
@@ -352,7 +352,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 2;
-  lfmm3dpartstotdg_(&eps, &ns, source, dipvec, &nt, targ, 
+  lfmm3d_t_d_g_(&eps, &ns, source, dipvec, &nt, targ, 
      pottarg, gradtarg);
 
   dzero(ntest,pottargex);
@@ -382,7 +382,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 1;
-  lfmm3dpartstotcdp_(&eps, &ns, source, charge, dipvec, &nt, targ,
+  lfmm3d_t_cd_p_(&eps, &ns, source, charge, dipvec, &nt, targ,
      pottarg);
 
   dzero(ntest,pottargex);
@@ -413,7 +413,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 2;
-  lfmm3dpartstotcdg_(&eps, &ns, source, charge, dipvec, &nt, 
+  lfmm3d_t_cd_g_(&eps, &ns, source, charge, dipvec, &nt, 
      targ, pottarg, gradtarg);
 
   dzero(ntest,pottargex);
@@ -445,7 +445,7 @@ int main(int argc, char **argv)
   pg = 1;
   pgt = 1;
 
-  lfmm3dpartstostcp_(&eps, &ns, source, charge, pot, 
+  lfmm3d_st_c_p_(&eps, &ns, source, charge, pot, 
     &nt, targ, pottarg);
 
   dzero(ntest,potex);
@@ -480,7 +480,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 2;
-  lfmm3dpartstostcg_(&eps, &ns, source, charge, pot, grad, 
+  lfmm3d_st_c_g_(&eps, &ns, source, charge, pot, grad, 
       &nt, targ, pottarg, gradtarg);
 
   dzero(ntest,potex);
@@ -516,7 +516,7 @@ int main(int argc, char **argv)
 
   pg = 1;
   pgt = 1;
-  lfmm3dpartstostdp_(&eps, &ns, source, dipvec, pot, 
+  lfmm3d_st_d_p_(&eps, &ns, source, dipvec, pot, 
      &nt, targ, pottarg);
 
   dzero(ntest,potex);
@@ -550,7 +550,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 2;
-  lfmm3dpartstostdg_(&eps, &ns, source, dipvec, pot, grad, 
+  lfmm3d_st_d_g_(&eps, &ns, source, dipvec, pot, grad, 
      &nt, targ, pottarg, gradtarg);
 
   dzero(ntest,potex);
@@ -584,7 +584,7 @@ int main(int argc, char **argv)
 
   pg = 1;
   pgt = 1;
-  lfmm3dpartstostcdp_(&eps, &ns, source, charge, dipvec, pot, 
+  lfmm3d_st_cd_p_(&eps, &ns, source, charge, dipvec, pot, 
      &nt, targ,  pottarg);
 
   dzero(ntest,potex);
@@ -618,7 +618,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 2;
-  lfmm3dpartstostcdg_(&eps, &ns, source, charge, dipvec, pot, grad,
+  lfmm3d_st_cd_g_(&eps, &ns, source, charge, dipvec, pot, grad,
      &nt,targ, pottarg, gradtarg);
 
   dzero(ntest,potex);
@@ -692,7 +692,7 @@ int main(int argc, char **argv)
   pg = 1;
   pgt = 0;
 
-  lfmm3dpartstoscp_vec_(&nd, &eps, &ns, source, charge, pot);
+  lfmm3d_s_c_p_vec_(&nd, &eps, &ns, source, charge, pot);
 
   dzero(nd*ntest,potex);
   l3ddirectcp_(&nd, source, charge, &ns, source, &ntest, potex, &thresh);
@@ -721,7 +721,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 0;
-  lfmm3dpartstoscg_vec_(&nd, &eps, &ns, source, charge, pot, grad);
+  lfmm3d_s_c_g_vec_(&nd, &eps, &ns, source, charge, pot, grad);
 
   dzero(nd*ntest,potex);
   dzero(nd*3*ntest,gradex);
@@ -751,7 +751,7 @@ int main(int argc, char **argv)
 
   pg = 1;
   pgt = 0;
-  lfmm3dpartstosdp_vec_(&nd, &eps, &ns, source, dipvec, pot);
+  lfmm3d_s_d_p_vec_(&nd, &eps, &ns, source, dipvec, pot);
 
   dzero(nd*ntest,potex);
   l3ddirectdp_(&nd, source, dipvec, &ns, source, &ntest, potex, &thresh);
@@ -780,7 +780,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 0;
-  lfmm3dpartstosdg_vec_(&nd, &eps, &ns, source, dipvec, pot, grad);
+  lfmm3d_s_d_g_vec_(&nd, &eps, &ns, source, dipvec, pot, grad);
 
   dzero(nd*ntest,potex);
   dzero(nd*3*ntest,gradex);
@@ -808,7 +808,7 @@ int main(int argc, char **argv)
 
   pg = 1;
   pgt = 0;
-  lfmm3dpartstoscdp_vec_(&nd, &eps, &ns, source, charge, dipvec, pot);
+  lfmm3d_s_cd_p_vec_(&nd, &eps, &ns, source, charge, dipvec, pot);
 
   dzero(nd*ntest,potex);
   l3ddirectcdp_(&nd, source, charge, dipvec, &ns, source, &ntest, potex, &thresh);
@@ -837,7 +837,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 0;
-  lfmm3dpartstoscdg_vec_(&nd, &eps, &ns, source, charge, dipvec, pot, grad);
+  lfmm3d_s_cd_g_vec_(&nd, &eps, &ns, source, charge, dipvec, pot, grad);
 
   dzero(nd*ntest,potex);
   dzero(nd*3*ntest,gradex);
@@ -867,7 +867,7 @@ int main(int argc, char **argv)
   pg = 0;
   pgt = 1;
 
-  lfmm3dpartstotcp_vec_(&nd, &eps, &ns, source, charge, &nt, targ, pottarg);
+  lfmm3d_t_c_p_vec_(&nd, &eps, &ns, source, charge, &nt, targ, pottarg);
 
   dzero(nd*ntest,pottargex);
   l3ddirectcp_(&nd, source, charge, &ns, targ, &ntest, 
@@ -898,7 +898,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 2;
-  lfmm3dpartstotcg_vec_(&nd, &eps, &ns, source, charge, &nt, targ, 
+  lfmm3d_t_c_g_vec_(&nd, &eps, &ns, source, charge, &nt, targ, 
       pottarg, gradtarg);
 
   dzero(nd*ntest,pottargex);
@@ -930,7 +930,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 1;
-  lfmm3dpartstotdp_vec_(&nd, &eps, &ns, source, dipvec, &nt, targ, pottarg);
+  lfmm3d_t_d_p_vec_(&nd, &eps, &ns, source, dipvec, &nt, targ, pottarg);
 
   dzero(nd*ntest,pottargex);
   l3ddirectdp_(&nd, source, dipvec, &ns, 
@@ -960,7 +960,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 2;
-  lfmm3dpartstotdg_vec_(&nd, &eps, &ns, source, dipvec, &nt, targ, 
+  lfmm3d_t_d_g_vec_(&nd, &eps, &ns, source, dipvec, &nt, targ, 
      pottarg, gradtarg);
 
   dzero(nd*ntest,pottargex);
@@ -990,7 +990,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 1;
-  lfmm3dpartstotcdp_vec_(&nd, &eps, &ns, source, charge, dipvec, &nt, targ,
+  lfmm3d_t_cd_p_vec_(&nd, &eps, &ns, source, charge, dipvec, &nt, targ,
      pottarg);
 
   dzero(nd*ntest,pottargex);
@@ -1021,7 +1021,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 2;
-  lfmm3dpartstotcdg_vec_(&nd, &eps, &ns, source, charge, dipvec, &nt, 
+  lfmm3d_t_cd_g_vec_(&nd, &eps, &ns, source, charge, dipvec, &nt, 
      targ, pottarg, gradtarg);
 
   dzero(nd*ntest,pottargex);
@@ -1053,7 +1053,7 @@ int main(int argc, char **argv)
   pg = 1;
   pgt = 1;
 
-  lfmm3dpartstostcp_vec_(&nd, &eps, &ns, source, charge, pot, 
+  lfmm3d_st_c_p_vec_(&nd, &eps, &ns, source, charge, pot, 
     &nt, targ, pottarg);
 
   dzero(nd*ntest,potex);
@@ -1088,7 +1088,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 2;
-  lfmm3dpartstostcg_vec_(&nd, &eps, &ns, source, charge, pot, grad, 
+  lfmm3d_st_c_g_vec_(&nd, &eps, &ns, source, charge, pot, grad, 
       &nt, targ, pottarg, gradtarg);
 
   dzero(nd*ntest,potex);
@@ -1124,7 +1124,7 @@ int main(int argc, char **argv)
 
   pg = 1;
   pgt = 1;
-  lfmm3dpartstostdp_vec_(&nd, &eps, &ns, source, dipvec, pot, 
+  lfmm3d_st_d_p_vec_(&nd, &eps, &ns, source, dipvec, pot, 
      &nt, targ, pottarg);
 
   dzero(nd*ntest,potex);
@@ -1158,7 +1158,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 2;
-  lfmm3dpartstostdg_vec_(&nd, &eps, &ns, source, dipvec, pot, grad, 
+  lfmm3d_st_d_g_vec_(&nd, &eps, &ns, source, dipvec, pot, grad, 
      &nt, targ, pottarg, gradtarg);
 
   dzero(nd*ntest,potex);
@@ -1192,7 +1192,7 @@ int main(int argc, char **argv)
 
   pg = 1;
   pgt = 1;
-  lfmm3dpartstostcdp_vec_(&nd, &eps, &ns, source, charge, dipvec, pot, 
+  lfmm3d_st_cd_p_vec_(&nd, &eps, &ns, source, charge, dipvec, pot, 
      &nt, targ,  pottarg);
 
   dzero(nd*ntest,potex);
@@ -1226,7 +1226,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 2;
-  lfmm3dpartstostcdg_vec_(&nd, &eps, &ns, source, charge, dipvec, pot, grad,
+  lfmm3d_st_cd_g_vec_(&nd, &eps, &ns, source, charge, dipvec, pot, grad,
      &nt,targ, pottarg, gradtarg);
 
   dzero(nd*ntest,potex);

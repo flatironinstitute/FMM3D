@@ -2,7 +2,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstoscp(eps,nsource,source,
+      subroutine lfmm3d_s_c_p(eps,nsource,source,
      1    charge,pot)
       implicit none
 cf2py  intent(in) eps
@@ -47,7 +47,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstoscg(eps,nsource,source,
+      subroutine lfmm3d_s_c_g(eps,nsource,source,
      1    charge,pot,grad)
 cf2py  intent(in) eps
 cf2py  intent(in) nsource,source,charge
@@ -92,7 +92,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstosdp(eps,nsource,source,
+      subroutine lfmm3d_s_d_p(eps,nsource,source,
      1    dipvec,pot)
 cf2py  intent(in) eps
 cf2py  intent(in) nsource,source,dipvec
@@ -136,7 +136,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstosdg(eps,nsource,source,
+      subroutine lfmm3d_s_d_g(eps,nsource,source,
      1    dipvec,pot,grad)
 cf2py  intent(in) eps
 cf2py  intent(in) nsource,source,dipvec
@@ -179,7 +179,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstoscdp(eps,nsource,source,
+      subroutine lfmm3d_s_cd_p(eps,nsource,source,
      1    charge,dipvec,pot)
 cf2py  intent(in) eps
 cf2py  intent(in) nsource,source,dipvec,charge
@@ -226,7 +226,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstoscdg(eps,nsource,source,
+      subroutine lfmm3d_s_cd_g(eps,nsource,source,
      1    charge,dipvec,pot,grad)
 cf2py  intent(in) eps
 cf2py  intent(in) nsource,source,dipvec,charge
@@ -268,7 +268,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstotcp(eps,nsource,source,
+      subroutine lfmm3d_t_c_p(eps,nsource,source,
      1    charge,ntarg,targ,pottarg)
 cf2py  intent(in) eps
 cf2py  intent(in) nsource,source,charge
@@ -310,7 +310,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstotcg(eps,nsource,source,
+      subroutine lfmm3d_t_c_g(eps,nsource,source,
      1    charge,ntarg,targ,pottarg,
      2    gradtarg)
 cf2py  intent(in) eps
@@ -351,7 +351,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstotdp(eps,nsource,source,
+      subroutine lfmm3d_t_d_p(eps,nsource,source,
      1    dipvec,ntarg,targ,pottarg)
 cf2py  intent(in) eps
 cf2py  intent(in) nsource,source,dipvec
@@ -393,7 +393,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstotdg(eps,nsource,source,
+      subroutine lfmm3d_t_d_g(eps,nsource,source,
      1    dipvec,ntarg,targ,pottarg,
      2    gradtarg)
 cf2py  intent(in) eps
@@ -435,7 +435,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstotcdp(eps,nsource,source,
+      subroutine lfmm3d_t_cd_p(eps,nsource,source,
      1    charge,dipvec,ntarg,targ,pottarg)
 cf2py  intent(in) eps
 cf2py  intent(in) nsource,source,dipvec,charge
@@ -477,7 +477,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstotcdg(eps,nsource,source,
+      subroutine lfmm3d_t_cd_g(eps,nsource,source,
      1    charge,dipvec,ntarg,targ,pottarg,
      2    gradtarg)
 cf2py  intent(in) eps
@@ -518,7 +518,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstostcp(eps,nsource,source,
+      subroutine lfmm3d_st_c_p(eps,nsource,source,
      1    charge,pot,ntarg,targ,pottarg)
 cf2py  intent(in) eps
 cf2py  intent(in) nsource,source,charge
@@ -560,7 +560,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstostcg(eps,nsource,source,
+      subroutine lfmm3d_st_c_g(eps,nsource,source,
      1    charge,pot,grad,ntarg,targ,pottarg,
      2    gradtarg)
 cf2py  intent(in) eps
@@ -603,7 +603,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstostdp(eps,nsource,source,
+      subroutine lfmm3d_st_d_p(eps,nsource,source,
      1    dipvec,pot,ntarg,targ,pottarg)
 cf2py  intent(in) eps
 cf2py  intent(in) nsource,source,dipvec
@@ -646,7 +646,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstostdg(eps,nsource,source,
+      subroutine lfmm3d_st_d_g(eps,nsource,source,
      1    dipvec,pot,grad,ntarg,targ,pottarg,
      2    gradtarg)
 cf2py  intent(in) eps
@@ -689,7 +689,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstostcdp(eps,nsource,source,
+      subroutine lfmm3d_st_cd_p(eps,nsource,source,
      1    charge,dipvec,pot,ntarg,targ,pottarg)
 cf2py  intent(in) eps
 cf2py  intent(in) nsource,source,dipvec,charge
@@ -731,7 +731,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstostcdg(eps,nsource,source,
+      subroutine lfmm3d_st_cd_g(eps,nsource,source,
      1    charge,dipvec,pot,grad,ntarg,targ,pottarg,
      2    gradtarg)
 cf2py  intent(in) eps

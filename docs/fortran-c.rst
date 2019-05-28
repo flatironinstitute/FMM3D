@@ -31,7 +31,7 @@ The subroutine names take the following form:
 
 .. highlights::  
    
-   lfmm3dpart<1><2><3>
+   "lfmm3d_a_b_c"
 
     - <1>: evaluation points. Collection of `x' where $u$ and its gradient
 

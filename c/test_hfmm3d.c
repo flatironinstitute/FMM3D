@@ -85,7 +85,7 @@ int main(int argc, char **argv)
   pg = 1;
   pgt = 0;
 
-  hfmm3dpartstoscp_(&eps, &zk, &ns, source, charge, pot);
+  hfmm3d_s_c_p_(&eps, &zk, &ns, source, charge, pot);
 
   czero(ntest,potex);
   h3ddirectcp_(&nd, &zk, source, charge, &ns, source, &ntest, potex, &thresh);
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 0;
-  hfmm3dpartstoscg_(&eps, &zk, &ns, source, charge, pot, grad);
+  hfmm3d_s_c_g_(&eps, &zk, &ns, source, charge, pot, grad);
 
   czero(ntest,potex);
   czero(3*ntest,gradex);
@@ -144,7 +144,7 @@ int main(int argc, char **argv)
 
   pg = 1;
   pgt = 0;
-  hfmm3dpartstosdp_(&eps, &zk, &ns, source, dipvec, pot);
+  hfmm3d_s_d_p_(&eps, &zk, &ns, source, dipvec, pot);
 
   czero(ntest,potex);
   h3ddirectdp_(&nd, &zk, source, dipvec, &ns, source, &ntest, potex, &thresh);
@@ -173,7 +173,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 0;
-  hfmm3dpartstosdg_(&eps, &zk, &ns, source, dipvec, pot, grad);
+  hfmm3d_s_d_g_(&eps, &zk, &ns, source, dipvec, pot, grad);
 
   czero(ntest,potex);
   czero(3*ntest,gradex);
@@ -201,7 +201,7 @@ int main(int argc, char **argv)
 
   pg = 1;
   pgt = 0;
-  hfmm3dpartstoscdp_(&eps, &zk, &ns, source, charge, dipvec, pot);
+  hfmm3d_s_cd_p_(&eps, &zk, &ns, source, charge, dipvec, pot);
 
   czero(ntest,potex);
   h3ddirectcdp_(&nd, &zk, source, charge, dipvec, &ns, source, &ntest, potex, &thresh);
@@ -230,7 +230,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 0;
-  hfmm3dpartstoscdg_(&eps, &zk, &ns, source, charge, dipvec, pot, grad);
+  hfmm3d_s_cd_g_(&eps, &zk, &ns, source, charge, dipvec, pot, grad);
 
   czero(ntest,potex);
   czero(3*ntest,gradex);
@@ -260,7 +260,7 @@ int main(int argc, char **argv)
   pg = 0;
   pgt = 1;
 
-  hfmm3dpartstotcp_(&eps, &zk, &ns, source, charge, &nt, targ, pottarg);
+  hfmm3d_t_c_p_(&eps, &zk, &ns, source, charge, &nt, targ, pottarg);
 
   czero(ntest,pottargex);
   h3ddirectcp_(&nd, &zk, source, charge, &ns, targ, &ntest, 
@@ -291,7 +291,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 2;
-  hfmm3dpartstotcg_(&eps, &zk, &ns, source, charge, &nt, targ, 
+  hfmm3d_t_c_g_(&eps, &zk, &ns, source, charge, &nt, targ, 
       pottarg, gradtarg);
 
   czero(ntest,pottargex);
@@ -323,7 +323,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 1;
-  hfmm3dpartstotdp_(&eps, &zk, &ns, source, dipvec, &nt, targ, pottarg);
+  hfmm3d_t_d_p_(&eps, &zk, &ns, source, dipvec, &nt, targ, pottarg);
 
   czero(ntest,pottargex);
   h3ddirectdp_(&nd, &zk, source, dipvec, &ns, 
@@ -353,7 +353,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 2;
-  hfmm3dpartstotdg_(&eps, &zk, &ns, source, dipvec, &nt, targ, 
+  hfmm3d_t_d_g_(&eps, &zk, &ns, source, dipvec, &nt, targ, 
      pottarg, gradtarg);
 
   czero(ntest,pottargex);
@@ -383,7 +383,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 1;
-  hfmm3dpartstotcdp_(&eps, &zk, &ns, source, charge, dipvec, &nt, targ,
+  hfmm3d_t_cd_p_(&eps, &zk, &ns, source, charge, dipvec, &nt, targ,
      pottarg);
 
   czero(ntest,pottargex);
@@ -414,7 +414,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 2;
-  hfmm3dpartstotcdg_(&eps, &zk, &ns, source, charge, dipvec, &nt, 
+  hfmm3d_t_cd_g_(&eps, &zk, &ns, source, charge, dipvec, &nt, 
      targ, pottarg, gradtarg);
 
   czero(ntest,pottargex);
@@ -446,7 +446,7 @@ int main(int argc, char **argv)
   pg = 1;
   pgt = 1;
 
-  hfmm3dpartstostcp_(&eps, &zk, &ns, source, charge, pot, 
+  hfmm3d_st_c_p_(&eps, &zk, &ns, source, charge, pot, 
     &nt, targ, pottarg);
 
   czero(ntest,potex);
@@ -481,7 +481,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 2;
-  hfmm3dpartstostcg_(&eps, &zk, &ns, source, charge, pot, grad, 
+  hfmm3d_st_c_g_(&eps, &zk, &ns, source, charge, pot, grad, 
       &nt, targ, pottarg, gradtarg);
 
   czero(ntest,potex);
@@ -517,7 +517,7 @@ int main(int argc, char **argv)
 
   pg = 1;
   pgt = 1;
-  hfmm3dpartstostdp_(&eps, &zk, &ns, source, dipvec, pot, 
+  hfmm3d_st_d_p_(&eps, &zk, &ns, source, dipvec, pot, 
      &nt, targ, pottarg);
 
   czero(ntest,potex);
@@ -551,7 +551,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 2;
-  hfmm3dpartstostdg_(&eps, &zk, &ns, source, dipvec, pot, grad, 
+  hfmm3d_st_d_g_(&eps, &zk, &ns, source, dipvec, pot, grad, 
      &nt, targ, pottarg, gradtarg);
 
   czero(ntest,potex);
@@ -585,7 +585,7 @@ int main(int argc, char **argv)
 
   pg = 1;
   pgt = 1;
-  hfmm3dpartstostcdp_(&eps, &zk, &ns, source, charge, dipvec, pot, 
+  hfmm3d_st_cd_p_(&eps, &zk, &ns, source, charge, dipvec, pot, 
      &nt, targ,  pottarg);
 
   czero(ntest,potex);
@@ -619,7 +619,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 2;
-  hfmm3dpartstostcdg_(&eps, &zk, &ns, source, charge, dipvec, pot, grad,
+  hfmm3d_st_cd_g_(&eps, &zk, &ns, source, charge, dipvec, pot, grad,
      &nt,targ, pottarg, gradtarg);
 
   czero(ntest,potex);
@@ -693,7 +693,7 @@ int main(int argc, char **argv)
   pg = 1;
   pgt = 0;
 
-  hfmm3dpartstoscp_vec_(&nd, &eps, &zk, &ns, source, charge, pot);
+  hfmm3d_s_c_p_vec_(&nd, &eps, &zk, &ns, source, charge, pot);
 
   czero(nd*ntest,potex);
   h3ddirectcp_(&nd, &zk, source, charge, &ns, source, &ntest, potex, &thresh);
@@ -722,7 +722,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 0;
-  hfmm3dpartstoscg_vec_(&nd, &eps, &zk, &ns, source, charge, pot, grad);
+  hfmm3d_s_c_g_vec_(&nd, &eps, &zk, &ns, source, charge, pot, grad);
 
   czero(nd*ntest,potex);
   czero(nd*3*ntest,gradex);
@@ -752,7 +752,7 @@ int main(int argc, char **argv)
 
   pg = 1;
   pgt = 0;
-  hfmm3dpartstosdp_vec_(&nd, &eps, &zk, &ns, source, dipvec, pot);
+  hfmm3d_s_d_p_vec_(&nd, &eps, &zk, &ns, source, dipvec, pot);
 
   czero(nd*ntest,potex);
   h3ddirectdp_(&nd, &zk, source, dipvec, &ns, source, &ntest, potex, &thresh);
@@ -781,7 +781,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 0;
-  hfmm3dpartstosdg_vec_(&nd, &eps, &zk, &ns, source, dipvec, pot, grad);
+  hfmm3d_s_d_g_vec_(&nd, &eps, &zk, &ns, source, dipvec, pot, grad);
 
   czero(nd*ntest,potex);
   czero(nd*3*ntest,gradex);
@@ -809,7 +809,7 @@ int main(int argc, char **argv)
 
   pg = 1;
   pgt = 0;
-  hfmm3dpartstoscdp_vec_(&nd, &eps, &zk, &ns, source, charge, dipvec, pot);
+  hfmm3d_s_cd_p_vec_(&nd, &eps, &zk, &ns, source, charge, dipvec, pot);
 
   czero(nd*ntest,potex);
   h3ddirectcdp_(&nd, &zk, source, charge, dipvec, &ns, source, &ntest, potex, &thresh);
@@ -838,7 +838,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 0;
-  hfmm3dpartstoscdg_vec_(&nd, &eps, &zk, &ns, source, charge, dipvec, pot, grad);
+  hfmm3d_s_cd_g_vec_(&nd, &eps, &zk, &ns, source, charge, dipvec, pot, grad);
 
   czero(nd*ntest,potex);
   czero(nd*3*ntest,gradex);
@@ -868,7 +868,7 @@ int main(int argc, char **argv)
   pg = 0;
   pgt = 1;
 
-  hfmm3dpartstotcp_vec_(&nd, &eps, &zk, &ns, source, charge, &nt, targ, pottarg);
+  hfmm3d_t_c_p_vec_(&nd, &eps, &zk, &ns, source, charge, &nt, targ, pottarg);
 
   czero(nd*ntest,pottargex);
   h3ddirectcp_(&nd, &zk, source, charge, &ns, targ, &ntest, 
@@ -899,7 +899,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 2;
-  hfmm3dpartstotcg_vec_(&nd, &eps, &zk, &ns, source, charge, &nt, targ, 
+  hfmm3d_t_c_g_vec_(&nd, &eps, &zk, &ns, source, charge, &nt, targ, 
       pottarg, gradtarg);
 
   czero(nd*ntest,pottargex);
@@ -931,7 +931,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 1;
-  hfmm3dpartstotdp_vec_(&nd, &eps, &zk, &ns, source, dipvec, &nt, targ, pottarg);
+  hfmm3d_t_d_p_vec_(&nd, &eps, &zk, &ns, source, dipvec, &nt, targ, pottarg);
 
   czero(nd*ntest,pottargex);
   h3ddirectdp_(&nd, &zk, source, dipvec, &ns, 
@@ -961,7 +961,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 2;
-  hfmm3dpartstotdg_vec_(&nd, &eps, &zk, &ns, source, dipvec, &nt, targ, 
+  hfmm3d_t_d_g_vec_(&nd, &eps, &zk, &ns, source, dipvec, &nt, targ, 
      pottarg, gradtarg);
 
   czero(nd*ntest,pottargex);
@@ -991,7 +991,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 1;
-  hfmm3dpartstotcdp_vec_(&nd, &eps, &zk, &ns, source, charge, dipvec, &nt, targ,
+  hfmm3d_t_cd_p_vec_(&nd, &eps, &zk, &ns, source, charge, dipvec, &nt, targ,
      pottarg);
 
   czero(nd*ntest,pottargex);
@@ -1022,7 +1022,7 @@ int main(int argc, char **argv)
 
   pg = 0;
   pgt = 2;
-  hfmm3dpartstotcdg_vec_(&nd, &eps, &zk, &ns, source, charge, dipvec, &nt, 
+  hfmm3d_t_cd_g_vec_(&nd, &eps, &zk, &ns, source, charge, dipvec, &nt, 
      targ, pottarg, gradtarg);
 
   czero(nd*ntest,pottargex);
@@ -1054,7 +1054,7 @@ int main(int argc, char **argv)
   pg = 1;
   pgt = 1;
 
-  hfmm3dpartstostcp_vec_(&nd, &eps, &zk, &ns, source, charge, pot, 
+  hfmm3d_st_c_p_vec_(&nd, &eps, &zk, &ns, source, charge, pot, 
     &nt, targ, pottarg);
 
   czero(nd*ntest,potex);
@@ -1089,7 +1089,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 2;
-  hfmm3dpartstostcg_vec_(&nd, &eps, &zk, &ns, source, charge, pot, grad, 
+  hfmm3d_st_c_g_vec_(&nd, &eps, &zk, &ns, source, charge, pot, grad, 
       &nt, targ, pottarg, gradtarg);
 
   czero(nd*ntest,potex);
@@ -1125,7 +1125,7 @@ int main(int argc, char **argv)
 
   pg = 1;
   pgt = 1;
-  hfmm3dpartstostdp_vec_(&nd, &eps, &zk, &ns, source, dipvec, pot, 
+  hfmm3d_st_d_p_vec_(&nd, &eps, &zk, &ns, source, dipvec, pot, 
      &nt, targ, pottarg);
 
   czero(nd*ntest,potex);
@@ -1159,7 +1159,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 2;
-  hfmm3dpartstostdg_vec_(&nd, &eps, &zk, &ns, source, dipvec, pot, grad, 
+  hfmm3d_st_d_g_vec_(&nd, &eps, &zk, &ns, source, dipvec, pot, grad, 
      &nt, targ, pottarg, gradtarg);
 
   czero(nd*ntest,potex);
@@ -1193,7 +1193,7 @@ int main(int argc, char **argv)
 
   pg = 1;
   pgt = 1;
-  hfmm3dpartstostcdp_vec_(&nd, &eps, &zk, &ns, source, charge, dipvec, pot, 
+  hfmm3d_st_cd_p_vec_(&nd, &eps, &zk, &ns, source, charge, dipvec, pot, 
      &nt, targ,  pottarg);
 
   czero(nd*ntest,potex);
@@ -1227,7 +1227,7 @@ int main(int argc, char **argv)
 
   pg = 2;
   pgt = 2;
-  hfmm3dpartstostcdg_vec_(&nd, &eps, &zk, &ns, source, charge, dipvec, pot, grad,
+  hfmm3d_st_cd_g_vec_(&nd, &eps, &zk, &ns, source, charge, dipvec, pot, grad,
      &nt,targ, pottarg, gradtarg);
 
   czero(nd*ntest,potex);

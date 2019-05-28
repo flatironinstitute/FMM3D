@@ -2,7 +2,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstoscp_vec(nd,eps,nsource,source,
+      subroutine lfmm3d_s_c_p_vec(nd,eps,nsource,source,
      1    charge,pot)
       implicit none
 cf2py  intent(in) nd,eps
@@ -46,7 +46,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstoscg_vec(nd,eps,nsource,source,
+      subroutine lfmm3d_s_c_g_vec(nd,eps,nsource,source,
      1    charge,pot,grad)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,charge
@@ -90,7 +90,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstosdp_vec(nd,eps,nsource,source,
+      subroutine lfmm3d_s_d_p_vec(nd,eps,nsource,source,
      1    dipvec,pot)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec
@@ -133,7 +133,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstosdg_vec(nd,eps,nsource,source,
+      subroutine lfmm3d_s_d_g_vec(nd,eps,nsource,source,
      1    dipvec,pot,grad)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec
@@ -175,7 +175,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstoscdp_vec(nd,eps,nsource,source,
+      subroutine lfmm3d_s_cd_p_vec(nd,eps,nsource,source,
      1    charge,dipvec,pot)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec,charge
@@ -222,7 +222,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstoscdg_vec(nd,eps,nsource,source,
+      subroutine lfmm3d_s_cd_g_vec(nd,eps,nsource,source,
      1    charge,dipvec,pot,grad)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec,charge
@@ -264,7 +264,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstotcp_vec(nd,eps,nsource,source,
+      subroutine lfmm3d_t_c_p_vec(nd,eps,nsource,source,
      1    charge,ntarg,targ,pottarg)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,charge
@@ -306,7 +306,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstotcg_vec(nd,eps,nsource,source,
+      subroutine lfmm3d_t_c_g_vec(nd,eps,nsource,source,
      1    charge,ntarg,targ,pottarg,
      2    gradtarg)
 cf2py  intent(in) nd,eps
@@ -347,7 +347,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstotdp_vec(nd,eps,nsource,source,
+      subroutine lfmm3d_t_d_p_vec(nd,eps,nsource,source,
      1    dipvec,ntarg,targ,pottarg)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec
@@ -389,7 +389,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstotdg_vec(nd,eps,nsource,source,
+      subroutine lfmm3d_t_d_g_vec(nd,eps,nsource,source,
      1    dipvec,ntarg,targ,pottarg,
      2    gradtarg)
 cf2py  intent(in) nd,eps
@@ -431,7 +431,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstotcdp_vec(nd,eps,nsource,source,
+      subroutine lfmm3d_t_cd_p_vec(nd,eps,nsource,source,
      1    charge,dipvec,ntarg,targ,pottarg)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec,charge
@@ -473,7 +473,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstotcdg_vec(nd,eps,nsource,source,
+      subroutine lfmm3d_t_cd_g_vec(nd,eps,nsource,source,
      1    charge,dipvec,ntarg,targ,pottarg,
      2    gradtarg)
 cf2py  intent(in) nd,eps
@@ -514,7 +514,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstostcp_vec(nd,eps,nsource,source,
+      subroutine lfmm3d_st_c_p_vec(nd,eps,nsource,source,
      1    charge,pot,ntarg,targ,pottarg)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,charge
@@ -556,7 +556,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstostcg_vec(nd,eps,nsource,source,
+      subroutine lfmm3d_st_c_g_vec(nd,eps,nsource,source,
      1    charge,pot,grad,ntarg,targ,pottarg,
      2    gradtarg)
 cf2py  intent(in) nd,eps
@@ -599,7 +599,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstostdp_vec(nd,eps,nsource,source,
+      subroutine lfmm3d_st_d_p_vec(nd,eps,nsource,source,
      1    dipvec,pot,ntarg,targ,pottarg)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec
@@ -642,7 +642,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstostdg_vec(nd,eps,nsource,source,
+      subroutine lfmm3d_st_d_g_vec(nd,eps,nsource,source,
      1    dipvec,pot,grad,ntarg,targ,pottarg,
      2    gradtarg)
 cf2py  intent(in) nd,eps
@@ -685,7 +685,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstostcdp_vec(nd,eps,nsource,source,
+      subroutine lfmm3d_st_cd_p_vec(nd,eps,nsource,source,
      1    charge,dipvec,pot,ntarg,targ,pottarg)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec,charge
@@ -727,7 +727,7 @@ c
 c
 c
 
-      subroutine lfmm3dpartstostcdg_vec(nd,eps,nsource,source,
+      subroutine lfmm3d_st_cd_g_vec(nd,eps,nsource,source,
      1    charge,dipvec,pot,grad,ntarg,targ,pottarg,
      2    gradtarg)
 cf2py  intent(in) nd,eps
