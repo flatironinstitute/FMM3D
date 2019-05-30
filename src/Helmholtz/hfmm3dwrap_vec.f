@@ -4,11 +4,45 @@ c
 
       subroutine hfmm3d_s_c_p_vec(nd,eps,zk,nsource,source,
      1    charge,pot)
+      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,charge
 cf2py  intent(out) pot
-      implicit none
+c-------------------------------------
+c
+c  This subroutine evaluates the potential 
+c      u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j}
+c        \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
+c
+c  at the source locations $x=x_{j}$.
+c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  dropped from the sum.
+c
+c  Input arguments:
+c
+c    -    nd: integer
+c          number of densities
+c    -    eps: double precision
+c          precision requested
+c    -    zk: double complex
+c          Helmholtz parameter (k)
+c    -    nsource: integer
+c          Number of sources (nsource)
+c    -    source: double precision(3,nsource)
+c          Source locations ($x_{j}$)
+c    -    charge: double complex(nd,nsource)
+c          Charge strengths ($c_{\ell,j}$)
+c
+c
+c  Output arguments:
+c
+c    -    pot: double complex(nd,nsource)
+c          Potential at source locations ($u_{\ell}(x_{j})$)
+c
+c
+c--------------------------------
+c
       double precision eps
       double complex zk
 
@@ -47,11 +81,47 @@ c
 
       subroutine hfmm3d_s_c_g_vec(nd,eps,zk,nsource,source,
      1    charge,pot,grad)
+      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,charge
 cf2py  intent(out) pot,grad
-      implicit none
+c-------------------------------------
+c
+c  This subroutine evaluates the potential and its gradient 
+c      u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j}
+c        \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
+c
+c  at the source locations $x=x_{j}$.
+c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  dropped from the sum.
+c
+c  Input arguments:
+c
+c    -    nd: integer
+c          number of densities
+c    -    eps: double precision
+c          precision requested
+c    -    zk: double complex
+c          Helmholtz parameter (k)
+c    -    nsource: integer
+c          Number of sources (nsource)
+c    -    source: double precision(3,nsource)
+c          Source locations ($x_{j}$)
+c    -    charge: double complex(nd,nsource)
+c          Charge strengths ($c_{\ell,j}$)
+c
+c
+c  Output arguments:
+c
+c    -    pot: double complex(nd,nsource)
+c          Potential at source locations ($u_{\ell}(x_{j})$)
+c    -    grad: double complex(nd,3,nsource)
+c          Gradient at source locations ($\nabla u_{\ell}(x_{j})$)
+c
+c
+c--------------------------------
+c
       double precision eps
       double complex zk
 
@@ -91,11 +161,45 @@ c
 
       subroutine hfmm3d_s_d_p_vec(nd,eps,zk,nsource,source,
      1    dipvec,pot)
+      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(out) pot
-      implicit none
+c-------------------------------------
+c
+c  This subroutine evaluates the potential 
+c      u_{\ell}(x) = -\sum_{j=1}^{N} v_{\ell,j} \cdot \nabla \left( 
+c        \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
+c
+c  at the source locations $x=x_{j}$.
+c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  dropped from the sum.
+c
+c  Input arguments:
+c
+c    -    nd: integer
+c          number of densities
+c    -    eps: double precision
+c          precision requested
+c    -    zk: double complex
+c          Helmholtz parameter (k)
+c    -    nsource: integer
+c          Number of sources (nsource)
+c    -    source: double precision(3,nsource)
+c          Source locations ($x_{j}$)
+c    -    dipvec: double complex(nd,3,nsource)
+c          Dipole strengths ($v_{\ell,j}$)
+c
+c
+c  Output arguments:
+c
+c    -    pot: double complex(nd,nsource)
+c          Potential at source locations ($u_{\ell}(x_{j})$)
+c
+c
+c--------------------------------
+c
       double precision eps
       double complex zk
 
@@ -136,11 +240,47 @@ c
 
       subroutine hfmm3d_s_d_g_vec(nd,eps,zk,nsource,source,
      1    dipvec,pot,grad)
+      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(out) pot,grad
-      implicit none
+c-------------------------------------
+c
+c  This subroutine evaluates the potential and its gradient 
+c      u_{\ell}(x) = -\sum_{j=1}^{N} v_{\ell,j} \cdot \nabla \left( 
+c        \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
+c
+c  at the source locations $x=x_{j}$.
+c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  dropped from the sum.
+c
+c  Input arguments:
+c
+c    -    nd: integer
+c          number of densities
+c    -    eps: double precision
+c          precision requested
+c    -    zk: double complex
+c          Helmholtz parameter (k)
+c    -    nsource: integer
+c          Number of sources (nsource)
+c    -    source: double precision(3,nsource)
+c          Source locations ($x_{j}$)
+c    -    dipvec: double complex(nd,3,nsource)
+c          Dipole strengths ($v_{\ell,j}$)
+c
+c
+c  Output arguments:
+c
+c    -    pot: double complex(nd,nsource)
+c          Potential at source locations ($u_{\ell}(x_{j})$)
+c    -    grad: double complex(nd,3,nsource)
+c          Gradient at source locations ($\nabla u_{\ell}(x_{j})$)
+c
+c
+c--------------------------------
+c
       double precision eps
       double complex zk
 
@@ -180,11 +320,49 @@ c
 
       subroutine hfmm3d_s_cd_p_vec(nd,eps,zk,nsource,source,
      1    charge,dipvec,pot)
+      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(out) pot
-      implicit none
+c-------------------------------------
+c
+c  This subroutine evaluates the potential 
+c      u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j}
+c        \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - 
+c            v_{\ell,j} \cdot \nabla \left( 
+c        \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
+c
+c  at the source locations $x=x_{j}$.
+c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  dropped from the sum.
+c
+c  Input arguments:
+c
+c    -    nd: integer
+c          number of densities
+c    -    eps: double precision
+c          precision requested
+c    -    zk: double complex
+c          Helmholtz parameter (k)
+c    -    nsource: integer
+c          Number of sources (nsource)
+c    -    source: double precision(3,nsource)
+c          Source locations ($x_{j}$)
+c    -    charge: double complex(nd,nsource)
+c          Charge strengths ($c_{\ell,j}$)
+c    -    dipvec: double complex(nd,3,nsource)
+c          Dipole strengths ($v_{\ell,j}$)
+c
+c
+c  Output arguments:
+c
+c    -    pot: double complex(nd,nsource)
+c          Potential at source locations ($u_{\ell}(x_{j})$)
+c
+c
+c--------------------------------
+c
       double precision eps
       double complex zk
 
@@ -229,11 +407,51 @@ c
 
       subroutine hfmm3d_s_cd_g_vec(nd,eps,zk,nsource,source,
      1    charge,dipvec,pot,grad)
+      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(out) pot,grad
-      implicit none
+c-------------------------------------
+c
+c  This subroutine evaluates the potential and its gradient 
+c      u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j}
+c        \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - 
+c            v_{\ell,j} \cdot \nabla \left( 
+c        \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
+c
+c  at the source locations $x=x_{j}$.
+c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  dropped from the sum.
+c
+c  Input arguments:
+c
+c    -    nd: integer
+c          number of densities
+c    -    eps: double precision
+c          precision requested
+c    -    zk: double complex
+c          Helmholtz parameter (k)
+c    -    nsource: integer
+c          Number of sources (nsource)
+c    -    source: double precision(3,nsource)
+c          Source locations ($x_{j}$)
+c    -    charge: double complex(nd,nsource)
+c          Charge strengths ($c_{\ell,j}$)
+c    -    dipvec: double complex(nd,3,nsource)
+c          Dipole strengths ($v_{\ell,j}$)
+c
+c
+c  Output arguments:
+c
+c    -    pot: double complex(nd,nsource)
+c          Potential at source locations ($u_{\ell}(x_{j})$)
+c    -    grad: double complex(nd,3,nsource)
+c          Gradient at source locations ($\nabla u_{\ell}(x_{j})$)
+c
+c
+c--------------------------------
+c
       double precision eps
       double complex zk
 
@@ -273,12 +491,50 @@ c
 
       subroutine hfmm3d_t_c_p_vec(nd,eps,zk,nsource,source,
      1    charge,ntarg,targ,pottarg)
+      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg
-      implicit none
+c-------------------------------------
+c
+c  This subroutine evaluates the potential 
+c      u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j}
+c        \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
+c
+c  at the target locations $x=t_{i}$.
+c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  dropped from the sum.
+c
+c  Input arguments:
+c
+c    -    nd: integer
+c          number of densities
+c    -    eps: double precision
+c          precision requested
+c    -    zk: double complex
+c          Helmholtz parameter (k)
+c    -    nsource: integer
+c          Number of sources (nsource)
+c    -    source: double precision(3,nsource)
+c          Source locations ($x_{j}$)
+c    -    charge: double complex(nd,nsource)
+c          Charge strengths ($c_{\ell,j}$)
+c    -    ntarg: integer
+c          Number of targets
+c    -    targ: double precision(3,ntarg)
+c          Target locations ($t_{i}$)
+c
+c
+c  Output arguments:
+c
+c    -    pottarg: double complex(nd,ntarg)
+c          Potential at target locations ($u_{\ell}(t_{i})$)
+c
+c
+c--------------------------------
+c
       double precision eps
       double complex zk
 
@@ -318,12 +574,52 @@ c
       subroutine hfmm3d_t_c_g_vec(nd,eps,zk,nsource,source,
      1    charge,ntarg,targ,pottarg,
      2    gradtarg)
+      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg,gradtarg
-      implicit none
+c-------------------------------------
+c
+c  This subroutine evaluates the potential and its gradient 
+c      u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j}
+c        \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
+c
+c  at the target locations $x=t_{i}$.
+c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  dropped from the sum.
+c
+c  Input arguments:
+c
+c    -    nd: integer
+c          number of densities
+c    -    eps: double precision
+c          precision requested
+c    -    zk: double complex
+c          Helmholtz parameter (k)
+c    -    nsource: integer
+c          Number of sources (nsource)
+c    -    source: double precision(3,nsource)
+c          Source locations ($x_{j}$)
+c    -    charge: double complex(nd,nsource)
+c          Charge strengths ($c_{\ell,j}$)
+c    -    ntarg: integer
+c          Number of targets
+c    -    targ: double precision(3,ntarg)
+c          Target locations ($t_{i}$)
+c
+c
+c  Output arguments:
+c
+c    -    pottarg: double complex(nd,ntarg)
+c          Potential at target locations ($u_{\ell}(t_{i})$)
+c    -    gradtarg: double complex(nd,3,ntarg)
+c          Gradient at target locations ($\nabla u_{\ell}(t_{i})$)
+c
+c
+c--------------------------------
+c
       double precision eps
       double complex zk
 
@@ -360,12 +656,50 @@ c
 
       subroutine hfmm3d_t_d_p_vec(nd,eps,zk,nsource,source,
      1    dipvec,ntarg,targ,pottarg)
+      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg
-      implicit none
+c-------------------------------------
+c
+c  This subroutine evaluates the potential 
+c      u_{\ell}(x) = -\sum_{j=1}^{N} v_{\ell,j} \cdot \nabla \left( 
+c        \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
+c
+c  at the target locations $x=t_{i}$.
+c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  dropped from the sum.
+c
+c  Input arguments:
+c
+c    -    nd: integer
+c          number of densities
+c    -    eps: double precision
+c          precision requested
+c    -    zk: double complex
+c          Helmholtz parameter (k)
+c    -    nsource: integer
+c          Number of sources (nsource)
+c    -    source: double precision(3,nsource)
+c          Source locations ($x_{j}$)
+c    -    dipvec: double complex(nd,3,nsource)
+c          Dipole strengths ($v_{\ell,j}$)
+c    -    ntarg: integer
+c          Number of targets
+c    -    targ: double precision(3,ntarg)
+c          Target locations ($t_{i}$)
+c
+c
+c  Output arguments:
+c
+c    -    pottarg: double complex(nd,ntarg)
+c          Potential at target locations ($u_{\ell}(t_{i})$)
+c
+c
+c--------------------------------
+c
       double precision eps
       double complex zk
 
@@ -405,12 +739,52 @@ c
       subroutine hfmm3d_t_d_g_vec(nd,eps,zk,nsource,source,
      1    dipvec,ntarg,targ,pottarg,
      2    gradtarg)
+      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg,gradtarg
-      implicit none
+c-------------------------------------
+c
+c  This subroutine evaluates the potential and its gradient 
+c      u_{\ell}(x) = -\sum_{j=1}^{N} v_{\ell,j} \cdot \nabla \left( 
+c        \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
+c
+c  at the target locations $x=t_{i}$.
+c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  dropped from the sum.
+c
+c  Input arguments:
+c
+c    -    nd: integer
+c          number of densities
+c    -    eps: double precision
+c          precision requested
+c    -    zk: double complex
+c          Helmholtz parameter (k)
+c    -    nsource: integer
+c          Number of sources (nsource)
+c    -    source: double precision(3,nsource)
+c          Source locations ($x_{j}$)
+c    -    dipvec: double complex(nd,3,nsource)
+c          Dipole strengths ($v_{\ell,j}$)
+c    -    ntarg: integer
+c          Number of targets
+c    -    targ: double precision(3,ntarg)
+c          Target locations ($t_{i}$)
+c
+c
+c  Output arguments:
+c
+c    -    pottarg: double complex(nd,ntarg)
+c          Potential at target locations ($u_{\ell}(t_{i})$)
+c    -    gradtarg: double complex(nd,3,ntarg)
+c          Gradient at target locations ($\nabla u_{\ell}(t_{i})$)
+c
+c
+c--------------------------------
+c
       double precision eps
       double complex zk
 
@@ -448,12 +822,54 @@ c
 
       subroutine hfmm3d_t_cd_p_vec(nd,eps,zk,nsource,source,
      1    charge,dipvec,ntarg,targ,pottarg)
+      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg
-      implicit none
+c-------------------------------------
+c
+c  This subroutine evaluates the potential 
+c      u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j}
+c        \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - 
+c            v_{\ell,j} \cdot \nabla \left( 
+c        \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
+c
+c  at the target locations $x=t_{i}$.
+c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  dropped from the sum.
+c
+c  Input arguments:
+c
+c    -    nd: integer
+c          number of densities
+c    -    eps: double precision
+c          precision requested
+c    -    zk: double complex
+c          Helmholtz parameter (k)
+c    -    nsource: integer
+c          Number of sources (nsource)
+c    -    source: double precision(3,nsource)
+c          Source locations ($x_{j}$)
+c    -    charge: double complex(nd,nsource)
+c          Charge strengths ($c_{\ell,j}$)
+c    -    dipvec: double complex(nd,3,nsource)
+c          Dipole strengths ($v_{\ell,j}$)
+c    -    ntarg: integer
+c          Number of targets
+c    -    targ: double precision(3,ntarg)
+c          Target locations ($t_{i}$)
+c
+c
+c  Output arguments:
+c
+c    -    pottarg: double complex(nd,ntarg)
+c          Potential at target locations ($u_{\ell}(t_{i})$)
+c
+c
+c--------------------------------
+c
       double precision eps
       double complex zk
 
@@ -493,12 +909,56 @@ c
       subroutine hfmm3d_t_cd_g_vec(nd,eps,zk,nsource,source,
      1    charge,dipvec,ntarg,targ,pottarg,
      2    gradtarg)
+      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg,gradtarg
-      implicit none
+c-------------------------------------
+c
+c  This subroutine evaluates the potential and its gradient 
+c      u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j}
+c        \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - 
+c            v_{\ell,j} \cdot \nabla \left( 
+c        \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
+c
+c  at the target locations $x=t_{i}$.
+c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  dropped from the sum.
+c
+c  Input arguments:
+c
+c    -    nd: integer
+c          number of densities
+c    -    eps: double precision
+c          precision requested
+c    -    zk: double complex
+c          Helmholtz parameter (k)
+c    -    nsource: integer
+c          Number of sources (nsource)
+c    -    source: double precision(3,nsource)
+c          Source locations ($x_{j}$)
+c    -    charge: double complex(nd,nsource)
+c          Charge strengths ($c_{\ell,j}$)
+c    -    dipvec: double complex(nd,3,nsource)
+c          Dipole strengths ($v_{\ell,j}$)
+c    -    ntarg: integer
+c          Number of targets
+c    -    targ: double precision(3,ntarg)
+c          Target locations ($t_{i}$)
+c
+c
+c  Output arguments:
+c
+c    -    pottarg: double complex(nd,ntarg)
+c          Potential at target locations ($u_{\ell}(t_{i})$)
+c    -    gradtarg: double complex(nd,3,ntarg)
+c          Gradient at target locations ($\nabla u_{\ell}(t_{i})$)
+c
+c
+c--------------------------------
+c
       double precision eps
       double complex zk
 
@@ -535,13 +995,53 @@ c
 
       subroutine hfmm3d_st_c_p_vec(nd,eps,zk,nsource,source,
      1    charge,pot,ntarg,targ,pottarg)
+      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot
 cf2py  intent(out) pottarg
-      implicit none
+c-------------------------------------
+c
+c  This subroutine evaluates the potential 
+c      u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j}
+c        \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
+c
+c  at the source and target locations $x=x_{j},t_{i}$.
+c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  dropped from the sum.
+c
+c  Input arguments:
+c
+c    -    nd: integer
+c          number of densities
+c    -    eps: double precision
+c          precision requested
+c    -    zk: double complex
+c          Helmholtz parameter (k)
+c    -    nsource: integer
+c          Number of sources (nsource)
+c    -    source: double precision(3,nsource)
+c          Source locations ($x_{j}$)
+c    -    charge: double complex(nd,nsource)
+c          Charge strengths ($c_{\ell,j}$)
+c    -    ntarg: integer
+c          Number of targets
+c    -    targ: double precision(3,ntarg)
+c          Target locations ($t_{i}$)
+c
+c
+c  Output arguments:
+c
+c    -    pot: double complex(nd,nsource)
+c          Potential at source locations ($u_{\ell}(x_{j})$)
+cc    -    pottarg: double complex(nd,ntarg)
+c          Potential at target locations ($u_{\ell}(t_{i})$)
+c
+c
+c--------------------------------
+c
       double precision eps
       double complex zk
 
@@ -580,13 +1080,57 @@ c
       subroutine hfmm3d_st_c_g_vec(nd,eps,zk,nsource,source,
      1    charge,pot,grad,ntarg,targ,pottarg,
      2    gradtarg)
+      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot,grad
 cf2py  intent(out) pottarg,gradtarg
-      implicit none
+c-------------------------------------
+c
+c  This subroutine evaluates the potential and its gradient 
+c      u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j}
+c        \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
+c
+c  at the source and target locations $x=x_{j},t_{i}$.
+c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  dropped from the sum.
+c
+c  Input arguments:
+c
+c    -    nd: integer
+c          number of densities
+c    -    eps: double precision
+c          precision requested
+c    -    zk: double complex
+c          Helmholtz parameter (k)
+c    -    nsource: integer
+c          Number of sources (nsource)
+c    -    source: double precision(3,nsource)
+c          Source locations ($x_{j}$)
+c    -    charge: double complex(nd,nsource)
+c          Charge strengths ($c_{\ell,j}$)
+c    -    ntarg: integer
+c          Number of targets
+c    -    targ: double precision(3,ntarg)
+c          Target locations ($t_{i}$)
+c
+c
+c  Output arguments:
+c
+c    -    pot: double complex(nd,nsource)
+c          Potential at source locations ($u_{\ell}(x_{j})$)
+c    -    grad: double complex(nd,3,nsource)
+c          Gradient at source locations ($\nabla u_{\ell}(x_{j})$)
+cc    -    pottarg: double complex(nd,ntarg)
+c          Potential at target locations ($u_{\ell}(t_{i})$)
+c    -    gradtarg: double complex(nd,3,ntarg)
+c          Gradient at target locations ($\nabla u_{\ell}(t_{i})$)
+c
+c
+c--------------------------------
+c
       double precision eps
       double complex zk
 
@@ -624,13 +1168,53 @@ c
 
       subroutine hfmm3d_st_d_p_vec(nd,eps,zk,nsource,source,
      1    dipvec,pot,ntarg,targ,pottarg)
+      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot
 cf2py  intent(out) pottarg
-      implicit none
+c-------------------------------------
+c
+c  This subroutine evaluates the potential 
+c      u_{\ell}(x) = -\sum_{j=1}^{N} v_{\ell,j} \cdot \nabla \left( 
+c        \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
+c
+c  at the source and target locations $x=x_{j},t_{i}$.
+c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  dropped from the sum.
+c
+c  Input arguments:
+c
+c    -    nd: integer
+c          number of densities
+c    -    eps: double precision
+c          precision requested
+c    -    zk: double complex
+c          Helmholtz parameter (k)
+c    -    nsource: integer
+c          Number of sources (nsource)
+c    -    source: double precision(3,nsource)
+c          Source locations ($x_{j}$)
+c    -    dipvec: double complex(nd,3,nsource)
+c          Dipole strengths ($v_{\ell,j}$)
+c    -    ntarg: integer
+c          Number of targets
+c    -    targ: double precision(3,ntarg)
+c          Target locations ($t_{i}$)
+c
+c
+c  Output arguments:
+c
+c    -    pot: double complex(nd,nsource)
+c          Potential at source locations ($u_{\ell}(x_{j})$)
+cc    -    pottarg: double complex(nd,ntarg)
+c          Potential at target locations ($u_{\ell}(t_{i})$)
+c
+c
+c--------------------------------
+c
       double precision eps
       double complex zk
 
@@ -670,13 +1254,57 @@ c
       subroutine hfmm3d_st_d_g_vec(nd,eps,zk,nsource,source,
      1    dipvec,pot,grad,ntarg,targ,pottarg,
      2    gradtarg)
+      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot,grad
 cf2py  intent(out) pottarg,gradtarg
-      implicit none
+c-------------------------------------
+c
+c  This subroutine evaluates the potential and its gradient 
+c      u_{\ell}(x) = -\sum_{j=1}^{N} v_{\ell,j} \cdot \nabla \left( 
+c        \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
+c
+c  at the source and target locations $x=x_{j},t_{i}$.
+c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  dropped from the sum.
+c
+c  Input arguments:
+c
+c    -    nd: integer
+c          number of densities
+c    -    eps: double precision
+c          precision requested
+c    -    zk: double complex
+c          Helmholtz parameter (k)
+c    -    nsource: integer
+c          Number of sources (nsource)
+c    -    source: double precision(3,nsource)
+c          Source locations ($x_{j}$)
+c    -    dipvec: double complex(nd,3,nsource)
+c          Dipole strengths ($v_{\ell,j}$)
+c    -    ntarg: integer
+c          Number of targets
+c    -    targ: double precision(3,ntarg)
+c          Target locations ($t_{i}$)
+c
+c
+c  Output arguments:
+c
+c    -    pot: double complex(nd,nsource)
+c          Potential at source locations ($u_{\ell}(x_{j})$)
+c    -    grad: double complex(nd,3,nsource)
+c          Gradient at source locations ($\nabla u_{\ell}(x_{j})$)
+cc    -    pottarg: double complex(nd,ntarg)
+c          Potential at target locations ($u_{\ell}(t_{i})$)
+c    -    gradtarg: double complex(nd,3,ntarg)
+c          Gradient at target locations ($\nabla u_{\ell}(t_{i})$)
+c
+c
+c--------------------------------
+c
       double precision eps
       double complex zk
 
@@ -714,13 +1342,57 @@ c
 
       subroutine hfmm3d_st_cd_p_vec(nd,eps,zk,nsource,source,
      1    charge,dipvec,pot,ntarg,targ,pottarg)
+      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot
 cf2py  intent(out) pottarg
-      implicit none
+c-------------------------------------
+c
+c  This subroutine evaluates the potential 
+c      u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j}
+c        \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - 
+c            v_{\ell,j} \cdot \nabla \left( 
+c        \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
+c
+c  at the source and target locations $x=x_{j},t_{i}$.
+c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  dropped from the sum.
+c
+c  Input arguments:
+c
+c    -    nd: integer
+c          number of densities
+c    -    eps: double precision
+c          precision requested
+c    -    zk: double complex
+c          Helmholtz parameter (k)
+c    -    nsource: integer
+c          Number of sources (nsource)
+c    -    source: double precision(3,nsource)
+c          Source locations ($x_{j}$)
+c    -    charge: double complex(nd,nsource)
+c          Charge strengths ($c_{\ell,j}$)
+c    -    dipvec: double complex(nd,3,nsource)
+c          Dipole strengths ($v_{\ell,j}$)
+c    -    ntarg: integer
+c          Number of targets
+c    -    targ: double precision(3,ntarg)
+c          Target locations ($t_{i}$)
+c
+c
+c  Output arguments:
+c
+c    -    pot: double complex(nd,nsource)
+c          Potential at source locations ($u_{\ell}(x_{j})$)
+cc    -    pottarg: double complex(nd,ntarg)
+c          Potential at target locations ($u_{\ell}(t_{i})$)
+c
+c
+c--------------------------------
+c
       double precision eps
       double complex zk
 
@@ -759,13 +1431,61 @@ c
       subroutine hfmm3d_st_cd_g_vec(nd,eps,zk,nsource,source,
      1    charge,dipvec,pot,grad,ntarg,targ,pottarg,
      2    gradtarg)
+      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot,grad
 cf2py  intent(out) pottarg,gradtarg
-      implicit none
+c-------------------------------------
+c
+c  This subroutine evaluates the potential and its gradient 
+c      u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j}
+c        \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - 
+c            v_{\ell,j} \cdot \nabla \left( 
+c        \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
+c
+c  at the source and target locations $x=x_{j},t_{i}$.
+c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  dropped from the sum.
+c
+c  Input arguments:
+c
+c    -    nd: integer
+c          number of densities
+c    -    eps: double precision
+c          precision requested
+c    -    zk: double complex
+c          Helmholtz parameter (k)
+c    -    nsource: integer
+c          Number of sources (nsource)
+c    -    source: double precision(3,nsource)
+c          Source locations ($x_{j}$)
+c    -    charge: double complex(nd,nsource)
+c          Charge strengths ($c_{\ell,j}$)
+c    -    dipvec: double complex(nd,3,nsource)
+c          Dipole strengths ($v_{\ell,j}$)
+c    -    ntarg: integer
+c          Number of targets
+c    -    targ: double precision(3,ntarg)
+c          Target locations ($t_{i}$)
+c
+c
+c  Output arguments:
+c
+c    -    pot: double complex(nd,nsource)
+c          Potential at source locations ($u_{\ell}(x_{j})$)
+c    -    grad: double complex(nd,3,nsource)
+c          Gradient at source locations ($\nabla u_{\ell}(x_{j})$)
+cc    -    pottarg: double complex(nd,ntarg)
+c          Potential at target locations ($u_{\ell}(t_{i})$)
+c    -    gradtarg: double complex(nd,3,ntarg)
+c          Gradient at target locations ($\nabla u_{\ell}(t_{i})$)
+c
+c
+c--------------------------------
+c
       double precision eps
       double complex zk
 
