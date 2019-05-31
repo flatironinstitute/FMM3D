@@ -5,7 +5,7 @@ Obtaining FMM3D
 ***************
 
 Go to the github page https://github.com/flatironinstitute/FMM3D and
-follow instructions (eg see the green button).
+clone the repository. 
 
 
 Dependencies
@@ -69,10 +69,31 @@ Examples
 *  ``make c-examples`` to compile and run the examples for calling from C.
 
 The ``examples`` and ``test`` directories are good places to see usage 
-examples for Fortran and ``c`` contains usage examples for C. 
-Each of these examples have a corresponding makefile which can serve
-as a sample make file for linking to the library.
+examples for Fortran.
+There are three example Fortran drivers  
+for both the Laplace and Helmholtz FMMs,
+one of which demonstrates the use of the corresponding 
+vectorized FMMs, and one which demonstrates the use
+of the legacy `FMMLIB3D <https://github.com/zgimbutas/fmmlib3d>`_
+The Helmholtz examples are ``hfmm3d_example.f``, 
+``hfmm3d_vec_example.f``, and ``hfmm3d_legacy_example.f``.
+We also include sample makefiles (``hfmm3d_example.make``, 
+``hfmm3d_vec_example.make``, and ``hfmm3d_legacy_example.make``) 
+to run these examples which demonstrate
+how to link to the library.
 
+
+The analogous example drivers for the Laplace FMM are
+``lfmm3d_example.f``, ``lfmm3d_vec_example.f``, and
+``lfmm3d_legacy_example.f``, and the corresponding makefiles
+are ``lfmm3d_example.make``, ``lfmm3d_vec_example.make``, and
+``lfmm3d_legacy_example.make``.
+
+.. note::
+   If you have already compiled the static libraries, make sure that you
+   make the examples with the same compiler.
+ 
+We have analogous ``c`` example drivers in ``c/``.
 
 
 Building the python wrappers
@@ -106,20 +127,30 @@ Now you are in a virtual environment that starts from scratch. All pip installed
 Building the matlab wrappers
 ****************************
 
-First make sure you have matlab installed
+First make sure you have matlab installed. 
 
-You may then do ``make matlab`` which links the .m files to the .c file in the matlab folder.
+The library comes with precompiled interfaces and can be directly
+called from MATLAB. However, we **strongly** recommend compiling 
+the mex interfaces on your specific machine. 
 
-To run tests, you can run ``matlab test_hfmm3d.m`` and ``matlab test_lfmm3d.m`` 
-and it should return with $0$ crashes.
+This can be done using ``make matlab`` which links the .m files to
+the .c file in the matlab folder.
+We have included separate make.inc files to enable this compilation
+on Windows, Mac OSx or Linux machines.
 
-Example codes are also demonstrated in ``hfmmexample.m`` and ``rfmmexample.m``.
+To run tests, you can run ``matlab test_hfmm3d.m`` and 
+``matlab test_lfmm3d.m`` and it should return with $0$ crashes.
+
+Example codes for demonstrating the Helmholtz and Laplace
+interfaces are ``hfmm3d_example.m`` and ``lfmm3d_example.m``.
 
 Installing MWrap
 ~~~~~~~~~~~~~~~~
 
-Mwrap is required in case you wish to regenerate the 
-matlab interfaces. This is not needed for most users.
+If you make any changes to the 
+fortran code, you will need to regenerate the .c files
+from the .mw files for which mwrap is required.
+This is not needed for most users.
 `MWrap <http://www.cs.cornell.edu/~bindel/sw/mwrap>`_
 is a very useful MEX interface generator by Dave Bindel.
 Make sure you have ``flex`` and ``bison`` installed.
