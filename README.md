@@ -1,1 +1,1 @@
- Under construction for beta testing. Please come back later.
+ Under construction for beta testing. Please check again later.
