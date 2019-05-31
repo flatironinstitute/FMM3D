@@ -29,7 +29,7 @@ Input arguments:
   -    zk: double complex
           Helmholtz parameter (k)
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double complex(nsource)
@@ -113,7 +113,7 @@ Input arguments:
   -    zk: double complex
           Helmholtz parameter (k)
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double complex(nsource)
@@ -201,7 +201,7 @@ Input arguments:
   -    zk: double complex
           Helmholtz parameter (k)
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    dipvec: double complex(3,nsource)
@@ -285,7 +285,7 @@ Input arguments:
   -    zk: double complex
           Helmholtz parameter (k)
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    dipvec: double complex(3,nsource)
@@ -373,7 +373,7 @@ Input arguments:
   -    zk: double complex
           Helmholtz parameter (k)
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double complex(nsource)
@@ -461,7 +461,7 @@ Input arguments:
   -    zk: double complex
           Helmholtz parameter (k)
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double complex(nsource)
@@ -553,7 +553,7 @@ Input arguments:
   -    zk: double complex
           Helmholtz parameter (k)
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double complex(nsource)
@@ -641,7 +641,7 @@ Input arguments:
   -    zk: double complex
           Helmholtz parameter (k)
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double complex(nsource)
@@ -733,7 +733,7 @@ Input arguments:
   -    zk: double complex
           Helmholtz parameter (k)
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    dipvec: double complex(3,nsource)
@@ -821,7 +821,7 @@ Input arguments:
   -    zk: double complex
           Helmholtz parameter (k)
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    dipvec: double complex(3,nsource)
@@ -913,7 +913,7 @@ Input arguments:
   -    zk: double complex
           Helmholtz parameter (k)
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double complex(nsource)
@@ -1005,7 +1005,7 @@ Input arguments:
   -    zk: double complex
           Helmholtz parameter (k)
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double complex(nsource)
@@ -1101,7 +1101,7 @@ Input arguments:
   -    zk: double complex
           Helmholtz parameter (k)
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double complex(nsource)
@@ -1193,7 +1193,7 @@ Input arguments:
   -    zk: double complex
           Helmholtz parameter (k)
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double complex(nsource)
@@ -1293,7 +1293,7 @@ Input arguments:
   -    zk: double complex
           Helmholtz parameter (k)
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    dipvec: double complex(3,nsource)
@@ -1385,7 +1385,7 @@ Input arguments:
   -    zk: double complex
           Helmholtz parameter (k)
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    dipvec: double complex(3,nsource)
@@ -1485,7 +1485,7 @@ Input arguments:
   -    zk: double complex
           Helmholtz parameter (k)
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double complex(nsource)
@@ -1581,7 +1581,7 @@ Input arguments:
   -    zk: double complex
           Helmholtz parameter (k)
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double complex(nsource)

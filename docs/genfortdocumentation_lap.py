@@ -26,11 +26,11 @@ inp_args ="Input arguments:"
 
 nd_txt = ["-    nd: integer","number of densities"]
 eps_txt = ["-    eps: double precision","precision requested"]
-ns_txt = ["-    nsource: integer","Number of sources (nsource)"]
+ns_txt = ["-    nsource: integer","Number of sources"]
 src_txt =["-    source: double precision(3,nsource)","Source locations ($x_{j}$)"]
 charge_txt =["-    charge: double precision(nsource)","Charge strengths ($c_{j}$)"]
 charge_nd_txt =["-    charge: double precision(nd,nsource)","Charge strengths ($c_{\ell,j}$)"]
-dipole_txt =["-    dipvec: double complex(3,nsource)","Dipole strengths ($v_{j}$)"]
+dipole_txt =["-    dipvec: double precision(3,nsource)","Dipole strengths ($v_{j}$)"]
 dipole_nd_txt =["-    dipvec: double precision(nd,3,nsource)","Dipole strengths ($v_{\ell,j}$)"]
 nt_txt = ["-    ntarg: integer","Number of targets"]
 targ_txt =["-    targ: double precision(3,ntarg)","Target locations ($t_{i}$)"]

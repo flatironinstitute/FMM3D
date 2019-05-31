@@ -27,7 +27,7 @@ Input arguments:
   -    eps: double precision
           precision requested
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double precision(nsource)
@@ -109,7 +109,7 @@ Input arguments:
   -    eps: double precision
           precision requested
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double precision(nsource)
@@ -195,10 +195,10 @@ Input arguments:
   -    eps: double precision
           precision requested
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
-  -    dipvec: double complex(3,nsource)
+  -    dipvec: double precision(3,nsource)
           Dipole strengths ($v_{j}$)
 
 
@@ -277,10 +277,10 @@ Input arguments:
   -    eps: double precision
           precision requested
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
-  -    dipvec: double complex(3,nsource)
+  -    dipvec: double precision(3,nsource)
           Dipole strengths ($v_{j}$)
 
 
@@ -363,12 +363,12 @@ Input arguments:
   -    eps: double precision
           precision requested
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double precision(nsource)
           Charge strengths ($c_{j}$)
-  -    dipvec: double complex(3,nsource)
+  -    dipvec: double precision(3,nsource)
           Dipole strengths ($v_{j}$)
 
 
@@ -449,12 +449,12 @@ Input arguments:
   -    eps: double precision
           precision requested
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double precision(nsource)
           Charge strengths ($c_{j}$)
-  -    dipvec: double complex(3,nsource)
+  -    dipvec: double precision(3,nsource)
           Dipole strengths ($v_{j}$)
 
 
@@ -539,7 +539,7 @@ Input arguments:
   -    eps: double precision
           precision requested
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double precision(nsource)
@@ -625,7 +625,7 @@ Input arguments:
   -    eps: double precision
           precision requested
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double precision(nsource)
@@ -715,10 +715,10 @@ Input arguments:
   -    eps: double precision
           precision requested
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
-  -    dipvec: double complex(3,nsource)
+  -    dipvec: double precision(3,nsource)
           Dipole strengths ($v_{j}$)
   -    ntarg: integer
           Number of targets
@@ -801,10 +801,10 @@ Input arguments:
   -    eps: double precision
           precision requested
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
-  -    dipvec: double complex(3,nsource)
+  -    dipvec: double precision(3,nsource)
           Dipole strengths ($v_{j}$)
   -    ntarg: integer
           Number of targets
@@ -891,12 +891,12 @@ Input arguments:
   -    eps: double precision
           precision requested
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double precision(nsource)
           Charge strengths ($c_{j}$)
-  -    dipvec: double complex(3,nsource)
+  -    dipvec: double precision(3,nsource)
           Dipole strengths ($v_{j}$)
   -    ntarg: integer
           Number of targets
@@ -981,12 +981,12 @@ Input arguments:
   -    eps: double precision
           precision requested
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double precision(nsource)
           Charge strengths ($c_{j}$)
-  -    dipvec: double complex(3,nsource)
+  -    dipvec: double precision(3,nsource)
           Dipole strengths ($v_{j}$)
   -    ntarg: integer
           Number of targets
@@ -1075,7 +1075,7 @@ Input arguments:
   -    eps: double precision
           precision requested
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double precision(nsource)
@@ -1165,7 +1165,7 @@ Input arguments:
   -    eps: double precision
           precision requested
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double precision(nsource)
@@ -1263,10 +1263,10 @@ Input arguments:
   -    eps: double precision
           precision requested
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
-  -    dipvec: double complex(3,nsource)
+  -    dipvec: double precision(3,nsource)
           Dipole strengths ($v_{j}$)
   -    ntarg: integer
           Number of targets
@@ -1353,10 +1353,10 @@ Input arguments:
   -    eps: double precision
           precision requested
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
-  -    dipvec: double complex(3,nsource)
+  -    dipvec: double precision(3,nsource)
           Dipole strengths ($v_{j}$)
   -    ntarg: integer
           Number of targets
@@ -1451,12 +1451,12 @@ Input arguments:
   -    eps: double precision
           precision requested
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double precision(nsource)
           Charge strengths ($c_{j}$)
-  -    dipvec: double complex(3,nsource)
+  -    dipvec: double precision(3,nsource)
           Dipole strengths ($v_{j}$)
   -    ntarg: integer
           Number of targets
@@ -1545,12 +1545,12 @@ Input arguments:
   -    eps: double precision
           precision requested
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
           Source locations ($x_{j}$)
   -    charge: double precision(nsource)
           Charge strengths ($c_{j}$)
-  -    dipvec: double complex(3,nsource)
+  -    dipvec: double precision(3,nsource)
           Dipole strengths ($v_{j}$)
   -    ntarg: integer
           Number of targets

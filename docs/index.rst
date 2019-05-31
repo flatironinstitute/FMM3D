@@ -23,7 +23,7 @@ and complex numbers $c_j$, with $j=1,\dots,M$, and
 $N$ arbitrary points $x_{\ell} \in \mathbb{R}^{3}$, the Laplace FMM
 evaluates the $N$ complex numbers
 
-.. math:: u_{\ell} = \sum_{j=1}^M \frac{c_j}{| x_{\ell} - y_{j}|} ~, 
+.. math:: u_{\ell} = \sum_{j=1}^M \frac{c_j}{\| x_{\ell} - y_{j}\|} ~, 
    \qquad \mbox{ for } \; \ell=1,2,\ldots N ~.
    :label: lapcp
 

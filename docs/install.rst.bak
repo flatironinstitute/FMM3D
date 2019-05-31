@@ -179,7 +179,7 @@ On Mac OSX
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 First setup Homebrew as follows. If you don't have Xcode, install
-Command Line Tools by opening a terminal (from /Applications/Utilities/)
+Command Line Tools by opening a terminal (fram /Applications/Utilities/)
 and typing::
 
   xcode-select --install

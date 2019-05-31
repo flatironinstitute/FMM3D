@@ -5,8 +5,8 @@ MATLAB
 
 The matlab interface has four callable subroutines:
 
-*  `Helmholtz wrappers <matlab.rst#helm-mat>`__: Fast multipole implementation (hfmm3d) and direct evaluation (h3ddir) for Helmholtz N-body interactions
-*  `Laplace wrappers <matlab.rst#lap-mat>`__: Fast multipole implementation (lfmm3d) and direct evaluation (l3ddir) for Laplace N-body interactions
+*  `Helmholtz wrappers <matlab.html#helm-mat>`__: Fast multipole implementation (hfmm3d) and direct evaluation (h3ddir) for Helmholtz N-body interactions
+*  `Laplace wrappers <matlab.html#lap-mat>`__: Fast multipole implementation (lfmm3d) and direct evaluation (l3ddir) for Laplace N-body interactions
 
 
 .. _helm-mat:
@@ -71,7 +71,7 @@ Args:
 Returns:
 
 -  U.pot: potential at source locations, if requested ($u(x_{j})$)
--  U.grad: gradient at source locations, if requestedi ($\nabla u(x_{j})$)
+-  U.grad: gradient at source locations, if requested ($\nabla u(x_{j})$)
 -  U.pottarg: potential at target locations, if requested ($u(t_{i})$)
 -  U.gradtarg: gradient at target locations, if requested ($\nabla u(t_{i})$)
 
@@ -154,7 +154,7 @@ Args:
 Returns:
 
 -  U.pot: potential at source locations, if requested ($u(x_{j})$)
--  U.grad: gradient at source locations, if requestedi ($\nabla u(x_{j})$)
+-  U.grad: gradient at source locations, if requested ($\nabla u(x_{j})$)
 -  U.pottarg: potential at target locations, if requested ($u(t_{i})$)
 -  U.gradtarg: gradient at target locations, if requested ($\nabla u(t_{i})$)
 

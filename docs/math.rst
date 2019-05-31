@@ -20,7 +20,7 @@ the scaled Green's function for Laplace's equation given by
 
 .. math::
 
-   G_{0}(x) = \frac{1}{|x|} \mathbf{I}_{|x|>\varepsilon}\, ,
+   G_{0}(x) = \frac{1}{\|x\|} \mathbf{I}_{\|x\|>\varepsilon}\, ,
 
 where $\varepsilon = \varepsilon_{\text{mach}} L$.
 
@@ -49,7 +49,7 @@ the scaled Green's function for Helmholtz's equation given by
 
 .. math::
 
-    G_{k}(x) = \frac{e^{ik |x|}}{|x|} \mathbf{I}_{|x|>\varepsilon}\, ,
+    G_{k}(x) = \frac{e^{ik \|x\|}}{\|x\|} \mathbf{I}_{\|x\|>\varepsilon}\, ,
 
 where $\varepsilon = \varepsilon_{\textrm{mach}} \lvert \omega \rvert  L$. 
 

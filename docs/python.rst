@@ -66,7 +66,7 @@ The subroutine returns an object out of type Output with the following
 variables
 
 -  out.pot: potential at source locations, if requested ($u(x_{j})$)
--  out.grad: gradient at source locations, if requestedi ($\nabla u(x_{j})$)
+-  out.grad: gradient at source locations, if requested ($\nabla u(x_{j})$)
 -  out.pottarg: potential at target locations, if requested ($u(t_{i})$)
 -  out.gradtarg: gradient at target locations, if requested ($\nabla u(t_{i})$)
 
@@ -144,7 +144,7 @@ The subroutine returns an object out of type Output with the following
 variables
 
 -  out.pot: potential at source locations, if requested ($u(x_{j})$)
--  out.grad: gradient at source locations, if requestedi ($\nabla u(x_{j})$)
+-  out.grad: gradient at source locations, if requested ($\nabla u(x_{j})$)
 -  out.pottarg: potential at target locations, if requested ($u(t_{i})$)
 -  out.gradtarg: gradient at target locations, if requested ($\nabla u(t_{i})$)
 
