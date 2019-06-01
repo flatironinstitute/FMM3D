@@ -18,8 +18,11 @@ CFLAGS+= $(FFLAGS)
 
 CLINK = -lgfortran -lm -ldl
 
+LIBS = -lm
+
 # extra flags for multithreaded: C/Fortran, MATLAB
-OMPFLAGS = --openmp
+OMPFLAGS = -fopenmp
+OMPLIBS = 
 MOMPFLAGS = -lgomp -D_OPENMP
 
 # flags for MATLAB MEX compilation..
@@ -33,15 +36,16 @@ MEX=mex
 MWRAP=../../mwrap-0.33/mwrap
 
 
+# For your OS, override the above by placing make variables in make.inc
+-include make.inc
+
 # multi-threaded libs & flags needed
 ifneq ($(OMP),OFF)
 CFLAGS += $(OMPFLAGS)
 FFLAGS += $(OMPFLAGS)
 MFLAGS += $(MOMPFLAGS)
+LIBS += $(OMPLIBS)
 endif
-
-# For your OS, override the above by placing make variables in make.inc
-#-include make.inc
 
 
 LIBNAME=libfmm3d
@@ -81,11 +85,11 @@ CHEADERS = c/cprini.h c/utils.h c/hfmm3d_c.h
 
 OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
-.PHONY: usage lib examples test perftest python all c c-examples matlab
+.PHONY: usage lib examples test perftest python all c c-examples matlab python3
 
 default: usage
 
-all: lib examples test perftest python c c-examples matlab
+all: lib examples test python python3 c c-examples matlab
 
 usage:
 	@echo "Makefile for FMM3D. Specify what to make:"
@@ -95,6 +99,7 @@ usage:
 	@echo "  make test - compile and run quick math validation tests"
 	@echo "  make matlab - compile matlab interfaces"
 	@echo "  make python - compile and test python interfaces"
+	@echo "  make python3 - compile and test python interfaces using python3"
 	@echo "  make objclean - removal all object files, preserving lib & MEX"
 	@echo "  make clean - also remove lib, MEX, py, and demo executables"
 	@echo "For faster (multicore) making, append the flag -j"
@@ -119,7 +124,7 @@ endif
 $(STATICLIB): $(OBJS) 
 	ar rcs $(STATICLIB) $(OBJS)
 $(DYNAMICLIB): $(OBJS) 
-	$(FC) -shared $(OBJS) -o $(DYNAMICLIB)
+	$(FC) -shared $(OMPFLAGS) $(OBJS) -o $(DYNAMICLIB) $(LIBS) 
 
 # matlab..
 MWRAPFILE = fmm3d
@@ -143,6 +148,10 @@ mex:  $(STATICLIB)
 #python
 python:
 	cd python && pip install -e . && cd test && pytest -s
+
+#python
+python3:
+	cd python && pip3 install -e . && cd test && python3 -m pytest -s
 
 # testing routines
 #

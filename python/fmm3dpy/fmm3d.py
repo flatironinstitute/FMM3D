@@ -12,7 +12,7 @@ class Output():
 
 def hfmm3d(*,eps,zk,sources,charges=None,dipvec=None,
           targets=None,pg=0,pgt=0,nd=1):
-    """
+    r"""
       This subroutine computes the N-body Helmholtz interactions
       in three dimensions where the interaction kernel is given by e^{ikr}/r 
       and its gradients. 
@@ -48,8 +48,9 @@ def hfmm3d(*,eps,zk,sources,charges=None,dipvec=None,
         out.gradtarg: gradient at target locations if requested
 
       Example:
-        see ``hmmexample.py''
-    """
+        see hmmexample.py
+    r"""
+    
     out = Output()
     assert sources.shape[0] == 3, "The first dimension of sources must be 3"
     ns = sources.shape[1]
@@ -179,7 +180,7 @@ def hfmm3d(*,eps,zk,sources,charges=None,dipvec=None,
 
 def lfmm3d(*,eps,sources,charges=None,dipvec=None,
           targets=None,pg=0,pgt=0,nd=1):
-    """
+    r"""
       This subroutine computes the N-body Laplace interactions
       in three dimensions where the interaction kernel is given by 1/r 
       and its gradients. 
@@ -229,8 +230,8 @@ def lfmm3d(*,eps,sources,charges=None,dipvec=None,
         out.gradtarg: gradient at target locations if requested
       
       Example:
-        see ``lfmmexample.py''
-    """
+        see lfmmexample.py
+    r"""
 
     out = Output()
     assert sources.shape[0] == 3, "The first dimension of sources must be 3"
@@ -360,7 +361,7 @@ def lfmm3d(*,eps,sources,charges=None,dipvec=None,
 
 def h3ddir(*,zk,sources,targets,charges=None,dipvec=None,
           pgt=0,nd=1,thresh=1e-16):
-    """
+    r"""
       This subroutine computes the N-body Helmholtz interactions
       in three dimensions where the interaction kernel is given by $e^{ikr}/r$ 
       and its gradients. 
@@ -406,8 +407,8 @@ def h3ddir(*,zk,sources,targets,charges=None,dipvec=None,
         out.gradtarg - gradient at target locations if requested
               
       Example:
-        see ``hfmmexample.py''
-    """
+        see hfmmexample.py
+    r"""
     out = Output()
     assert sources.shape[0] == 3, "The first dimension of sources must be 3"
     ns = sources.shape[1]
@@ -463,7 +464,7 @@ def h3ddir(*,zk,sources,targets,charges=None,dipvec=None,
 
 def l3ddir(*,sources,targets,charges=None,dipvec=None,
           pgt=0,nd=1,thresh=1e-16):
-    """
+    r"""
       This subroutine computes the N-body Laplace interactions
       in three dimensions where the interaction kernel is given by $1/r$ 
       and its gradients. 
@@ -505,8 +506,10 @@ def l3ddir(*,sources,targets,charges=None,dipvec=None,
         out.gradtarg - gradient at target locations if requested
               
       Example:
-        see ``rfmmexample.py''
-    """
+        see lfmmexample.py
+
+    r"""
+
     out = Output()
     assert sources.shape[0] == 3, "The first dimension of sources must be 3"
     ns = sources.shape[1]
