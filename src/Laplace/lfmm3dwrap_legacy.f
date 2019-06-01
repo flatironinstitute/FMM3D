@@ -4,20 +4,20 @@ c
 c   
 c
 c     This file contains the main FMM routines and some related
-c     subroutines for evaluating Helmholtz potentials and fields due to
+c     subroutines for evaluating Laplace potentials and fields due to
 c     point charges and dipoles.  (FORTRAN 90 VERSION)
 c
-c     lfmm3dpart - Helmholtz FMM in R^3: evaluate all pairwise particle
+c     lfmm3dpart - Laplace FMM in R^3: evaluate all pairwise particle
 c         interactions (ignoring self-interaction)
 c
-c     lfmm3dpartself - Helmholtz FMM in R^3: evaluate all pairwise particle
+c     lfmm3dpartself - Laplace FMM in R^3: evaluate all pairwise particle
 c         interactions (ignoring self-interaction)
 c
-c     lfmm3dparttarg - Helmholtz FMM in R^3: evaluate all pairwise
+c     lfmm3dparttarg - Laplace FMM in R^3: evaluate all pairwise
 c         particle interactions (ignoring self-interaction) +
 c         interactions with targets
 c
-c     h3dpartdirect - Helmholtz interactions in R^3:  evaluate all
+c     l3dpartdirect - Laplace interactions in R^3:  evaluate all
 c         pairwise particle interactions (ignoring self-interaction) +
 c         interactions with targets via direct O(N^2) algorithm
 c
@@ -30,7 +30,7 @@ c
         implicit real *8 (a-h,o-z)
 c              
 c              
-c       Helmholtz FMM in R^3: evaluate all pairwise particle
+c       Laplace FMM in R^3: evaluate all pairwise particle
 c       interactions (ignoring self-interaction). 
 c       We use (1/r) for the Green's function, without the 
 c       (1/4 pi) scaling. Self-interactions are not included.
@@ -81,7 +81,7 @@ c
         implicit real *8 (a-h,o-z)
 c              
 c              
-c       Helmholtz FMM in R^3: evaluate all pairwise particle
+c       Laplace FMM in R^3: evaluate all pairwise particle
 c       interactions (ignoring self-interaction). 
 c       We use (1/r) for the Green's function, without the 
 c       (1/4 pi) scaling. Self-interactions are not included.
@@ -133,7 +133,7 @@ c
      $     iffldtarg,fldtarg)
       implicit none
 c       
-c       Helmholtz FMM in R^3: evaluate all pairwise particle
+c       Laplace FMM in R^3: evaluate all pairwise particle
 c       interactions (ignoring self-interaction) 
 c       and interactions with targets.
 c
@@ -332,14 +332,14 @@ C$OMP END PARALLEL DO
       end
 
 
-      subroutine l3dpartdirect(ns,
+      subroutine l3dpartdirect(nsource,
      $    source,ifcharge,charge,ifdipole,dipstr,dipvec,
-     $     ifpot,pot,iffld,fld,nt,
+     $     ifpot,pot,iffld,fld,ntarg,
      $     targ,ifpottarg,pottarg,iffldtarg,fldtarg)
 
       implicit none
 c
-c       Helmholtz interactions in R^3: evaluate all pairwise particle
+c       Laplace interactions in R^3: evaluate all pairwise particle
 c       interactions (ignoring self-interaction) 
 c       and interactions with targets via direct O(N^2) algorithm.
 c
@@ -348,7 +348,7 @@ c       without the (1/4 pi) scaling.  Self-interactions are not-included.
 c   
 c       INPUT PARAMETERS:
 c
-c       ns: integer:  number of sources
+c       nsource: integer:  number of sources
 c       source: real *8 (3,nsource):  source locations
 c       ifcharge:  charge computation flag
 c                  ifcharge = 1   =>  include charge contribution
@@ -362,8 +362,8 @@ c       dipvec: real *8 (3,nsource): dipole orientation vectors.
 c
 c       ifpot:  potential flag (1=compute potential, otherwise no)
 c       iffld:  field flag (1=compute field, otherwise no)
-c       nt: integer:  number of targets
-c       targ: real *8 (3,nt):  target locations
+c       ntarg: integer:  number of targets
+c       targ: real *8 (3,ntarg):  target locations
 c       ifpottarg:  target potential flag 
 c                   (1=compute potential, otherwise no)
 c       iffldtarg:  target field flag 
@@ -373,11 +373,12 @@ c       OUTPUT PARAMETERS:
 c
 c       pot: complex *16 (nsource): potential at source locations
 c       fld: complex *16 (3,nsource): field (-gradient) at source locations
-c       pottarg: complex *16 (nt): potential at target locations 
-c       fldtarg: complex *16 (3,nt): field (-gradient) at target locations 
+c       pottarg: complex *16 (ntarg): potential at target locations 
+c       fldtarg: complex *16 (3,ntarg): field (-gradient) at target locations 
 c
-      integer ns,ifcharge,ifdipole,ifpot,iffld,nt
+      integer nsource,ifcharge,ifdipole,ifpot,iffld,ntarg
       integer ifpottarg,iffldtarg
+      integer nt,ns
       double precision source(3,*), targ(3,*)
       double complex charge(*),dipstr(*)
       double precision dipvec(3,*)
@@ -394,6 +395,9 @@ c
 
       double precision xmin,xmax,ymin,ymax,zmin,zmax
       double precision bsize,btmp,sizex,sizey,sizez
+
+      nt = ntarg
+      ns = nsource
 
       ifpgh = 0
       ifpghtarg = 0

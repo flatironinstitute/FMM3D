@@ -4,7 +4,6 @@ c
 
       subroutine hfmm3d_s_c_p_vec(nd,eps,zk,nsource,source,
      1    charge,pot)
-      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,charge
@@ -28,7 +27,7 @@ c          precision requested
 c    -    zk: double complex
 c          Helmholtz parameter (k)
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double complex(nd,nsource)
@@ -43,6 +42,7 @@ c
 c
 c--------------------------------
 c
+      implicit none
       double precision eps
       double complex zk
 
@@ -81,7 +81,6 @@ c
 
       subroutine hfmm3d_s_c_g_vec(nd,eps,zk,nsource,source,
      1    charge,pot,grad)
-      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,charge
@@ -105,7 +104,7 @@ c          precision requested
 c    -    zk: double complex
 c          Helmholtz parameter (k)
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double complex(nd,nsource)
@@ -122,6 +121,7 @@ c
 c
 c--------------------------------
 c
+      implicit none
       double precision eps
       double complex zk
 
@@ -161,7 +161,6 @@ c
 
       subroutine hfmm3d_s_d_p_vec(nd,eps,zk,nsource,source,
      1    dipvec,pot)
-      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec
@@ -185,7 +184,7 @@ c          precision requested
 c    -    zk: double complex
 c          Helmholtz parameter (k)
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    dipvec: double complex(nd,3,nsource)
@@ -200,6 +199,7 @@ c
 c
 c--------------------------------
 c
+      implicit none
       double precision eps
       double complex zk
 
@@ -240,7 +240,6 @@ c
 
       subroutine hfmm3d_s_d_g_vec(nd,eps,zk,nsource,source,
      1    dipvec,pot,grad)
-      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec
@@ -264,7 +263,7 @@ c          precision requested
 c    -    zk: double complex
 c          Helmholtz parameter (k)
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    dipvec: double complex(nd,3,nsource)
@@ -281,6 +280,7 @@ c
 c
 c--------------------------------
 c
+      implicit none
       double precision eps
       double complex zk
 
@@ -320,7 +320,6 @@ c
 
       subroutine hfmm3d_s_cd_p_vec(nd,eps,zk,nsource,source,
      1    charge,dipvec,pot)
-      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec,charge
@@ -346,7 +345,7 @@ c          precision requested
 c    -    zk: double complex
 c          Helmholtz parameter (k)
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double complex(nd,nsource)
@@ -363,6 +362,7 @@ c
 c
 c--------------------------------
 c
+      implicit none
       double precision eps
       double complex zk
 
@@ -407,7 +407,6 @@ c
 
       subroutine hfmm3d_s_cd_g_vec(nd,eps,zk,nsource,source,
      1    charge,dipvec,pot,grad)
-      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec,charge
@@ -433,7 +432,7 @@ c          precision requested
 c    -    zk: double complex
 c          Helmholtz parameter (k)
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double complex(nd,nsource)
@@ -452,6 +451,7 @@ c
 c
 c--------------------------------
 c
+      implicit none
       double precision eps
       double complex zk
 
@@ -491,7 +491,6 @@ c
 
       subroutine hfmm3d_t_c_p_vec(nd,eps,zk,nsource,source,
      1    charge,ntarg,targ,pottarg)
-      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,charge
@@ -516,7 +515,7 @@ c          precision requested
 c    -    zk: double complex
 c          Helmholtz parameter (k)
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double complex(nd,nsource)
@@ -535,6 +534,7 @@ c
 c
 c--------------------------------
 c
+      implicit none
       double precision eps
       double complex zk
 
@@ -574,7 +574,6 @@ c
       subroutine hfmm3d_t_c_g_vec(nd,eps,zk,nsource,source,
      1    charge,ntarg,targ,pottarg,
      2    gradtarg)
-      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,charge
@@ -599,7 +598,7 @@ c          precision requested
 c    -    zk: double complex
 c          Helmholtz parameter (k)
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double complex(nd,nsource)
@@ -620,6 +619,7 @@ c
 c
 c--------------------------------
 c
+      implicit none
       double precision eps
       double complex zk
 
@@ -656,7 +656,6 @@ c
 
       subroutine hfmm3d_t_d_p_vec(nd,eps,zk,nsource,source,
      1    dipvec,ntarg,targ,pottarg)
-      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec
@@ -681,7 +680,7 @@ c          precision requested
 c    -    zk: double complex
 c          Helmholtz parameter (k)
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    dipvec: double complex(nd,3,nsource)
@@ -700,6 +699,7 @@ c
 c
 c--------------------------------
 c
+      implicit none
       double precision eps
       double complex zk
 
@@ -739,7 +739,6 @@ c
       subroutine hfmm3d_t_d_g_vec(nd,eps,zk,nsource,source,
      1    dipvec,ntarg,targ,pottarg,
      2    gradtarg)
-      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec
@@ -764,7 +763,7 @@ c          precision requested
 c    -    zk: double complex
 c          Helmholtz parameter (k)
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    dipvec: double complex(nd,3,nsource)
@@ -785,6 +784,7 @@ c
 c
 c--------------------------------
 c
+      implicit none
       double precision eps
       double complex zk
 
@@ -822,7 +822,6 @@ c
 
       subroutine hfmm3d_t_cd_p_vec(nd,eps,zk,nsource,source,
      1    charge,dipvec,ntarg,targ,pottarg)
-      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec,charge
@@ -849,7 +848,7 @@ c          precision requested
 c    -    zk: double complex
 c          Helmholtz parameter (k)
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double complex(nd,nsource)
@@ -870,6 +869,7 @@ c
 c
 c--------------------------------
 c
+      implicit none
       double precision eps
       double complex zk
 
@@ -909,7 +909,6 @@ c
       subroutine hfmm3d_t_cd_g_vec(nd,eps,zk,nsource,source,
      1    charge,dipvec,ntarg,targ,pottarg,
      2    gradtarg)
-      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec,charge
@@ -936,7 +935,7 @@ c          precision requested
 c    -    zk: double complex
 c          Helmholtz parameter (k)
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double complex(nd,nsource)
@@ -959,6 +958,7 @@ c
 c
 c--------------------------------
 c
+      implicit none
       double precision eps
       double complex zk
 
@@ -995,7 +995,6 @@ c
 
       subroutine hfmm3d_st_c_p_vec(nd,eps,zk,nsource,source,
      1    charge,pot,ntarg,targ,pottarg)
-      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,charge
@@ -1021,7 +1020,7 @@ c          precision requested
 c    -    zk: double complex
 c          Helmholtz parameter (k)
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double complex(nd,nsource)
@@ -1042,6 +1041,7 @@ c
 c
 c--------------------------------
 c
+      implicit none
       double precision eps
       double complex zk
 
@@ -1080,7 +1080,6 @@ c
       subroutine hfmm3d_st_c_g_vec(nd,eps,zk,nsource,source,
      1    charge,pot,grad,ntarg,targ,pottarg,
      2    gradtarg)
-      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,charge
@@ -1106,7 +1105,7 @@ c          precision requested
 c    -    zk: double complex
 c          Helmholtz parameter (k)
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double complex(nd,nsource)
@@ -1131,6 +1130,7 @@ c
 c
 c--------------------------------
 c
+      implicit none
       double precision eps
       double complex zk
 
@@ -1168,7 +1168,6 @@ c
 
       subroutine hfmm3d_st_d_p_vec(nd,eps,zk,nsource,source,
      1    dipvec,pot,ntarg,targ,pottarg)
-      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec
@@ -1194,7 +1193,7 @@ c          precision requested
 c    -    zk: double complex
 c          Helmholtz parameter (k)
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    dipvec: double complex(nd,3,nsource)
@@ -1215,6 +1214,7 @@ c
 c
 c--------------------------------
 c
+      implicit none
       double precision eps
       double complex zk
 
@@ -1254,7 +1254,6 @@ c
       subroutine hfmm3d_st_d_g_vec(nd,eps,zk,nsource,source,
      1    dipvec,pot,grad,ntarg,targ,pottarg,
      2    gradtarg)
-      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec
@@ -1280,7 +1279,7 @@ c          precision requested
 c    -    zk: double complex
 c          Helmholtz parameter (k)
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    dipvec: double complex(nd,3,nsource)
@@ -1305,6 +1304,7 @@ c
 c
 c--------------------------------
 c
+      implicit none
       double precision eps
       double complex zk
 
@@ -1342,7 +1342,6 @@ c
 
       subroutine hfmm3d_st_cd_p_vec(nd,eps,zk,nsource,source,
      1    charge,dipvec,pot,ntarg,targ,pottarg)
-      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec,charge
@@ -1370,7 +1369,7 @@ c          precision requested
 c    -    zk: double complex
 c          Helmholtz parameter (k)
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double complex(nd,nsource)
@@ -1393,6 +1392,7 @@ c
 c
 c--------------------------------
 c
+      implicit none
       double precision eps
       double complex zk
 
@@ -1431,7 +1431,6 @@ c
       subroutine hfmm3d_st_cd_g_vec(nd,eps,zk,nsource,source,
      1    charge,dipvec,pot,grad,ntarg,targ,pottarg,
      2    gradtarg)
-      implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) zk
 cf2py  intent(in) nsource,source,dipvec,charge
@@ -1459,7 +1458,7 @@ c          precision requested
 c    -    zk: double complex
 c          Helmholtz parameter (k)
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double complex(nd,nsource)
@@ -1486,6 +1485,7 @@ c
 c
 c--------------------------------
 c
+      implicit none
       double precision eps
       double complex zk
 

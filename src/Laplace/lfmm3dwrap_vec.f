@@ -24,7 +24,7 @@ c          number of densities
 c    -    eps: double precision
 c          precision requested
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double precision(nd,nsource)
@@ -98,7 +98,7 @@ c          number of densities
 c    -    eps: double precision
 c          precision requested
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double precision(nd,nsource)
@@ -176,7 +176,7 @@ c          number of densities
 c    -    eps: double precision
 c          precision requested
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    dipvec: double precision(nd,3,nsource)
@@ -251,7 +251,7 @@ c          number of densities
 c    -    eps: double precision
 c          precision requested
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    dipvec: double precision(nd,3,nsource)
@@ -328,7 +328,7 @@ c          number of densities
 c    -    eps: double precision
 c          precision requested
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double precision(nd,nsource)
@@ -410,7 +410,7 @@ c          number of densities
 c    -    eps: double precision
 c          precision requested
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double precision(nd,nsource)
@@ -488,7 +488,7 @@ c          number of densities
 c    -    eps: double precision
 c          precision requested
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double precision(nd,nsource)
@@ -566,7 +566,7 @@ c          number of densities
 c    -    eps: double precision
 c          precision requested
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double precision(nd,nsource)
@@ -644,7 +644,7 @@ c          number of densities
 c    -    eps: double precision
 c          precision requested
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    dipvec: double precision(nd,3,nsource)
@@ -723,7 +723,7 @@ c          number of densities
 c    -    eps: double precision
 c          precision requested
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    dipvec: double precision(nd,3,nsource)
@@ -803,7 +803,7 @@ c          number of densities
 c    -    eps: double precision
 c          precision requested
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double precision(nd,nsource)
@@ -885,7 +885,7 @@ c          number of densities
 c    -    eps: double precision
 c          precision requested
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double precision(nd,nsource)
@@ -965,7 +965,7 @@ c          number of densities
 c    -    eps: double precision
 c          precision requested
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double precision(nd,nsource)
@@ -1045,7 +1045,7 @@ c          number of densities
 c    -    eps: double precision
 c          precision requested
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double precision(nd,nsource)
@@ -1129,7 +1129,7 @@ c          number of densities
 c    -    eps: double precision
 c          precision requested
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    dipvec: double precision(nd,3,nsource)
@@ -1211,7 +1211,7 @@ c          number of densities
 c    -    eps: double precision
 c          precision requested
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    dipvec: double precision(nd,3,nsource)
@@ -1296,7 +1296,7 @@ c          number of densities
 c    -    eps: double precision
 c          precision requested
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double precision(nd,nsource)
@@ -1380,7 +1380,7 @@ c          number of densities
 c    -    eps: double precision
 c          precision requested
 c    -    nsource: integer
-c          Number of sources (nsource)
+c          Number of sources
 c    -    source: double precision(3,nsource)
 c          Source locations ($x_{j}$)
 c    -    charge: double precision(nd,nsource)
