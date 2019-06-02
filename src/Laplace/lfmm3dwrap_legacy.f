@@ -1,4 +1,4 @@
-c   These file contains the legacy FMM wrappers from the previous version
+c   This file contains the legacy FMM wrappers from the previous version
 c     of fmmlib3d
 c
 c   

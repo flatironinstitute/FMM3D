@@ -1,4 +1,128 @@
 c
+c  This file contains the Helmholtz FMM wrappers
+c
+c  The Helmholtz FMM evaluates the following potential
+c  and its gradient
+c    
+c     u_{l}(x) = \sum_{j=1}^{N} c_{l,j}e^{ik|x-x_{j}|}/|x-x_{j}| - 
+c         v_{l,j}.\nabla (e^{ik|x-x_{j}|/|x-x_{j}|)
+c
+c  Here x_{j} are the source locations, c_{l,j} are the charge strengths,
+c  v_{l,j} are the dipole strengths. We refer to the collection of 
+c  $x$ at which the potential and its gradient are evaluated as the
+c  evaluation points
+c
+c  This file contains the wrappers to the vectorized routines
+c
+c  The subroutine names take the following form:
+c    hfmm3d_<eval-pts>_<int-ker>_<out>_vec
+c
+c      <eval-pts>: evaluation points (sources/targets/sources+targets)
+c        s: source locations
+c        t: target locations
+c        st: source and target locations
+c
+c      <int-ker>: kernel of interaction (charges/dipoles/both)
+c        c: charges
+c        d: dipoles
+c        cd: charges+dipoles
+c 
+c      <out>: flag for potential/potential+gradient
+c        p: potentials
+c        g: potentials+gradients
+c
+c  The wrappers are:
+c
+c  -hfmm3d_s_c_p_vec
+c    - Evaluation points: Sources
+c    - Interaction kernel: Charges
+c    - Outputs requested: Potential
+c-------------------------------------
+c  -hfmm3d_s_c_g_vec
+c    - Evaluation points: Sources
+c    - Interaction kernel: Charges
+c    - Outputs requested: Potential and Gradient
+c-------------------------------------
+c  -hfmm3d_s_d_p_vec
+c    - Evaluation points: Sources
+c    - Interaction kernel: Dipoles
+c    - Outputs requested: Potential
+c-------------------------------------
+c  -hfmm3d_s_d_g_vec
+c    - Evaluation points: Sources
+c    - Interaction kernel: Dipoles
+c    - Outputs requested: Potential and Gradient
+c-------------------------------------
+c  -hfmm3d_s_cd_p_vec
+c    - Evaluation points: Sources
+c    - Interaction kernel: Charges and Dipoles
+c    - Outputs requested: Potential
+c-------------------------------------
+c  -hfmm3d_s_cd_g_vec
+c    - Evaluation points: Sources
+c    - Interaction kernel: Charges and Dipoles
+c    - Outputs requested: Potential and Gradient
+c-------------------------------------
+c  -hfmm3d_t_c_p_vec
+c    - Evaluation points: Targets
+c    - Interaction kernel: Charges
+c    - Outputs requested: Potential
+c-------------------------------------
+c  -hfmm3d_t_c_g_vec
+c    - Evaluation points: Targets
+c    - Interaction kernel: Charges
+c    - Outputs requested: Potential and Gradient
+c-------------------------------------
+c  -hfmm3d_t_d_p_vec
+c    - Evaluation points: Targets
+c    - Interaction kernel: Dipoles
+c    - Outputs requested: Potential
+c-------------------------------------
+c  -hfmm3d_t_d_g_vec
+c    - Evaluation points: Targets
+c    - Interaction kernel: Dipoles
+c    - Outputs requested: Potential and Gradient
+c-------------------------------------
+c  -hfmm3d_t_cd_p_vec
+c    - Evaluation points: Targets
+c    - Interaction kernel: Charges and Dipoles
+c    - Outputs requested: Potential
+c-------------------------------------
+c  -hfmm3d_t_cd_g_vec
+c    - Evaluation points: Targets
+c    - Interaction kernel: Charges and Dipoles
+c    - Outputs requested: Potential and Gradient
+c-------------------------------------
+c  -hfmm3d_st_c_p_vec
+c    - Evaluation points: Sources and Targets
+c    - Interaction kernel: Charges
+c    - Outputs requested: Potential
+c-------------------------------------
+c  -hfmm3d_st_c_g_vec
+c    - Evaluation points: Sources and Targets
+c    - Interaction kernel: Charges
+c    - Outputs requested: Potential and Gradient
+c-------------------------------------
+c  -hfmm3d_st_d_p_vec
+c    - Evaluation points: Sources and Targets
+c    - Interaction kernel: Dipoles
+c    - Outputs requested: Potential
+c-------------------------------------
+c  -hfmm3d_st_d_g_vec
+c    - Evaluation points: Sources and Targets
+c    - Interaction kernel: Dipoles
+c    - Outputs requested: Potential and Gradient
+c-------------------------------------
+c  -hfmm3d_st_cd_p_vec
+c    - Evaluation points: Sources and Targets
+c    - Interaction kernel: Charges and Dipoles
+c    - Outputs requested: Potential
+c-------------------------------------
+c  -hfmm3d_st_cd_g_vec
+c    - Evaluation points: Sources and Targets
+c    - Interaction kernel: Charges and Dipoles
+c    - Outputs requested: Potential and Gradient
+c-------------------------------------
 c
 c
 
