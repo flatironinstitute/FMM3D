@@ -145,15 +145,15 @@ c          precision requested
 c    -    nsource: integer
 c          Number of sources
 c    -    source: double precision(3,nsource)
-c          Source locations ($x_{j}$)
+c          Source locations, $x_{j}$
 c    -    charge: double precision(nsource)
-c          Charge strengths ($c_{j}$)
+c          Charge strengths, $c_{j}$
 c
 c
 c  Output arguments:
 c
 c    -    pot: double precision(nsource)
-c          Potential at source locations ($u(x_{j})$)
+c          Potential at source locations, $u(x_{j})$
 c
 c
 c--------------------------------
@@ -218,17 +218,17 @@ c          precision requested
 c    -    nsource: integer
 c          Number of sources
 c    -    source: double precision(3,nsource)
-c          Source locations ($x_{j}$)
+c          Source locations, $x_{j}$
 c    -    charge: double precision(nsource)
-c          Charge strengths ($c_{j}$)
+c          Charge strengths, $c_{j}$
 c
 c
 c  Output arguments:
 c
 c    -    pot: double precision(nsource)
-c          Potential at source locations ($u(x_{j})$)
+c          Potential at source locations, $u(x_{j})$
 c    -    grad: double precision(3,nsource)
-c          Gradient at source locations ($\nabla u(x_{j})$)
+c          Gradient at source locations, $\nabla u(x_{j})$
 c
 c
 c--------------------------------
@@ -294,15 +294,15 @@ c          precision requested
 c    -    nsource: integer
 c          Number of sources
 c    -    source: double precision(3,nsource)
-c          Source locations ($x_{j}$)
+c          Source locations, $x_{j}$
 c    -    dipvec: double precision(3,nsource)
-c          Dipole strengths ($v_{j}$)
+c          Dipole strengths, $v_{j}$
 c
 c
 c  Output arguments:
 c
 c    -    pot: double precision(nsource)
-c          Potential at source locations ($u(x_{j})$)
+c          Potential at source locations, $u(x_{j})$
 c
 c
 c--------------------------------
@@ -368,17 +368,17 @@ c          precision requested
 c    -    nsource: integer
 c          Number of sources
 c    -    source: double precision(3,nsource)
-c          Source locations ($x_{j}$)
+c          Source locations, $x_{j}$
 c    -    dipvec: double precision(3,nsource)
-c          Dipole strengths ($v_{j}$)
+c          Dipole strengths, $v_{j}$
 c
 c
 c  Output arguments:
 c
 c    -    pot: double precision(nsource)
-c          Potential at source locations ($u(x_{j})$)
+c          Potential at source locations, $u(x_{j})$
 c    -    grad: double precision(3,nsource)
-c          Gradient at source locations ($\nabla u(x_{j})$)
+c          Gradient at source locations, $\nabla u(x_{j})$
 c
 c
 c--------------------------------
@@ -444,17 +444,17 @@ c          precision requested
 c    -    nsource: integer
 c          Number of sources
 c    -    source: double precision(3,nsource)
-c          Source locations ($x_{j}$)
+c          Source locations, $x_{j}$
 c    -    charge: double precision(nsource)
-c          Charge strengths ($c_{j}$)
+c          Charge strengths, $c_{j}$
 c    -    dipvec: double precision(3,nsource)
-c          Dipole strengths ($v_{j}$)
+c          Dipole strengths, $v_{j}$
 c
 c
 c  Output arguments:
 c
 c    -    pot: double precision(nsource)
-c          Potential at source locations ($u(x_{j})$)
+c          Potential at source locations, $u(x_{j})$
 c
 c
 c--------------------------------
@@ -524,19 +524,19 @@ c          precision requested
 c    -    nsource: integer
 c          Number of sources
 c    -    source: double precision(3,nsource)
-c          Source locations ($x_{j}$)
+c          Source locations, $x_{j}$
 c    -    charge: double precision(nsource)
-c          Charge strengths ($c_{j}$)
+c          Charge strengths, $c_{j}$
 c    -    dipvec: double precision(3,nsource)
-c          Dipole strengths ($v_{j}$)
+c          Dipole strengths, $v_{j}$
 c
 c
 c  Output arguments:
 c
 c    -    pot: double precision(nsource)
-c          Potential at source locations ($u(x_{j})$)
+c          Potential at source locations, $u(x_{j})$
 c    -    grad: double precision(3,nsource)
-c          Gradient at source locations ($\nabla u(x_{j})$)
+c          Gradient at source locations, $\nabla u(x_{j})$
 c
 c
 c--------------------------------
@@ -600,19 +600,19 @@ c          precision requested
 c    -    nsource: integer
 c          Number of sources
 c    -    source: double precision(3,nsource)
-c          Source locations ($x_{j}$)
+c          Source locations, $x_{j}$
 c    -    charge: double precision(nsource)
-c          Charge strengths ($c_{j}$)
+c          Charge strengths, $c_{j}$
 c    -    ntarg: integer
 c          Number of targets
 c    -    targ: double precision(3,ntarg)
-c          Target locations ($t_{i}$)
+c          Target locations, $t_{i}$
 c
 c
 c  Output arguments:
 c
 c    -    pottarg: double precision(ntarg)
-c          Potential at target locations ($u(t_{i})$)
+c          Potential at target locations, $u(t_{i})$
 c
 c
 c--------------------------------
@@ -676,21 +676,21 @@ c          precision requested
 c    -    nsource: integer
 c          Number of sources
 c    -    source: double precision(3,nsource)
-c          Source locations ($x_{j}$)
+c          Source locations, $x_{j}$
 c    -    charge: double precision(nsource)
-c          Charge strengths ($c_{j}$)
+c          Charge strengths, $c_{j}$
 c    -    ntarg: integer
 c          Number of targets
 c    -    targ: double precision(3,ntarg)
-c          Target locations ($t_{i}$)
+c          Target locations, $t_{i}$
 c
 c
 c  Output arguments:
 c
 c    -    pottarg: double precision(ntarg)
-c          Potential at target locations ($u(t_{i})$)
+c          Potential at target locations, $u(t_{i})$
 c    -    gradtarg: double precision(3,ntarg)
-c          Gradient at target locations ($\nabla u(t_{i})$)
+c          Gradient at target locations, $\nabla u(t_{i})$
 c
 c
 c--------------------------------
@@ -752,19 +752,19 @@ c          precision requested
 c    -    nsource: integer
 c          Number of sources
 c    -    source: double precision(3,nsource)
-c          Source locations ($x_{j}$)
+c          Source locations, $x_{j}$
 c    -    dipvec: double precision(3,nsource)
-c          Dipole strengths ($v_{j}$)
+c          Dipole strengths, $v_{j}$
 c    -    ntarg: integer
 c          Number of targets
 c    -    targ: double precision(3,ntarg)
-c          Target locations ($t_{i}$)
+c          Target locations, $t_{i}$
 c
 c
 c  Output arguments:
 c
 c    -    pottarg: double precision(ntarg)
-c          Potential at target locations ($u(t_{i})$)
+c          Potential at target locations, $u(t_{i})$
 c
 c
 c--------------------------------
@@ -829,21 +829,21 @@ c          precision requested
 c    -    nsource: integer
 c          Number of sources
 c    -    source: double precision(3,nsource)
-c          Source locations ($x_{j}$)
+c          Source locations, $x_{j}$
 c    -    dipvec: double precision(3,nsource)
-c          Dipole strengths ($v_{j}$)
+c          Dipole strengths, $v_{j}$
 c    -    ntarg: integer
 c          Number of targets
 c    -    targ: double precision(3,ntarg)
-c          Target locations ($t_{i}$)
+c          Target locations, $t_{i}$
 c
 c
 c  Output arguments:
 c
 c    -    pottarg: double precision(ntarg)
-c          Potential at target locations ($u(t_{i})$)
+c          Potential at target locations, $u(t_{i})$
 c    -    gradtarg: double precision(3,ntarg)
-c          Gradient at target locations ($\nabla u(t_{i})$)
+c          Gradient at target locations, $\nabla u(t_{i})$
 c
 c
 c--------------------------------
@@ -907,21 +907,21 @@ c          precision requested
 c    -    nsource: integer
 c          Number of sources
 c    -    source: double precision(3,nsource)
-c          Source locations ($x_{j}$)
+c          Source locations, $x_{j}$
 c    -    charge: double precision(nsource)
-c          Charge strengths ($c_{j}$)
+c          Charge strengths, $c_{j}$
 c    -    dipvec: double precision(3,nsource)
-c          Dipole strengths ($v_{j}$)
+c          Dipole strengths, $v_{j}$
 c    -    ntarg: integer
 c          Number of targets
 c    -    targ: double precision(3,ntarg)
-c          Target locations ($t_{i}$)
+c          Target locations, $t_{i}$
 c
 c
 c  Output arguments:
 c
 c    -    pottarg: double precision(ntarg)
-c          Potential at target locations ($u(t_{i})$)
+c          Potential at target locations, $u(t_{i})$
 c
 c
 c--------------------------------
@@ -987,23 +987,23 @@ c          precision requested
 c    -    nsource: integer
 c          Number of sources
 c    -    source: double precision(3,nsource)
-c          Source locations ($x_{j}$)
+c          Source locations, $x_{j}$
 c    -    charge: double precision(nsource)
-c          Charge strengths ($c_{j}$)
+c          Charge strengths, $c_{j}$
 c    -    dipvec: double precision(3,nsource)
-c          Dipole strengths ($v_{j}$)
+c          Dipole strengths, $v_{j}$
 c    -    ntarg: integer
 c          Number of targets
 c    -    targ: double precision(3,ntarg)
-c          Target locations ($t_{i}$)
+c          Target locations, $t_{i}$
 c
 c
 c  Output arguments:
 c
 c    -    pottarg: double precision(ntarg)
-c          Potential at target locations ($u(t_{i})$)
+c          Potential at target locations, $u(t_{i})$
 c    -    gradtarg: double precision(3,ntarg)
-c          Gradient at target locations ($\nabla u(t_{i})$)
+c          Gradient at target locations, $\nabla u(t_{i})$
 c
 c
 c--------------------------------
@@ -1065,21 +1065,21 @@ c          precision requested
 c    -    nsource: integer
 c          Number of sources
 c    -    source: double precision(3,nsource)
-c          Source locations ($x_{j}$)
+c          Source locations, $x_{j}$
 c    -    charge: double precision(nsource)
-c          Charge strengths ($c_{j}$)
+c          Charge strengths, $c_{j}$
 c    -    ntarg: integer
 c          Number of targets
 c    -    targ: double precision(3,ntarg)
-c          Target locations ($t_{i}$)
+c          Target locations, $t_{i}$
 c
 c
 c  Output arguments:
 c
 c    -    pot: double precision(nsource)
-c          Potential at source locations ($u(x_{j})$)
+c          Potential at source locations, $u(x_{j})$
 cc    -    pottarg: double precision(ntarg)
-c          Potential at target locations ($u(t_{i})$)
+c          Potential at target locations, $u(t_{i})$
 c
 c
 c--------------------------------
@@ -1143,25 +1143,25 @@ c          precision requested
 c    -    nsource: integer
 c          Number of sources
 c    -    source: double precision(3,nsource)
-c          Source locations ($x_{j}$)
+c          Source locations, $x_{j}$
 c    -    charge: double precision(nsource)
-c          Charge strengths ($c_{j}$)
+c          Charge strengths, $c_{j}$
 c    -    ntarg: integer
 c          Number of targets
 c    -    targ: double precision(3,ntarg)
-c          Target locations ($t_{i}$)
+c          Target locations, $t_{i}$
 c
 c
 c  Output arguments:
 c
 c    -    pot: double precision(nsource)
-c          Potential at source locations ($u(x_{j})$)
+c          Potential at source locations, $u(x_{j})$
 c    -    grad: double precision(3,nsource)
-c          Gradient at source locations ($\nabla u(x_{j})$)
+c          Gradient at source locations, $\nabla u(x_{j})$
 cc    -    pottarg: double precision(ntarg)
-c          Potential at target locations ($u(t_{i})$)
+c          Potential at target locations, $u(t_{i})$
 c    -    gradtarg: double precision(3,ntarg)
-c          Gradient at target locations ($\nabla u(t_{i})$)
+c          Gradient at target locations, $\nabla u(t_{i})$
 c
 c
 c--------------------------------
@@ -1225,21 +1225,21 @@ c          precision requested
 c    -    nsource: integer
 c          Number of sources
 c    -    source: double precision(3,nsource)
-c          Source locations ($x_{j}$)
+c          Source locations, $x_{j}$
 c    -    dipvec: double precision(3,nsource)
-c          Dipole strengths ($v_{j}$)
+c          Dipole strengths, $v_{j}$
 c    -    ntarg: integer
 c          Number of targets
 c    -    targ: double precision(3,ntarg)
-c          Target locations ($t_{i}$)
+c          Target locations, $t_{i}$
 c
 c
 c  Output arguments:
 c
 c    -    pot: double precision(nsource)
-c          Potential at source locations ($u(x_{j})$)
+c          Potential at source locations, $u(x_{j})$
 cc    -    pottarg: double precision(ntarg)
-c          Potential at target locations ($u(t_{i})$)
+c          Potential at target locations, $u(t_{i})$
 c
 c
 c--------------------------------
@@ -1305,25 +1305,25 @@ c          precision requested
 c    -    nsource: integer
 c          Number of sources
 c    -    source: double precision(3,nsource)
-c          Source locations ($x_{j}$)
+c          Source locations, $x_{j}$
 c    -    dipvec: double precision(3,nsource)
-c          Dipole strengths ($v_{j}$)
+c          Dipole strengths, $v_{j}$
 c    -    ntarg: integer
 c          Number of targets
 c    -    targ: double precision(3,ntarg)
-c          Target locations ($t_{i}$)
+c          Target locations, $t_{i}$
 c
 c
 c  Output arguments:
 c
 c    -    pot: double precision(nsource)
-c          Potential at source locations ($u(x_{j})$)
+c          Potential at source locations, $u(x_{j})$
 c    -    grad: double precision(3,nsource)
-c          Gradient at source locations ($\nabla u(x_{j})$)
+c          Gradient at source locations, $\nabla u(x_{j})$
 cc    -    pottarg: double precision(ntarg)
-c          Potential at target locations ($u(t_{i})$)
+c          Potential at target locations, $u(t_{i})$
 c    -    gradtarg: double precision(3,ntarg)
-c          Gradient at target locations ($\nabla u(t_{i})$)
+c          Gradient at target locations, $\nabla u(t_{i})$
 c
 c
 c--------------------------------
@@ -1388,23 +1388,23 @@ c          precision requested
 c    -    nsource: integer
 c          Number of sources
 c    -    source: double precision(3,nsource)
-c          Source locations ($x_{j}$)
+c          Source locations, $x_{j}$
 c    -    charge: double precision(nsource)
-c          Charge strengths ($c_{j}$)
+c          Charge strengths, $c_{j}$
 c    -    dipvec: double precision(3,nsource)
-c          Dipole strengths ($v_{j}$)
+c          Dipole strengths, $v_{j}$
 c    -    ntarg: integer
 c          Number of targets
 c    -    targ: double precision(3,ntarg)
-c          Target locations ($t_{i}$)
+c          Target locations, $t_{i}$
 c
 c
 c  Output arguments:
 c
 c    -    pot: double precision(nsource)
-c          Potential at source locations ($u(x_{j})$)
+c          Potential at source locations, $u(x_{j})$
 cc    -    pottarg: double precision(ntarg)
-c          Potential at target locations ($u(t_{i})$)
+c          Potential at target locations, $u(t_{i})$
 c
 c
 c--------------------------------
@@ -1470,27 +1470,27 @@ c          precision requested
 c    -    nsource: integer
 c          Number of sources
 c    -    source: double precision(3,nsource)
-c          Source locations ($x_{j}$)
+c          Source locations, $x_{j}$
 c    -    charge: double precision(nsource)
-c          Charge strengths ($c_{j}$)
+c          Charge strengths, $c_{j}$
 c    -    dipvec: double precision(3,nsource)
-c          Dipole strengths ($v_{j}$)
+c          Dipole strengths, $v_{j}$
 c    -    ntarg: integer
 c          Number of targets
 c    -    targ: double precision(3,ntarg)
-c          Target locations ($t_{i}$)
+c          Target locations, $t_{i}$
 c
 c
 c  Output arguments:
 c
 c    -    pot: double precision(nsource)
-c          Potential at source locations ($u(x_{j})$)
+c          Potential at source locations, $u(x_{j})$
 c    -    grad: double precision(3,nsource)
-c          Gradient at source locations ($\nabla u(x_{j})$)
+c          Gradient at source locations, $\nabla u(x_{j})$
 cc    -    pottarg: double precision(ntarg)
-c          Potential at target locations ($u(t_{i})$)
+c          Potential at target locations, $u(t_{i})$
 c    -    gradtarg: double precision(3,ntarg)
-c          Gradient at target locations ($\nabla u(t_{i})$)
+c          Gradient at target locations, $\nabla u(t_{i})$
 c
 c
 c--------------------------------

@@ -83,21 +83,21 @@ Input arguments:
           | iprec=3 => tolerance = 0.5d-9
           | iprec=4 => tolerance = 0.5d-12
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    ifcharge: integer
           | charge computation flag 
           | ifcharge =1 => include charge contribution, otherwise do not
   -    charge: double complex(nsource)
-          Charge strengths ($c_{j}$)
+          Charge strengths, $c_{j}$
   -    ifdipole: integer
           | dipole computation flag 
           | ifdipole =1 => include dipole contribution, otherwise do not
   -    dipstr: double complex(nsource)
-          Dipole strengths ($d_{j}$)
+          Dipole strengths, $d_{j}$
   -    dipvec: double precision(3,nsource)
-          Dipole orientation vectors ($v_{j}$)
+          Dipole orientation vectors, $v_{j}$
   -    ifpot: integer
           | potential flag 
           | ifpot =1 => compute potential, otherwise do not
@@ -110,9 +110,9 @@ Output arguments:
   -    ier: integer
           error code, currently unused
   -    pot: double complex(nsource)
-          Potential at source locations, if requested ($u(x_{j})$)
+          Potential at source locations, if requested, $u(x_{j})$
   -    fld: double complex(3,nsource)
-          Field at source locations, if requested (-$\nabla u(x_{j})$)
+          Field at source locations, if requested, -$\nabla u(x_{j})$
 
 .. container:: rttext
 
@@ -162,21 +162,21 @@ Input arguments:
           | iprec=3 => tolerance = 0.5d-9
           | iprec=4 => tolerance = 0.5d-12
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    ifcharge: integer
           | charge computation flag 
           | ifcharge =1 => include charge contribution, otherwise do not
   -    charge: double complex(nsource)
-          Charge strengths ($c_{j}$)
+          Charge strengths, $c_{j}$
   -    ifdipole: integer
           | dipole computation flag 
           | ifdipole =1 => include dipole contribution, otherwise do not
   -    dipstr: double complex(nsource)
-          Dipole strengths ($d_{j}$)
+          Dipole strengths, $d_{j}$
   -    dipvec: double precision(3,nsource)
-          Dipole orientation vectors ($v_{j}$)
+          Dipole orientation vectors, $v_{j}$
   -    ifpot: integer
           | potential flag 
           | ifpot =1 => compute potential, otherwise do not
@@ -186,7 +186,7 @@ Input arguments:
   -    ntarg: integer
           Number of targets 
   -    targ: double precision(3,ntarg)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    ifpottarg: integer
           | target potential flag 
           | ifpottarg =1 => compute potential, otherwise do not
@@ -199,13 +199,13 @@ Output arguments:
   -    ier: integer
           error code, currently unused
   -    pot: double complex(nsource)
-          Potential at source locations, if requested ($u(x_{j})$)
+          Potential at source locations, if requested, $u(x_{j})$
   -    fld: double complex(3,nsource)
-          Field at source locations, if requested (-$\nabla u(x_{j})$)
+          Field at source locations, if requested, -$\nabla u(x_{j})$
   -    pottarg: double complex(ntarg)
-          Potential at target locations, if requested ($u(t_{j})$)
+          Potential at target locations, if requested, $u(t_{j})$
   -    fld: double complex(3,ntarg)
-          Field at source locations, if requested (-$\nabla u(t_{j})$)
+          Field at source locations, if requested, -$\nabla u(t_{j})$
 
 ---------------------------------------------------------
 
@@ -373,23 +373,23 @@ Input arguments:
           | iprec=3 => tolerance = 0.5d-9
           | iprec=4 => tolerance = 0.5d-12
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    ifcharge: integer
           | charge computation flag 
           | ifcharge =1 => include charge contribution, otherwise do not
   -    charge: double complex(nsource)
-          Charge strengths ($c_{j}$)
+          Charge strengths, $c_{j}$
   -    ifdipole: integer
           | dipole computation flag 
           | ifdipole =1 => include dipole contribution, otherwise do not
   -    dipstr: double complex(nsource)
-          Dipole strengths ($d_{j}$)
+          Dipole strengths, $d_{j}$
   -    dipvec: double precision(3,nsource)
-          Dipole orientation vectors ($v_{j}$)
+          Dipole orientation vectors, $v_{j}$
   -    ifpot: integer
           | potential flag 
           | ifpot =1 => compute potential, otherwise do not
@@ -402,9 +402,9 @@ Output arguments:
   -    ier: integer
           error code, currently unused
   -    pot: double complex(nsource)
-          Potential at source locations, if requested ($u(x_{j})$)
+          Potential at source locations, if requested, $u(x_{j})$
   -    fld: double complex(3,nsource)
-          Field at source locations, if requested (-$\nabla u(x_{j})$)
+          Field at source locations, if requested, -$\nabla u(x_{j})$
 
 .. container:: rttext
 
@@ -454,23 +454,23 @@ Input arguments:
           | iprec=3 => tolerance = 0.5d-9
           | iprec=4 => tolerance = 0.5d-12
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
-          Number of sources (nsource)
+          Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    ifcharge: integer
           | charge computation flag 
           | ifcharge =1 => include charge contribution, otherwise do not
   -    charge: double complex(nsource)
-          Charge strengths ($c_{j}$)
+          Charge strengths, $c_{j}$
   -    ifdipole: integer
           | dipole computation flag 
           | ifdipole =1 => include dipole contribution, otherwise do not
   -    dipstr: double complex(nsource)
-          Dipole strengths ($d_{j}$)
+          Dipole strengths, $d_{j}$
   -    dipvec: double precision(3,nsource)
-          Dipole orientation vectors ($v_{j}$)
+          Dipole orientation vectors, $v_{j}$
   -    ifpot: integer
           | potential flag 
           | ifpot =1 => compute potential, otherwise do not
@@ -480,7 +480,7 @@ Input arguments:
   -    ntarg: integer
           Number of targets 
   -    targ: double precision(3,ntarg)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    ifpottarg: integer
           | target potential flag 
           | ifpottarg =1 => compute potential, otherwise do not
@@ -493,13 +493,13 @@ Output arguments:
   -    ier: integer
           error code, currently unused
   -    pot: double complex(nsource)
-          Potential at source locations, if requested ($u(x_{j})$)
+          Potential at source locations, if requested, $u(x_{j})$
   -    fld: double complex(3,nsource)
-          Field at source locations, if requested (-$\nabla u(x_{j})$)
+          Field at source locations, if requested, -$\nabla u(x_{j})$
   -    pottarg: double complex(ntarg)
-          Potential at target locations, if requested ($u(t_{j})$)
+          Potential at target locations, if requested, $u(t_{j})$
   -    fld: double complex(3,ntarg)
-          Field at source locations, if requested (-$\nabla u(t_{j})$)
+          Field at source locations, if requested, -$\nabla u(t_{j})$
 
 ---------------------------------------------------------
 
