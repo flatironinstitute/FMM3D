@@ -41,7 +41,7 @@ Args:
 -  eps: double   
       precision requested
 -  zk: complex
-      Helmholtz parameter - k
+      Helmholtz parameter, k
 -  srcinfo: structure
       structure containing sourceinfo
    

@@ -41,7 +41,7 @@ Args:
 -  eps: double   
       precision requested
 -  zk: complex
-      Helmholtz parameter - k
+      Helmholtz parameter, k
 -  sources: double(3,n)    
      source locations, $x_{j}$
 -  charges: complex(n,) or complex(nd,n) 
