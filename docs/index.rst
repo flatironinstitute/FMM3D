@@ -11,12 +11,11 @@ Fast multipole methods in three dimensions (FMM3D)
     :align: center
 	    
 `FMM3D <https://github.com/flatironinstitute/FMM3D>`_ 
-is a set of libraries to compute $N-$ body interactions 
+is a set of libraries to compute N-body interactions 
 for Laplace, and Helmholtz 
 to a specified precision, in three dimensions,
 on a multi-core shared-memory machine.
-The library has very simple interfaces, 
-is written in Fortran,
+The library is written in Fortran,
 and has wrappers to C, MATLAB, and python.
 As an example, given $M$ arbitrary points $y_j \in \mathbb{R}^{3}$ 
 and complex numbers $c_j$, with $j=1,\dots,M$, and 
@@ -36,7 +35,7 @@ science and engineering, including molecular dynamics, astrophysics,
 rheology, and numerical solution of partial differential equations.
 The naive CPU effort to evaluate :eq:`lapcp` is $O(NM)$.
 The library approximates :eq:`lapcp` to a requested relative precision
-$\epsilon$ with linear effort $O((M+N) \log (1/\epsilon))$.
+$\epsilon$ with linear effort $O((M+N) \log^{3} (1/\epsilon))$.
 
 The FMM relies on compressing the interactions between well-separated 
 clusters of source and target points at a hierarchy of scales using

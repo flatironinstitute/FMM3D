@@ -17,7 +17,7 @@ Helmholtz wrappers
 
 This subroutine computes the N-body Helmholtz
 interactions and its gradients in three dimensions where 
-the interaction kernel is given by e^{ikr}/r
+the interaction kernel is given by $e^{ikr}/r$
  
 .. math::
 
@@ -26,7 +26,7 @@ the interaction kernel is given by e^{ikr}/r
 where $c_{j}$ are the charge densities
 $v_{j}$ are the dipole orientation vectors, and
 $x_{j}$ are the source locations.
-When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped
+When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped
 from the sum.
 
 .. code:: python
@@ -43,11 +43,11 @@ Args:
 -  zk: complex
       Helmholtz parameter - k
 -  sources: double(3,n)    
-     source locations ($x_{j}$)
+     source locations, $x_{j}$
 -  charges: complex(n,) or complex(nd,n) 
-     charge densities ($c_{j}$) 
+     charge densities, $c_{j}$
 -  dipvec: complex(3,n) or complex(nd,3,n)
-     dipole orientation vectors ($v_{j}$) 
+     dipole orientation vectors, $v_{j}$ 
 -  nd: integer
      number of charge/dipole vectors 
 -  pg: integer
@@ -55,7 +55,7 @@ Args:
       | potential at sources evaluated if pg = 1
       | potenial and gradient at sources evaluated if pg=2
 -  targets: double(3,nt)
-      target locations ($t_{i}$) (optional)
+      target locations, $t_{i}$ (optional)
 -  pgt: integer
       | target eval flag (optional)
       | potential at targets evaluated if pgt = 1
@@ -65,10 +65,10 @@ Returns:
 The subroutine returns an object out of type Output with the following
 variables
 
--  out.pot: potential at source locations, if requested ($u(x_{j})$)
--  out.grad: gradient at source locations, if requested ($\nabla u(x_{j})$)
--  out.pottarg: potential at target locations, if requested ($u(t_{i})$)
--  out.gradtarg: gradient at target locations, if requested ($\nabla u(t_{i})$)
+-  out.pot: potential at source locations, if requested, $u(x_{j})$
+-  out.grad: gradient at source locations, if requested, $\nabla u(x_{j})$
+-  out.pottarg: potential at target locations, if requested, $u(t_{i})$
+-  out.gradtarg: gradient at target locations, if requested, $\nabla u(t_{i})$
 
 ------------------------------------------------------------------
 
@@ -97,7 +97,7 @@ Laplace wrappers
 
 This subroutine computes the N-body Laplace
 interactions and its gradients in three dimensions where 
-the interaction kernel is given by 1/r
+the interaction kernel is given by $1/r$
  
 .. math::
 
@@ -106,7 +106,7 @@ the interaction kernel is given by 1/r
 where $c_{j}$ are the charge densities
 $v_{j}$ are the dipole orientation vectors, and
 $x_{j}$ are the source locations.
-When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped
+When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped
 from the sum.
 
 .. code:: python
@@ -121,11 +121,11 @@ Args:
 -  eps: double   
       precision requested
 -  sources: double(3,n)    
-     source locations ($x_{j}$)
+     source locations, $x_{j}$
 -  charges: double(n,) or double(nd,n) 
-     charge densities ($c_{j}$) 
+     charge densities, $c_{j}$ 
 -  dipvec: double(3,n) or double(nd,3,n)
-     dipole orientation vectors ($v_{j}$) 
+     dipole orientation vectors, $v_{j}$ 
 -  nd: integer
      number of charge/dipole vectors 
 -  pg: integer
@@ -143,10 +143,10 @@ Returns:
 The subroutine returns an object out of type Output with the following
 variables
 
--  out.pot: potential at source locations, if requested ($u(x_{j})$)
--  out.grad: gradient at source locations, if requested ($\nabla u(x_{j})$)
--  out.pottarg: potential at target locations, if requested ($u(t_{i})$)
--  out.gradtarg: gradient at target locations, if requested ($\nabla u(t_{i})$)
+-  out.pot: potential at source locations, if requested, $u(x_{j})$
+-  out.grad: gradient at source locations, if requested, $\nabla u(x_{j})$
+-  out.pottarg: potential at target locations, if requested, $u(t_{i})$
+-  out.gradtarg: gradient at target locations, if requested, $\nabla u(t_{i})$
 
 ------------------------------------------------------------------
 

@@ -619,7 +619,7 @@ c     PW variables
 
       pi = 4.0d0*atan(1.0d0)
 
-      thresh = 1.0d-16*boxsize(0)
+      thresh = 2.0d0**(-52)*boxsize(0)
       
 
 c     Initialize routines for plane wave mp loc translation

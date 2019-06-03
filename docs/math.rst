@@ -1,81 +1,94 @@
 Definitions 
 ===========
-Let $\mathbf{I}_{A}$ denote the indicator function of a set $A$,
-and let $\varepsilon_{\textrm{mach}}$ denote machine precision ($2^{-52}$).
-Let $y_{i} \in \mathbb{R}^{3}$, $i=1,2,\ldots N$, denote a collection
-of source locations and let $x_{i} \in \mathbb{R}^{3}$ denote a collection
-of target locations. Suppose that the source and target locations
-are contained in a cube of side length $L$.
+Let $x_{j} \in \mathbb{R}^{3}$, $i=1,2,\ldots N$, denote a collection
+of source locations and let $t_{i} \in \mathbb{R}^{3}$ denote a collection
+of target locations. 
 
 
 Laplace FMM
 ***********
-Let $c_{i} \in \mathbb{R}$ 
-$i=1,2,\ldots N$, 
-denote a collection of charge strengths, $v_{i} \in \mathbb{R}^{3}$,
-$i=1,2,\ldots N$, 
+Let $c_{j} \in \mathbb{R}$, 
+$j=1,2,\ldots N$, 
+denote a collection of charge strengths, $v_{j} \in \mathbb{R}^{3}$,
+$j=1,2,\ldots N$, 
 denote a collection of dipole strengths.
-Let $G_{0}(x): \mathbb{R}^{3} \to \mathbb{R}$ denote 
-the scaled Green's function for Laplace's equation given by
-
-.. math::
-
-   G_{0}(x) = \frac{1}{\|x\|} \mathbf{I}_{\|x\|>\varepsilon}\, ,
-
-where $\varepsilon = \varepsilon_{\text{mach}} L$.
 
 The Laplace FMM computes 
-the potential $u(x)$ and the it's gradient $\nabla u(x)$,
-at the source and target locations where $u(x)$ is defined 
-by the formula,
+the potential $u(x)$ and the its gradient $\nabla u(x)$
+given by
 
 .. math::
     :label: lap_nbody
 
-    u(x) = \sum_{j=1}^{N} c_{j} G_{0}(x-y_{j}) - v_{j} \cdot \nabla G_{0}(x-y_{j}) \, .
+    u(x) = \sum_{j=1}^{N} \frac{c_{j}}{\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)  \, , 
 
+at the source and target locations. When $x=x_{j}$, the term
+corresponding to $x_{j}$ is dropped from the sum.
 
 Helmholtz FMM
 *************
-Let $c_{i} \in \mathbb{C}$ 
-$i=1,2,\ldots N$, 
-denote a collection of charge strengths, $v_{i} \in \mathbb{C}^{3}$,
-$i=1,2,\ldots N$, 
+Let $c_{j} \in \mathbb{C}$, 
+$j=1,2,\ldots N$, 
+denote a collection of charge strengths, $v_{j} \in \mathbb{C}^{3}$,
+$j=1,2,\ldots N$, 
 denote a collection of dipole strengths.
 Let $k\in\mathbb{C}$ denote the wave number or the Helmholtz 
 parameter. 
-Let $G_{k}(x): \mathbb{R}^{3} \to \mathbb{C}$ denote 
-the scaled Green's function for Helmholtz's equation given by
-
-.. math::
-
-    G_{k}(x) = \frac{e^{ik \|x\|}}{\|x\|} \mathbf{I}_{\|x\|>\varepsilon}\, ,
-
-where $\varepsilon = \varepsilon_{\textrm{mach}} \lvert \omega \rvert  L$. 
 
 The Helmholtz FMM computes 
-the potential $u(x)$ and the it's gradient $\nabla u(x)$,
-at the source and target locations where $u(x)$ is defined 
-by the formula,
+the potential $u(x)$ and the its gradient $\nabla u(x)$
+given by
 
 .. math::
    :label: helm_nbody
 
-    u(x) = \sum_{j=1}^{N} c_{j} G_{k}(x-y_{j}) - v_{j} \cdot \nabla G_{k}(x-y_{j}) \, .
+    u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)  \, , 
+
+at the source and target locations. When $x=x_{j}$, the term
+corresponding to $x_{j}$ is dropped from the sum.
 
 Vectorized versions   
 *******************
-The vectorized versions of the Laplace and Helmholtz FMM, compute the $n_{d}$ collection
-of potentials corresponding to $n_{d}$ charge or dipole densities, located
-at the same set of source and target locations. 
-For example, for the Laplace FMM, let $c_{\ell,j}\in\mathbb{R}$, $j=1,2,\ldots N$, $\ell=1,2,\ldots n_{d}$
-denote a collection of $n_{d}$ charge densities, and
-let $v_{\ell,j} \in \mathbb{R}^{3}$ denote a collection of $n_{d}$ dipole densities, 
-then the vectorized Laplace FMM computes the potentials $u_{\ell}(x)$ 
-and it's gradients $\nabla u_{\ell}(x)$ defined by the formula
+The vectorized versions of the Laplace and Helmholtz FMM, 
+computes repeated FMMs for new charge and dipole strengths
+located at the same source locations, where the potential and its
+gradient are evaluated at the same set of target locations.
+
+For example, for the vectorized Laplace FMM, let $c_{\ell,j}\in\mathbb{R}$, 
+$j=1,2,\ldots N$, $\ell=1,2,\ldots n_{d}$
+denote a collection of $n_{d}$ charge strengths, and
+let $v_{\ell,j} \in \mathbb{R}^{3}$ denote a collection of $n_{d}$ dipole strengths. 
+Then the vectorized Laplace FMM computes the potentials $u_{\ell}(x)$ 
+and its gradients $\nabla u_{\ell}(x)$ defined by the formula
 
 .. math::
     :label: lap_nbody_vec
 
-    u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} G_{0}(x-y_{j}) - v_{\ell,j} \cdot \nabla G_{0}(x-y_{j}) \, , \, \quad \ell=1,2,\ldots n_{d}.
+    u_{\ell}(x) = \sum_{j=1}^{N} \frac{c_{\ell,j}}{\|x-x_{j}\|} - v_{\ell,j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)  \, , \quad \ell=1,2,\ldots n_{d}\,
+
+at the source and target locations. 
+
+Similarly, for the vectorized Helmholtz FMM, let $c_{\ell,j}\in\mathbb{C}$, 
+$j=1,2,\ldots N$, $\ell=1,2,\ldots n_{d}$
+denote a collection of $n_{d}$ charge strengths, and
+let $v_{\ell,j} \in \mathbb{C}^{3}$ denote a collection of $n_{d}$ dipole strengths. 
+Then the vectorized Helmholtz FMM computes the potentials $u_{\ell}(x)$ 
+and its gradients $\nabla u_{\ell}(x)$ defined by the formula
+
+.. math::
+    :label: helm_nbody_vec
+
+    u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} - v_{\ell,j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)  \, ,\quad \ell =1,2,\ldots n_{d}  
+
+at the source and target locations. 
+
+.. note::
+
+   In double precision arithmetic, two numbers which are
+   within machine precision of each other cannot be
+   distinguished. In order to account for this, suppose that the sources
+   and targets are contained in a cube with side length $L$, then
+   for all $x$ such that $\| x-x_{j} \| \leq L \varepsilon_{\textrm{mach}}$,
+   the term corresponding to $x_{j}$ is dropped from the sum.
+   Here $\varepsilon_{\textrm{mach}} = 2^{-52}$ is machine precision.
 

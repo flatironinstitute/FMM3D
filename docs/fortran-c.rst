@@ -32,7 +32,13 @@ targets only, sources+targets), interaction kernel (charges only,
 dipoles only, charges + dipoles), output request (potential,
 potential+gradient).
 
-The subroutine names take the following form::
+For example, the subroutine to evaluate the potential and gradient, at a collection
+of targets $t_{i}$ due to a collection of charges is::
+
+   lfmm3d_t_c_g
+
+
+In general, the subroutine names take the following form::
 
    lfmm3d_<eval-pts>_<int-ker>_<out>
 
@@ -60,11 +66,14 @@ of any of the routines use::
 
    <subroutine name>_vec
 
+.. note::
 
-For example, the subroutine to evaluate the potential and gradient, at a collection
-of targets $t_{i}$ due to a collection of charges is::
+   For the vectorized subroutines, the charge strengths, dipole
+   strengths, potentials, and gradients are interleaved as opposed to
+   provided in a sequential manner. For example for three sets of charge
+   strengths, they should be stored as $c_{1,1}, c_{2,1}, c_{3,1},
+   c_{1,2}, c_{2,2},c_{3,2} \ldots c_{1,N}, c_{2,N}, c_{3,N}$. 
 
-   lfmm3d_t_c_g
 
 Example drivers:
 
@@ -169,7 +178,12 @@ targets only, sources+targets), interaction kernel (charges only,
 dipoles only, charges + dipoles), output request (potential,
 potential+gradient).
 
-The subroutine names take the following form::
+For example, the subroutine to evaluate the potential and gradient, at a collection
+of targets $t_{i}$ due to a collection of charges is::
+
+   hfmm3d_t_c_g
+
+In general, the subroutine names take the following form::
 
    hfmm3d_<eval-pts>_<int-ker>_<out>
 
@@ -197,11 +211,14 @@ of any of the routines use::
 
    <subroutine name>_vec
 
+.. note::
 
-For example, the subroutine to evaluate the potential and gradient, at a collection
-of targets $t_{i}$ due to a collection of charges is::
+   For the vectorized subroutines, the charge strengths, dipole
+   strengths, potentials, and gradients are interleaved as opposed to
+   provided in a sequential manner. For example for three sets of charge
+   strengths, they should be stored as $c_{1,1}, c_{2,1}, c_{3,1},
+   c_{1,2}, c_{2,2},c_{3,2} \ldots c_{1,N}, c_{2,N}, c_{3,N}$. 
 
-   hfmm3d_t_c_g
 
 Example drivers:
 
@@ -287,19 +304,30 @@ C interfaces
 
 All of the above fortran routines can be called from c by including the
 header ``utils.h`` and ``lfmm3d_c.h`` for Laplace FMMs or ``hfmm3d_c.h`` for
-Helmholtz FMMs. To call a fortran subroutine from ``c`` use::
-
-   "<fortran subroutine name>"_("<calling sequence>") 
-
+Helmholtz FMMs. 
 
 For example, the subroutine to evaluate the potential and gradient, at a collection
 of targets $t_{i}$ due to a collection of Helmholtz charges is::
 
    hfmm3d_t_c_g_
 
+
+In general, to call a fortran subroutine from ``c`` use::
+
+   "<fortran subroutine name>"_("<calling sequence>") 
+
+
 .. note:: 
    All the variables in the calling sequence must be passed
    as pointers from ``c``. 
+
+.. note::
+
+   For the vectorized subroutines, the charge strengths, dipole
+   strengths, potentials, and gradients are interleaved as opposed to
+   provided in a sequential manner. For example for three sets of charge
+   strengths, they should be stored as $c_{1,1}, c_{2,1}, c_{3,1},
+   c_{1,2}, c_{2,2},c_{3,2} \ldots c_{1,N}, c_{2,N}, c_{3,N}$. 
 
 Example drivers:
 

@@ -116,9 +116,9 @@ c
 c     pot = pot + sum sum  mpole(n,m) h_n(k r) Y_nm(theta,phi)
 c                  n   m
 c                 
-c      If |zk*r| < thresh 
+c      If r < thresh 
 c          then the subroutine does not update the potential
-c          (recommended value = |zk*boxsize(0)|*machine precision 
+c          (recommended value = boxsize(0)*machine precision 
 c           where boxsize(0) is the size of the computation domain) 
 c
 c
@@ -137,7 +137,7 @@ c     wlege  :    precomputed array of scaling coeffs for Pnm
 c     nlege  :    dimension parameter for wlege
 c     thresh :    threshold for computing outgoing expansion,
 c                 potential at target won't be updated if
-c                 |zk|*|t - c| <= thresh, where t is the target
+c                 |t - c| <= thresh, where t is the target
 c                 location and, and c is the expansion center
 c                 location
 c                 
@@ -190,7 +190,7 @@ c
         cphi = dcos(phi)
         sphi = dsin(phi)
         ephi1 = dcmplx(cphi,sphi)
-        if (abs(zk*r).lt.thresh)  goto 1000
+        if (r.lt.thresh)  goto 1000
 c
 c     compute exp(eye*m*phi) array
 c
@@ -257,9 +257,9 @@ c                  n   m
 c                 
 c     grad = grad + Gradient( sum sum  mpole(n,m) h_n(k r) Y_nm(theta,phi))
 c                              n   m
-c      If |zk*r| < thresh 
+c      If r < thresh 
 c          then the subroutine does not update the potential and gradient
-c          (recommended value = |zk*boxsize(0)|*machine precision
+c          (recommended value = boxsize(0)*machine precision
 c            where boxsize(0) is the size of the computational domain) 
 c
 c-----------------------------------------------------------------------
@@ -277,7 +277,7 @@ c     wlege  :    precomputed array of scaling coeffs for Pnm
 c     nlege  :    dimension parameter for wlege
 c     thresh :    threshold for computing outgoing expansion,
 c                 potential at target won't be updated if
-c                 |zk|*|t - c| <= thresh, where t is the target
+c                 |t - c| <= thresh, where t is the target
 c                 location and, and c is the expansion center
 c                 location
 c                 
@@ -334,7 +334,7 @@ c
         cphi = dcos(phi)
         sphi = dsin(phi)
         ephi1 = dcmplx(cphi,sphi)
-        if (abs(zk*r).lt.thresh) goto 1000
+        if (r.lt.thresh) goto 1000
 c        
 c     compute exp(eye*m*phi) array
 c
@@ -1018,9 +1018,9 @@ c
 c     pot = pot + sum sum  locexp(n,m) j_n(k r) Y_nm(theta,phi)
 c                  n   m
 c                 
-c      If |zk*r| < thresh 
+c      If r < thresh 
 c          then the subroutine does not update the potential
-c          (recommended value = |zk*boxsize(0)|*machine precision
+c          (recommended value = boxsize(0)*machine precision
 c            where boxsize(0) is the size of the computational domain) 
 c
 c
@@ -1864,9 +1864,9 @@ c     pot(x) = pot(x) + sum  q_{j} e^{i k |x-x_{j}|}/|x-x_{j}|
 c                        j
 c                 
 c      where q_{j} is the charge strength
-c      If |zk*r| < thresh 
+c      If |r| < thresh 
 c          then the subroutine does not update the potential
-c          (recommended value = |zk*boxsize(0)|*machine precision
+c          (recommended value = boxsize(0)*machine precision
 c           for boxsize(0) is the size of the computational domain) 
 c
 c
@@ -1882,7 +1882,7 @@ c     ztarg  :    target locations
 c     ntarg  :    number of targets
 c     thresh :    threshold for updating potential,
 c                 potential at target won't be updated if
-c                 |zk|*|t - s| <= thresh, where t is the target
+c                 |t - s| <= thresh, where t is the target
 c                 location and, and s is the source location 
 c                 
 c-----------------------------------------------------------------------
@@ -1922,7 +1922,7 @@ c
 
           dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
           d = sqrt(dd)
-          if(abs(zk*d).lt.thresh) goto 1000
+          if(d.lt.thresh) goto 1000
 
           ztmp = exp(zkeye*d)/d
           do idim=1,nd
@@ -1955,9 +1955,9 @@ c
 c     grad(x) = grad(x) + Gradient(sum  q_{j} e^{i k |x-x_{j}|}/|x-x_{j}|) 
 c                                   j
 c      where q_{j} is the charge strength
-c      If |zk*r| < thresh 
+c      If |r| < thresh 
 c          then the subroutine does not update the potential
-c          (recommended value = |zk*boxsize(0)|*machine precision
+c          (recommended value = boxsize(0)*machine precision
 c           for boxsize(0) is the size of the computational domain) 
 c
 c
@@ -1973,7 +1973,7 @@ c     ztarg  :    target locations
 c     ntarg  :    number of targets
 c     thresh :    threshold for updating potential,
 c                 potential at target won't be updated if
-c                 |zk|*|t - s| <= thresh, where t is the target
+c                 |t - s| <= thresh, where t is the target
 c                 location and, and s is the source location 
 c                 
 c-----------------------------------------------------------------------
@@ -2015,7 +2015,7 @@ c
 
           dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
           d = sqrt(dd)
-          if(abs(zk*d).lt.thresh) goto 1000
+          if(d.lt.thresh) goto 1000
           cd = exp(zkeye*d)/d
           cd1 = (zkeye*d-1)*cd/dd
           ztmp1 = cd1*zdiff(1)
@@ -2058,9 +2058,9 @@ c
 c      where v_{j} is the dipole orientation vector, 
 c      \nabla denotes the gradient is with respect to the x_{j} 
 c      variable 
-c      If |zk*r| < thresh 
+c      If |r| < thresh 
 c          then the subroutine does not update the potential
-c          (recommended value = |zk*boxsize(0)|*machine precision
+c          (recommended value = boxsize(0)*machine precision
 c           for boxsize(0) is the size of the computational domain) 
 c
 c
@@ -2076,7 +2076,7 @@ c     ztarg  :    target locations
 c     ntarg  :    number of targets
 c     thresh :    threshold for updating potential,
 c                 potential at target won't be updated if
-c                 |zk|*|t - s| <= thresh, where t is the target
+c                 |t - s| <= thresh, where t is the target
 c                 location and, and s is the source location 
 c                 
 c-----------------------------------------------------------------------
@@ -2117,7 +2117,7 @@ c
 
           dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
           d = sqrt(dd)
-          if(abs(zk*d).lt.thresh) goto 1000
+          if(d.lt.thresh) goto 1000
 
           dinv = 1/d
           cd = exp(zkeye*d)*dinv
@@ -2166,9 +2166,9 @@ c      where v_{j} is the dipole orientation vector,
 c      \nabla denotes the gradient is with respect to the x_{j} 
 c      variable, and Gradient denotes the gradient with respect to
 c      the x variable
-c      If |zk*r| < thresh 
+c      If r < thresh 
 c          then the subroutine does not update the potential
-c          (recommended value = |zk*boxsize(0)|*machine precision
+c          (recommended value = boxsize(0)*machine precision
 c           for boxsize(0) is the size of the computational domain) 
 c
 c
@@ -2184,7 +2184,7 @@ c     ztarg  :    target locations
 c     ntarg  :    number of targets
 c     thresh :    threshold for updating potential,
 c                 potential at target won't be updated if
-c                 |zk|*|t - s| <= thresh, where t is the target
+c                 |t - s| <= thresh, where t is the target
 c                 location and, and s is the source location 
 c                 
 c-----------------------------------------------------------------------
@@ -2226,7 +2226,7 @@ c
 
           dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
           d = sqrt(dd)
-          if(abs(zk*d).lt.thresh) goto 1000
+          if(d.lt.thresh) goto 1000
 
           dinv = 1/d
           dinv2 = dinv**2
@@ -2278,9 +2278,9 @@ c      where q_{j} is the charge strength,
 c      and v_{j} is the dipole orientation vector, 
 c      \nabla denotes the gradient is with respect to the x_{j} 
 c      variable 
-c      If |zk*r| < thresh 
+c      If r < thresh 
 c          then the subroutine does not update the potential
-c          (recommended value = |zk*boxsize(0)|*machine precision
+c          (recommended value = boxsize(0)*machine precision
 c           for boxsize(0) is the size of the computational domain) 
 c
 c
@@ -2297,7 +2297,7 @@ c     ztarg  :    target locations
 c     ntarg  :    number of targets
 c     thresh :    threshold for updating potential,
 c                 potential at target won't be updated if
-c                 |zk|*|t - s| <= thresh, where t is the target
+c                 |t - s| <= thresh, where t is the target
 c                 location and, and s is the source location 
 c                 
 c-----------------------------------------------------------------------
@@ -2338,7 +2338,7 @@ c
 
           dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
           d = sqrt(dd)
-          if(abs(zk*d).lt.thresh) goto 1000
+          if(d.lt.thresh) goto 1000
 
           dinv = 1/d
           cd = exp(zkeye*d)*dinv
@@ -2390,9 +2390,9 @@ c      and v_{j} is the dipole orientation vector,
 c      \nabla denotes the gradient is with respect to the x_{j} 
 c      variable, and Gradient denotes the gradient with respect to
 c      the x variable
-c      If |zk*r| < thresh 
+c      If r < thresh 
 c          then the subroutine does not update the potential
-c          (recommended value = |zk*boxsize(0)|*machine precision
+c          (recommended value = boxsize(0)*machine precision
 c           for boxsize(0) is the size of the computational domain) 
 c
 c
@@ -2409,7 +2409,7 @@ c     ztarg  :    target locations
 c     ntarg  :    number of targets
 c     thresh :    threshold for updating potential,
 c                 potential at target won't be updated if
-c                 |zk|*|t - s| <= thresh, where t is the target
+c                 |t - s| <= thresh, where t is the target
 c                 location and, and s is the source location 
 c                 
 c-----------------------------------------------------------------------
@@ -2450,7 +2450,7 @@ c
 
           dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
           d = sqrt(dd)
-          if(abs(zk*d).lt.thresh) goto 1000
+          if(d.lt.thresh) goto 1000
 
           dinv = 1/d
           dinv2 = dinv**2

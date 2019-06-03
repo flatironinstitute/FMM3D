@@ -17,7 +17,7 @@ Helmholtz wrappers
 
 This subroutine computes the N-body Helmholtz
 interactions and its gradients in three dimensions where 
-the interaction kernel is given by e^{ikr}/r
+the interaction kernel is given by $e^{ikr}/r$
  
 .. math::
 
@@ -26,7 +26,7 @@ the interaction kernel is given by e^{ikr}/r
 where $c_{j}$ are the charge densities
 $v_{j}$ are the dipole orientation vectors, and
 $x_{j}$ are the source locations.
-When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped
+When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped
 from the sum.
 
 .. code:: matlab
@@ -46,15 +46,15 @@ Args:
       structure containing sourceinfo
    
    *  srcinfo.sources: double(3,n)    
-         source locations ($x_{j}$)
+         source locations, $x_{j}$
    *  srcinfo.nd: integer
          number of charge/dipole vectors (optional, 
          default - nd = 1)
    *  srcinfo.charges: complex(nd,n) 
-         charge densities ($c_{j}$) (optional, 
+         charge densities, $c_{j}$ (optional, 
          default - term corresponding to charges dropped)
    *  srcinfo.dipoles: complex(nd,3,n) 
-         dipole orientation vectors ($v_{j}$) (optional
+         dipole orientation vectors, $v_{j}$ (optional
          default - term corresponding to dipoles dropped) 
 
 -  pg: integer
@@ -62,7 +62,7 @@ Args:
       | potential at sources evaluated if pg = 1
       | potenial and gradient at sources evaluated if pg=2
 -  targ: double(3,nt)
-      target locations ($t_{i}$) (optional)
+      target locations, $t_{i}$ (optional)
 -  pgt: integer
       | target eval flag (optional)
       | potential at targets evaluated if pgt = 1
@@ -70,10 +70,10 @@ Args:
 
 Returns:
 
--  U.pot: potential at source locations, if requested ($u(x_{j})$)
--  U.grad: gradient at source locations, if requested ($\nabla u(x_{j})$)
--  U.pottarg: potential at target locations, if requested ($u(t_{i})$)
--  U.gradtarg: gradient at target locations, if requested ($\nabla u(t_{i})$)
+-  U.pot: potential at source locations, if requested, $u(x_{j})$
+-  U.grad: gradient at source locations, if requested, $\nabla u(x_{j})$
+-  U.pottarg: potential at target locations, if requested, $u(t_{i})$
+-  U.gradtarg: gradient at target locations, if requested, $\nabla u(t_{i})$
 
 ------------------------------------------------------------------
 
@@ -102,7 +102,7 @@ Laplace wrappers
 
 This subroutine computes the N-body Laplace
 interactions and its gradients in three dimensions where 
-the interaction kernel is given by 1/r
+the interaction kernel is given by $1/r$
  
 .. math::
 
@@ -111,7 +111,7 @@ the interaction kernel is given by 1/r
 where $c_{j}$ are the charge densities
 $v_{j}$ are the dipole orientation vectors, and
 $x_{j}$ are the source locations.
-When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped
+When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped
 from the sum.
 
 .. code:: matlab
@@ -129,15 +129,15 @@ Args:
       structure containing sourceinfo
    
    *  srcinfo.sources: double(3,n)    
-         source locations ($x_{j}$)
+         source locations, $x_{j}$
    *  srcinfo.nd: integer
          number of charge/dipole vectors (optional, 
          default - nd = 1)
    *  srcinfo.charges: double(nd,n) 
-         charge densities ($c_{j}$) (optional, 
+         charge densities, $c_{j}$ (optional, 
          default - term corresponding to charges dropped)
    *  srcinfo.dipoles: double(nd,3,n) 
-         dipole orientation vectors ($v_{j}$) (optional
+         dipole orientation vectors, $v_{j}$ (optional
          default - term corresponding to dipoles dropped) 
 
 -  pg: integer
@@ -145,7 +145,7 @@ Args:
       | potential at sources evaluated if pg = 1
       | potenial and gradient at sources evaluated if pg=2
 -  targ: double(3,nt)
-      target locations ($t_{i}$) (optional)
+      target locations, $t_{i}$ (optional)
 -  pgt: integer
       | target eval flag (optional)
       | potential at targets evaluated if pgt = 1
@@ -153,10 +153,10 @@ Args:
 
 Returns:
 
--  U.pot: potential at source locations, if requested ($u(x_{j})$)
--  U.grad: gradient at source locations, if requested ($\nabla u(x_{j})$)
--  U.pottarg: potential at target locations, if requested ($u(t_{i})$)
--  U.gradtarg: gradient at target locations, if requested ($\nabla u(t_{i})$)
+-  U.pot: potential at source locations, if requested, $u(x_{j})$
+-  U.grad: gradient at source locations, if requested, $\nabla u(x_{j})$
+-  U.pottarg: potential at target locations, if requested, $u(t_{i})$
+-  U.gradtarg: gradient at target locations, if requested, $\nabla u(t_{i})$
 
 ------------------------------------------------------------------
 

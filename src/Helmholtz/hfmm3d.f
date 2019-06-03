@@ -660,10 +660,10 @@ c
 cc     threshold for computing interactions,
 c      interactions will be ignored
 c      for all pairs of sources and targets
-c      which satisfy |zk*r| < thresh
+c      which satisfy |r| < thresh
 c      where r is the disance between them
 
-      thresh = 1.0d-16*abs(zk)*boxsize(0)
+      thresh = 2.0d0**(-52)*boxsize(0)
 
       call prini(6,13)
       write(13,*) thresh

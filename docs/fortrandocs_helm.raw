@@ -20,26 +20,26 @@ This subroutine evaluates the potential
 
       u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
 
-at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source locations $x=x_{j}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    eps: double precision
           precision requested
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
           Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    charge: double complex(nsource)
-          Charge strengths ($c_{j}$)
+          Charge strengths, $c_{j}$
 
 
 Output arguments:
 
   -    pot: double complex(nsource)
-          Potential at source locations ($u(x_{j})$)
+          Potential at source locations, $u(x_{j})$
 
 
 --------------------------------
@@ -57,20 +57,20 @@ This subroutine evaluates the potential
 
       u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
 
-at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source locations $x=x_{j}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    nd: integer
           number of densities
   -    charge: double complex(nd,nsource)
-          Charge strengths ($c_{\ell,j}$)
+          Charge strengths, $c_{\ell,j}$
 
 
 Output arguments:
 
   -    pot: double complex(nd,nsource)
-          Potential at source locations ($u_{\ell}(x_{j})$)
+          Potential at source locations, $u_{\ell}(x_{j})$
 
 
 .. container:: rttext
@@ -104,28 +104,28 @@ This subroutine evaluates the potential and its gradient
 
       u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
 
-at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source locations $x=x_{j}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    eps: double precision
           precision requested
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
           Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    charge: double complex(nsource)
-          Charge strengths ($c_{j}$)
+          Charge strengths, $c_{j}$
 
 
 Output arguments:
 
   -    pot: double complex(nsource)
-          Potential at source locations ($u(x_{j})$)
+          Potential at source locations, $u(x_{j})$
   -    grad: double complex(3,nsource)
-          Gradient at source locations ($\nabla u(x_{j})$)
+          Gradient at source locations, $\nabla u(x_{j})$
 
 
 --------------------------------
@@ -143,22 +143,22 @@ This subroutine evaluates the potential and its gradient
 
       u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
 
-at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source locations $x=x_{j}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    nd: integer
           number of densities
   -    charge: double complex(nd,nsource)
-          Charge strengths ($c_{\ell,j}$)
+          Charge strengths, $c_{\ell,j}$
 
 
 Output arguments:
 
   -    pot: double complex(nd,nsource)
-          Potential at source locations ($u_{\ell}(x_{j})$)
+          Potential at source locations, $u_{\ell}(x_{j})$
   -    grad: double complex(nd,3,nsource)
-          Gradient at source locations ($\nabla u_{\ell}(x_{j})$)
+          Gradient at source locations, $\nabla u_{\ell}(x_{j})$
 
 
 .. container:: rttext
@@ -192,26 +192,26 @@ This subroutine evaluates the potential
 
       u(x) = -\sum_{j=1}^{N} v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source locations $x=x_{j}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    eps: double precision
           precision requested
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
           Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    dipvec: double complex(3,nsource)
-          Dipole strengths ($v_{j}$)
+          Dipole strengths, $v_{j}$
 
 
 Output arguments:
 
   -    pot: double complex(nsource)
-          Potential at source locations ($u(x_{j})$)
+          Potential at source locations, $u(x_{j})$
 
 
 --------------------------------
@@ -229,20 +229,20 @@ This subroutine evaluates the potential
 
       u_{\ell}(x) = -\sum_{j=1}^{N} v_{\ell,j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source locations $x=x_{j}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    nd: integer
           number of densities
   -    dipvec: double complex(nd,3,nsource)
-          Dipole strengths ($v_{\ell,j}$)
+          Dipole strengths, $v_{\ell,j}$
 
 
 Output arguments:
 
   -    pot: double complex(nd,nsource)
-          Potential at source locations ($u_{\ell}(x_{j})$)
+          Potential at source locations, $u_{\ell}(x_{j})$
 
 
 .. container:: rttext
@@ -276,28 +276,28 @@ This subroutine evaluates the potential and its gradient
 
       u(x) = -\sum_{j=1}^{N} v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source locations $x=x_{j}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    eps: double precision
           precision requested
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
           Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    dipvec: double complex(3,nsource)
-          Dipole strengths ($v_{j}$)
+          Dipole strengths, $v_{j}$
 
 
 Output arguments:
 
   -    pot: double complex(nsource)
-          Potential at source locations ($u(x_{j})$)
+          Potential at source locations, $u(x_{j})$
   -    grad: double complex(3,nsource)
-          Gradient at source locations ($\nabla u(x_{j})$)
+          Gradient at source locations, $\nabla u(x_{j})$
 
 
 --------------------------------
@@ -315,22 +315,22 @@ This subroutine evaluates the potential and its gradient
 
       u_{\ell}(x) = -\sum_{j=1}^{N} v_{\ell,j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source locations $x=x_{j}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    nd: integer
           number of densities
   -    dipvec: double complex(nd,3,nsource)
-          Dipole strengths ($v_{\ell,j}$)
+          Dipole strengths, $v_{\ell,j}$
 
 
 Output arguments:
 
   -    pot: double complex(nd,nsource)
-          Potential at source locations ($u_{\ell}(x_{j})$)
+          Potential at source locations, $u_{\ell}(x_{j})$
   -    grad: double complex(nd,3,nsource)
-          Gradient at source locations ($\nabla u_{\ell}(x_{j})$)
+          Gradient at source locations, $\nabla u_{\ell}(x_{j})$
 
 
 .. container:: rttext
@@ -364,28 +364,28 @@ This subroutine evaluates the potential
 
       u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source locations $x=x_{j}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    eps: double precision
           precision requested
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
           Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    charge: double complex(nsource)
-          Charge strengths ($c_{j}$)
+          Charge strengths, $c_{j}$
   -    dipvec: double complex(3,nsource)
-          Dipole strengths ($v_{j}$)
+          Dipole strengths, $v_{j}$
 
 
 Output arguments:
 
   -    pot: double complex(nsource)
-          Potential at source locations ($u(x_{j})$)
+          Potential at source locations, $u(x_{j})$
 
 
 --------------------------------
@@ -403,22 +403,22 @@ This subroutine evaluates the potential
 
       u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - v_{\ell,j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source locations $x=x_{j}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    nd: integer
           number of densities
   -    charge: double complex(nd,nsource)
-          Charge strengths ($c_{\ell,j}$)
+          Charge strengths, $c_{\ell,j}$
   -    dipvec: double complex(nd,3,nsource)
-          Dipole strengths ($v_{\ell,j}$)
+          Dipole strengths, $v_{\ell,j}$
 
 
 Output arguments:
 
   -    pot: double complex(nd,nsource)
-          Potential at source locations ($u_{\ell}(x_{j})$)
+          Potential at source locations, $u_{\ell}(x_{j})$
 
 
 .. container:: rttext
@@ -452,30 +452,30 @@ This subroutine evaluates the potential and its gradient
 
       u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source locations $x=x_{j}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    eps: double precision
           precision requested
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
           Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    charge: double complex(nsource)
-          Charge strengths ($c_{j}$)
+          Charge strengths, $c_{j}$
   -    dipvec: double complex(3,nsource)
-          Dipole strengths ($v_{j}$)
+          Dipole strengths, $v_{j}$
 
 
 Output arguments:
 
   -    pot: double complex(nsource)
-          Potential at source locations ($u(x_{j})$)
+          Potential at source locations, $u(x_{j})$
   -    grad: double complex(3,nsource)
-          Gradient at source locations ($\nabla u(x_{j})$)
+          Gradient at source locations, $\nabla u(x_{j})$
 
 
 --------------------------------
@@ -493,24 +493,24 @@ This subroutine evaluates the potential and its gradient
 
       u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - v_{\ell,j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the source locations $x=x_{j}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source locations $x=x_{j}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    nd: integer
           number of densities
   -    charge: double complex(nd,nsource)
-          Charge strengths ($c_{\ell,j}$)
+          Charge strengths, $c_{\ell,j}$
   -    dipvec: double complex(nd,3,nsource)
-          Dipole strengths ($v_{\ell,j}$)
+          Dipole strengths, $v_{\ell,j}$
 
 
 Output arguments:
 
   -    pot: double complex(nd,nsource)
-          Potential at source locations ($u_{\ell}(x_{j})$)
+          Potential at source locations, $u_{\ell}(x_{j})$
   -    grad: double complex(nd,3,nsource)
-          Gradient at source locations ($\nabla u_{\ell}(x_{j})$)
+          Gradient at source locations, $\nabla u_{\ell}(x_{j})$
 
 
 .. container:: rttext
@@ -544,30 +544,30 @@ This subroutine evaluates the potential
 
       u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
 
-at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the target locations $x=t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    eps: double precision
           precision requested
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
           Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    charge: double complex(nsource)
-          Charge strengths ($c_{j}$)
+          Charge strengths, $c_{j}$
   -    ntarg: integer
           Number of targets
   -    targ: double precision(3,ntarg)
-          Target locations ($t_{i}$)
+          Target locations, $t_{i}$
 
 
 Output arguments:
 
   -    pottarg: double complex(ntarg)
-          Potential at target locations ($u(t_{i})$)
+          Potential at target locations, $u(t_{i})$
 
 
 --------------------------------
@@ -585,20 +585,20 @@ This subroutine evaluates the potential
 
       u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
 
-at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the target locations $x=t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    nd: integer
           number of densities
   -    charge: double complex(nd,nsource)
-          Charge strengths ($c_{\ell,j}$)
+          Charge strengths, $c_{\ell,j}$
 
 
 Output arguments:
 
   -    pottarg: double complex(nd,ntarg)
-          Potential at target locations ($u_{\ell}(t_{i})$)
+          Potential at target locations, $u_{\ell}(t_{i})$
 
 
 .. container:: rttext
@@ -632,32 +632,32 @@ This subroutine evaluates the potential and its gradient
 
       u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
 
-at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the target locations $x=t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    eps: double precision
           precision requested
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
           Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    charge: double complex(nsource)
-          Charge strengths ($c_{j}$)
+          Charge strengths, $c_{j}$
   -    ntarg: integer
           Number of targets
   -    targ: double precision(3,ntarg)
-          Target locations ($t_{i}$)
+          Target locations, $t_{i}$
 
 
 Output arguments:
 
   -    pottarg: double complex(ntarg)
-          Potential at target locations ($u(t_{i})$)
+          Potential at target locations, $u(t_{i})$
   -    gradtarg: double complex(3,ntarg)
-          Gradient at target locations ($\nabla u(t_{i})$)
+          Gradient at target locations, $\nabla u(t_{i})$
 
 
 --------------------------------
@@ -675,22 +675,22 @@ This subroutine evaluates the potential and its gradient
 
       u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
 
-at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the target locations $x=t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    nd: integer
           number of densities
   -    charge: double complex(nd,nsource)
-          Charge strengths ($c_{\ell,j}$)
+          Charge strengths, $c_{\ell,j}$
 
 
 Output arguments:
 
   -    pottarg: double complex(nd,ntarg)
-          Potential at target locations ($u_{\ell}(t_{i})$)
+          Potential at target locations, $u_{\ell}(t_{i})$
   -    gradtarg: double complex(nd,3,ntarg)
-          Gradient at target locations ($\nabla u_{\ell}(t_{i})$)
+          Gradient at target locations, $\nabla u_{\ell}(t_{i})$
 
 
 .. container:: rttext
@@ -724,30 +724,30 @@ This subroutine evaluates the potential
 
       u(x) = -\sum_{j=1}^{N} v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the target locations $x=t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    eps: double precision
           precision requested
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
           Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    dipvec: double complex(3,nsource)
-          Dipole strengths ($v_{j}$)
+          Dipole strengths, $v_{j}$
   -    ntarg: integer
           Number of targets
   -    targ: double precision(3,ntarg)
-          Target locations ($t_{i}$)
+          Target locations, $t_{i}$
 
 
 Output arguments:
 
   -    pottarg: double complex(ntarg)
-          Potential at target locations ($u(t_{i})$)
+          Potential at target locations, $u(t_{i})$
 
 
 --------------------------------
@@ -765,20 +765,20 @@ This subroutine evaluates the potential
 
       u_{\ell}(x) = -\sum_{j=1}^{N} v_{\ell,j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the target locations $x=t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    nd: integer
           number of densities
   -    dipvec: double complex(nd,3,nsource)
-          Dipole strengths ($v_{\ell,j}$)
+          Dipole strengths, $v_{\ell,j}$
 
 
 Output arguments:
 
   -    pottarg: double complex(nd,ntarg)
-          Potential at target locations ($u_{\ell}(t_{i})$)
+          Potential at target locations, $u_{\ell}(t_{i})$
 
 
 .. container:: rttext
@@ -812,32 +812,32 @@ This subroutine evaluates the potential and its gradient
 
       u(x) = -\sum_{j=1}^{N} v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the target locations $x=t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    eps: double precision
           precision requested
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
           Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    dipvec: double complex(3,nsource)
-          Dipole strengths ($v_{j}$)
+          Dipole strengths, $v_{j}$
   -    ntarg: integer
           Number of targets
   -    targ: double precision(3,ntarg)
-          Target locations ($t_{i}$)
+          Target locations, $t_{i}$
 
 
 Output arguments:
 
   -    pottarg: double complex(ntarg)
-          Potential at target locations ($u(t_{i})$)
+          Potential at target locations, $u(t_{i})$
   -    gradtarg: double complex(3,ntarg)
-          Gradient at target locations ($\nabla u(t_{i})$)
+          Gradient at target locations, $\nabla u(t_{i})$
 
 
 --------------------------------
@@ -855,22 +855,22 @@ This subroutine evaluates the potential and its gradient
 
       u_{\ell}(x) = -\sum_{j=1}^{N} v_{\ell,j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the target locations $x=t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    nd: integer
           number of densities
   -    dipvec: double complex(nd,3,nsource)
-          Dipole strengths ($v_{\ell,j}$)
+          Dipole strengths, $v_{\ell,j}$
 
 
 Output arguments:
 
   -    pottarg: double complex(nd,ntarg)
-          Potential at target locations ($u_{\ell}(t_{i})$)
+          Potential at target locations, $u_{\ell}(t_{i})$
   -    gradtarg: double complex(nd,3,ntarg)
-          Gradient at target locations ($\nabla u_{\ell}(t_{i})$)
+          Gradient at target locations, $\nabla u_{\ell}(t_{i})$
 
 
 .. container:: rttext
@@ -904,32 +904,32 @@ This subroutine evaluates the potential
 
       u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the target locations $x=t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    eps: double precision
           precision requested
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
           Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    charge: double complex(nsource)
-          Charge strengths ($c_{j}$)
+          Charge strengths, $c_{j}$
   -    dipvec: double complex(3,nsource)
-          Dipole strengths ($v_{j}$)
+          Dipole strengths, $v_{j}$
   -    ntarg: integer
           Number of targets
   -    targ: double precision(3,ntarg)
-          Target locations ($t_{i}$)
+          Target locations, $t_{i}$
 
 
 Output arguments:
 
   -    pottarg: double complex(ntarg)
-          Potential at target locations ($u(t_{i})$)
+          Potential at target locations, $u(t_{i})$
 
 
 --------------------------------
@@ -947,22 +947,22 @@ This subroutine evaluates the potential
 
       u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - v_{\ell,j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the target locations $x=t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    nd: integer
           number of densities
   -    charge: double complex(nd,nsource)
-          Charge strengths ($c_{\ell,j}$)
+          Charge strengths, $c_{\ell,j}$
   -    dipvec: double complex(nd,3,nsource)
-          Dipole strengths ($v_{\ell,j}$)
+          Dipole strengths, $v_{\ell,j}$
 
 
 Output arguments:
 
   -    pottarg: double complex(nd,ntarg)
-          Potential at target locations ($u_{\ell}(t_{i})$)
+          Potential at target locations, $u_{\ell}(t_{i})$
 
 
 .. container:: rttext
@@ -996,34 +996,34 @@ This subroutine evaluates the potential and its gradient
 
       u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the target locations $x=t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    eps: double precision
           precision requested
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
           Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    charge: double complex(nsource)
-          Charge strengths ($c_{j}$)
+          Charge strengths, $c_{j}$
   -    dipvec: double complex(3,nsource)
-          Dipole strengths ($v_{j}$)
+          Dipole strengths, $v_{j}$
   -    ntarg: integer
           Number of targets
   -    targ: double precision(3,ntarg)
-          Target locations ($t_{i}$)
+          Target locations, $t_{i}$
 
 
 Output arguments:
 
   -    pottarg: double complex(ntarg)
-          Potential at target locations ($u(t_{i})$)
+          Potential at target locations, $u(t_{i})$
   -    gradtarg: double complex(3,ntarg)
-          Gradient at target locations ($\nabla u(t_{i})$)
+          Gradient at target locations, $\nabla u(t_{i})$
 
 
 --------------------------------
@@ -1041,24 +1041,24 @@ This subroutine evaluates the potential and its gradient
 
       u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - v_{\ell,j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the target locations $x=t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the target locations $x=t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    nd: integer
           number of densities
   -    charge: double complex(nd,nsource)
-          Charge strengths ($c_{\ell,j}$)
+          Charge strengths, $c_{\ell,j}$
   -    dipvec: double complex(nd,3,nsource)
-          Dipole strengths ($v_{\ell,j}$)
+          Dipole strengths, $v_{\ell,j}$
 
 
 Output arguments:
 
   -    pottarg: double complex(nd,ntarg)
-          Potential at target locations ($u_{\ell}(t_{i})$)
+          Potential at target locations, $u_{\ell}(t_{i})$
   -    gradtarg: double complex(nd,3,ntarg)
-          Gradient at target locations ($\nabla u_{\ell}(t_{i})$)
+          Gradient at target locations, $\nabla u_{\ell}(t_{i})$
 
 
 .. container:: rttext
@@ -1092,32 +1092,32 @@ This subroutine evaluates the potential
 
       u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
 
-at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    eps: double precision
           precision requested
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
           Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    charge: double complex(nsource)
-          Charge strengths ($c_{j}$)
+          Charge strengths, $c_{j}$
   -    ntarg: integer
           Number of targets
   -    targ: double precision(3,ntarg)
-          Target locations ($t_{i}$)
+          Target locations, $t_{i}$
 
 
 Output arguments:
 
   -    pot: double complex(nsource)
-          Potential at source locations ($u(x_{j})$)
+          Potential at source locations, $u(x_{j})$
   -    pottarg: double complex(ntarg)
-          Potential at target locations ($u(t_{i})$)
+          Potential at target locations, $u(t_{i})$
 
 
 --------------------------------
@@ -1135,22 +1135,22 @@ This subroutine evaluates the potential
 
       u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
 
-at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    nd: integer
           number of densities
   -    charge: double complex(nd,nsource)
-          Charge strengths ($c_{\ell,j}$)
+          Charge strengths, $c_{\ell,j}$
 
 
 Output arguments:
 
   -    pot: double complex(nd,nsource)
-          Potential at source locations ($u_{\ell}(x_{j})$)
+          Potential at source locations, $u_{\ell}(x_{j})$
   -    pottarg: double complex(nd,ntarg)
-          Potential at target locations ($u_{\ell}(t_{i})$)
+          Potential at target locations, $u_{\ell}(t_{i})$
 
 
 .. container:: rttext
@@ -1184,36 +1184,36 @@ This subroutine evaluates the potential and its gradient
 
       u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
 
-at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    eps: double precision
           precision requested
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
           Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    charge: double complex(nsource)
-          Charge strengths ($c_{j}$)
+          Charge strengths, $c_{j}$
   -    ntarg: integer
           Number of targets
   -    targ: double precision(3,ntarg)
-          Target locations ($t_{i}$)
+          Target locations, $t_{i}$
 
 
 Output arguments:
 
   -    pot: double complex(nsource)
-          Potential at source locations ($u(x_{j})$)
+          Potential at source locations, $u(x_{j})$
   -    grad: double complex(3,nsource)
-          Gradient at source locations ($\nabla u(x_{j})$)
+          Gradient at source locations, $\nabla u(x_{j})$
   -    pottarg: double complex(ntarg)
-          Potential at target locations ($u(t_{i})$)
+          Potential at target locations, $u(t_{i})$
   -    gradtarg: double complex(3,ntarg)
-          Gradient at target locations ($\nabla u(t_{i})$)
+          Gradient at target locations, $\nabla u(t_{i})$
 
 
 --------------------------------
@@ -1231,26 +1231,26 @@ This subroutine evaluates the potential and its gradient
 
       u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
 
-at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    nd: integer
           number of densities
   -    charge: double complex(nd,nsource)
-          Charge strengths ($c_{\ell,j}$)
+          Charge strengths, $c_{\ell,j}$
 
 
 Output arguments:
 
   -    pot: double complex(nd,nsource)
-          Potential at source locations ($u_{\ell}(x_{j})$)
+          Potential at source locations, $u_{\ell}(x_{j})$
   -    grad: double complex(nd,3,nsource)
-          Gradient at source locations ($\nabla u_{\ell}(x_{j})$)
+          Gradient at source locations, $\nabla u_{\ell}(x_{j})$
   -    pottarg: double complex(nd,ntarg)
-          Potential at target locations ($u_{\ell}(t_{i})$)
+          Potential at target locations, $u_{\ell}(t_{i})$
   -    gradtarg: double complex(nd,3,ntarg)
-          Gradient at target locations ($\nabla u_{\ell}(t_{i})$)
+          Gradient at target locations, $\nabla u_{\ell}(t_{i})$
 
 
 .. container:: rttext
@@ -1284,32 +1284,32 @@ This subroutine evaluates the potential
 
       u(x) = -\sum_{j=1}^{N} v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    eps: double precision
           precision requested
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
           Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    dipvec: double complex(3,nsource)
-          Dipole strengths ($v_{j}$)
+          Dipole strengths, $v_{j}$
   -    ntarg: integer
           Number of targets
   -    targ: double precision(3,ntarg)
-          Target locations ($t_{i}$)
+          Target locations, $t_{i}$
 
 
 Output arguments:
 
   -    pot: double complex(nsource)
-          Potential at source locations ($u(x_{j})$)
+          Potential at source locations, $u(x_{j})$
   -    pottarg: double complex(ntarg)
-          Potential at target locations ($u(t_{i})$)
+          Potential at target locations, $u(t_{i})$
 
 
 --------------------------------
@@ -1327,22 +1327,22 @@ This subroutine evaluates the potential
 
       u_{\ell}(x) = -\sum_{j=1}^{N} v_{\ell,j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    nd: integer
           number of densities
   -    dipvec: double complex(nd,3,nsource)
-          Dipole strengths ($v_{\ell,j}$)
+          Dipole strengths, $v_{\ell,j}$
 
 
 Output arguments:
 
   -    pot: double complex(nd,nsource)
-          Potential at source locations ($u_{\ell}(x_{j})$)
+          Potential at source locations, $u_{\ell}(x_{j})$
   -    pottarg: double complex(nd,ntarg)
-          Potential at target locations ($u_{\ell}(t_{i})$)
+          Potential at target locations, $u_{\ell}(t_{i})$
 
 
 .. container:: rttext
@@ -1376,36 +1376,36 @@ This subroutine evaluates the potential and its gradient
 
       u(x) = -\sum_{j=1}^{N} v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    eps: double precision
           precision requested
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
           Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    dipvec: double complex(3,nsource)
-          Dipole strengths ($v_{j}$)
+          Dipole strengths, $v_{j}$
   -    ntarg: integer
           Number of targets
   -    targ: double precision(3,ntarg)
-          Target locations ($t_{i}$)
+          Target locations, $t_{i}$
 
 
 Output arguments:
 
   -    pot: double complex(nsource)
-          Potential at source locations ($u(x_{j})$)
+          Potential at source locations, $u(x_{j})$
   -    grad: double complex(3,nsource)
-          Gradient at source locations ($\nabla u(x_{j})$)
+          Gradient at source locations, $\nabla u(x_{j})$
   -    pottarg: double complex(ntarg)
-          Potential at target locations ($u(t_{i})$)
+          Potential at target locations, $u(t_{i})$
   -    gradtarg: double complex(3,ntarg)
-          Gradient at target locations ($\nabla u(t_{i})$)
+          Gradient at target locations, $\nabla u(t_{i})$
 
 
 --------------------------------
@@ -1423,26 +1423,26 @@ This subroutine evaluates the potential and its gradient
 
       u_{\ell}(x) = -\sum_{j=1}^{N} v_{\ell,j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    nd: integer
           number of densities
   -    dipvec: double complex(nd,3,nsource)
-          Dipole strengths ($v_{\ell,j}$)
+          Dipole strengths, $v_{\ell,j}$
 
 
 Output arguments:
 
   -    pot: double complex(nd,nsource)
-          Potential at source locations ($u_{\ell}(x_{j})$)
+          Potential at source locations, $u_{\ell}(x_{j})$
   -    grad: double complex(nd,3,nsource)
-          Gradient at source locations ($\nabla u_{\ell}(x_{j})$)
+          Gradient at source locations, $\nabla u_{\ell}(x_{j})$
   -    pottarg: double complex(nd,ntarg)
-          Potential at target locations ($u_{\ell}(t_{i})$)
+          Potential at target locations, $u_{\ell}(t_{i})$
   -    gradtarg: double complex(nd,3,ntarg)
-          Gradient at target locations ($\nabla u_{\ell}(t_{i})$)
+          Gradient at target locations, $\nabla u_{\ell}(t_{i})$
 
 
 .. container:: rttext
@@ -1476,34 +1476,34 @@ This subroutine evaluates the potential
 
       u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    eps: double precision
           precision requested
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
           Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    charge: double complex(nsource)
-          Charge strengths ($c_{j}$)
+          Charge strengths, $c_{j}$
   -    dipvec: double complex(3,nsource)
-          Dipole strengths ($v_{j}$)
+          Dipole strengths, $v_{j}$
   -    ntarg: integer
           Number of targets
   -    targ: double precision(3,ntarg)
-          Target locations ($t_{i}$)
+          Target locations, $t_{i}$
 
 
 Output arguments:
 
   -    pot: double complex(nsource)
-          Potential at source locations ($u(x_{j})$)
+          Potential at source locations, $u(x_{j})$
   -    pottarg: double complex(ntarg)
-          Potential at target locations ($u(t_{i})$)
+          Potential at target locations, $u(t_{i})$
 
 
 --------------------------------
@@ -1521,24 +1521,24 @@ This subroutine evaluates the potential
 
       u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - v_{\ell,j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    nd: integer
           number of densities
   -    charge: double complex(nd,nsource)
-          Charge strengths ($c_{\ell,j}$)
+          Charge strengths, $c_{\ell,j}$
   -    dipvec: double complex(nd,3,nsource)
-          Dipole strengths ($v_{\ell,j}$)
+          Dipole strengths, $v_{\ell,j}$
 
 
 Output arguments:
 
   -    pot: double complex(nd,nsource)
-          Potential at source locations ($u_{\ell}(x_{j})$)
+          Potential at source locations, $u_{\ell}(x_{j})$
   -    pottarg: double complex(nd,ntarg)
-          Potential at target locations ($u_{\ell}(t_{i})$)
+          Potential at target locations, $u_{\ell}(t_{i})$
 
 
 .. container:: rttext
@@ -1572,38 +1572,38 @@ This subroutine evaluates the potential and its gradient
 
       u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    eps: double precision
           precision requested
   -    zk: double complex
-          Helmholtz parameter (k)
+          Helmholtz parameter, k
   -    nsource: integer
           Number of sources
   -    source: double precision(3,nsource)
-          Source locations ($x_{j}$)
+          Source locations, $x_{j}$
   -    charge: double complex(nsource)
-          Charge strengths ($c_{j}$)
+          Charge strengths, $c_{j}$
   -    dipvec: double complex(3,nsource)
-          Dipole strengths ($v_{j}$)
+          Dipole strengths, $v_{j}$
   -    ntarg: integer
           Number of targets
   -    targ: double precision(3,ntarg)
-          Target locations ($t_{i}$)
+          Target locations, $t_{i}$
 
 
 Output arguments:
 
   -    pot: double complex(nsource)
-          Potential at source locations ($u(x_{j})$)
+          Potential at source locations, $u(x_{j})$
   -    grad: double complex(3,nsource)
-          Gradient at source locations ($\nabla u(x_{j})$)
+          Gradient at source locations, $\nabla u(x_{j})$
   -    pottarg: double complex(ntarg)
-          Potential at target locations ($u(t_{i})$)
+          Potential at target locations, $u(t_{i})$
   -    gradtarg: double complex(3,ntarg)
-          Gradient at target locations ($\nabla u(t_{i})$)
+          Gradient at target locations, $\nabla u(t_{i})$
 
 
 --------------------------------
@@ -1621,28 +1621,28 @@ This subroutine evaluates the potential and its gradient
 
       u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - v_{\ell,j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 
-at the source and target locations $x=x_{j},t_{i}$. When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped from the sum.
+at the source and target locations $x=x_{j},t_{i}$. When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped from the sum.
 
 Input arguments:
 
   -    nd: integer
           number of densities
   -    charge: double complex(nd,nsource)
-          Charge strengths ($c_{\ell,j}$)
+          Charge strengths, $c_{\ell,j}$
   -    dipvec: double complex(nd,3,nsource)
-          Dipole strengths ($v_{\ell,j}$)
+          Dipole strengths, $v_{\ell,j}$
 
 
 Output arguments:
 
   -    pot: double complex(nd,nsource)
-          Potential at source locations ($u_{\ell}(x_{j})$)
+          Potential at source locations, $u_{\ell}(x_{j})$
   -    grad: double complex(nd,3,nsource)
-          Gradient at source locations ($\nabla u_{\ell}(x_{j})$)
+          Gradient at source locations, $\nabla u_{\ell}(x_{j})$
   -    pottarg: double complex(nd,ntarg)
-          Potential at target locations ($u_{\ell}(t_{i})$)
+          Potential at target locations, $u_{\ell}(t_{i})$
   -    gradtarg: double complex(nd,3,ntarg)
-          Gradient at target locations ($\nabla u_{\ell}(t_{i})$)
+          Gradient at target locations, $\nabla u_{\ell}(t_{i})$
 
 
 .. container:: rttext

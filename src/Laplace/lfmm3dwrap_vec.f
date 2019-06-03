@@ -138,7 +138,7 @@ c  This subroutine evaluates the potential
 c      u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{1}{\|x-x_{j}\|}
 c
 c  at the source locations $x=x_{j}$.
-c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
 c  dropped from the sum.
 c
 c  Input arguments:
@@ -212,7 +212,7 @@ c  This subroutine evaluates the potential and its gradient
 c      u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{1}{\|x-x_{j}\|}
 c
 c  at the source locations $x=x_{j}$.
-c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
 c  dropped from the sum.
 c
 c  Input arguments:
@@ -290,7 +290,7 @@ c      u_{\ell}(x) = -\sum_{j=1}^{N} v_{\ell,j} \cdot \nabla \left(
 c        \frac{1}{\|x-x_{j}\|}\right)
 c
 c  at the source locations $x=x_{j}$.
-c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
 c  dropped from the sum.
 c
 c  Input arguments:
@@ -365,7 +365,7 @@ c      u_{\ell}(x) = -\sum_{j=1}^{N} v_{\ell,j} \cdot \nabla \left(
 c        \frac{1}{\|x-x_{j}\|}\right)
 c
 c  at the source locations $x=x_{j}$.
-c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
 c  dropped from the sum.
 c
 c  Input arguments:
@@ -442,7 +442,7 @@ c            v_{\ell,j} \cdot \nabla \left(
 c        \frac{1}{\|x-x_{j}\|}\right)
 c
 c  at the source locations $x=x_{j}$.
-c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
 c  dropped from the sum.
 c
 c  Input arguments:
@@ -524,7 +524,7 @@ c            v_{\ell,j} \cdot \nabla \left(
 c        \frac{1}{\|x-x_{j}\|}\right)
 c
 c  at the source locations $x=x_{j}$.
-c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
 c  dropped from the sum.
 c
 c  Input arguments:
@@ -602,7 +602,7 @@ c  This subroutine evaluates the potential
 c      u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{1}{\|x-x_{j}\|}
 c
 c  at the target locations $x=t_{i}$.
-c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
 c  dropped from the sum.
 c
 c  Input arguments:
@@ -680,7 +680,7 @@ c  This subroutine evaluates the potential and its gradient
 c      u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{1}{\|x-x_{j}\|}
 c
 c  at the target locations $x=t_{i}$.
-c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
 c  dropped from the sum.
 c
 c  Input arguments:
@@ -758,7 +758,7 @@ c      u_{\ell}(x) = -\sum_{j=1}^{N} v_{\ell,j} \cdot \nabla \left(
 c        \frac{1}{\|x-x_{j}\|}\right)
 c
 c  at the target locations $x=t_{i}$.
-c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
 c  dropped from the sum.
 c
 c  Input arguments:
@@ -837,7 +837,7 @@ c      u_{\ell}(x) = -\sum_{j=1}^{N} v_{\ell,j} \cdot \nabla \left(
 c        \frac{1}{\|x-x_{j}\|}\right)
 c
 c  at the target locations $x=t_{i}$.
-c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
 c  dropped from the sum.
 c
 c  Input arguments:
@@ -917,7 +917,7 @@ c            v_{\ell,j} \cdot \nabla \left(
 c        \frac{1}{\|x-x_{j}\|}\right)
 c
 c  at the target locations $x=t_{i}$.
-c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
 c  dropped from the sum.
 c
 c  Input arguments:
@@ -999,7 +999,7 @@ c            v_{\ell,j} \cdot \nabla \left(
 c        \frac{1}{\|x-x_{j}\|}\right)
 c
 c  at the target locations $x=t_{i}$.
-c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
 c  dropped from the sum.
 c
 c  Input arguments:
@@ -1079,7 +1079,7 @@ c  This subroutine evaluates the potential
 c      u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{1}{\|x-x_{j}\|}
 c
 c  at the source and target locations $x=x_{j},t_{i}$.
-c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
 c  dropped from the sum.
 c
 c  Input arguments:
@@ -1159,7 +1159,7 @@ c  This subroutine evaluates the potential and its gradient
 c      u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{1}{\|x-x_{j}\|}
 c
 c  at the source and target locations $x=x_{j},t_{i}$.
-c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
 c  dropped from the sum.
 c
 c  Input arguments:
@@ -1243,7 +1243,7 @@ c      u_{\ell}(x) = -\sum_{j=1}^{N} v_{\ell,j} \cdot \nabla \left(
 c        \frac{1}{\|x-x_{j}\|}\right)
 c
 c  at the source and target locations $x=x_{j},t_{i}$.
-c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
 c  dropped from the sum.
 c
 c  Input arguments:
@@ -1325,7 +1325,7 @@ c      u_{\ell}(x) = -\sum_{j=1}^{N} v_{\ell,j} \cdot \nabla \left(
 c        \frac{1}{\|x-x_{j}\|}\right)
 c
 c  at the source and target locations $x=x_{j},t_{i}$.
-c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
 c  dropped from the sum.
 c
 c  Input arguments:
@@ -1410,7 +1410,7 @@ c            v_{\ell,j} \cdot \nabla \left(
 c        \frac{1}{\|x-x_{j}\|}\right)
 c
 c  at the source and target locations $x=x_{j},t_{i}$.
-c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
 c  dropped from the sum.
 c
 c  Input arguments:
@@ -1494,7 +1494,7 @@ c            v_{\ell,j} \cdot \nabla \left(
 c        \frac{1}{\|x-x_{j}\|}\right)
 c
 c  at the source and target locations $x=x_{j},t_{i}$.
-c  When $x=x_{m}$, the term corresponding to $x_{m}$ is 
+c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
 c  dropped from the sum.
 c
 c  Input arguments:

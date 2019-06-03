@@ -19,7 +19,7 @@ str3 = str1+" - "+str2
 eq_nd_cjs = [eq_start+eq_start2+str1,eq_start+"-"+eq_start2+str2,eq_start+eq_start2+str3]
 
 stflag = ["at the source locations $x=x_{j}$.", "at the target locations $x=t_{i}$.", "at the source and target locations $x=x_{j},t_{i}$."]
-intro3 = "When $x=x_{m}$, the term corresponding to $x_{m}$ is "
+intro3 = "When $x=x_{j}$, the term corresponding to $x_{j}$ is "
 intro3_cont = "dropped from the sum."
 inp_args ="Input arguments:"
 
@@ -27,24 +27,24 @@ inp_args ="Input arguments:"
 nd_txt = ["-    nd: integer","number of densities"]
 eps_txt = ["-    eps: double precision","precision requested"]
 ns_txt = ["-    nsource: integer","Number of sources"]
-src_txt =["-    source: double precision(3,nsource)","Source locations ($x_{j}$)"]
-charge_txt =["-    charge: double precision(nsource)","Charge strengths ($c_{j}$)"]
-charge_nd_txt =["-    charge: double precision(nd,nsource)","Charge strengths ($c_{\ell,j}$)"]
-dipole_txt =["-    dipvec: double precision(3,nsource)","Dipole strengths ($v_{j}$)"]
-dipole_nd_txt =["-    dipvec: double precision(nd,3,nsource)","Dipole strengths ($v_{\ell,j}$)"]
+src_txt =["-    source: double precision(3,nsource)","Source locations, $x_{j}$"]
+charge_txt =["-    charge: double precision(nsource)","Charge strengths, $c_{j}$"]
+charge_nd_txt =["-    charge: double precision(nd,nsource)","Charge strengths, $c_{\ell,j}$"]
+dipole_txt =["-    dipvec: double precision(3,nsource)","Dipole strengths, $v_{j}$"]
+dipole_nd_txt =["-    dipvec: double precision(nd,3,nsource)","Dipole strengths, $v_{\ell,j}$"]
 nt_txt = ["-    ntarg: integer","Number of targets"]
-targ_txt =["-    targ: double precision(3,ntarg)","Target locations ($t_{i}$)"]
+targ_txt =["-    targ: double precision(3,ntarg)","Target locations, $t_{i}$"]
 
 inp_returns = "Output arguments:"
-pot_txt =["-    pot: double precision(nsource)","Potential at source locations ($u(x_{j})$)"]
-grad_txt =["-    grad: double precision(3,nsource)","Gradient at source locations ($\\nabla u(x_{j})$)"]
-pottarg_txt =["-    pottarg: double precision(ntarg)","Potential at target locations ($u(t_{i})$)"]
-gradtarg_txt =["-    gradtarg: double precision(3,ntarg)","Gradient at target locations ($\\nabla u(t_{i})$)"]
+pot_txt =["-    pot: double precision(nsource)","Potential at source locations, $u(x_{j})$"]
+grad_txt =["-    grad: double precision(3,nsource)","Gradient at source locations, $\\nabla u(x_{j})$"]
+pottarg_txt =["-    pottarg: double precision(ntarg)","Potential at target locations, $u(t_{i})$"]
+gradtarg_txt =["-    gradtarg: double precision(3,ntarg)","Gradient at target locations, $\\nabla u(t_{i})$"]
 
-pot_nd_txt =["-    pot: double precision(nd,nsource)","Potential at source locations ($u_{\ell}(x_{j})$)"]
-grad_nd_txt =["-    grad: double precision(nd,3,nsource)","Gradient at source locations ($\\nabla u_{\ell}(x_{j})$)"]
-pottarg_nd_txt =["-    pottarg: double precision(nd,ntarg)","Potential at target locations ($u_{\ell}(t_{i})$)"]
-gradtarg_nd_txt =["-    gradtarg: double precision(nd,3,ntarg)","Gradient at target locations ($\\nabla u_{\ell}(t_{i})$)"]
+pot_nd_txt =["-    pot: double precision(nd,nsource)","Potential at source locations, $u_{\ell}(x_{j})$"]
+grad_nd_txt =["-    grad: double precision(nd,3,nsource)","Gradient at source locations, $\\nabla u_{\ell}(x_{j})$"]
+pottarg_nd_txt =["-    pottarg: double precision(nd,ntarg)","Potential at target locations, $u_{\ell}(t_{i})$"]
+gradtarg_nd_txt =["-    gradtarg: double precision(nd,3,ntarg)","Gradient at target locations, $\\nabla u_{\ell}(t_{i})$"]
 
 sp1 = "  "
 sp1 = "  "
@@ -173,10 +173,25 @@ eq_cjs_fort_nd = [eq_start+eq_start2+str1,eq_start+"-"+eq_start2+str2,eq_start+e
 
 f1 = open('fortrandocs_lap2.raw','w')
 f2 = open('fortrandocs_lap2_vec.raw','w')
+f3 = open('fortrandocs_lap_header.raw','w')
+f4 = open('fortrandocs_lap_header_vec.raw','w')
 for i in range(3):
     for j in range(3):
         for k in range(2):
             f1.writelines('c-------------------------------------\n')
+
+            f3.writelines('c  -lfmm3d'+st_opts[i]+c_opts[j]+p_opts[k]+'\n')
+            f3.writelines('c    - Evaluation points: '+st_opts2[i]+'\n')
+            f3.writelines('c    - Interaction kernel: '+c_opts2[j]+'\n')
+            f3.writelines('c    - Outputs requested: '+p_opts2[k]+'\n')
+            f3.writelines('c-------------------------------------\n')
+
+            f4.writelines('c  -lfmm3d'+st_opts[i]+c_opts[j]+p_opts[k]+'_vec\n')
+            f4.writelines('c    - Evaluation points: '+st_opts2[i]+'\n')
+            f4.writelines('c    - Interaction kernel: '+c_opts2[j]+'\n')
+            f4.writelines('c    - Outputs requested: '+p_opts2[k]+'\n')
+            f4.writelines('c-------------------------------------\n')
+
             f1.writelines('c\n')
             f1.writelines("c  "+intro+pgstr[k]+'\n')
             f1.writelines("c      "+eq_cjs_fort[j]+"\nc\nc  "+stflag[i]+"\nc  "+intro3+"\nc  "+intro3_cont+"\nc\n")
@@ -238,3 +253,5 @@ for i in range(3):
             f2.writelines("\nc\nc--------------------------------\nc\n")
 f1.close()
 f2.close()
+f3.close()
+f4.close()
