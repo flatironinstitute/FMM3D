@@ -1,5 +1,5 @@
-  This folder contains the header files for the c wrappers for the
-  FMM3D libraries, some utility files, and a few examples. 
+  This folder contains the header files for the c wrappers,
+  some utility files, and a few examples. 
 
   -  The Helmholtz wrappers are contained in ``hfmm3d_c.h``
   -  The Laplace wrappers are contained in ``lfmm3d_c.h``

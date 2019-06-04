@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# finufft documentation build configuration file, created by
+# fmm3d documentation build configuration file, created by
 # sphinx-quickstart on Wed Nov  1 16:19:13 2017.
 #
 # This file is execfile()d with the current directory set to its
@@ -213,7 +213,7 @@ html_static_path = ['_static']
 #html_search_scorer = 'scorer.js'
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'finufftdoc'
+htmlhelp_basename = 'fmm3ddoc'
 
 # To fix location of equation numbering. Barnett tried 6/19/18
 # see https://samnicholls.net/2016/06/15/how-to-sphinx-readthedocs/
@@ -242,8 +242,8 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'finufft.tex', u'finufft Documentation',
-     u'Alex Barnett and Jeremy Magland', 'manual'),
+    (master_doc, 'fmm3d.tex', u'fmm3d Documentation',
+     u'Zydrunas Gimbutas \\and Leslie Greengard \\and Jeremy Magland \\and Manas Rachh \\and Vladimir Rokhlin', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -272,7 +272,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'finufft', u'finufft Documentation',
+    (master_doc, 'fmm3d', u'fmm3d Documentation',
      [author], 1)
 ]
 
@@ -286,8 +286,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'finufft', u'finufft Documentation',
-     author, 'finufft', 'One line description of project.',
+    (master_doc, 'fmm3d', u'fmm3d Documentation',
+     author, 'fmm3d', 'One line description of project.',
      'Miscellaneous'),
 ]
 
@@ -303,8 +303,3 @@ texinfo_documents = [
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
 
-autodoc_mock_imports = ['finufftpy_cpp', 'numpy']
-# The above is not enough for nested import -- forcibly mock them out ahead of time:
-#for name in autodoc_mock_imports:
-#    sys.modules[name] = sphinx.ext.autodoc._MockModule(name, None)
-# (removed the above since broke in sphinx 1.6 -> 1.7.4). Thanks Dylan.
