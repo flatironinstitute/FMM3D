@@ -17,11 +17,11 @@
   - In order to run any of the makefiles, you will need to have compiled
   the static library in the main folder by running
     
-      make lib
+        make lib
 
     Then to run the makefile, run
 
-      make -f "<makefile>"
+        make -f "<makefile>"
  
 
 
