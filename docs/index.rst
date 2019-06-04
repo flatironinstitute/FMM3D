@@ -18,16 +18,16 @@ on a multi-core shared-memory machine.
 The library is written in Fortran,
 and has wrappers to C, MATLAB, and python.
 As an example, given $M$ arbitrary points $y_j \in \mathbb{R}^{3}$ 
-and complex numbers $c_j$, with $j=1,\dots,M$, and 
-$N$ arbitrary points $x_{\ell} \in \mathbb{R}^{3}$, the Laplace FMM
-evaluates the $N$ complex numbers
+and real numbers $c_j$, with $j=1,\dots,M$, and 
+$N$ arbitrary points $x_{j} \in \mathbb{R}^{3}$, the Laplace FMM
+evaluates the $N$ real numbers
 
 .. math:: u_{\ell} = \sum_{j=1}^M \frac{c_j}{\| x_{\ell} - y_{j}\|} ~, 
    \qquad \mbox{ for } \; \ell=1,2,\ldots N ~.
    :label: lapcp
 
 The $y_j$ can be interpreted as source locations, $c_j$
-as charge strengths, and $u_k$ then as the potential at
+as charge strengths, and $u_{\ell}$ then as the potential at
 target location $x_{\ell}$.
 
 Such N-body interactions are needed in many applications in 
@@ -42,12 +42,13 @@ clusters of source and target points at a hierarchy of scales using
 analytic outgoing, incoming, and plane-wave 
 expansions of the interaction kernel and associated translation
 operators. 
-This library is a modified version of the `FMMLIB3D <https://github.com/zgimbutas/fmmlib3d>`_
+This library is a improved version of the `FMMLIB3D <https://github.com/zgimbutas/fmmlib3d>`_
 software, Copyright (C) 2010-2012: Leslie Greengard and Zydrunas Gimbutas, released under the 
 BSD license. The major changes are the following:
 
 -  The use of plane wave expansions for diagonalizing the outgoing to incoming translation operators
--  Vectorization of the FMM, to apply the same kernel with same source and target locations on multiple densities.
+-  Vectorization of the FMM, to apply the same kernel with same source and target locations on multiple 
+   strength vectors.
 -  A redesign of the adaptive tree data structure
 
 For sources and targets distributed in the volume, this code is 4 times
