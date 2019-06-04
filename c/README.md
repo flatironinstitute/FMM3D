@@ -20,9 +20,11 @@
   ``lfmm3d_example.make`` and ``lfmm3d_vec_example.make``.
 
   In order to run any of the makefiles, you will need to have compiled
-  the static library in the main folder by running make lib.
+  the static library in the main folder by running
+    
+    make lib
 
-  Then to run the makefile, run::
+  Then to run the makefile, run
 
     make -f "<makefile>"
  
