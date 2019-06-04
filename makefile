@@ -81,7 +81,7 @@ TOBJS = $(COM)/hkrand.o $(COM)/dlaran.o
 
 # C Headers and objects
 COBJS = c/cprini.o c/utils.o
-CHEADERS = c/cprini.h c/utils.h c/hfmm3d_c.h
+CHEADERS = c/cprini.h c/utils.h c/hfmm3d_c.h c/lfmm3d_c.h
 
 OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
@@ -94,10 +94,11 @@ all: lib examples test python python3 c c-examples matlab
 usage:
 	@echo "Makefile for FMM3D. Specify what to make:"
 	@echo "  make lib - compile the main library (in lib/ and lib-static/)"
-	@echo "  make examples - compile and run fortran in examples/"
-	@echo "  make c-examples - compile and run fortran in c/"
-	@echo "  make test - compile and run quick math validation tests"
+	@echo "  make examples - compile and run fortran examples in examples/"
+	@echo "  make c-examples - compile and run c examples in c/"
+	@echo "  make test - compile and run validation tests (will take around 30 secs)"
 	@echo "  make matlab - compile matlab interfaces"
+	@echo "  make mex - generate matlab interfaces (for expert users only, requires mwrap)"
 	@echo "  make python - compile and test python interfaces"
 	@echo "  make python3 - compile and test python interfaces using python3"
 	@echo "  make objclean - removal all object files, preserving lib & MEX"

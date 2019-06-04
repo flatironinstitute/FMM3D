@@ -3,7 +3,7 @@ HOST = gcc-openmp
 #HOST = intel
 #HOST = intel-openmp
 
-PROJECT = hfmm3d_example
+PROJECT = hfmm3d_vec_example
 
 # FC - fortran compiler
 # FFLAGS - fortran compiler flags
@@ -53,7 +53,7 @@ TOBJS = $(COM)/hkrand.o $(COM)/dlaran.o
 default: all
 
 
-OBJECTS = hfmm3d_example.o \
+OBJECTS = hfmm3d_legacy_example.o \
     ../src/Common/hkrand.o \
     ../src/Common/dlaran.o 
 
