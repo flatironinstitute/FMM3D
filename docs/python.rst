@@ -73,10 +73,12 @@ variables
 ------------------------------------------------------------------
 
 Wrapper for direct evaluation of Helmholtz N-body interactions.
+Note that this wrapper only returns potentials and gradients at the
+target locations.
               
 .. code:: python
    
-   def h3ddir(*,zk,sources,charges=None,dipvec=None,targets=None,pg=0,pgt=0,nd=1)
+   def h3ddir(*,zk,sources,charges=None,dipvec=None,targets=None,pgt=0,nd=1)
 
 ------------------------------------------------------------------
 
@@ -151,10 +153,12 @@ variables
 ------------------------------------------------------------------
 
 Wrapper for direct evaluation of Laplace N-body interactions.
+Note that this wrapper only returns potentials and gradients at the
+target locations.
               
 .. code:: python
    
-   def l3ddir(*,sources,charges=None,dipvec=None,targets=None,pg=0,pgt=0,nd=1)
+   def l3ddir(*,sources,charges=None,dipvec=None,targets=None,pgt=0,nd=1)
 
 ------------------------------------------------------------------
 
