@@ -1,64 +1,59 @@
 function [U] = hfmm3d(eps,zk,srcinfo,pg,targ,pgt)
-%hfmm3d
-%******
 %
-%   This subroutine computes the N-body Helmholtz
-%   interactions and its gradients in three dimensions where 
-%   the interaction kernel is given by e^{ikr}/r
+%
+%  This subroutine computes the N-body Helmholtz
+%  interactions and its gradients in three dimensions where 
+%  the interaction kernel is given by $e^{ikr}/r$
 % 
-%   .. math::
+%    u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} - 
+%      v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)   
 %
-%       u(x) = \sum_{j=1}^{N} c_{j} e^{ik|x-x_{j}|}/|x-x_{j}| - \nabla (e^{ik|x-x_{j}|}/|x-x_{j}|) \cdot v_{j} 
+%  where $c_{j}$ are the charge densities
+%  $v_{j}$ are the dipole orientation vectors, and
+%  $x_{j}$ are the source locations.
+%  When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped
+%  from the sum.
+% 
+%  Args:
 %
-%   where $c_{j}$ are the charge densities
-%   $v_{j}$ are the dipole orientation vectors, and
-%   $x_{j}$ are the source locations.
-%
-%   When $x=x_{m}$, the term corresponding to $x_{m}$ is dropped
-%   from the sum
-%
-%   Args:
-%
-%   -    eps: double   
-%              precision requested
-%   -    zk: complex
-%              Helmholtz parameter - k
-%   -    srcinfo: structure
-%               structure containing sourceinfo
-%   -    srcinfo.sources: double(3,n)    
-%              source locations ($x_{j}$)
-%   -    srcinfo.nd: integer
-%              number of charge/dipole densities (optional)
-%              default - nd = 1
-%   -    srcinfo.charges: complex(nd,n) 
-%              charge densities ($c_{j}$) (optional)
-%              default - term corresponding to charges dropped
-%   -    srcinfo.dipoles: complex(nd,3,n) 
-%               dipole orientation vectors ($v_{j}$) (optional)
-%               default - term corresponding to dipoles dropped 
-%   -    pg:  integer
-%              source eval flag
-%              potential at sources evaluated if pg = 1
-%              potenial and gradient at sources evaluated if pg=2
-%
-%   -    targ: double(3,nt)
-%               target locations (x) (optional)
-%   -    pgt:  integer
-%              target eval flag
-%              potential at targets evaluated if pgt = 1
-%              potenial and gradient at targets evaluated if pgt=2
-%              (optional)
-%
-%   Returns:
-%
-%   -    U.pot  - potential at source locations if requested
-%   -    U.grad - gradient at source locations if requested
-%   -    U.pottarg  - potential at target locations if requested
-%   -    U.gradtarg - gradient at target locations if requested
-%              
-%   Example:
-%
-%   -    see ``hfmmexample.m''
+%  -  eps: double   
+%        precision requested
+%  -  zk: complex
+%        Helmholtz parameter, k
+%  -  srcinfo: structure
+%        structure containing sourceinfo
+%     
+%     *  srcinfo.sources: double(3,n)    
+%           source locations, $x_{j}$
+%     *  srcinfo.nd: integer
+%           number of charge/dipole vectors (optional, 
+%           default - nd = 1)
+%     *  srcinfo.charges: complex(nd,n) 
+%           charge densities, $c_{j}$ (optional, 
+%           default - term corresponding to charges dropped)
+%     *  srcinfo.dipoles: complex(nd,3,n) 
+%           dipole orientation vectors, $v_{j}$ (optional
+%           default - term corresponding to dipoles dropped) 
+%  
+%  -  pg: integer
+%        | source eval flag
+%        | potential at sources evaluated if pg = 1
+%        | potenial and gradient at sources evaluated if pg=2
+%  -  targ: double(3,nt)
+%        target locations, $t_{i}$ (optional)
+%  -  pgt: integer
+%        | target eval flag (optional)
+%        | potential at targets evaluated if pgt = 1
+%        | potenial and gradient at targets evaluated if pgt=2  
+%  
+%  Returns:
+%  
+%  -  U.pot: potential at source locations, if requested, $u(x_{j})$
+%  -  U.grad: gradient at source locations, if requested, $\nabla u(x_{j})$
+%  -  U.pottarg: potential at target locations, if requested, $u(t_{i})$
+%  -  U.gradtarg: gradient at target locations, if requested, $\nabla u(t_{i})$
+ 
+
 
   sources = srcinfo.sources;
   [m,ns] = size(sources);

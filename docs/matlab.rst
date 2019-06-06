@@ -78,10 +78,12 @@ Returns:
 ------------------------------------------------------------------
 
 Wrapper for direct evaluation of Helmholtz N-body interactions.
+Note that this wrapper only returns potentials and gradients at the
+target locations.
               
 .. code:: matlab
    
-   function [U] = h3ddir(zk,srcinfo,pg,targ,pgt)
+   function [U] = h3ddir(zk,srcinfo,targ,pgt)
 
 ------------------------------------------------------------------
 
@@ -160,11 +162,13 @@ Returns:
 
 ------------------------------------------------------------------
 
-Wrapper for direct evaluation of Laplace N-body interactions.
+Wrapper for direct evaluation of Laplace N-body interactions. 
+Note that this wrapper only returns potentials and gradients at the
+target locations.
               
 .. code:: matlab
    
-   function [U] = l3ddir(srcinfo,pg,targ,pgt)
+   function [U] = l3ddir(srcinfo,targ,pgt)
 
 ------------------------------------------------------------------
 
