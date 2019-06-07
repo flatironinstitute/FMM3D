@@ -3,7 +3,7 @@
 MATLAB
 =======
 
-The matlab interface has four callable subroutines:
+The MATLAB interface has four callable subroutines:
 
 *  `Helmholtz wrappers <matlab.html#helm-mat>`__: Fast multipole implementation (hfmm3d) and direct evaluation (h3ddir) for Helmholtz N-body interactions
 *  `Laplace wrappers <matlab.html#lap-mat>`__: Fast multipole implementation (lfmm3d) and direct evaluation (l3ddir) for Laplace N-body interactions

@@ -3,7 +3,7 @@
 Python
 =======
 
-The python interface has four callable subroutines:
+The Python interface has four callable subroutines:
 
 *  `Helmholtz wrappers <python.html#helm-pyt>`__: Fast multipole implementation (hfmm3d) and direct evaluation (h3ddir) for Helmholtz N-body interactions
 *  `Laplace wrappers <python.html#lap-pyt>`__: Fast multipole implementation (lfmm3d) and direct evaluation (l3ddir) for Laplace N-body interactions
