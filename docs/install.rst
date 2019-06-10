@@ -83,7 +83,7 @@ There are three example Fortran drivers
 for both the Laplace and Helmholtz FMMs,
 one which demonstrates the use of FMMs, one which demonstrates
 the use of vectorized FMMs, and one which demonstrates the 
-use of legacy FMMs (`"FMMLIB3D" <https://github.com/zgimbutas/fmmlib3d>`_
+use of legacy FMMs (`"FMMLIB3D" <https://github.com/zgimbutas/fmmlib3d>`_).
 The Helmholtz examples are ``hfmm3d_example.f``, 
 ``hfmm3d_vec_example.f``, and ``hfmm3d_legacy_example.f``.
 We also include sample makefiles (``hfmm3d_example.make``, 
@@ -102,7 +102,7 @@ are ``lfmm3d_example.make``, ``lfmm3d_vec_example.make``, and
    If you have already compiled the static libraries, make sure that you
    run make -f ``<makefile>`` clean first.
  
-We have analogous ``C`` example drivers in ``c/``.
+We have analogous C example drivers in ``c/``.
 
 
 Building the Python wrappers
