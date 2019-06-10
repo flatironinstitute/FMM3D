@@ -160,18 +160,18 @@ Tips for installing dependencies
 On Ubuntu linux
 ~~~~~~~~~~~~~~~~
 
-On a Fedora/CentOS linux system, these dependencies can be installed as 
-follows::
+On Ubuntu linux (assuming python3 as opposed to python)::
 
-  sudo yum install make gcc gcc-c++ gcc-gfortran libgomp 
+  sudo apt-get install make build-essential gfortran  
 
 
 On Fedora/CentOS linux
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-On Ubuntu linux (assuming python3 as opposed to python)::
+On a Fedora/CentOS linux system, these dependencies can be installed as 
+follows::
 
-  sudo apt-get install make build-essential gfortran  
+  sudo yum install make gcc gcc-c++ gcc-gfortran libgomp 
 
 .. _mac-inst:
 
