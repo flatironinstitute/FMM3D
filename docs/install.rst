@@ -209,7 +209,7 @@ On Ubuntu linux
 On Mac OSX
 ############
 
-Make sure you have homebrew installed. See :ref:`mac-inst` 
+Make sure you have homebrew installed. See `Tips for installing dependencies -> On Mac OSX <install.html#mac-inst>`__ 
 
 ::
   
