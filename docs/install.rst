@@ -19,9 +19,9 @@ For the basic libraries
 
 Optional:
 
-* for matlab wrappers: MATLAB
-* for building new matlab wrappers (experts only): ``mwrap``
-* for the python wrappers you will need ``python3`` and ``pip3``. 
+* for MATLAB wrappers: MATLAB
+* for building new MATLAB wrappers (experts only): ``mwrap``
+* for the Python wrappers you will need ``python3`` and ``pip3``. 
 
 Quick linux and Mac OSX install instructions
 *********************************************
@@ -105,7 +105,7 @@ are ``lfmm3d_example.make``, ``lfmm3d_vec_example.make``, and
 We have analogous ``c`` example drivers in ``c/``.
 
 
-Building the python wrappers
+Building the Python wrappers
 ****************************
 
 First make sure you have python3 and pip3 installed. 
@@ -118,13 +118,13 @@ or alternatively run ``python python/test_hfmm.py`` and
 ``python python/test_lfmm.py``.
 
 See ``python/hfmmexample.py`` and ``python/lfmmexample.py`` to see
-usage examples for the python wrappers.
+usage examples for the Python wrappers.
 
 
-A few words about python environments
+A few words about Python environments
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-There can be confusion and conflicts between various versions of python and installed packages. It is therefore a very good idea to use virtual environments. Here's a simple way to do it (after installing python-virtualenv)::
+There can be confusion and conflicts between various versions of Python and installed packages. It is therefore a very good idea to use virtual environments. Here's a simple way to do it (after installing python-virtualenv)::
 
   Open a terminal
   virtualenv -p /usr/bin/python3 env1
@@ -133,10 +133,10 @@ There can be confusion and conflicts between various versions of python and inst
 Now you are in a virtual environment that starts from scratch. All pip installed packages will go inside the env1 directory. (You can get out of the environment by typing ``deactivate``)
 
 
-Building the matlab wrappers
+Building the MATLAB wrappers
 ****************************
 
-First make sure you have matlab installed. 
+First make sure you have MATLAB installed. 
 
 The library comes with precompiled interfaces and can be directly
 called from MATLAB. However, we **strongly** recommend compiling 
