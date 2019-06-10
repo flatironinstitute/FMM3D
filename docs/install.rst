@@ -51,7 +51,7 @@ If this fails see more detailed instructions below. If it succeeds, run
 ``make lib`` and proceed to link to library. Alternatively, 
 try one of our `precompiled linux and OSX binaries <https://users.flatironinstitute.org/~mrachh/codes/fmm3d-binaries>`_. 
 Type ``make`` to see a list of other aspects to build (language
-interfaces, etc). Please read ``Usage <fortran-c.html>``__ and look in
+interfaces, etc). Please read `Usage <fortran-c.html>`__ and look in
 ``examples/`` and ``test/`` for other usage examples.
 
 If there is an error in testing on a standard set-up,
