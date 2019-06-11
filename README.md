@@ -1,5 +1,4 @@
-Flatiron Institute Fast Multipole Libraries for Laplace and Helmholtz
-kernels
+Flatiron Institute Fast Multipole Libraries 
 
 This codebase is a set of libraries to compute
 N-body interactions governed by the Laplace and Helmholtz equations, to a specified
