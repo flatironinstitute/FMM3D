@@ -2,7 +2,7 @@ Flatiron Institute Fast Multipole Libraries for Laplace and Helmholtz
 kernels
 
 This codebase is a set of libraries to compute
-N-body interactions for Laplace, and Helmholtz kernels, to a specified
+N-body interactions governed by the Laplace and Helmholtz equations, to a specified
 precision, in three dimensions, on a multi-core shared-memory machine.
 
 Please see the [online documentation](https://fmm3d.readthedocs.io),
