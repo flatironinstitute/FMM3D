@@ -12,7 +12,7 @@ Fast multipole methods in three dimensions (FMM3D)
 	    
 `FMM3D <https://github.com/flatironinstitute/FMM3D>`_ 
 is a set of libraries to compute N-body interactions 
-for Laplace, and Helmholtz 
+governed by the Laplace and Helmholtz equations,
 to a specified precision, in three dimensions,
 on a multi-core shared-memory machine.
 The library is written in Fortran,

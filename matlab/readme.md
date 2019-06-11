@@ -2,7 +2,8 @@ This folder contains the MATLAB wrappers, legacy wrappers for FMMLIB3D,
 and precompiled mex interfaces for MacOSX and Linux.
 
 We strongly recommend recompiling the mex interfaces (see 
-`fmm3d.readthedocs.io/install.html`__ for detailed install instructions).
+https://fmm3d.readthedocs.io/en/latest/install.html for detailed installation 
+instructions).
 
 Example codes for demonstrating the Helmholtz and Laplace interfaces are
 ``hfmm3d_example.m`` and ``lfmm3d_example.m``.
