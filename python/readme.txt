@@ -9,6 +9,6 @@ hfmm3d - for computing N-body Helmholtz interactions
 lfmm3d - for computing N-body Laplace interactions
 
 Examples for both of these are demonstrated in
-hfmmexample.py and lfmmexample.py
+``hfmmexample.py`` and ``lfmmexample.py``
 
 
