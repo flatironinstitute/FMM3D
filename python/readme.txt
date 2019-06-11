@@ -1,14 +1,5 @@
-To build the fortran module:
-python setup.py build
-
-To install in development mode:
-python setup.py develop
-
-To install in the system (some pitfalls):
-pip install -e . (currently not working)
-
-Alternate way to install (some pitfalls):
-python setup.py develop
+To install in the system:
+pip install -e . 
 
 
 On compilation you can import the package fmm3dpy
