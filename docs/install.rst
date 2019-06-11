@@ -145,7 +145,7 @@ the mex interfaces on your machine.
 This can be done using ``make matlab`` which links the .m files to
 the .c file in the matlab folder.
 We have included separate make.inc files to enable this compilation
-on Windows, Mac OSX or Linux machines.
+on Mac OSX or Linux machines.
 
 To run tests, you can run ``matlab test_hfmm3d.m`` and 
 ``matlab test_lfmm3d.m`` and it should return with $0$ crashes.
