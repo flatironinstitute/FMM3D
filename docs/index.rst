@@ -56,6 +56,12 @@ faster than the previous generation on a single CPU core, and for
 sources and targets distributed on a surface, this code is 2 times
 faster.  
 
+.. note::
+   
+   The plane wave expansions for the Helmholtz FMMs have only been incorporated
+   for low frequency problems (problems less than 32 wavelengths in size in each dimension), 
+   and real Helmholtz parameter. 
+
 
 .. note::
 
@@ -75,6 +81,7 @@ faster.
    python
    legacy
    ackn
+   ref
    
 
    
