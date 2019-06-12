@@ -4,7 +4,7 @@
 
 zk = complex(1.1);
 
-nsource = 20000
+nsource = 20000;
 
 source = zeros(3,nsource);
 

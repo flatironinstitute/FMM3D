@@ -37,7 +37,8 @@ c
       implicit none
       integer ier,ns,nt,nexpc,idivflag,ndiv,isep,mhung
       integer mnbors,mnlist1,mnlist2,mnlist3,mnlist4
-      integer nlevels,lcenters,ltree
+      integer nlevels,lcenters
+      integer *8 ltree
       integer nlmax,nbmax,nboxes, nlevtmp,nbtmp, mhungtmp
       integer itree(ltree)
       integer i,j
@@ -76,7 +77,7 @@ c
       integer, allocatable :: list4(:,:)
 
 
-      integer ipointer(32)
+      integer *8 ipointer(32)
       double precision boxsize(0:nlevels)
       double precision src(3,ns),radsrc(ns)
       double precision trg(3,nt)
@@ -1646,43 +1647,45 @@ c------------------------------------------------------------------
       implicit none
       integer ier
       integer ns,nt,nexpc,idivflag,ndiv,mhung,isep
-      integer nlevels,nboxes,lcenters,ltree
+      integer nlevels,nboxes,lcenters
+      integer *8 ltree,nboxes8
       integer i,j,nbmax,nlmax
       integer, allocatable :: laddr(:,:)
-      integer, allocatable :: ilevel(:)
-      integer, allocatable :: iparenttemp(:)
-      integer, allocatable :: nchild(:)
-      integer, allocatable :: ichildtemp(:,:)
+      integer, allocatable :: ilevel(:),ilevel2(:)
+      integer, allocatable :: iparenttemp(:),iparenttemp2(:)
+      integer, allocatable :: nchild(:),nchild2(:)
+      integer, allocatable :: ichildtemp(:,:),ichildtemp2(:,:)
       integer, allocatable :: nnbors(:)
       integer, allocatable :: nbors(:,:)
       integer, allocatable :: isourcetemp(:)
       integer, allocatable :: itargettemp(:)
       integer, allocatable :: iexpctemp(:)
-      integer, allocatable :: ihsfirsttemp(:)
-      integer, allocatable :: ihslasttemp(:)
-      integer, allocatable :: isfirsttemp(:)
-      integer, allocatable :: islasttemp(:)
-      integer, allocatable :: itfirsttemp(:)
-      integer, allocatable :: itlasttemp(:)
-      integer, allocatable :: ihefirsttemp(:)
-      integer, allocatable :: ihelasttemp(:)
-      integer, allocatable :: iefirsttemp(:)
-      integer, allocatable :: ielasttemp(:)
-      integer, allocatable :: nhungsrc(:)
-      integer, allocatable :: nhungexp(:)
+      integer, allocatable :: ihsfirsttemp(:),ihsfirsttemp2(:)
+      integer, allocatable :: ihslasttemp(:),ihslasttemp2(:)
+      integer, allocatable :: isfirsttemp(:),isfirsttemp2(:)
+      integer, allocatable :: islasttemp(:),islasttemp2(:)
+      integer, allocatable :: itfirsttemp(:),itfirsttemp2(:)
+      integer, allocatable :: itlasttemp(:),itlasttemp2(:)
+      integer, allocatable :: ihefirsttemp(:),ihefirsttemp2(:)
+      integer, allocatable :: ihelasttemp(:),ihelasttemp2(:)
+      integer, allocatable :: iefirsttemp(:),iefirsttemp2(:)
+      integer, allocatable :: ielasttemp(:),ielasttemp2(:)
+      integer, allocatable :: nhungsrc(:),nhungsrc2(:)
+      integer, allocatable :: nhungexp(:),nhungexp2(:)
       integer, allocatable :: nhunglistsrc(:)
 
       double precision boxsize(0:nlmax)
       double precision src(3,ns),radsrc(ns)
       double precision trg(3,nt)
-      double precision, allocatable :: centers(:,:)
+      double precision, allocatable :: centers(:,:),centers2(:,:)
       double precision expc(3,nexpc)
       double precision radexp(nexpc)
 c
       double precision xmin,xmax,ymin,ymax,zmin,zmax,sizex,sizey,sizez
       double precision btmp
       integer ictr,ih,irefine,is,ie
-      integer nss,nee,ntot,nbtmp
+      integer nss,nee,ntot,nbtmp,ntt
+      integer ibox, ifirstbox,ilastbox, nnew, nbtot
 
       integer mnbors, mnlist1, mnlist2,mnlist3,mnlist4
       integer, allocatable :: nlist1(:)
@@ -1724,6 +1727,7 @@ c                   source/targets/sources+targets depending on
 c                   idivflag
 c
 c     nlmax         max number of levels
+c     nbmax         max number of boxes (no longer in use!)
 c
 c     OUTPUT:
 c     ier           error code
@@ -1750,7 +1754,6 @@ c
 c     initialize temporary arrays
 c  
 c     assumes nlevels lt 200
-c     assumes nboxes lt lcenters
 c
 c     Other notes:
 c
@@ -1761,8 +1764,7 @@ c
 c
       ier = 0
       ntot = ns + nt + nexpc
-      nbtmp = 16*ntot*dlog(ntot+0.0d0)/dlog(8+0.0d0)
-      nbmax = max(nbmax,nbtmp)
+      nbmax = 10000
       nboxes = nbmax
       lcenters = nbmax
       nlevels = nlmax
@@ -1952,6 +1954,129 @@ c
 
       do i = 1,nlmax
          if (irefine.eq.1) then
+c
+c
+c            estimate number of new boxes to be created
+c
+           nnew = 0
+           ifirstbox = laddr(1,nlevels)
+           ilastbox =  laddr(2,nlevels)
+
+           do ibox = ifirstbox,ilastbox
+               nss = islasttemp(ibox) - isfirsttemp(ibox) + 1
+               ntt = itlasttemp(ibox) - itfirsttemp(ibox) + 1
+               nee = ielasttemp(ibox) - iefirsttemp(ibox) + 1
+               if((idivflag.eq.0).and.(nss.gt.ndiv)) nnew = nnew + 1
+               if((idivflag.eq.1).and.(ntt.gt.ndiv)) nnew = nnew + 1
+               if((idivflag.eq.2).and.(nss.gt.ndiv.or.ntt.gt.ndiv)) 
+     1            nnew = nnew + 1
+               if((idivflag.eq.3).and.(nss.gt.ndiv.or.
+     1           ntt.gt.ndiv.or.nee.gt.ndiv)) nnew = nnew + 1
+            enddo
+
+            nbtot = nboxes + 8*nnew
+c
+c            if current memory is not sufficient, 
+c            delete previous arrays and allocate more memory
+c            allocate more memory
+c
+            if(nbtot.gt.nbmax) then
+              nbmax = nbtot
+              lcenters = nbtot
+              allocate(centers2(3,nboxes))
+              allocate(ilevel2(nboxes),iparenttemp2(nboxes))
+              allocate(nchild2(nboxes),ichildtemp2(8,nboxes))
+              allocate(ihsfirsttemp2(nboxes),ihslasttemp2(nboxes))
+              allocate(isfirsttemp2(nboxes),islasttemp2(nboxes))
+              allocate(itfirsttemp2(nboxes),itlasttemp2(nboxes))
+              allocate(ihefirsttemp2(nboxes),ihelasttemp2(nboxes))
+              allocate(iefirsttemp2(nboxes),ielasttemp2(nboxes))
+              allocate(nhungsrc2(nboxes),nhungexp2(nboxes))
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(ibox,j)
+              do ibox = 1,nboxes
+                ilevel2(ibox) = ilevel(ibox)
+                iparenttemp2(ibox) = iparenttemp(ibox)
+                nchild2(ibox) = nchild(ibox)
+                ihsfirsttemp2(ibox) = ihsfirsttemp(ibox)
+                ihslasttemp2(ibox) = ihslasttemp(ibox)
+                isfirsttemp2(ibox) = isfirsttemp(ibox)
+                islasttemp2(ibox) = islasttemp(ibox)
+                itfirsttemp2(ibox) = itfirsttemp(ibox)
+                itlasttemp2(ibox) = itlasttemp(ibox)
+                ihefirsttemp2(ibox) = ihefirsttemp(ibox)
+                ihelasttemp2(ibox) = ihelasttemp(ibox)
+                iefirsttemp2(ibox) = iefirsttemp(ibox)
+                ielasttemp2(ibox) = ielasttemp(ibox)
+                nhungsrc2(ibox) = nhungsrc(ibox)
+                nhungexp2(ibox) = nhungexp(ibox)
+                do j=1,3
+                  centers2(j,ibox) = centers(j,ibox)
+                enddo
+
+                do j=1,8
+                  ichildtemp2(j,ibox) = ichildtemp(j,ibox)
+                enddo
+
+              enddo
+C$OMP END PARALLEL DO              
+              deallocate(centers,ilevel,iparenttemp,nchild,ichildtemp)
+              deallocate(ihsfirsttemp,ihslasttemp)
+              deallocate(isfirsttemp,islasttemp)
+              deallocate(itfirsttemp,itlasttemp)
+              deallocate(ihefirsttemp,ihelasttemp)
+              deallocate(iefirsttemp,ielasttemp)
+              deallocate(nhungsrc,nhungexp)
+
+              allocate(centers(3,nbmax))
+              allocate(ilevel(nbmax),iparenttemp(nbmax))
+              allocate(nchild(nbmax),ichildtemp(8,nbmax))
+              allocate(ihsfirsttemp(nbmax),ihslasttemp(nbmax))
+              allocate(isfirsttemp(nbmax),islasttemp(nbmax))
+              allocate(itfirsttemp(nbmax),itlasttemp(nbmax))
+              allocate(ihefirsttemp(nbmax),ihelasttemp(nbmax))
+              allocate(iefirsttemp(nbmax),ielasttemp(nbmax))
+              allocate(nhungsrc(nbmax),nhungexp(nbmax))
+
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(ibox,j)
+              do ibox = 1,nboxes
+                ilevel(ibox) = ilevel2(ibox)
+                iparenttemp(ibox) = iparenttemp2(ibox)
+                nchild(ibox) = nchild2(ibox)
+                ihsfirsttemp(ibox) = ihsfirsttemp2(ibox)
+                ihslasttemp(ibox) = ihslasttemp2(ibox)
+                isfirsttemp(ibox) = isfirsttemp2(ibox)
+                islasttemp(ibox) = islasttemp2(ibox)
+                itfirsttemp(ibox) = itfirsttemp2(ibox)
+                itlasttemp(ibox) = itlasttemp2(ibox)
+                ihefirsttemp(ibox) = ihefirsttemp2(ibox)
+                ihelasttemp(ibox) = ihelasttemp2(ibox)
+                iefirsttemp(ibox) = iefirsttemp2(ibox)
+                ielasttemp(ibox) = ielasttemp2(ibox)
+                nhungsrc(ibox) = nhungsrc2(ibox)
+                nhungexp(ibox) = nhungexp2(ibox)
+                do j=1,3
+                  centers(j,ibox) = centers2(j,ibox)
+                enddo
+                do j=1,8
+                  ichildtemp(j,ibox) = ichildtemp2(j,ibox)
+                enddo
+              enddo
+C$OMP END PARALLEL DO              
+
+
+
+              deallocate(centers2,ilevel2,iparenttemp2,nchild2)
+              deallocate(ichildtemp2)
+              deallocate(ihsfirsttemp2,ihslasttemp2)
+              deallocate(isfirsttemp2,islasttemp2)
+              deallocate(itfirsttemp2,itlasttemp2)
+              deallocate(ihefirsttemp2,ihelasttemp2)
+              deallocate(iefirsttemp2,ielasttemp2)
+              deallocate(nhungsrc2,nhungexp2)
+            endif
+
+            
+
             call subdivide_adap(ier,src,ns,radsrc,trg,nt,expc,nexpc,
      $                   radexp,idivflag,ndiv,
      $                   nlevels,nboxes,
@@ -1969,6 +2094,109 @@ c
             exit
          endif
       enddo
+c
+c
+c        check with Leslie/Dhairya/Alex/Zydrunas if 16 is enough
+c
+
+      nbtot = 16*nboxes
+c
+c            if current memory is not sufficient, 
+c            delete previous arrays and allocate more memory
+c            allocate more memory
+c
+      if(nbtot.gt.nbmax) then
+        nbmax = nbtot
+        lcenters = nbtot
+
+        allocate(centers2(3,nboxes))
+        allocate(ilevel2(nboxes),iparenttemp2(nboxes))
+        allocate(nchild2(nboxes),ichildtemp2(8,nboxes))
+        allocate(ihsfirsttemp2(nboxes),ihslasttemp2(nboxes))
+        allocate(isfirsttemp2(nboxes),islasttemp2(nboxes))
+        allocate(itfirsttemp2(nboxes),itlasttemp2(nboxes))
+        allocate(ihefirsttemp2(nboxes),ihelasttemp2(nboxes))
+        allocate(iefirsttemp2(nboxes),ielasttemp2(nboxes))
+        allocate(nhungsrc2(nboxes),nhungexp2(nboxes))
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(ibox,j)
+        do ibox = 1,nboxes
+          ilevel2(ibox) = ilevel(ibox)
+          iparenttemp2(ibox) = iparenttemp(ibox)
+          nchild2(ibox) = nchild(ibox)
+          ihsfirsttemp2(ibox) = ihsfirsttemp(ibox)
+          ihslasttemp2(ibox) = ihslasttemp(ibox)
+          isfirsttemp2(ibox) = isfirsttemp(ibox)
+          islasttemp2(ibox) = islasttemp(ibox)
+          itfirsttemp2(ibox) = itfirsttemp(ibox)
+          itlasttemp2(ibox) = itlasttemp(ibox)
+          ihefirsttemp2(ibox) = ihefirsttemp(ibox)
+          ihelasttemp2(ibox) = ihelasttemp(ibox)
+          iefirsttemp2(ibox) = iefirsttemp(ibox)
+          ielasttemp2(ibox) = ielasttemp(ibox)
+          nhungsrc2(ibox) = nhungsrc(ibox)
+          nhungexp2(ibox) = nhungexp(ibox)
+          do j=1,3
+            centers2(j,ibox) = centers(j,ibox)
+          enddo
+           do j=1,8
+            ichildtemp2(j,ibox) = ichildtemp(j,ibox)
+          enddo
+         enddo
+C$OMP END PARALLEL DO              
+        deallocate(centers,ilevel,iparenttemp,nchild,ichildtemp)
+        deallocate(ihsfirsttemp,ihslasttemp)
+        deallocate(isfirsttemp,islasttemp)
+        deallocate(itfirsttemp,itlasttemp)
+        deallocate(ihefirsttemp,ihelasttemp)
+        deallocate(iefirsttemp,ielasttemp)
+        deallocate(nhungsrc,nhungexp)
+
+        allocate(centers(3,nbmax))
+        allocate(ilevel(nbmax),iparenttemp(nbmax))
+        allocate(nchild(nbmax),ichildtemp(8,nbmax))
+        allocate(ihsfirsttemp(nbmax),ihslasttemp(nbmax))
+        allocate(isfirsttemp(nbmax),islasttemp(nbmax))
+        allocate(itfirsttemp(nbmax),itlasttemp(nbmax))
+        allocate(ihefirsttemp(nbmax),ihelasttemp(nbmax))
+        allocate(iefirsttemp(nbmax),ielasttemp(nbmax))
+        allocate(nhungsrc(nbmax),nhungexp(nbmax))
+
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(ibox,j)
+        do ibox = 1,nboxes
+          ilevel(ibox) = ilevel2(ibox)
+          iparenttemp(ibox) = iparenttemp2(ibox)
+          nchild(ibox) = nchild2(ibox)
+          ihsfirsttemp(ibox) = ihsfirsttemp2(ibox)
+          ihslasttemp(ibox) = ihslasttemp2(ibox)
+          isfirsttemp(ibox) = isfirsttemp2(ibox)
+          islasttemp(ibox) = islasttemp2(ibox)
+          itfirsttemp(ibox) = itfirsttemp2(ibox)
+          itlasttemp(ibox) = itlasttemp2(ibox)
+          ihefirsttemp(ibox) = ihefirsttemp2(ibox)
+          ihelasttemp(ibox) = ihelasttemp2(ibox)
+          iefirsttemp(ibox) = iefirsttemp2(ibox)
+          ielasttemp(ibox) = ielasttemp2(ibox)
+          nhungsrc(ibox) = nhungsrc2(ibox)
+          nhungexp(ibox) = nhungexp2(ibox)
+          do j=1,3
+            centers(j,ibox) = centers2(j,ibox)
+          enddo
+          do j=1,8
+            ichildtemp(j,ibox) = ichildtemp2(j,ibox)
+          enddo
+        enddo
+C$OMP END PARALLEL DO              
+
+        deallocate(centers2,ilevel2,iparenttemp2,nchild2)
+        deallocate(ichildtemp2)
+        deallocate(ihsfirsttemp2,ihslasttemp2)
+        deallocate(isfirsttemp2,islasttemp2)
+        deallocate(itfirsttemp2,itlasttemp2)
+        deallocate(ihefirsttemp2,ihelasttemp2)
+        deallocate(iefirsttemp2,ielasttemp2)
+        deallocate(nhungsrc2,nhungexp2)
+      endif
+
 c     Set up computation of list1 and list2      
       allocate(nnbors(nbmax))
       allocate(nbors(mnbors,nbmax))
@@ -2013,6 +2241,7 @@ c     Compute mnlist1, mnlist2, mnlist3, mnlist4
      2                   ichildtemp,isep,nnbors,mnbors,nbors,mnlist1,
      3                   mnlist2,mnlist3,mnlist4)
 
+
       allocate(nlist1(nboxes),nlist2(nboxes))
       allocate(nlist3(nboxes),nlist4(nboxes))
       allocate(list1(mnlist1,nboxes),list2(mnlist2,nboxes))
@@ -2027,9 +2256,11 @@ c     Compute mnlist1, mnlist2, mnlist3, mnlist4
 
       call computemhung(nlevels,nboxes,laddr,iparenttemp,ilevel,nnbors,
      1  mnbors,nbors,nlist1,mnlist1,list1,nhungsrc,nhunglistsrc,mhung)
-
-
-      ltree = (28+mhung+mnlist1+mnlist2+mnlist3+mnlist4+mnbors)*nboxes+ 
+c
+c      temporarily typecast nboxes to integer *8
+c
+      nboxes8 = nboxes
+      ltree = (28+mhung+mnlist1+mnlist2+mnlist3+mnlist4+mnbors)*nboxes8+ 
      1        2*(nlevels+1)+ns+nt+nexpc
 
       return

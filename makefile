@@ -12,7 +12,7 @@
 CC=gcc
 FC=gfortran
 
-FFLAGS= -fPIC -O3 
+FFLAGS= -fPIC -O3 -march=native -funroll-loops  
 CFLAGS= -std=c99 
 CFLAGS+= $(FFLAGS) 
 
@@ -269,8 +269,8 @@ clean: objclean
 	rm -f c/test_hfmm3d
 	rm -f c/test_lfmm3d
 
-debug: $(STATICLIB) $(TOBJS) examples/ex3_helm
-	time -p examples/hfmm3d_legacy_example
+debug: $(STATICLIB) $(TOBJS) examples/ex1_lap
+	export OMP_NUM_THREADS=12; time -p examples/lfmm3d_example
 	
 	
 

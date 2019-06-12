@@ -669,7 +669,8 @@ c-------------------------------------------------------------------
       integer idim,nd
       integer ibox,ilev,nboxes,nterms,nlams,nthmax
       integer nphysical(nlams),nfourier(nlams)
-      integer iaddr(2,nboxes),ichild(8,nboxes)
+      integer *8 iaddr(2,nboxes)
+      integer ichild(8,nboxes)
       integer nexptot,nexptotp,nmax
       integer nuall,ndall,nu1234,nd5678
       integer uall(*),dall(*),u1234(*),d5678(*)
@@ -1033,7 +1034,8 @@ c-------------------------------------------------------------------
       integer nd
       integer ibox,ilev,nboxes,nterms,nlams,nthmax
       integer nphysical(nlams),nfourier(nlams)
-      integer iaddr(2,nboxes),ichild(8,nboxes)
+      integer *8 iaddr(2,nboxes)
+      integer ichild(8,nboxes)
       integer nexptot,nexptotp,nmax
       integer nnall,nsall,nn1256,ns3478,nn12,nn56,ns34,ns78
       integer nall(*),sall(*),n1256(*),s3478(*)
@@ -1476,7 +1478,8 @@ c-------------------------------------------------------------------
       integer nd
       integer ibox,ilev,nboxes,nterms,nlams,nthmax
       integer nphysical(nlams),nfourier(nlams)
-      integer iaddr(2,nboxes),ichild(8,nboxes)
+      integer *8 iaddr(2,nboxes)
+      integer ichild(8,nboxes)
       integer nexptot,nexptotp,nmax
       integer neall,nwall,ne1357,nw2468,ne13,ne57,nw24,nw68
       integer ne1,ne3,ne5,ne7,nw2,nw4,nw6,nw8

@@ -53,17 +53,19 @@ c                 level
 c
 c------------------------------------------------------------------
 c     Output arguments
-c     iaddr       out: Integer(2,nboxes)
+c     iaddr       out: Integer *8(2,nboxes)
 c                 Points the multipole and local expansions in box i
 c 
-c     lmptot      out: Integer
+c     lmptot      out: Integer *8
 c                 Total length of expansions array required
 c------------------------------------------------------------------
 
       implicit none
       integer nlevels,nterms(0:nlevels),nd
-      integer iaddr(2,1), lmptot, laddr(2,0:nlevels)
-      integer ibox,i,iptr,istart,nn,itmp
+      integer *8 iaddr(2,*), lmptot 
+      integer laddr(2,0:nlevels)
+      integer ibox,i,iptr
+      integer *8 istart,nn,itmp
 
       istart = 1
       do i = 0,nlevels

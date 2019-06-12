@@ -104,10 +104,11 @@ c                supported
 c
 cc       tree variables
 c
-       integer ltree,mhung,idivflag,ndiv,isep,nboxes,nbmax,nlevels
+       integer mhung,idivflag,ndiv,isep,nboxes,nbmax,nlevels
+       integer *8 ltree
        integer nlmax
        integer mnbors,mnlist1,mnlist2,mnlist3,mnlist4
-       integer ipointer(32)
+       integer *8 ipointer(32)
        integer, allocatable :: itree(:)
        double precision, allocatable :: treecenters(:,:),boxsize(:)
 
@@ -128,11 +129,13 @@ c
 cc        temporary fmm arrays
 c
        double precision epsfmm
-       integer, allocatable :: nterms(:),iaddr(:,:)
+       integer, allocatable :: nterms(:)
+       integer *8, allocatable :: iaddr(:,:)
        double precision, allocatable :: scales(:)
        double precision, allocatable :: rmlexp(:)
 
-       integer lmptemp,nmax,lmptot
+       integer lmptemp,nmax
+       integer *8 lmptot
        double precision, allocatable :: mptemp(:),mptemp2(:)
 
 c
@@ -150,13 +153,21 @@ c
         double precision time1,time2,omp_get_wtime,second
 
 c
+c
+c     ifprint is an internal information printing flag. 
+c     Suppressed if ifprint=0.
+c     Prints timing breakdown and other things if ifprint=1.
+c       
+      ifprint=0
+
+c
 cc        figure out tree structure
 c
 c
 cc         set criterion for box subdivision
 c
 
-       ndiv = 100
+       ndiv = 200
 
 c
 cc      set tree flags
@@ -198,10 +209,11 @@ cc     memory management code for contructing level restricted tree
      2        nlevels,nboxes,mnbors,mnlist1,mnlist2,mnlist3,
      3        mnlist4,mhung,ltree)
 
+        if(ifprint.ge.1) print *, ltree/1.0d9
 
 
         if(iert.ne.0) then
-           call prin2('Error in allocating tree memory, ier=*',ier,1)
+           print *, "Error in allocating tree memory"
            stop
         endif
 
@@ -215,14 +227,6 @@ c       Call tree code
      1               nexpc,radexp,idivflag,ndiv,isep,mhung,mnbors,
      2               mnlist1,mnlist2,mnlist3,mnlist4,nlevels,
      2               nboxes,treecenters,boxsize,itree,ltree,ipointer)
-
-c
-c
-c     ifprint is an internal information printing flag. 
-c     Suppressed if ifprint=0.
-c     Prints timing breakdown and other things if ifprint=1.
-c       
-      ifprint=0
 
 c     Allocate sorted source and targ arrays      
 
@@ -405,15 +409,14 @@ c     levels
 c     irmlexp is pointer for workspace need by various fmm routines,
 c
       call mpalloc(nd,itree(ipointer(1)),iaddr,nlevels,lmptot,nterms)
-      if(ifprint.ge. 1) call prinf(' lmptot is *',lmptot,1)
+      if(ifprint.ge. 1) print *, "lmptot =",lmptot/1.0d9
 
 
       allocate(rmlexp(lmptot),stat=ier)
       if(ier.ne.0) then
-        call prinf('Cannot allocate mpole expansion workspace,
-     1              lmptot is *', lmptot,1)
-        ier = 16
-        stop
+         print *, "Cannot allocate mpole expansion workspace"
+         print *, "lmptot=", lmptot
+         stop
       endif
 
 c     Memory allocation is complete. 
@@ -527,7 +530,8 @@ c
       double complex tsort(nd,0:ntj,-ntj:ntj,nexpc)
       double precision scjsort(nexpc)
 
-      integer iaddr(2,nboxes), lmptot, lmptemp
+      integer *8 iaddr(2,nboxes), lmptot
+      integer lmptemp
       double precision rmlexp(lmptot)
       double precision mptemp(lmptemp)
       double precision mptemp2(lmptemp)
@@ -537,10 +541,11 @@ c
       double precision timeinfo(10)
       double precision centers(3,nboxes)
 
-      integer isep, ltree
+      integer isep
+      integer *8 ltree
       integer laddr(2,0:nlevels)
       integer nterms(0:nlevels)
-      integer ipointer(32)
+      integer *8 ipointer(32)
       integer itree(ltree)
       integer nboxes
       double precision rscales(0:nlevels)
@@ -615,11 +620,22 @@ c     PW variables
       double precision, allocatable :: rscpow(:)
       double precision pi,errtmp
       double complex ima
+
+      integer *8 bigint
+      integer iert
       data ima/(0.0d0,1.0d0)/
 
       pi = 4.0d0*atan(1.0d0)
 
       thresh = 2.0d0**(-52)*boxsize(0)
+
+c     ifprint is an internal information printing flag. 
+c     Suppressed if ifprint=0.
+c     Prints timing breakdown and other things if ifprint=1.
+c     Prints timing breakdown, list information, 
+c     and other things if ifprint=2.
+c       
+      ifprint=0
       
 
 c     Initialize routines for plane wave mp loc translation
@@ -704,7 +720,23 @@ c     Compute total number of plane waves
      1   mexpp1(nd,nexptotp))
       allocate(mexpp2(nd,nexptotp),mexppall(nd,nexptotp,16))
 
-      allocate(mexp(nd,nexptotp,nboxes,6))
+c
+cc      NOTE: there can be some memory savings here
+c
+      bigint = 0
+      bigint = nboxes
+      bigint = bigint*6
+      bigint = bigint*nexptotp*nd
+
+      if(ifprint.ge.1) print *, "mexp memory=",bigint/1.0d9
+
+      allocate(mexp(nd,nexptotp,nboxes,6),stat=iert)
+      if(iert.ne.0) then
+        print *, "Cannot allocate pw expansion workspace"
+        print *, "bigint=", bigint
+        stop
+      endif
+
 
 c     Precompute table for shifting exponential coefficients in 
 c     physical domain
@@ -738,13 +770,6 @@ cc    compute array of factorials
 
 
       
-c     ifprint is an internal information printing flag. 
-c     Suppressed if ifprint=0.
-c     Prints timing breakdown and other things if ifprint=1.
-c     Prints timing breakdown, list information, 
-c     and other things if ifprint=2.
-c       
-      ifprint=0
       if(ifprint.ge.1) 
      1   call prin2('end of generating plane wave info*',i,0)
 c
