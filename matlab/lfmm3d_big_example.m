@@ -7,23 +7,22 @@ disp(" ");
 %%   source to source, charges only, pot+grad example
 %
 
-clear srcinfo ns U1 U2 eps pg zk;
+clear srcinfo ns U1 U2 eps pg;
 disp("Example 1: source to source, charge, pot+grad");
 disp(" ");
 disp(" ");
 
 ns = 300000000
 srcinfo.sources = rand(3,ns);
-srcinfo.charges = rand(1,ns)+1i*rand(1,ns);
+srcinfo.charges = rand(1,ns);
 
 eps = 1e-5;
 pg = 2;
-zk = complex(1.1);
-U1 = hfmm3d(eps,zk,srcinfo,pg);
+U1 = lfmm3d(eps,srcinfo,pg);
 
 ntest = 10;
 targ = srcinfo.sources(:,1:ntest);
-U2 = h3ddir(zk,srcinfo,targ,pg);
+U2 = l3ddir(srcinfo,targ,pg);
 
 U2.pot = U2.pottarg;
 U2.grad = U2.gradtarg;

@@ -85,7 +85,7 @@ CHEADERS = c/cprini.h c/utils.h c/hfmm3d_c.h c/lfmm3d_c.h
 
 OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
-.PHONY: usage lib examples test perftest python all c c-examples matlab python3
+.PHONY: usage lib examples test perftest python all c c-examples matlab python3 big-test
 
 default: usage
 
@@ -95,12 +95,14 @@ usage:
 	@echo "Makefile for FMM3D. Specify what to make:"
 	@echo "  make lib - compile the main library (in lib/ and lib-static/)"
 	@echo "  make examples - compile and run fortran examples in examples/"
+	@echo "  make big-test - compile fortran examples for testing large n in test/"
 	@echo "  make c-examples - compile and run c examples in c/"
 	@echo "  make test - compile and run validation tests (will take around 30 secs)"
 	@echo "  make matlab - compile matlab interfaces"
 	@echo "  make mex - generate matlab interfaces (for expert users only, requires mwrap)"
 	@echo "  make python - compile and test python interfaces"
 	@echo "  make python3 - compile and test python interfaces using python3"
+	@echo "  make big-test - compile fortran examples for testing large n in test/ (Takes around 60 mins to run both examples on a server with 40 nodes, and around 300GB of memory)"
 	@echo "  make objclean - removal all object files, preserving lib & MEX"
 	@echo "  make clean - also remove lib, MEX, py, and demo executables"
 	@echo "For faster (multicore) making, append the flag -j"
@@ -259,6 +261,14 @@ clean: objclean
 	rm -f examples/lfmm3d_example
 	rm -f examples/lfmm3d_vec_example
 	rm -f examples/lfmm3d_legacy_example
+	rm -f test/Laplace/test_lfmm3d
+	rm -f test/Laplace/test_lfmm3d_vec
+	rm -f test/Laplace/test_lfmm3d_big
+	rm -f test/Laplace/test_laprouts3d
+	rm -f test/Helmholtz/test_hfmm3d
+	rm -f test/Helmholtz/test_hfmm3d_vec
+	rm -f test/Helmholtz/test_hfmm3d_big
+	rm -f test/Helmholtz/test_helmrouts3d
 	rm -f examples/hfmm3d_example
 	rm -f examples/hfmm3d_vec_example
 	rm -f examples/hfmm3d_legacy_example
@@ -269,12 +279,14 @@ clean: objclean
 	rm -f c/test_hfmm3d
 	rm -f c/test_lfmm3d
 
-debug: $(STATICLIB) $(TOBJS) test/test_helm_big
-	export OMP_NUM_THREADS=12; time -p test/Helmholtz/test_hfmm3d_big
+big-test: $(STATICLIB) $(TOBJS) test/test_lap_big test/test_helm_big
 	
 	
 test/test_helm_big:
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_big.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_big
+
+test/test_lap_big:
+	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_big.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d_big
 
 
 objclean: 
