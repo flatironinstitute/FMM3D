@@ -269,10 +269,13 @@ clean: objclean
 	rm -f c/test_hfmm3d
 	rm -f c/test_lfmm3d
 
-debug: $(STATICLIB) $(TOBJS) examples/ex1_lap
-	export OMP_NUM_THREADS=12; time -p examples/lfmm3d_example
+debug: $(STATICLIB) $(TOBJS) test/test_helm_big
+	export OMP_NUM_THREADS=12; time -p test/Helmholtz/test_hfmm3d_big
 	
 	
+test/test_helm_big:
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_big.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_big
+
 
 objclean: 
 	rm -f $(OBJS) $(COBJS) $(TOBJS)

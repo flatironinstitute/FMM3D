@@ -4,7 +4,9 @@
 
 zk = complex(1.1);
 
-nsource = 20000;
+N = maxNumCompThreads
+
+nsource = 2000;
 
 source = zeros(3,nsource);
 
@@ -119,14 +121,5 @@ rel_error_fldtarg = ...
 end
 %%%break;
 
-fileID = fopen('debuginfo','w');
-fprintf(fileID,'%5d \n',nsource);
-fprintf(fileID,'%5d \n',ntarget);
-fprintf(fileID,'%22.15e %22.15e %22.15e \n',source);
-fprintf(fileID,'%22.15e %22.15e %22.15e \n',target);
-fprintf(fileID,'%22.15e %22.15e \n',[real(charge(:)),imag(charge(:))].');
-fprintf(fileID,'%22.15e %22.15e \n',[real(dipstr(:)),imag(dipstr(:))]');
-fprintf(fileID,'%22.15e %22.15e %22.15e \n',dipvec);
-fclose(fileID);
 
-
+exit;
