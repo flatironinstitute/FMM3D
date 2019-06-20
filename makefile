@@ -67,7 +67,7 @@ HOBJS = $(HELM)/h3dcommon.o $(HELM)/h3dterms.o $(HELM)/h3dtrans.o \
 	$(HELM)/helmrouts3d.o $(HELM)/hfmm3d.o $(HELM)/hfmm3dwrap.o \
 	$(HELM)/hfmm3dwrap_legacy.o $(HELM)/hfmm3dwrap_vec.o $(HELM)/hpwrouts.o \
 	$(HELM)/hwts3.o $(HELM)/numphysfour.o $(HELM)/projections.o \
-	$(HELM)/quadread.o
+	$(HELM)/quadread.o $(HELM)/hfmm3d_plan.o
 
 # Laplace objects
 LAP = src/Laplace
@@ -85,7 +85,7 @@ CHEADERS = c/cprini.h c/utils.h c/hfmm3d_c.h c/lfmm3d_c.h
 
 OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
-.PHONY: usage lib examples test perftest python all c c-examples matlab python3 big-test
+.PHONY: usage lib examples test perftest python all c c-examples matlab python3 big-test debug
 
 default: usage
 
@@ -288,6 +288,12 @@ test/test_helm_big:
 test/test_lap_big:
 	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_big.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d_big
 
+
+debug: $(STATICLIB) $(TOBJS) examples/ex_plan_helm 
+	time -p ./examples/hfmm3d_plan_example
+
+examples/ex_plan_helm:
+	$(FC) $(FFLAGS) examples/hfmm3d_plan_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_plan_example
 
 objclean: 
 	rm -f $(OBJS) $(COBJS) $(TOBJS)

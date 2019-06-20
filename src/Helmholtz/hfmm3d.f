@@ -165,7 +165,7 @@ c     ifprint is an internal information printing flag.
 c     Suppressed if ifprint=0.
 c     Prints timing breakdown and other things if ifprint=1.
 c      
-      ifprint=0
+      ifprint=1
 
 
 
@@ -176,7 +176,7 @@ c
 c
 cc        set criterion for box subdivision
 c
-       ndiv = 200
+       ndiv = 400
 c
 cc         set tree flags
 c
@@ -221,6 +221,7 @@ cc      memory management code for constructing level restricted tree
 
         if(ifprint.ge.1) print *, ltree/1.0d9
 
+        if(ifprint.ge.1) print *, mnlist1,mnlist3,mnlist4
 
         if(iert.ne.0) then
            print *, "Error in allocating tree memory"
@@ -386,6 +387,8 @@ c     Compute length of expansions at each level
          call h3dterms(boxsize(i),zk,eps,nterms(i))
          if(nterms(i).gt.nmax) nmax = nterms(i)
       enddo
+
+      if(ifprint.ge.1) print *, "nterms=",nterms
 c       
 c     Multipole and local expansions will be held in workspace
 c     in locations pointed to by array iaddr(2,nboxes).
@@ -630,6 +633,12 @@ c     temp variables
 
       double precision thresh
 
+      double precision, allocatable :: t_mploc(:)
+
+      double precision tt1,tt2
+
+      double precision zkr_sw, zki_sw
+
       integer mnbors,mnlist1, mnlist2,mnlist3,mnlist4
       double complex eye, ztmp,zmult
       double precision alphaj
@@ -651,12 +660,22 @@ c     temp variables
       integer nlfbox,ier
 
 
+      allocate(t_mploc(0:nlevels))
+      
+      do i=0,nlevels
+        t_mploc(i) = 0
+      enddo
+
+
       ntmax = 1000
       allocate(nfourier(ntmax),nphysical(ntmax))
       allocate(rlams(ntmax),whts(ntmax))
 
 
       pi = 4.0d0*atan(1.0d0)
+
+      zkr_sw = 2.0d0*pi
+      zki_sw = 0.02d0
 
       nmax = 0
       do i=0,nlevels
@@ -698,7 +717,7 @@ c     Suppressed if ifprint=0.
 c     Prints timing breakdown and other things if ifprint=1.
 c     Prints timing breakdown, list information, and other things if ifprint=2.
 c       
-        ifprint=0
+        ifprint=1
 c
 c
 c     ... set the expansion coefficients to zero
@@ -1003,9 +1022,13 @@ C$        time1=omp_get_wtime()
 c
 cc       load the necessary quadrature for plane waves
 c
+         call cpu_time(tt1)
+C$         tt1=omp_get_wtime()
       
          zk2 = zk*boxsize(ilev)
-         if(real(zk2).le.pi.and.imag(zk2).le.0.02d0) then
+
+         print *, zk2
+         if(real(zk2).le.zkr_sw.and.imag(zk2).le.zki_sw) then
             ier = 0
             call lreadall(eps,zk2,nlams,rlams,whts,nfourier,
      1           nphysical,ntmax,ier)
@@ -1270,7 +1293,9 @@ C$OMP END PARALLEL DO
 
          endif
 
-         if(real(zk2).ge.pi.or.imag(zk2).ge.0.02d0) then
+         if(real(zk2).ge.zkr_sw.or.imag(zk2).ge.zki_sw) then
+            print *, "In dense multipole to local part"
+
 
             nquad2 = nterms(ilev)*2.2
             nquad2 = max(6,nquad2)
@@ -1324,10 +1349,17 @@ C$OMP$PRIVATE(ibox,istart,iend,npts,nlist2,i,jbox)
            enddo
 C$OMP END PARALLEL DO        
          endif
+
+         call cpu_time(tt2)
+C$         tt2=omp_get_wtime()
+         
+         t_mploc(ilev) = tt2-tt1
       enddo
       call cpu_time(time2)
 C$        time2=omp_get_wtime()
       timeinfo(4) = time2-time1
+
+      if(ifprint.ge.1) print *, "tmploc=",t_mploc
 
 
       if(ifprint.ge.1)
