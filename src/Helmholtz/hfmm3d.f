@@ -176,7 +176,7 @@ c
 c
 cc        set criterion for box subdivision
 c
-       ndiv = 75 
+       ndiv = 30 
 cc         set tree flags
 c
        isep = 1

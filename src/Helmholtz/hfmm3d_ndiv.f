@@ -11,7 +11,7 @@ c
 c-----------------------------------------------------------
         subroutine hfmm3d(nd,eps,zk,nsource,source,ifcharge,
      $    charge,ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,
-     $    targ,ifpghtarg,pottarg,gradtarg,hesstarg,ndiv)
+     $    targ,ifpghtarg,pottarg,gradtarg,hesstarg,ndiv,ifnear)
 c-----------------------------------------------------------------------
 c   INPUT PARAMETERS:
 c
@@ -92,6 +92,8 @@ c------------------------------------------------------------------
 
       integer nd
 
+      integer ifnear
+
       double complex zk
       double precision eps
 
@@ -168,13 +170,13 @@ c
       ifprint=1
 
 
-
 c
 cc       figure out tree structure
 c
    
 c
 cc        set criterion for box subdivision
+c
 c
 cc         set tree flags
 c
@@ -219,7 +221,7 @@ cc      memory management code for constructing level restricted tree
 
         if(ifprint.ge.1) print *, ltree/1.0d9
 
-        if(ifprint.ge.1) print *, mnlist1,mnlist2,mnlist3,mnlist4
+        if(ifprint.ge.1) print *, mnlist1,mnlist3,mnlist4
 
         if(iert.ne.0) then
            print *, "Error in allocating tree memory"
@@ -448,7 +450,7 @@ C$      time1=omp_get_wtime()
      $   nboxes,boxsize,mnbors,mnlist1,mnlist2,mnlist3,mnlist4,
      $   scales,treecenters,itree(ipointer(1)),nterms,
      $   ifpgh,potsort,gradsort,hesssort,ifpghtarg,pottargsort,
-     $   gradtargsort,hesstargsort,ntj,texpssort,scjsort)
+     $   gradtargsort,hesstargsort,ntj,texpssort,scjsort,ifnear)
 
       call cpu_time(time2)
 C$        time2=omp_get_wtime()
@@ -513,9 +515,10 @@ c
      $     nboxes,boxsize,mnbors,mnlist1,mnlist2,mnlist3,mnlist4,
      $     rscales,centers,laddr,nterms,ifpgh,pot,grad,hess,
      $     ifpghtarg,pottarg,gradtarg,hesstarg,
-     $     ntj,jsort,scjsort)
+     $     ntj,jsort,scjsort,ifnear)
       implicit none
 
+      integer ifnear
       integer nd
       double precision eps
       integer nsource,ntarg, nexpc
@@ -1025,6 +1028,7 @@ C$         tt1=omp_get_wtime()
       
          zk2 = zk*boxsize(ilev)
 
+         print *, zk2
          if(real(zk2).le.zkr_sw.and.imag(zk2).le.zki_sw) then
             ier = 0
             call lreadall(eps,zk2,nlams,rlams,whts,nfourier,
@@ -1356,7 +1360,7 @@ C$         tt2=omp_get_wtime()
 C$        time2=omp_get_wtime()
       timeinfo(4) = time2-time1
 
-      if(ifprint.ge.1) call prin2('tmploc=*',t_mploc,nlevels+1)
+      if(ifprint.ge.1) print *, "tmploc=",t_mploc
 
 
       if(ifprint.ge.1)
@@ -1680,14 +1684,13 @@ C$OMP END PARALLEL DO
 C$        time2=omp_get_wtime()
       timeinfo(7) = time2 - time1
 
-
+      if(ifnear.eq.0) goto 1000
 
       if(ifprint .ge. 1)
      $     call prinf('=== STEP 8 (direct) =====*',i,0)
       call cpu_time(time1)
 C$        time1=omp_get_wtime()
 
-      goto 1000
 c
 cc       directly form local expansions for list1 sources
 c        at expansion centers. 
@@ -2001,7 +2004,7 @@ C$OMP END PARALLEL DO
           endif
         endif
       enddo
- 1000 continue    
+ 1000 continue      
  
       call cpu_time(time2)
 C$        time2=omp_get_wtime()
@@ -2013,7 +2016,6 @@ C$        time2=omp_get_wtime()
       enddo
 
       if(ifprint.ge.1) call prin2('sum(timeinfo)=*',d,1)
-    
 
 
       return

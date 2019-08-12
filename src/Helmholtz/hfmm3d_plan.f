@@ -133,7 +133,7 @@ c
 c
 cc        set criterion for box subdivision
 c
-       ndiv = 100
+       ndiv = 75
 c
 cc         set tree flags
 c
@@ -146,7 +146,7 @@ c
 
        nexpc = 0
 
-       idivflag = 0
+       idivflag = 1
 
        mnlist1 = 0
        mnlist2 = 0
