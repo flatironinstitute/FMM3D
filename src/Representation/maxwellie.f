@@ -236,6 +236,7 @@ C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(srci,dimi,ndi,cnt)
           enddo
           enddo 
           enddo
+C$OMP END PARALLEL DO
         endif
         ! set hfmm3d flag and call hfmm3d
         ifpgh=0
@@ -320,19 +321,19 @@ C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(srci,ndi,cnt,dimi)
           do dimi=1,3
           do ndi=1,nd
           if(dimi .eq. 1) then
-            dipvec(3*(ndi-1)+1,1,srci) = 0d0
-            dipvec(3*(ndi-1)+1,2,srci) = -j(ndi,3,srci)
-            dipvec(3*(ndi-1)+1,3,srci) = j(ndi,2,srci)
+            dipvec(cnt,1,srci) = 0d0
+            dipvec(cnt,2,srci) = -j(ndi,3,srci)
+            dipvec(cnt,3,srci) = j(ndi,2,srci)
           endif
           if(dimi .eq. 2) then
-            dipvec(3*(ndi-1)+2,1,srci) = j(ndi,3,srci)
-            dipvec(3*(ndi-1)+2,2,srci) = 0d0
-            dipvec(3*(ndi-1)+2,3,srci) = -j(ndi,1,srci)
+            dipvec(cnt,1,srci) = j(ndi,3,srci)
+            dipvec(cnt,2,srci) = 0d0
+            dipvec(cnt,3,srci) = -j(ndi,1,srci)
           endif
           if(dimi .eq. 3) then
-            dipvec(3*(ndi-1)+3,1,srci) = -j(ndi,2,srci)
-            dipvec(3*(ndi-1)+3,2,srci) = j(ndi,1,srci)
-            dipvec(3*(ndi-1)+3,3,srci) = 0d0
+            dipvec(cnt,1,srci) = -j(ndi,2,srci)
+            dipvec(cnt,2,srci) = j(ndi,1,srci)
+            dipvec(cnt,3,srci) = 0d0
           endif
           cnt=cnt+1
           enddo
@@ -362,6 +363,7 @@ C$OMP END PARALLEL DO
         !pack charge
         if(ifm .eq. 1) then
           ifcharge=1
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(srci,dimi,ndi,cnt)
           do srci=1,nsource
           cnt=1
           do dimi=1,3
@@ -371,6 +373,7 @@ C$OMP END PARALLEL DO
           enddo
           enddo
           enddo
+C$OMP END PARALLEL DO
         endif
         !set hfmm3d flags and call hfmm3d
         ifpgh=0
@@ -673,6 +676,7 @@ C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(srci,dimi,ndi,cnt)
           enddo
           enddo 
           enddo
+C$OMP END PARALLEL DO
         endif
         !call hfmm3d direct
         ifpgh=0
@@ -810,19 +814,19 @@ C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(srci,ndi,cnt,dimi)
           do dimi=1,3
           do ndi=1,nd
           if(dimi .eq. 1) then
-            dipvec(3*(ndi-1)+1,1,srci) = 0d0
-            dipvec(3*(ndi-1)+1,2,srci) = -j(ndi,3,srci)
-            dipvec(3*(ndi-1)+1,3,srci) = j(ndi,2,srci)
+            dipvec(cnt,1,srci) = 0d0
+            dipvec(cnt,2,srci) = -j(ndi,3,srci)
+            dipvec(cnt,3,srci) = j(ndi,2,srci)
           endif
           if(dimi .eq. 2) then
-            dipvec(3*(ndi-1)+2,1,srci) = j(ndi,3,srci)
-            dipvec(3*(ndi-1)+2,2,srci) = 0d0
-            dipvec(3*(ndi-1)+2,3,srci) = -j(ndi,1,srci)
+            dipvec(cnt,1,srci) = j(ndi,3,srci)
+            dipvec(cnt,2,srci) = 0d0
+            dipvec(cnt,3,srci) = -j(ndi,1,srci)
           endif
           if(dimi .eq. 3) then
-            dipvec(3*(ndi-1)+3,1,srci) = -j(ndi,2,srci)
-            dipvec(3*(ndi-1)+3,2,srci) = j(ndi,1,srci)
-            dipvec(3*(ndi-1)+3,3,srci) = 0d0
+            dipvec(cnt,1,srci) = -j(ndi,2,srci)
+            dipvec(cnt,2,srci) = j(ndi,1,srci)
+            dipvec(cnt,3,srci) = 0d0
           endif
           cnt=cnt+1
           enddo
@@ -852,6 +856,7 @@ C$OMP END PARALLEL DO
         !pack charge
         if(ifm .eq. 1) then
           ifcharge=1
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(srci,dimi,ndi,cnt)
           do srci=1,nsource
           cnt=1
           do dimi=1,3
@@ -861,6 +866,7 @@ C$OMP END PARALLEL DO
           enddo
           enddo
           enddo
+C$OMP END PARALLEL DO
         endif
         !call hfmm3d
         ifpgh=0
