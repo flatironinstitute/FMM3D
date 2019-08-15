@@ -620,7 +620,7 @@ c
       double complex, allocatable :: fexp(:),fexpback(:)
 
       double complex, allocatable :: mexp(:,:,:,:)
-      double complex, allocatable :: tmp(:,:,:)
+      double complex, allocatable :: tmp(:,:,:),tmp2(:,:,:)
       double complex, allocatable :: mexpf1(:,:),mexpf2(:,:)
       double complex, allocatable :: mexpp1(:,:),mexpp2(:,:),
      1    mexppall(:,:,:)
@@ -1017,6 +1017,7 @@ C$    time2=omp_get_wtime()
       timeinfo(3)=time2-time1
 
 
+
       if(ifprint.ge.1)
      $    call prinf('=== Step 4 (mp to loc) ===*',i,0)
 c      ... step 3, convert multipole expansions into local
@@ -1035,6 +1036,7 @@ c
             ier = 0
             call lreadall(eps,zk2,nlams,rlams,whts,nfourier,
      1           nphysical,ntmax,ier)
+
             
             nphmax = 0
             nthmax = 0
@@ -1055,6 +1057,7 @@ c
             allocate(zshift(5,nexptotp))
             allocate(rlsc(0:nterms(ilev),0:nterms(ilev),nlams))
             allocate(tmp(nd,0:nterms(ilev),-nterms(ilev):nterms(ilev)))
+            allocate(tmp2(nd,0:nterms(ilev),-nterms(ilev):nterms(ilev)))
  
             allocate(mexpf1(nd,nexptot),mexpf2(nd,nexptot),
      1          mexpp1(nd,nexptotp))
@@ -1070,6 +1073,7 @@ c
             bigint = bigint*nexptotp*nd
 
             if(ifprint.ge.1) print *, "mexp memory=",bigint/1.0d9
+
 
             allocate(mexp(nd,nexptotp,nboxes,6),stat=iert)
             if(iert.ne.0) then
@@ -1097,7 +1101,6 @@ c     generate rotation matrices and carray
             
             call hmkfexp(nlams,nfourier,nphysical,fexp,fexpback)
 
-
 c
 cc      zero out mexp
 c
@@ -1112,7 +1115,7 @@ C$OMP$PRIVATE(idim,i,j,k)
                   enddo
                enddo
             enddo
-C$OMP END PARALLEL DO     
+C$OMP END PARALLEL DO    
 
 
 
@@ -1132,7 +1135,7 @@ cc         create multipole to plane wave expansion for
 c          all boxes at this level
 c
 C$OMP PARALLEL DO DEFAULT (SHARED)
-C$OMP$PRIVATE(ibox,istart,iend,npts,tmp,mexpf1,mexpf2,mptemp)
+C$OMP$PRIVATE(ibox,istart,iend,npts,tmp,mexpf1,mexpf2,tmp2)
             do ibox = laddr(1,ilev),laddr(2,ilev)
                istart = itree(ipointer(10)+ibox-1)
                iend = itree(ipointer(11)+ibox-1)
@@ -1158,9 +1161,9 @@ c             form mexpnorth, mexpsouth for current box
 c             Rotate mpole for computing mexpnorth and
 c             mexpsouth
                   call rotztoy(nd,nterms(ilev),tmp,
-     1                           mptemp,rdminus)
+     1                           tmp2,rdminus)
 
-                  call hmpoletoexp(nd,mptemp,nterms(ilev),nlams,
+                  call hmpoletoexp(nd,tmp2,nterms(ilev),nlams,
      1                  nfourier,nexptot,mexpf1,mexpf2,rlsc)
 
                   call hftophys(nd,mexpf1,nlams,nfourier,
@@ -1172,8 +1175,8 @@ c             mexpsouth
 
 c             Rotate mpole for computing mexpeast, mexpwest
                   call rotztox(nd,nterms(ilev),tmp,
-     1                              mptemp,rdplus)
-                  call hmpoletoexp(nd,mptemp,nterms(ilev),nlams,
+     1                              tmp2,rdplus)
+                  call hmpoletoexp(nd,tmp2,nterms(ilev),nlams,
      1                  nfourier,nexptot,mexpf1,mexpf2,rlsc)
 
                   call hftophys(nd,mexpf1,nlams,nfourier,
@@ -1184,7 +1187,8 @@ c             Rotate mpole for computing mexpeast, mexpwest
 
                endif
             enddo
-C$OMP END PARALLEL DO         
+C$OMP END PARALLEL DO       
+           
 
 
 c
@@ -1288,16 +1292,13 @@ C$OMP$PRIVATE(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
             enddo
 C$OMP END PARALLEL DO        
 
-            deallocate(xshift,yshift,zshift,rlsc,tmp)
+            deallocate(xshift,yshift,zshift,rlsc,tmp,tmp2)
             deallocate(carray,dc,rdplus,rdminus,rdsq3,rdmsq3)
 
             deallocate(mexpf1,mexpf2,mexpp1,mexpp2,mexppall,mexp)
             deallocate(fexp,fexpback)
 
-         endif
-
-         if(real(zk2).ge.pi.or.imag(zk2).ge.0.02d0) then
-
+         else
             nquad2 = nterms(ilev)*2.2
             nquad2 = max(6,nquad2)
             ifinit2 = 1
