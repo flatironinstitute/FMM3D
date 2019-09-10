@@ -4,6 +4,7 @@ dist
 *.so
 *.egg-info
 *.o
+*.out
 fort.*
 int2
 *.save*

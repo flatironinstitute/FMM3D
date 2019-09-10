@@ -88,17 +88,17 @@ c
 
         eps = 0.5d-6
 
-        t1 = second()
+        call cpu_time(t1)
         call lfmm3dpartstoscp_vec(nd,eps,ns,source,charge,
      1      pot)
-        t2 = second()
+        call cpu_time(t2)
 
         timings(1,icase) = t2-t1
 
-        t1 = second()
+        call cpu_time(t1)
         call lfmm3dpartstostcp_vec(nd,eps,ns,source,charge,pot,
      1       nt,targ,pottarg)
-        t2 = second()
+        call cpu_time(t2)
 
         timings(2,icase) = t2-t1
         deallocate(charge,dipstr,dipvec,pot,grad,pottarg,gradtarg)
