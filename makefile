@@ -289,8 +289,14 @@ test/test_lap_big:
 	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_big.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d_big
 
 
-debug: $(STATICLIB) $(TOBJS) examples/ex_plan_helm 
+
+debug: $(STATICLIB) $(TOBJS) examples/hfmm3d_deb examples/ex_plan_helm 
+	time -p examples/hfmm3d_debug
 	time -p ./examples/hfmm3d_plan_example
+	
+	
+examples/hfmm3d_deb:
+	$(FC) $(FFLAGS) examples/hfmm3d_debug1.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_debug
 
 examples/ex_plan_helm:
 	$(FC) $(FFLAGS) examples/hfmm3d_plan_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_plan_example

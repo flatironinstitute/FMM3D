@@ -43,7 +43,7 @@ endif
 
 
 LIBNAME=libfmm3d
-STATICLIB = ../lib-static/$(LIBNAME).a
+STATICLIB = ../../lib-static/$(LIBNAME).a
 
 # Test objects
 TOBJS = $(COM)/hkrand.o $(COM)/dlaran.o
@@ -54,8 +54,8 @@ default: all
 
 
 OBJECTS = test_hfmm3d_big.o \
-    ../src/Common/hkrand.o \
-    ../src/Common/dlaran.o 
+    ../../src/Common/hkrand.o \
+    ../../src/Common/dlaran.o 
 
 all: $(OBJECTS) 
 	$(FC) $(FFLAGS)  -o $(PROJECT) $(OBJECTS) $(STATICLIB)

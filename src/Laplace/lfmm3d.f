@@ -158,7 +158,7 @@ c     ifprint is an internal information printing flag.
 c     Suppressed if ifprint=0.
 c     Prints timing breakdown and other things if ifprint=1.
 c       
-      ifprint=0
+      ifprint=1
 
 c
 cc        figure out tree structure
@@ -167,7 +167,26 @@ c
 cc         set criterion for box subdivision
 c
 
-       ndiv = 200
+       if(eps.ge.0.5d-0) then
+         ndiv = 40
+       else if(eps.ge.0.5d-1) then
+         ndiv = 40
+       else if(eps.ge.0.5d-2) then
+         ndiv = 40
+       else if(eps.ge.0.5d-3) then
+         ndiv = 100 
+       else if(eps.ge.0.5d-6) then
+         ndiv = 200
+       else if(eps.ge.0.5d-9) then
+         ndiv = 400
+       else if(eps.ge.0.5d-12) then
+         ndiv = 600
+       else if(eps.ge.0.5d-15) then
+         ndiv = 700
+       else
+         ndiv = nsource+ntarg
+       endif
+
 
 c
 cc      set tree flags
@@ -641,6 +660,7 @@ c
 c     Initialize routines for plane wave mp loc translation
  
       if(isep.eq.1) then
+cc         if(eps.ge.0.5d-2) nlams = 7
          if(eps.ge.0.5d-3) nlams = 12
          if(eps.lt.0.5d-3.and.eps.ge.0.5d-6) nlams = 20
          if(eps.lt.0.5d-6.and.eps.ge.0.5d-9) nlams = 29

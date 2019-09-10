@@ -244,7 +244,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'fmm3d.tex', u'fmm3d Documentation',
-     u'Zydrunas Gimbutas \\and Leslie Greengard \\and Jeremy Magland \\and Manas Rachh \\and Vladimir Rokhlin', 'manual'),
+     u'Zydrunas Gimbutas \\and Leslie Greengard \\and Libin Lu \\and Jeremy Magland \\and Manas Rachh \\and Vladimir Rokhlin', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

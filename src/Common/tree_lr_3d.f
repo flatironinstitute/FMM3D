@@ -2995,7 +2995,7 @@ c     Calling sequence variable declaration
       
       integer nhungsrc(nbmax), nhungexp(nbmax)
 
-      integer iflag(nbmax)
+      integer, allocatable :: iflag(:)
 c     Temporary variables
       integer i,j,k,l
       integer ibox,jbox,kbox,ilev
@@ -3003,6 +3003,9 @@ c     Temporary variables
       double precision xdis,ydis,zdis,distest
 
       integer laddrtail(2,0:nlevels),ict
+
+
+      allocate(iflag(nbmax))
 
 c     Initialize flag array
       do i=1,nboxes
@@ -3195,7 +3198,7 @@ c     _flag routine to handle the flag++ case
          laddrtail(2,ilev) = -1
       enddo
 
-      do ilev = 3,nlevels-2
+      do ilev = 2,nlevels-2
 
 c     Step 1: Determine which of the flag++ boxes need
 c     further division. In the even a flag++ box needs
@@ -4038,31 +4041,49 @@ c                 level restricted tree from adaptive tree
       implicit none
 c     Calling sequence variables and temporary variables
       integer nboxes,nlevels
-      double precision centers(3,nboxes), tcenters(3,nboxes)
+      double precision centers(3,nboxes)
       integer laddr(2,0:nlevels), tladdr(2,0:nlevels)
       integer laddrtail(2,0:nlevels)
-      integer ilevel(nboxes), tilevel(nboxes)
-      integer iparent(nboxes), tiparent(nboxes)
-      integer nchild(nboxes), tnchild(nboxes)
-      integer ichild(8,nboxes), tichild(8,nboxes)
-      integer ihsfirst(nboxes), tihsfirst(nboxes)
-      integer ihslast(nboxes), tihslast(nboxes)
-      integer isfirst(nboxes), tisfirst(nboxes)
-      integer islast(nboxes), tislast(nboxes)
-      integer itfirst(nboxes), titfirst(nboxes)
-      integer itlast(nboxes), titlast(nboxes)
-      integer ihefirst(nboxes), tihefirst(nboxes)
-      integer ihelast(nboxes), tihelast(nboxes)
-      integer iefirst(nboxes), tiefirst(nboxes)
-      integer ielast(nboxes), tielast(nboxes)
-      integer nhungsrc(nboxes), tnhungsrc(nboxes)
-      integer nhungexp(nboxes), tnhungexp(nboxes)
-      integer iflag(nboxes),tiflag(nboxes)
-      integer iboxtocurbox(nboxes)
+      integer ilevel(nboxes)
+      integer iparent(nboxes)
+      integer nchild(nboxes)
+      integer ichild(8,nboxes)
+      integer ihsfirst(nboxes)
+      integer ihslast(nboxes)
+      integer isfirst(nboxes)
+      integer islast(nboxes)
+      integer itfirst(nboxes)
+      integer itlast(nboxes)
+      integer ihefirst(nboxes)
+      integer ihelast(nboxes)
+      integer iefirst(nboxes)
+      integer ielast(nboxes)
+      integer nhungsrc(nboxes)
+      integer nhungexp(nboxes)
+      integer iflag(nboxes)
+
+
+
+      integer, allocatable :: tilevel(:),tiparent(:),tnchild(:)
+      integer, allocatable :: tichild(:,:),tihsfirst(:),tihslast(:)
+      integer, allocatable :: tisfirst(:),tislast(:),titfirst(:)
+      integer, allocatable :: titlast(:),tihefirst(:),tihelast(:)
+      integer, allocatable :: tiefirst(:),tielast(:),tnhungsrc(:)
+      integer, allocatable :: tnhungexp(:),tiflag(:),iboxtocurbox(:)
+
+      double precision, allocatable :: tcenters(:,:)
 
 c     Temporary variables
       integer i,j,k,l
       integer ibox,ilev, curbox
+
+      allocate(tcenters(3,nboxes),tilevel(nboxes),tiparent(nboxes))
+      allocate(tnchild(nboxes),tichild(8,nboxes),tihsfirst(nboxes))
+      allocate(tihslast(nboxes),tisfirst(nboxes),tislast(nboxes))
+      allocate(titfirst(nboxes),titlast(nboxes),tihefirst(nboxes))
+      allocate(tihelast(nboxes),tiefirst(nboxes),tielast(nboxes))
+      allocate(tnhungsrc(nboxes),tnhungexp(nboxes),tiflag(nboxes))
+      allocate(iboxtocurbox(nboxes))
 
       do ilev = 0,nlevels
          tladdr(1,ilev) = laddr(1,ilev)

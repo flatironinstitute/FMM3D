@@ -1254,6 +1254,10 @@ c     1/sin(theta) contribution, since we use values of Ynm (which
 c     multiplies phix and phiy) that are scaled by 
 c     1/sin(theta).
 c
+c
+c     NOTE: sphereical derivative needs to be fixed for r=0
+c
+c
         rx = stheta*cphi
         thetax = ctheta*cphi/r
         phix = -sphi/r
