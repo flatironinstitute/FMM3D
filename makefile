@@ -66,8 +66,7 @@ HELM = src/Helmholtz
 HOBJS = $(HELM)/h3dcommon.o $(HELM)/h3dterms.o $(HELM)/h3dtrans.o \
 	$(HELM)/helmrouts3d.o $(HELM)/hfmm3d.o $(HELM)/hfmm3dwrap.o \
 	$(HELM)/hfmm3dwrap_legacy.o $(HELM)/hfmm3dwrap_vec.o $(HELM)/hpwrouts.o \
-	$(HELM)/hwts3.o $(HELM)/numphysfour.o $(HELM)/projections.o \
-	$(HELM)/quadread.o
+	$(HELM)/hwts3e.o $(HELM)/hnumphys.o $(HELM)/hnumfour.o $(HELM)/projections.o 
 
 # Laplace objects
 LAP = src/Laplace
@@ -85,7 +84,7 @@ CHEADERS = c/cprini.h c/utils.h c/hfmm3d_c.h c/lfmm3d_c.h
 
 OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
-.PHONY: usage lib examples test perftest python all c c-examples matlab python3 big-test debug
+.PHONY: usage lib examples test perftest python all c c-examples matlab python3 big-test pw-test debug
 
 default: usage
 
@@ -96,6 +95,7 @@ usage:
 	@echo "  make lib - compile the main library (in lib/ and lib-static/)"
 	@echo "  make examples - compile and run fortran examples in examples/"
 	@echo "  make big-test - compile fortran examples for testing large n in test/"
+	@echo "  make pw-test - compile fortran examples for testing plane wave reps through testing FMM in test/"
 	@echo "  make c-examples - compile and run c examples in c/"
 	@echo "  make test - compile and run validation tests (will take around 30 secs)"
 	@echo "  make matlab - compile matlab interfaces"
@@ -281,6 +281,8 @@ clean: objclean
 
 big-test: $(STATICLIB) $(TOBJS) test/test_lap_big test/test_helm_big
 	
+pw-test: $(STATICLIB) $(TOBJS) test/test_helm_pw
+	time -p ./test/Helmholtz/test_hfmm3d_pw
 	
 test/test_helm_big:
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_big.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_big
@@ -288,6 +290,8 @@ test/test_helm_big:
 test/test_lap_big:
 	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_big.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d_big
 
+test/test_helm_pw:
+	$(FC) $(FFLAGS) test/Helmholtz/test_pwrep_hfmm3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_pw
 
 debug: $(STATICLIB) $(TOBJS) examples/hfmm3d_deb 
 	time -p examples/hfmm3d_debug
