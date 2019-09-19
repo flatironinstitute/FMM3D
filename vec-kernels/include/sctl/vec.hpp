@@ -26,7 +26,6 @@
 #endif
 
 // TODO: Implement AVX versions of floats, int32_t, int64_t
-// TODO: Add operators to reinterpret types
 
 // TODO: Check alignment when SCTL_MEMDEBUG is defined
 // TODO: Replace pointers with iterators
@@ -127,7 +126,7 @@ namespace SCTL_NAMESPACE {
         return r;
       }
 
-      Vec() {}
+      Vec() = default;
 
       Vec(const ValueType& a) {
         for (Integer i = 0; i < N; i++) v[i] = a;
@@ -160,11 +159,11 @@ namespace SCTL_NAMESPACE {
       }
 
       // C-style cast
-      template <class RetValueType> explicit operator Vec<RetValueType,N>() const {
-        Vec<RetValueType,N> r;
-        for (Integer i = 0; i < N; i++) r.v[i] = (RetValueType)v[i];
-        return r;
-      }
+      //template <class RetValueType> explicit operator Vec<RetValueType,N>() const {
+      //  Vec<RetValueType,N> r;
+      //  for (Integer i = 0; i < N; i++) r.v[i] = (RetValueType)v[i];
+      //  return r;
+      //}
 
       // Arithmetic operators
       friend Vec operator*(Vec lhs, const Vec& rhs) {
@@ -313,6 +312,8 @@ namespace SCTL_NAMESPACE {
         return r;
       }
 
+      template <class Vec1, class Vec2> friend Vec1 reinterpret(const Vec2& x);
+
     private:
 
       static const ValueType const_zero() {
@@ -336,6 +337,11 @@ namespace SCTL_NAMESPACE {
   };
 
   // Other operators
+  template <class RetVec, class Vec> RetVec reinterpret(const Vec& v){
+    static_assert(sizeof(RetVec) == sizeof(Vec));
+    RetVec& r = *(RetVec*)&v;
+    return r;
+  }
   template <class RealVec, class IntVec> RealVec ConvertInt2Real(const IntVec& x) {
     typedef typename RealVec::ScalarType Real;
     typedef typename IntVec::ScalarType Int;
@@ -349,36 +355,20 @@ namespace SCTL_NAMESPACE {
     IntVec l(x + IntVec(Cint));
     return *(RealVec*)&l - RealVec(Creal);
   }
-  //  union {
-  //    Int Cint = (1UL << (SigBits - 1)) + ((SigBits + ((1UL<<(sizeof(Real)*8 - SigBits - 2))-1)) << SigBits);
-  //    Real Creal;
-  //  };
-  //  RealVec d(x + RealVec(Creal));
-  //  return *(IntVec*)&d - IntVec(Cint);
-  //}
   template <class Vec> typename Vec::IntegerVec RoundReal2Int(const Vec& x) {
     using IntegerType = typename Vec::IntegerType;
     using RealType = typename Vec::RealType;
     using IntegerVec = typename Vec::IntegerVec;
     using RealVec = typename Vec::RealVec;
+    static_assert(std::is_same<RealVec,Vec>::value, "RoundReal2Int: expected real input argument!");
 
-    if (std::is_same<IntegerVec,Vec>::value) {
-      IntegerVec v = IntegerVec::LoadAligned((const IntegerType*)&x); // TODO: simplify: return x;
-      return v;
-    } else if (std::is_same<RealVec,Vec>::value) {
-      static constexpr Integer SigBits = TypeTraits<RealType>::SigBits;
-      union {
-        IntegerType Cint = (1UL << (SigBits - 1)) + ((SigBits + ((1UL<<(sizeof(RealType)*8 - SigBits - 2))-1)) << SigBits);
-        RealType Creal;
-      };
-      RealVec d(x + RealVec(Creal));
-      //return IntegerVec::LoadAligned((const IntegerType*)&d) - IntegerVec(Cint);
-      // TODO: fix warning here
-      return *((IntegerVec*)&d) - IntegerVec(Cint);
-    } else {
-      IntegerVec v;
-      return v;
-    }
+    static constexpr Integer SigBits = TypeTraits<RealType>::SigBits;
+    union {
+      IntegerType Cint = (1UL << (SigBits - 1)) + ((SigBits + ((1UL<<(sizeof(RealType)*8 - SigBits - 2))-1)) << SigBits);
+      RealType Creal;
+    };
+    RealVec d = x + RealVec(Creal);
+    return reinterpret<IntegerVec>(d) - IntegerVec(Cint);
   }
   template <class Vec> Vec RoundReal2Real(const Vec& x) {
     typedef typename Vec::ScalarType Real;
@@ -391,7 +381,6 @@ namespace SCTL_NAMESPACE {
     return (x + Vreal) - Vreal;
   }
   template <class Vec> void sincos_intrin(Vec& sinx, Vec& cosx, const Vec& x) {
-    //std::cout<<"Dhairya sincos\n";
     constexpr Integer ORDER = 13;
     // ORDER    ERROR
     //     1 8.81e-02
@@ -489,8 +478,8 @@ namespace SCTL_NAMESPACE {
       Real real_two;
     };
     Vec x_offset(real_zero);
-    Vec xAnd1 = (((x_+x_offset) & Vec(real_one)) == x_offset);
-    Vec xAnd2 = (((x_+x_offset) & Vec(real_two)) == x_offset);
+    auto xAnd1 = (((x_+x_offset) & Vec(real_one)) == x_offset);
+    auto xAnd2 = (((x_+x_offset) & Vec(real_two)) == x_offset);
 
     Vec s2 = AndNot( c1,xAnd1) | (s1 & xAnd1);
     Vec c2 = AndNot(-s1,xAnd1) | (c1 & xAnd1);
@@ -501,7 +490,6 @@ namespace SCTL_NAMESPACE {
     cosx = c3;
   }
   template <class Vec> void exp_intrin(Vec& expx, const Vec& x) {
-    //std::cout<<"Dhairya exp\n";
     constexpr Integer ORDER = 10;
     using IntegerType = typename Vec::IntegerType;
     using RealType = typename Vec::RealType;
@@ -630,7 +618,7 @@ namespace SCTL_NAMESPACE {
         return r;
       }
 
-      Vec() {}
+      Vec() = default;
 
       Vec(const ValueType& a) {
         v = _mm256_set1_pd(a);
@@ -660,12 +648,8 @@ namespace SCTL_NAMESPACE {
       }
 
       // C-style cast
-      template <class RetValueType> explicit operator Vec<RetValueType,N>() const {
-        Vec<RetValueType,N> r;
-        VecType& ret_v = *(VecType*)&r.v;
-        ret_v = v;
-        return r;
-      }
+      //template <class RetValueType> explicit operator Vec<RetValueType,N>() const {
+      //}
 
       // Arithmetic operators
       friend Vec operator*(Vec lhs, const Vec& rhs) {
@@ -758,10 +742,6 @@ namespace SCTL_NAMESPACE {
         v = _mm256_or_pd(v, rhs.v);
         return *this;
       }
-      Vec& operator=(const Vec& rhs) {
-        v = rhs.v;
-        return *this;
-      }
 
       // Other operators
       friend Vec max(Vec lhs, const Vec& rhs) {
@@ -788,6 +768,7 @@ namespace SCTL_NAMESPACE {
         return r;
       }
 
+      template <class Vec1, class Vec2> friend Vec1 reinterpret(const Vec2& x);
       template <class Vec> friend Vec RoundReal2Real(const Vec& x);
       template <class Vec> friend void sincos_intrin(Vec& sinx, Vec& cosx, const Vec& x);
       template <class Vec> friend void exp_intrin(Vec& expx, const Vec& x);
@@ -797,21 +778,28 @@ namespace SCTL_NAMESPACE {
       VecType v;
   };
 
+  template <> inline Vec<int64_t,4> reinterpret<Vec<int64_t,4>,Vec<double,4>>(const Vec<double,4>& x){
+    union {
+      Vec<int64_t,4> r;
+      __m256i y;
+    };
+    y = _mm256_castpd_si256(x.v);
+    return r;
+  }
+
   template <> inline Vec<double,4> RoundReal2Real(const Vec<double,4>& x) {
     Vec<double,4> r;
     r.v = _mm256_round_pd(x.v,_MM_FROUND_TO_NEAREST_INT |_MM_FROUND_NO_EXC);
     return r;
   }
-  
+
   #ifdef SCTL_HAVE_SVML
   template <> inline void sincos_intrin(Vec<double,4>& sinx, Vec<double,4>& cosx, const Vec<double,4>& x) {
-    //std::cout<<"intel sincos\n";
     sinx.v = _mm256_sin_pd(x.v);
     cosx.v = _mm256_cos_pd(x.v);
   }
 
   template <> inline void exp_intrin(Vec<double,4>& expx, const Vec<double,4>& x) {
-    //std::cout<<"intel exp\n";
     expx.v = _mm256_exp_pd(x.v);
   }
   #endif
@@ -859,15 +847,13 @@ namespace SCTL_NAMESPACE {
         return r;
       }
 
-      Vec() {}
+      Vec() = default;
 
       Vec(const ValueType& a) {
         v = _mm512_set1_pd(a);
       }
 
-      Vec(const __mmask8& a) {
-        v = _mm512_castsi512_pd(_mm512_movm_epi64(a));
-      }
+      Vec(const __mmask8& a) = delete; // disallow implicit conversions
 
       void Store(ValueType* p) const {
         _mm512_storeu_pd(p, v);
@@ -893,12 +879,8 @@ namespace SCTL_NAMESPACE {
       }
 
       // C-style cast
-      template <class RetValueType> explicit operator Vec<RetValueType,N>() const {
-        Vec<RetValueType,N> r;
-        VecType& ret_v = *(VecType*)&r.v;
-        ret_v = v;
-        return r;
-      }
+      //template <class RetValueType> explicit operator Vec<RetValueType,N>() const {
+      //}
 
       // Arithmetic operators
       friend Vec operator*(Vec lhs, const Vec& rhs) {
@@ -914,61 +896,37 @@ namespace SCTL_NAMESPACE {
         return lhs;
       }
       friend Vec FMA(Vec a, const Vec& b, const Vec& c) {
-        #ifdef __FMA__
         a.v = _mm512_fmadd_pd(a.v, b.v, c.v);
-        #else
-        a.v = _mm512_add_pd(_mm512_mul_pd(a.v, b.v), c.v);
-        #endif
+        //a.v = _mm512_add_pd(_mm512_mul_pd(a.v, b.v), c.v);
         return a;
       }
 
       // Comparison operators
-      // TODO: different from _m256d, could make it faster?
-      /*
-      // mask blend is slow
-      friend Vec operator< (Vec lhs, const Vec& rhs) {
-        static VecType one_mask = _mm512_castsi512_pd(_mm512_set1_epi64(-int64_t(1)));
-        static VecType zero_mask =_mm512_setzero_pd();
-        lhs.v = _mm512_mask_blend_pd(_mm512_cmp_pd_mask(lhs.v, rhs.v, _CMP_LT_OS), 
-            zero_mask, one_mask);
-        return lhs;
-      }
-      friend Vec operator<=(Vec lhs, const Vec& rhs) {
-        static VecType one_mask = _mm512_castsi512_pd(_mm512_set1_epi64(-int64_t(1)));
-        static VecType zero_mask =_mm512_setzero_pd();
-        lhs.v = _mm512_mask_blend_pd(_mm512_cmp_pd_mask(lhs.v, rhs.v, _CMP_LE_OS), 
-            zero_mask, one_mask);
-        return lhs;
-      }
-      friend Vec operator>=(Vec lhs, const Vec& rhs) {
-        static VecType one_mask = _mm512_castsi512_pd(_mm512_set1_epi64(-int64_t(1)));
-        static VecType zero_mask =_mm512_setzero_pd();
-        lhs.v = _mm512_mask_blend_pd(_mm512_cmp_pd_mask(lhs.v, rhs.v, _CMP_GE_OS), 
-            zero_mask, one_mask);
-        return lhs;
-      }
-      friend Vec operator> (Vec lhs, const Vec& rhs) {
-        static VecType one_mask = _mm512_castsi512_pd(_mm512_set1_epi64(-int64_t(1)));
-        static VecType zero_mask =_mm512_setzero_pd();
-        lhs.v = _mm512_mask_blend_pd(_mm512_cmp_pd_mask(lhs.v, rhs.v, _CMP_GT_OS), 
-            zero_mask, one_mask);
-        return lhs;
-      }
-      friend Vec operator==(Vec lhs, const Vec& rhs) {
-        static VecType one_mask = _mm512_castsi512_pd(_mm512_set1_epi64(-int64_t(1)));
-        static VecType zero_mask =_mm512_setzero_pd();
-        lhs.v = _mm512_mask_blend_pd(_mm512_cmp_pd_mask(lhs.v, rhs.v, _CMP_EQ_OS), 
-            zero_mask, one_mask);
-        return lhs;
-      }
-      friend Vec operator!=(Vec lhs, const Vec& rhs) {
-        static VecType one_mask = _mm512_castsi512_pd(_mm512_set1_epi64(-int64_t(1)));
-        static VecType zero_mask =_mm512_setzero_pd();
-        lhs.v = _mm512_mask_blend_pd(_mm512_cmp_pd_mask(lhs.v, rhs.v, _CMP_NEQ_OS), 
-            zero_mask, one_mask);
-        return lhs;
-      }
-      */
+      //friend Vec operator< (Vec lhs, const Vec& rhs) {
+      //  lhs.v = _mm512_castsi512_pd(_mm512_movm_epi64(_mm512_cmp_pd_mask(lhs.v, rhs.v, _CMP_LT_OS)));
+      //  return lhs;
+      //}
+      //friend Vec operator<=(Vec lhs, const Vec& rhs) {
+      //  lhs.v = _mm512_castsi512_pd(_mm512_movm_epi64(_mm512_cmp_pd_mask(lhs.v, rhs.v, _CMP_LE_OS)));
+      //  return lhs;
+      //}
+      //friend Vec operator>=(Vec lhs, const Vec& rhs) {
+      //  lhs.v = _mm512_castsi512_pd(_mm512_movm_epi64(_mm512_cmp_pd_mask(lhs.v, rhs.v, _CMP_GE_OS)));
+      //  return lhs;
+      //}
+      //friend Vec operator> (Vec lhs, const Vec& rhs) {
+      //  lhs.v = _mm512_castsi512_pd(_mm512_movm_epi64(_mm512_cmp_pd_mask(lhs.v, rhs.v, _CMP_GT_OS)));
+      //  return lhs;
+      //}
+      //friend Vec operator==(Vec lhs, const Vec& rhs) {
+      //  lhs.v = _mm512_castsi512_pd(_mm512_movm_epi64(_mm512_cmp_pd_mask(lhs.v, rhs.v, _CMP_EQ_OS)));
+      //  return lhs;
+      //}
+      //friend Vec operator!=(Vec lhs, const Vec& rhs) {
+      //  lhs.v = _mm512_castsi512_pd(_mm512_movm_epi64(_mm512_cmp_pd_mask(lhs.v, rhs.v, _CMP_NEQ_OS)));
+      //  return lhs;
+      //}
+
       friend __mmask8 operator< (Vec lhs, const Vec& rhs) {
         return _mm512_cmp_pd_mask(lhs.v, rhs.v, _CMP_LT_OS);
       }
@@ -1005,58 +963,42 @@ namespace SCTL_NAMESPACE {
         lhs.v = _mm512_andnot_pd(rhs.v, lhs.v);
         return lhs;
       }
+      friend Vec operator&(Vec lhs, const __mmask8& rhs) {
+        lhs.v = _mm512_maskz_mov_pd(rhs, lhs.v);
+        return lhs;
+      }
+      friend Vec AndNot(Vec lhs, const __mmask8& rhs) {
+        lhs.v = _mm512_mask_mov_pd(lhs.v, rhs, _mm512_setzero_pd());
+        return lhs;
+      }
 
       // Assignment operators
       Vec& operator*=(const Vec& rhs) {
         v = _mm512_mul_pd(v, rhs.v);
         return *this;
       }
-      Vec& operator*=(const __mmask8& rhs) {
-        v = _mm512_maskz_mov_pd(rhs, v);;
-        return *this;
-      }
       Vec& operator+=(const Vec& rhs) {
         v = _mm512_add_pd(v, rhs.v);
-        return *this;
-      }
-      Vec& operator+=(const __mmask8& rhs) {
-        v = _mm512_maskz_mov_pd(rhs, v);;
         return *this;
       }
       Vec& operator-=(const Vec& rhs) {
         v = _mm512_sub_pd(v, rhs.v);
         return *this;
       }
-      Vec& operator-=(const __mmask8& rhs) {
-        v = _mm512_maskz_mov_pd(rhs, v);;
-        return *this;
-      }
       Vec& operator&=(const Vec& rhs) {
         v = _mm512_and_pd(v, rhs.v);
-        return *this;
-      }
-      Vec& operator&=(const __mmask8& rhs) {
-        v = _mm512_maskz_mov_pd(rhs, v);;
         return *this;
       }
       Vec& operator^=(const Vec& rhs) {
         v = _mm512_xor_pd(v, rhs.v);
         return *this;
       }
-      Vec& operator^=(const __mmask8& rhs) {
-        v = _mm512_maskz_mov_pd(rhs, v);;
-        return *this;
-      }
       Vec& operator|=(const Vec& rhs) {
         v = _mm512_or_pd(v, rhs.v);
         return *this;
       }
-      Vec& operator|=(const __mmask8& rhs) {
-        v = _mm512_maskz_mov_pd(rhs, v);;
-        return *this;
-      }
-      Vec& operator=(const Vec& rhs) {
-        v = rhs.v;
+      Vec& operator&=(const __mmask8& rhs) {
+        v = _mm512_maskz_mov_pd(rhs, v);
         return *this;
       }
 
@@ -1085,6 +1027,7 @@ namespace SCTL_NAMESPACE {
         return r;
       }
 
+      template <class Vec1, class Vec2> friend Vec1 reinterpret(const Vec2& x);
       template <class Vec> friend Vec RoundReal2Real(const Vec& x);
       template <class Vec> friend void sincos_intrin(Vec& sinx, Vec& cosx, const Vec& x);
       template <class Vec> friend void exp_intrin(Vec& expx, const Vec& x);
@@ -1093,6 +1036,15 @@ namespace SCTL_NAMESPACE {
 
       VecType v;
   };
+
+  template <> inline Vec<int64_t,8> reinterpret<Vec<int64_t,8>,Vec<double,8>>(const Vec<double,8>& x){
+    union {
+      Vec<int64_t,8> r;
+      __m512i y;
+    };
+    y = _mm512_castpd_si512(x.v);
+    return r;
+  }
 
   template <> inline Vec<double,8> RoundReal2Real(const Vec<double,8>& x) {
     Vec<double,8> r;
@@ -1103,13 +1055,11 @@ namespace SCTL_NAMESPACE {
 
   #ifdef SCTL_HAVE_SVML
   template <> inline void sincos_intrin(Vec<double,8>& sinx, Vec<double,8>& cosx, const Vec<double,8>& x) {
-    //std::cout<<"intel sincos\n";
     sinx.v = _mm512_sin_pd(x.v);
     cosx.v = _mm512_cos_pd(x.v);
   }
 
   template <> inline void exp_intrin(Vec<double,8>& expx, const Vec<double,8>& x) {
-    //std::cout<<"intel exp\n";
     expx.v = _mm512_exp_pd(x.v);
   }
   #endif

@@ -304,7 +304,7 @@ clean: objclean
 	rm -f c/lfmm3d_vec_example
 	rm -f c/test_hfmm3d
 	rm -f c/test_lfmm3d
-	rm -f vec-kernels-dev/src/libkernels.o
+	rm -f vec-kernels/src/libkernels.o
 
 big-test: $(STATICLIB) $(TOBJS) test/test_lap_big test/test_helm_big
 	

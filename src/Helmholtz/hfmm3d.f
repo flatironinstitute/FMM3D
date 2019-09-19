@@ -178,21 +178,21 @@ cc        set criterion for box subdivision
 c
 
        if(eps.ge.0.5d-0) then
-         ndiv = 40
+         ndiv = 300
        else if(eps.ge.0.5d-1) then
-         ndiv = 40
+         ndiv = 300
        else if(eps.ge.0.5d-2) then
-         ndiv = 40
+         ndiv = 300
        else if(eps.ge.0.5d-3) then
-         ndiv = 80
+         ndiv = 300
        else if(eps.ge.0.5d-6) then
-         ndiv = 200
+         ndiv = 1000
        else if(eps.ge.0.5d-9) then
-         ndiv = 400
+         ndiv = 1000
        else if(eps.ge.0.5d-12) then
-         ndiv = 600
+         ndiv = 1000
        else if(eps.ge.0.5d-15) then
-         ndiv = 700
+         ndiv = 1000
        else
          ndiv = nsource+ntarg
        endif
