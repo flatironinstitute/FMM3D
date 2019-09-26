@@ -27,8 +27,9 @@ c
 
 
       zk = 2.2d0
+      zk = 3.1418
 
-      ns = 2000
+      ns = 20000
       
 
       allocate(source(3,ns))
