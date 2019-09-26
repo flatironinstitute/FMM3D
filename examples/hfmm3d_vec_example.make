@@ -66,7 +66,5 @@ all: $(OBJECTS)
 %.o: %.f %.h
 	$(FC) -c $(FFLAGS) $< -o $@
 
-	
-
 clean: 
 	rm -f $(OBJECTS) $(PROJECT) fort.13

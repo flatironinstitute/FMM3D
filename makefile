@@ -57,10 +57,10 @@ STATICLIB = lib-static/$(LIBNAME).a
 # Common objects
 COM = src/Common
 COMOBJS = $(COM)/besseljs3d.o $(COM)/cdjseval3d.o $(COM)/dfft.o \
-	$(COM)/fmmcommon.o $(COM)/legeexps.o $(COM)/prini.o \
-	$(COM)/rotgen.o $(COM)/rotproj.o $(COM)/rotviarecur.o \
-	$(COM)/tree_lr_3d.o $(COM)/yrecursion.o 
- 
+  $(COM)/fmmcommon.o $(COM)/legeexps.o $(COM)/prini.o \
+  $(COM)/rotgen.o $(COM)/rotproj.o $(COM)/rotviarecur.o \
+  $(COM)/tree_lr_3d.o $(COM)/yrecursion.o 
+
 # Helmholtz objects
 HELM = src/Helmholtz
 HOBJS = $(HELM)/h3dcommon.o $(HELM)/h3dterms.o $(HELM)/h3dtrans.o \
@@ -280,8 +280,7 @@ clean: objclean
 	rm -f c/test_lfmm3d
 
 big-test: $(STATICLIB) $(TOBJS) test/test_lap_big test/test_helm_big
-	
-	
+
 test/test_helm_big:
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_big.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_big
 
@@ -291,8 +290,8 @@ test/test_lap_big:
 
 debug: $(STATICLIB) $(TOBJS) examples/hfmm3d_deb 
 	time -p examples/hfmm3d_debug
-	
-	
+
+
 examples/hfmm3d_deb:
 	$(FC) $(FFLAGS) examples/hfmm3d_debug1.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_debug
 
