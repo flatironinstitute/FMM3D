@@ -80,7 +80,7 @@ COMOBJS = $(COM)/besseljs3d.o $(COM)/cdjseval3d.o $(COM)/dfft.o \
 	$(COM)/fmmcommon.o $(COM)/legeexps.o $(COM)/prini.o \
 	$(COM)/rotgen.o $(COM)/rotproj.o $(COM)/rotviarecur.o \
 	$(COM)/tree_lr_3d.o $(COM)/yrecursion.o $(SRCDIR)/libkernels.o
- 
+
 # Helmholtz objects
 HELM = src/Helmholtz
 HOBJS = $(HELM)/h3dcommon.o $(HELM)/h3dterms.o $(HELM)/h3dtrans.o \
@@ -216,8 +216,9 @@ test/lfmm3d_vec:
 ##  examples
 #
 
-examples: cxxkernel $(STATICLIB) $(TOBJS) examples/ex1_helm examples/ex2_helm examples/ex3_helm \
-	examples/ex1_lap examples/ex2_lap examples/ex3_lap
+examples: cxxkernel $(STATICLIB) $(TOBJS) examples/ex1_helm examples/ex2_helm \
+  examples/ex3_helm \
+  examples/ex1_lap examples/ex2_lap examples/ex3_lap
 	#time -p ./examples/lfmm3d_example
 	#time -p ./examples/lfmm3d_vec_example
 	#time -p ./examples/lfmm3d_legacy_example
@@ -307,10 +308,10 @@ clean: objclean
 	rm -f vec-kernels/src/libkernels.o
 
 big-test: $(STATICLIB) $(TOBJS) test/test_lap_big test/test_helm_big
-	
+
 pw-test: $(STATICLIB) $(TOBJS) test/test_helm_pw
 	time -p ./test/Helmholtz/test_hfmm3d_pw
-	
+
 test/test_helm_big:
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_big.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_big
 
@@ -322,8 +323,8 @@ test/test_helm_pw:
 
 debug: $(STATICLIB) $(TOBJS) examples/hfmm3d_deb 
 	time -p examples/hfmm3d_debug
-	
-	
+
+
 examples/hfmm3d_deb:
 	$(FC) $(FFLAGS) examples/hfmm3d_debug1.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_debug
 
