@@ -8,22 +8,11 @@
 # for ubunutu linux/gcc system). 
 
 # compiler, and linking from C, fortran
+CC=gcc
+CXX=g++
+FC=gfortran
+FFLAGS= -fPIC -O3 -march=native -funroll-loops -lstdc++
 
-HOST = linux-gfortran
-
-ifeq ($(HOST),linux-gfortran)
-  CC=gcc
-  CXX=g++
-  FC=gfortran
-  FFLAGS= -fPIC -O3 -march=native -funroll-loops -lstdc++
-endif
-
-ifeq ($(HOST),linux-ifort)
-  CC=icc
-  CXX=icpc
-  FC=ifort
-  FFLAGS= -fPIC -O3 -march=native -funroll-loops -mkl -lstdc++ -DSCTL_HAVE_SVML 
-endif
 
 
 CFLAGS= -std=c99 
@@ -33,7 +22,7 @@ CXXFLAGS+=$(FFLAGS)
 
 CLINK = -lgfortran -lm -ldl
 
-LIBS = -lm
+LIBS = -lm -lstdc++
 
 # extra flags for multithreaded: C/Fortran, MATLAB
 OMPFLAGS = -fopenmp
@@ -218,12 +207,12 @@ test/lfmm3d_vec:
 
 examples: cxxkernel $(STATICLIB) $(TOBJS) examples/ex1_helm examples/ex2_helm examples/ex3_helm \
 	examples/ex1_lap examples/ex2_lap examples/ex3_lap
-	#time -p ./examples/lfmm3d_example
-	#time -p ./examples/lfmm3d_vec_example
-	#time -p ./examples/lfmm3d_legacy_example
+	time -p ./examples/lfmm3d_example
+	time -p ./examples/lfmm3d_vec_example
+	time -p ./examples/lfmm3d_legacy_example
 	time -p ./examples/hfmm3d_example
-	#time -p ./examples/hfmm3d_vec_example
-	#time -p ./examples/hfmm3d_legacy_example
+	time -p ./examples/hfmm3d_vec_example
+	time -p ./examples/hfmm3d_legacy_example
 
 examples/ex1_lap:
 	$(FC) $(FFLAGS) examples/lfmm3d_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/lfmm3d_example

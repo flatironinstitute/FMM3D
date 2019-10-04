@@ -197,9 +197,7 @@ c
          ndiv = nsource+ntarg
        endif
 
-       ndiv = 200
 
-       if(ifprint.ge.1) print *, "ndiv =",ndiv
 
 
 
