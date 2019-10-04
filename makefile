@@ -33,7 +33,7 @@ CXXFLAGS+=$(FFLAGS)
 
 CLINK = -lgfortran -lm -ldl
 
-LIBS = -lm
+LIBS = -lm -lstdc++
 
 # extra flags for multithreaded: C/Fortran, MATLAB
 OMPFLAGS = -fopenmp
@@ -200,6 +200,11 @@ test/hfmm3d:
 
 test/hfmm3d_vec:
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_vec.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_vec 
+
+test_hfmm3d_mps:
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_mps.f90 $(TOBJS) $(COMOBJS) $(HOBJS) \
+  -o test/Helmholtz/test_hfmm3d_mps
+	(cd test/Helmholtz; ./test_hfmm3d_mps)
 
 test/laprouts:
 	$(FC) $(FFLAGS) test/Laplace/test_laprouts3d.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_laprouts3d 
