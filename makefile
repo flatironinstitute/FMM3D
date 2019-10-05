@@ -212,7 +212,8 @@ test/lfmm3d_vec:
 
 
 test_hfmm3d_mps: $(STATICLIB) $(TOBJS)
-	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_mps.f90 $(TOBJS) $(COMOBJS) $(HOBJS) \
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_mps.f90 \
+  src/Helmholtz/hfmm3d_mps.f90 $(TOBJS) $(COMOBJS) $(HOBJS) \
   -o test/Helmholtz/test_hfmm3d_mps
 	(cd test/Helmholtz; ./test_hfmm3d_mps)
 

@@ -274,15 +274,19 @@ program test_hfmm3d_mp2loc
   write(6,*) 
 
   call zinitialize(nd*ns, pot)
-  
-  call hfmm3d_s_c_p_vec(nd,eps,zk,ns,source,charge, &
-      pot)
+
 
   ifcharge = 1
   ifdipole = 0
   ifpgh = 1
+  ntarg = 0
   ifpghtarg = 0
+  call hfmm3d_mps(nd, eps, zk, ns, source, ifcharge, &
+      charge, ifdipole, dipvec, ifpgh, pot, grad, hess, ntarg, &
+      targ, ifpghtarg, pottarg, gradtarg, hesstarg)
 
+  !call hfmm3d_s_c_p_vec(nd,eps,zk,ns,source,charge, &
+  !pot)
 
   call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,&
       dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg, &
