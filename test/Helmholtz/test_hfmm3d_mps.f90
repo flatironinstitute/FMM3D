@@ -8,8 +8,9 @@ program test_hfmm3d_mp2loc
   integer :: ifcharge,ifdipole,ifpgh,ifpghtarg
   integer :: ipass(18),len1,ntests,isum
   
-  double precision :: eps, err, hkrand, dnorms(1000)
-  double precision, allocatable :: source(:,:), targ(:,:), centers(:,:)
+  double precision :: eps, err, hkrand, dnorms(1000), force(10)
+  double precision, allocatable :: source(:,:), targ(:,:)
+  double precision, allocatable :: centers(:,:)
   double precision, allocatable :: wlege(:)
   
   double complex :: eye, zk, ima
@@ -17,7 +18,7 @@ program test_hfmm3d_mp2loc
   double complex, allocatable :: dipvec(:,:,:)
   double complex, allocatable :: pot(:,:), pot2(:,:), pottarg(:,:)
   double complex, allocatable :: grad(:,:,:),gradtarg(:,:,:)
-  double complex, allocatable :: mpole(:,:,:,:)
+  double complex, allocatable :: mpole(:,:,:,:), local(:,:,:,:)
 
 
   data eye/(0.0d0,1.0d0)/
@@ -35,7 +36,7 @@ program test_hfmm3d_mp2loc
   dlam = .5d0
   zk = 2*pi/dlam + eye*0.02d0
 
-  ns = 20
+  ns = 1000
   nc = ns
   nt = 19
 
@@ -94,24 +95,53 @@ program test_hfmm3d_mp2loc
   end do
   
   
+  ! !
+  ! ! spread out the sources a little bit
+  ! !
+  ! do l = 1,0
+  !   do i = 1,ns
+  !     force(1) = 0
+  !     force(2) = 0
+  !     force(3) = 0
+  !     do j = 1,ns
+  !       if (i .ne. j) then
+  !         rs = 0
+  !         do k = 1,3
+  !           rs = rs + (source(k,i)-source(k,j))**2
+  !         end do
+  !         rs = sqrt(rs)
+  !         force(1) = (source(1,i)-source(1,j))/rs**3
+  !         force(1) = (source(2,i)-source(2,j))/rs**3
+  !         force(1) = (source(3,i)-source(3,j))/rs**3
+  !         alpha = -1d0
+  !         source(1,i) = source(1,i) + alpha*force(1)
+  !         source(2,i) = source(2,i) + alpha*force(2)
+  !         source(3,i) = source(3,i) + alpha*force(3)
+  !       end if
+  !     end do
+  !   end do
+  ! end do
+  
+  
+  
 
 
-  !
-  ! generate targets uniformly in the unit cube
-  !
-  do i=1,nt
-    targ(1,i) = hkrand(0)
-    targ(2,i) = hkrand(0)
-    targ(3,i) = hkrand(0)
+  ! !
+  ! ! generate targets uniformly in the unit cube
+  ! !
+  ! do i=1,nt
+  !   targ(1,i) = hkrand(0)
+  !   targ(2,i) = hkrand(0)
+  !   targ(3,i) = hkrand(0)
 
-    do idim=1,nd
+  !   do idim=1,nd
 
-      pottarg(idim,i) = 0
-      gradtarg(idim,1,i) = 0
-      gradtarg(idim,2,i) = 0
-      gradtarg(idim,3,i) = 0 
-    enddo
-  enddo
+  !     pottarg(idim,i) = 0
+  !     gradtarg(idim,1,i) = 0
+  !     gradtarg(idim,2,i) = 0
+  !     gradtarg(idim,3,i) = 0 
+  !   enddo
+  ! enddo
 
 
   !
@@ -127,7 +157,6 @@ program test_hfmm3d_mp2loc
           rs = rs + (source(k,i)-source(k,j))**2
         end do
         rs = sqrt(rs)
-        call prin2('rs = *', rs, 1)
         if (rs .lt. ssep) ssep = rs
       end if
 
@@ -135,20 +164,20 @@ program test_hfmm3d_mp2loc
   end do
 
   call prin2('min source separation = *', ssep, 1)
-
-  shift = ssep/2
+  
+  shift = ssep/10
   do i = 1,ns
     centers(1,i) = source(1,i) + shift
     centers(2,i) = source(2,i)
     centers(3,i) = source(3,i)
   end do
 
-  call prin2('centers = *', centers, 3*nc)
+  !call prin2('centers = *', centers, 3*nc)
 
   !
   ! now form a multipole expansion at each center
   !
-  nterms = 40
+  nterms = 15
   allocate( mpole(nd,0:nterms,-nterms:nterms,nc) )
  
   nlege = nterms + 10
@@ -177,7 +206,7 @@ program test_hfmm3d_mp2loc
   call h3ddirectcp(nd, zk, source, charge, ns, source, ns, &
       pot, thresh)
 
-  call prin2('directly, potential = *', pot, nd*ns*2)
+  call prin2('directly, potential = *', pot, 10)
 
   !
   ! now evaluate all the multipoles and compare
@@ -196,7 +225,7 @@ program test_hfmm3d_mp2loc
     end do
   end do
 
-  call prin2('from mpeval, potential2 = *', pot2, nd*ns*2)
+  call prin2('from mpeval, potential2 = *', pot2, 10)
 
   do i = 1,nd
     dnorms(i) = 0
@@ -213,12 +242,25 @@ program test_hfmm3d_mp2loc
     dnorms(i) = sqrt(dnorms(i))
   end do
 
-  call prin2('diffs in potentials = *', pot2, 2*nd*ns)
-  
+  call prin2('diffs in potentials = *', pot2, 10)  
   call prin2('l2 error in potentials = *', dnorms, nd)
+  
+  !
+  ! now try the fmps routine
+  !
+  !write(6,*) 'testing fast multi-particle scattering'
+  !write(6,*) 'input: multipoles'
+  !write(6,*) 'output: local expansions'
 
   
-  stop
+  !allocate( local(nd,0:nterms,-nterms:nterms,nc) )
+  !call hfmm3d_mps_vec(nd, eps, zk, nc, centers, rscales, nterms, &
+  !    mpole, local)
+
+  
+
+
+
   
 
   !
@@ -231,6 +273,8 @@ program test_hfmm3d_mp2loc
   write(6,*) 
   write(6,*) 
 
+  call zinitialize(nd*ns, pot)
+  
   call hfmm3d_s_c_p_vec(nd,eps,zk,ns,source,charge, &
       pot)
 
