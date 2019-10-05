@@ -8,20 +8,22 @@ program test_hfmm3d_mp2loc
   integer :: ifcharge,ifdipole,ifpgh,ifpghtarg
   integer :: ipass(18),len1,ntests,isum
   
-  double precision :: eps, err, hkrand
+  double precision :: eps, err, hkrand, dnorms(1000)
   double precision, allocatable :: source(:,:), targ(:,:), centers(:,:)
   double precision, allocatable :: wlege(:)
   
   double complex :: eye, zk, ima
   double complex, allocatable :: charge(:,:)
   double complex, allocatable :: dipvec(:,:,:)
-  double complex, allocatable :: pot(:,:),pottarg(:,:)
+  double complex, allocatable :: pot(:,:), pot2(:,:), pottarg(:,:)
   double complex, allocatable :: grad(:,:,:),gradtarg(:,:,:)
   double complex, allocatable :: mpole(:,:,:,:)
 
 
   data eye/(0.0d0,1.0d0)/
   ima = (0,1)
+  done = 1
+  pi = 4*atan(done)
 
   !
   ! initialize printing routine
@@ -30,7 +32,8 @@ program test_hfmm3d_mp2loc
 
   nd = 3
 
-  zk = 1.2d0 + eye*0.02d0
+  dlam = .5d0
+  zk = 2*pi/dlam + eye*0.02d0
 
   ns = 20
   nc = ns
@@ -40,7 +43,7 @@ program test_hfmm3d_mp2loc
 
   allocate(source(3,ns),targ(3,nt), centers(3,nc))
   allocate(charge(nd,ns),dipvec(nd,3,ns))
-  allocate(pot(nd,ns))
+  allocate(pot(nd,ns), pot2(nd,ns))
   allocate(grad(nd,3,ns))
 
   allocate(pottarg(nd,nt))
@@ -61,6 +64,7 @@ program test_hfmm3d_mp2loc
   !
   ! generate sources uniformly in the unit cube 
   !
+  dnorm = 0
   do i=1,ns
     source(1,i) = hkrand(0)**2
     source(2,i) = hkrand(0)**2
@@ -69,7 +73,8 @@ program test_hfmm3d_mp2loc
     do idim=1,nd
 
       charge(idim,i) = hkrand(0) + eye*hkrand(0)
-
+      dnorm = dnorm + abs(charge(idim,i))**2
+      
       dipvec(idim,1,i) = hkrand(0) + eye*hkrand(0)
       dipvec(idim,2,i) = hkrand(0) + eye*hkrand(0)
       dipvec(idim,3,i) = hkrand(0) + eye*hkrand(0)
@@ -81,6 +86,14 @@ program test_hfmm3d_mp2loc
     enddo
   enddo
 
+  dnorm = sqrt(dnorm)
+  do i=1,ns
+    do idim = 1,nd
+      charge(idim,i) = charge(idim,i)/dnorm
+    end do
+  end do
+  
+  
 
 
   !
@@ -135,7 +148,7 @@ program test_hfmm3d_mp2loc
   !
   ! now form a multipole expansion at each center
   !
-  nterms = 5
+  nterms = 40
   allocate( mpole(nd,0:nterms,-nterms:nterms,nc) )
  
   nlege = nterms + 10
@@ -150,11 +163,61 @@ program test_hfmm3d_mp2loc
   call zinitialize(len, mpole)
   
   ns1 = 1
+  sc = abs(zk)*shift
+  if (sc .lt. 1) rscale = sc
   do i = 1,nc
     call h3dformmpc(nd, zk, rscale, source(1,i), charge(1,i), &
         ns1, centers(1,i), nterms, mpole(:,:,:,i), wlege, nlege)
   end do
 
+  !
+  ! do the direct calculation
+  !
+  thresh = 1.0d-15
+  call h3ddirectcp(nd, zk, source, charge, ns, source, ns, &
+      pot, thresh)
+
+  call prin2('directly, potential = *', pot, nd*ns*2)
+
+  !
+  ! now evaluate all the multipoles and compare
+  !
+  do i = 1,ns
+
+    do idim = 1,nd
+      pot2(idim,i) = 0
+    end do
+    
+    do j = 1,ns
+      if (i .ne. j) then
+        call h3dmpevalp(nd, zk, rscale, centers(1,j), mpole(:,:,:,j), &
+            nterms, source(1,i), ns1, pot2(1,i), wlege, nlege, thresh)
+      end if
+    end do
+  end do
+
+  call prin2('from mpeval, potential2 = *', pot2, nd*ns*2)
+
+  do i = 1,nd
+    dnorms(i) = 0
+  end do
+
+  do i = 1,ns
+    do idim = 1,nd
+      dnorms(idim) = dnorms(idim) + abs(pot(idim,i)-pot2(idim,i))**2
+      pot2(idim,i) = pot(idim,i) - pot2(idim,i)
+    end do
+  end do
+
+  do i = 1,nd
+    dnorms(i) = sqrt(dnorms(i))
+  end do
+
+  call prin2('diffs in potentials = *', pot2, 2*nd*ns)
+  
+  call prin2('l2 error in potentials = *', dnorms, nd)
+
+  
   stop
   
 
