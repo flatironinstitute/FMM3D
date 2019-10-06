@@ -87,7 +87,6 @@ C
       ldc = max(nterms,nterms2)
       nq = max(nquad,2*ldc+2)
 
-
       allocate(marray(nd,0:ldc,-ldc:ldc))
       allocate(marray1(nd,0:nterms,-nterms:nterms))
       allocate(mptemp(nd,0:nterms2,-nterms2:nterms2))

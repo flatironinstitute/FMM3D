@@ -18,7 +18,7 @@ program test_hfmm3d_mp2loc
   double complex, allocatable :: dipvec(:,:,:)
   double complex, allocatable :: pot(:,:), pot2(:,:), pottarg(:,:)
   double complex, allocatable :: grad(:,:,:),gradtarg(:,:,:)
-  double complex, allocatable :: mpole(:,:,:,:), local(:,:,:,:)
+  double complex, allocatable :: mpole(:,:,:,:), local(:)
 
 
   data eye/(0.0d0,1.0d0)/
@@ -38,6 +38,10 @@ program test_hfmm3d_mp2loc
 
   ns = 1000
   nc = ns
+
+  call prinf('ns = *', ns, 1)
+  call prinf('nc = *', nc, 1)
+  
   nt = 19
 
   ntest = 10
@@ -165,7 +169,8 @@ program test_hfmm3d_mp2loc
 
   call prin2('min source separation = *', ssep, 1)
   
-  shift = ssep/10
+  shift = ssep/1000
+  call prin2('shift = *', shift, 1)
   do i = 1,ns
     centers(1,i) = source(1,i) + shift
     centers(2,i) = source(2,i)
@@ -177,7 +182,7 @@ program test_hfmm3d_mp2loc
   !
   ! now form a multipole expansion at each center
   !
-  nterms = 15
+  nterms = 5
   allocate( mpole(nd,0:nterms,-nterms:nterms,nc) )
  
   nlege = nterms + 10
@@ -195,6 +200,9 @@ program test_hfmm3d_mp2loc
   rscale = 1
   sc = abs(zk)*shift
   if (sc .lt. 1) rscale = sc
+
+  call prin2('rscale = *', rscale, 1)
+  
   allocate(rscales(nc))
   do i = 1,nc
     rscales(i) = rscale
@@ -256,15 +264,7 @@ program test_hfmm3d_mp2loc
   !write(6,*) 'output: local expansions'
 
   
-  !allocate( local(nd,0:nterms,-nterms:nterms,nc) )
-  !call hfmm3d_mps_vec(nd, eps, zk, nc, centers, rscales, nterms, &
-  !    mpole, local)
-
-  
-
-
-
-  
+  allocate( local(10000000) )
 
   !
   ! now test source to source, charge, 
@@ -286,7 +286,7 @@ program test_hfmm3d_mp2loc
   ifpghtarg = 0
   call hfmm3d_mps(nd, eps, zk, ns, source, ifcharge, &
       charge, ifdipole, dipvec, &
-      nc, centers, rscales, nterms, mpole, &
+      nc, centers, rscales, nterms, mpole, lterms, local, &
       ifpgh, pot, grad, hess, ntarg, &
       targ, ifpghtarg, pottarg, gradtarg, hesstarg)
 
