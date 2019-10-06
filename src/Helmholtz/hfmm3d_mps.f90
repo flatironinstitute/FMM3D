@@ -940,35 +940,61 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
 
 
+  !
+  ! ----- Step 2: List 3 interactions, non-adjacent nearfield of all
+  ! boxes, do these translations directly right now
+  !
 
   if(ifprint.ge.1) &
       call prinf('=== STEP 2 (form lo) ===*',i,0)
   call cpu_time(time1)
-  !C$    time1=omp_get_wtime()
+  !$    time1=omp_get_wtime()
 
 
   if(ifcharge.eq.1.and.ifdipole.eq.0) then
     do ilev=2,nlevels
+
+      nquad2 = nterms(ilev)*2.5
+      nquad2 = max(6,nquad2)
+      ifinit2 = 1
+      call legewhts(nquad2,xnodes,wts,ifinit2)
+      radius = boxsize(ilev)/2*sqrt(3.0d0)
+
       !C$OMP PARALLEL DO DEFAULT(SHARED)
       !C$OMP$PRIVATE(ibox,jbox,nlist4,istart,iend,npts,i)
       !C$OMP$SCHEDULE(DYNAMIC)
       do ibox=laddr(1,ilev),laddr(2,ilev)
-        nlist4 = itree(ipointer(26)+ibox-1)
+        nlist4 = itree(ipointer(26)+ibox-1)        
+
         do i=1,nlist4
           jbox = itree(ipointer(27)+(ibox-1)*mnlist4+i-1)
 
-          !c              Form local expansion for all boxes in list3
-          !c              of the current box
-
-
+          !
+          ! Form local expansion for all boxes in list3 of the current
+          ! box
+          !
           istart = itree(ipointer(10)+jbox-1)
           iend = itree(ipointer(11)+jbox-1)
           npts = iend-istart+1
           if(npts.gt.0) then
-            call h3dformtac(nd,zk,rscales(ilev), &
-                sourcesort(1,istart),chargesort(1,istart),npts, &
-                centers(1,ibox),nterms(ilev), &
-                rmlexp(iaddr(2,ibox)),wlege,nlege)
+
+            if (npts .gt. 1) then
+              print *, 'need to add loop for list 3 mp2loc!!!'
+              stop
+            end if
+            
+            
+            call h3dmploc(nd, zk, rmpolesort(istart),&
+                cmpolesort(:,istart), mpolesort(:,:,:,istart), mterms, &
+                rscales(ilev), centers(1,ibox), &
+                rmlexp(iaddr(2,ibox)), nterms(ilev), &
+                radius, xnodes, wts, nquad2)
+
+            
+            !call h3dformtac(nd,zk,rscales(ilev), &
+            !    sourcesort(1,istart),chargesort(1,istart),npts, &
+            !    centers(1,ibox),nterms(ilev), &
+            !    rmlexp(iaddr(2,ibox)),wlege,nlege)
           endif
         enddo
       enddo
@@ -1036,7 +1062,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   !endif
 
   call cpu_time(time2)
-  !C$    time2=omp_get_wtime()
+  !$    time2=omp_get_wtime()
   timeinfo(2)=time2-time1
 
 
@@ -1044,7 +1070,6 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
 
   
-  !c       
   if(ifprint .ge. 1) &
       call prinf('=== STEP 3 (merge mp) ====*',i,0)
   call cpu_time(time1)
