@@ -11,7 +11,7 @@ program test_hfmm3d_mp2loc
   double precision :: eps, err, hkrand, dnorms(1000), force(10)
   double precision, allocatable :: source(:,:), targ(:,:)
   double precision, allocatable :: centers(:,:)
-  double precision, allocatable :: wlege(:)
+  double precision, allocatable :: wlege(:), rscales(:)
   
   double complex :: eye, zk, ima
   double complex, allocatable :: charge(:,:)
@@ -192,9 +192,12 @@ program test_hfmm3d_mp2loc
   call zinitialize(len, mpole)
   
   ns1 = 1
+  rscale = 1
   sc = abs(zk)*shift
   if (sc .lt. 1) rscale = sc
+  allocate(rscales(nc))
   do i = 1,nc
+    rscales(i) = rscale
     call h3dformmpc(nd, zk, rscale, source(1,i), charge(1,i), &
         ns1, centers(1,i), nterms, mpole(:,:,:,i), wlege, nlege)
   end do
@@ -282,9 +285,13 @@ program test_hfmm3d_mp2loc
   ntarg = 0
   ifpghtarg = 0
   call hfmm3d_mps(nd, eps, zk, ns, source, ifcharge, &
-      charge, ifdipole, dipvec, ifpgh, pot, grad, hess, ntarg, &
+      charge, ifdipole, dipvec, &
+      nc, centers, rscales, nterms, mpole, &
+      ifpgh, pot, grad, hess, ntarg, &
       targ, ifpghtarg, pottarg, gradtarg, hesstarg)
 
+  call prin2('from hfmm3d, potential = *', pot, 10)
+  
   !call hfmm3d_s_c_p_vec(nd,eps,zk,ns,source,charge, &
   !pot)
 

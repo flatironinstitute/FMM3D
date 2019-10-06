@@ -23,7 +23,9 @@
 !
 
 subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
-    charge,ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg, &
+    charge,ifdipole,dipvec, &
+    ncenter, center, rscales, norder, mpole, &
+    ifpgh,pot,grad,hess,ntarg, &
     targ,ifpghtarg,pottarg,gradtarg,hesstarg)
   ! c-----------------------------------------------------------------------
   ! c   INPUT PARAMETERS:
@@ -60,6 +62,22 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   ! c   dipvec   in: double precision (nd,3,nsource) 
   ! c              dipole orientation vectors
   ! c
+  !     ncenter: in: integer
+  !              number of multipole expansion centers
+  !
+  !     center:  in: double precision (3,ncenter)
+  !              multipole expansion centers
+  !
+  !     rscales: in: double precision (ncenter)
+  !              scaling factors for each multipole expansion
+  !
+  !     norder:  in: integer
+  !              order of the multipole expansions, each expansion is of
+  !              the same number of terms
+  !
+  !     mpole:   in: double complex (nd,0:norder,-norder:norder,ncenter)
+  !              coefficients in the multipole expansions
+  !
   ! c   ifpgh   in: integer
   ! c              flag for evaluating potential/gradient at the sources
   ! c              ifpgh = 1, only potential is evaluated
@@ -108,6 +126,10 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   double complex zk
   double precision eps
 
+  integer :: ncenter, norder
+  double precision :: center(3,ncenter), rscales(ncenter)
+  double complex :: mpole(nd,0:norder,-norder:norder,ncenter)
+  
   integer ifcharge,ifdipole
   integer ifpgh,ifpghtarg
 
@@ -122,7 +144,9 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
       pottarg(nd,3,ntarg), &
       gradtarg(nd,3,ntarg),hess(nd,6,*),hesstarg(nd,6,*)
 
-  !c       Tree variables
+  !
+  ! Tree variables
+  !
   integer mhung,idivflag,ndiv,isep,nboxes,nbmax,nlevels
   integer *8 ltree
   integer nlmax
@@ -131,22 +155,26 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   integer, allocatable :: itree(:)
   double precision, allocatable :: treecenters(:,:),boxsize(:)
 
-  !c
-  !cc      temporary sorted arrays
-  !c
+  !
+  ! temporary sorted arrays
+  !
+  integer :: lda
   double precision, allocatable :: sourcesort(:,:),targsort(:,:)
+  double precision, allocatable :: centersort(:,:)
+  double precision, allocatable :: rscalessort(:)
   double precision, allocatable :: radsrc(:)
   double complex, allocatable :: chargesort(:,:)
   double complex, allocatable :: dipvecsort(:,:,:)
+  double complex, allocatable :: mpolesort(:,:,:,:)
 
   double complex, allocatable :: potsort(:,:),gradsort(:,:,:), &
       hesssort(:,:,:)
   double complex, allocatable :: pottargsort(:,:), &
       gradtargsort(:,:,:),hesstargsort(:,:,:)
 
-  !c
-  !cc       temporary fmm arrays
-  !c
+  !
+  !  temporary fmm arrays
+  !
   double precision epsfmm
   integer, allocatable :: nterms(:)
   integer *8, allocatable :: iaddr(:,:)
@@ -157,69 +185,63 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   integer *8 lmptot
   double precision, allocatable :: mptemp(:),mptemp2(:)
 
-  !c
-  !cc       temporary variables not used in particle code
-  !c
+  !
+  !       temporary variables not used in particle code
+  !
   double precision expc(3),scjsort(1),radexp
   double complex texpssort(100)
   double precision expcsort(3),radssort(1)
   integer ntj,nexpc,nadd
 
-  !c
-  !cc        other temporary variables
-  !c
+  !
+  !        other temporary variables
+  !
   integer i,iert,ifprint,ilev,idim,ier
   double precision time1,time2,omp_get_wtime,second
 
 
-  !c
-  !c
-  !c     ifprint is an internal information printing flag. 
-  !c     Suppressed if ifprint=0.
-  !c     Prints timing breakdown and other things if ifprint=1.
-  !c      
-  ifprint=0
+  !
+  !
+  ! ifprint is an internal information printing flag.  Suppressed if
+  ! ifprint=0.  Prints timing breakdown and other things if ifprint=1.
+  !      
+  ifprint=1
 
+  !
+  ! figure out tree structure
+  !
+  ! set criterion for box subdivision
+  !
+  ! if(eps.ge.0.5d-0) then
+  !   ndiv = 300
+  ! else if(eps.ge.0.5d-1) then
+  !   ndiv = 300
+  ! else if(eps.ge.0.5d-2) then
+  !   ndiv = 300
+  ! else if(eps.ge.0.5d-3) then
+  !   ndiv = 300
+  ! else if(eps.ge.0.5d-6) then
+  !   ndiv = 1000
+  ! else if(eps.ge.0.5d-9) then
+  !   ndiv = 1000
+  ! else if(eps.ge.0.5d-12) then
+  !   ndiv = 1000
+  ! else if(eps.ge.0.5d-15) then
+  !   ndiv = 1000
+  ! else
+  !   ndiv = nsource+ntarg
+  ! endif
 
-
-  !c
-  !cc       figure out tree structure
-  !c
-
-  !c
-  !cc        set criterion for box subdivision
-  !c
-
-  if(eps.ge.0.5d-0) then
-    ndiv = 300
-  else if(eps.ge.0.5d-1) then
-    ndiv = 300
-  else if(eps.ge.0.5d-2) then
-    ndiv = 300
-  else if(eps.ge.0.5d-3) then
-    ndiv = 300
-  else if(eps.ge.0.5d-6) then
-    ndiv = 1000
-  else if(eps.ge.0.5d-9) then
-    ndiv = 1000
-  else if(eps.ge.0.5d-12) then
-    ndiv = 1000
-  else if(eps.ge.0.5d-15) then
-    ndiv = 1000
-  else
-    ndiv = nsource+ntarg
-  endif
-
-  ndiv = 200
+  ndiv = 1
 
   if(ifprint.ge.1) print *, "ndiv =",ndiv
+  !stop
 
 
 
-
-  !c
-  !cc         set tree flags
-  !c
+  !
+  ! set tree flags
+  !
   isep = 1
   nlmax = 200
   nlevels = 0
@@ -228,6 +250,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   ltree = 0
 
   nexpc = 0
+  radexp = 0
   nadd = 0
   ntj = 0
 
@@ -240,20 +263,18 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   nbmax = 0
 
   allocate(radsrc(nsource))
-  !C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
+  !$omp parallel do default(shared) private(i)
   do i=1,nsource
     radsrc(i) = 0
   enddo
-  !C$OMP END PARALLEL DO   
+  !$omp end parallel do   
 
 
-  radexp = 0
 
-  !c
-  !cc      memory management code for constructing level restricted tree
+  !
+  ! memory management code for constructing level restricted tree
+  !
   iert = 0
-
-
   call mklraptreemem(iert,source,nsource,radsrc,targ,ntarg, &
       expc,nexpc,radexp,idivflag,ndiv,isep,nlmax,nbmax, &
       nlevels,nboxes,mnbors,mnlist1,mnlist2,mnlist3, &
@@ -272,15 +293,18 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   allocate(boxsize(0:nlevels))
   allocate(treecenters(3,nboxes))
 
-  !c       Call tree code
+  !
+  ! Call tree code
+  !
   call mklraptree(source,nsource,radsrc,targ,ntarg,expc, &
       nexpc,radexp,idivflag,ndiv,isep,mhung,mnbors, &
       mnlist1,mnlist2,mnlist3,mnlist4,nlevels, &
       nboxes,treecenters,boxsize,itree,ltree,ipointer)
 
-
-  !c     Allocate sorted source and target arrays      
-
+  !
+  !     Allocate sorted source and target arrays      
+  !
+  
   allocate(sourcesort(3,nsource))
   allocate(targsort(3,ntarg))
   if(ifcharge.eq.1) allocate(chargesort(nd,nsource))
@@ -315,18 +339,17 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   endif
 
 
-
-  !c     scaling factor for multipole and local expansions at all levels
-  !c
+  !
+  ! scaling factor for multipole and local expansions at all levels
+  !
   allocate(scales(0:nlevels),nterms(0:nlevels))
   do ilev = 0,nlevels
     scales(ilev) = boxsize(ilev)
   enddo
 
-  !c
-  !cc      initialize potential and gradient at source
-  !c       locations
-  !c
+  !
+  ! initialize potential and gradient at source locations
+  !
   if(ifpgh.eq.1) then
     !C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
     do i=1,nsource
@@ -420,30 +443,50 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   endif
 
 
-  !c     Compute length of expansions at each level      
+  !
+  ! Compute length of expansions at each level      
+  !
   nmax = 0
   do i=0,nlevels
     call h3dterms(boxsize(i),zk,eps,nterms(i))
     if(nterms(i).gt.nmax) nmax = nterms(i)
   enddo
-  ! c       
-  ! c     Multipole and local expansions will be held in workspace
-  ! c     in locations pointed to by array iaddr(2,nboxes).
-  ! c
-  ! c     iiaddr is pointer to iaddr array, itself contained in workspace.
-  ! c     imptemp is pointer for single expansion (dimensioned by nmax)
-  ! c
-  ! c       ... allocate iaddr and temporary arrays
-  ! c
+
+
+  !       
+  ! Multipole and local expansions will be held in workspace in
+  ! locations pointed to by array iaddr(2,nboxes).
+  !
+  ! iiaddr is pointer to iaddr array, itself contained in workspace.
+  ! imptemp is pointer for single expansion (dimensioned by nmax)
+  !
+  ! ... allocate iaddr and temporary arrays
+  !
 
   allocate(iaddr(2,nboxes))
   lmptemp = (nmax+1)*(2*nmax+1)*2*nd
   allocate(mptemp(lmptemp),mptemp2(lmptemp))
 
+
+  !
+  ! reorder multipole expansions, their centers, and rscales
+  !
+  allocate(centersort(3,ncenter))
+  allocate(rscalessort(ncenter))
+  allocate(mpolesort(nd,0:norder,-norder:norder,ncenter))
+  ! call dreorderf(3, ncenter, center, centersort, itree(ipointer(5)))
+  ! call dreorderf(1, ncenter, rscales, rscalessort, itree(ipointer(5)))
+
+  ! lda = 2*nd*(norder+1)*(2*norder+1)
+  ! call dreorderf(lda, ncenter, mpole, mpolesort, itree(ipointer(5)))
+
+
+  
   !c
   !cc       reorder sources
   !c
   call dreorderf(3,nsource,source,sourcesort,itree(ipointer(5)))
+
   if(ifcharge.eq.1) call dreorderf(2*nd,nsource,charge, &
       chargesort, itree(ipointer(5)))
 
@@ -456,11 +499,13 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   !cc      reorder targs
   !c
   call dreorderf(3,ntarg,targ,targsort,itree(ipointer(6)))
-  ! c
-  ! c     allocate memory need by multipole, local expansions at all
-  ! c     levels
-  ! c     irmlexp is pointer for workspace need by various fmm routines,
-  ! c
+
+  !
+  ! allocate memory need by multipole, local expansions at all
+  ! levels
+  !
+  ! irmlexp is pointer for workspace need by various fmm routines
+  !
   call mpalloc(nd,itree(ipointer(1)),iaddr,nlevels,lmptot,nterms)
   if(ifprint.ge. 1) print *, "lmptot =",lmptot/1.0d9
 
@@ -472,15 +517,18 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   endif
 
 
-  !c     Memory allocation is complete. 
-  !c     Call main fmm routine
-  !c
+  !
+  ! Memory allocation is complete. 
+  ! Call main fmm routine
+  !
   call cpu_time(time1)
-  !C$      time1=omp_get_wtime()
+  !$ time1=omp_get_wtime()
   call hfmm3dmain_mps(nd,eps,zk, &
       nsource,sourcesort,&
       ifcharge,chargesort,&
       ifdipole,dipvecsort,&
+      ncenter, centersort, rscalessort, norder, &
+      mpolesort, &
       ntarg,targsort,nexpc,expcsort,radssort, &
       iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp, &
       itree,ltree,ipointer,isep,ndiv,nlevels, &
@@ -490,10 +538,16 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
       gradtargsort,hesstargsort,ntj,texpssort,scjsort)
 
   call cpu_time(time2)
-  !C$        time2=omp_get_wtime()
+  !$ time2=omp_get_wtime()
   if( ifprint .eq. 1 ) call prin2('time in fmm main=*', &
       time2-time1,1)
 
+
+  !
+  ! de-reorder the output local expansions
+  !
+
+  
 
   if(ifpgh.eq.1) then
     call dreorderi(2*nd,nsource,potsort,pot, &
@@ -550,6 +604,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     nsource,sourcesort, &
     ifcharge,chargesort, &
     ifdipole,dipvecsort, &
+    ncenter, centersort, rscalessort, norder, mpolesort, &
     ntarg,targsort,nexpc,expcsort,radssort, &
     iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp, &
     itree,ltree,ipointer,isep,ndiv,nlevels, &
@@ -574,6 +629,12 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   double complex chargesort(nd,*)
   double complex dipvecsort(nd,3,*)
 
+  ! input multipole stuff
+  integer :: ncenter, norder
+  double precision :: centersort(3,ncenter), rscalessort(ncenter)
+  double complex :: mpolesort(nd,0:norder,-norder:norder,ncenter)
+
+  
   double precision targsort(3,ntarg)
 
   double complex pot(nd,*),grad(nd,3,*),hess(nd,6,*)
@@ -686,7 +747,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   double precision pi
 
   integer istart0,istart1,istartm1,nprin
-  double precision rtmp1,rtmp2,rtmp3,rtmp4
+  double precision :: rtmp1,rtmp2,rtmp3,rtmp4, done
   double complex ima
 
   integer *8 bigint
@@ -700,8 +761,8 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   allocate(nfourier(ntmax),nphysical(ntmax))
   allocate(rlams(ntmax),whts(ntmax))
 
-
-  pi = 4.0d0*atan(1.0d0)
+  done = 1
+  pi = 4.0d0*atan(done)
 
   nmax = 0
   do i=0,nlevels
@@ -710,17 +771,16 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
   allocate(rsc(0:nmax))
 
-  !c
-  !cc     threshold for computing interactions,
-  !c      interactions will be ignored
-  !c      for all pairs of sources and targets
-  !c      which satisfy |r| < thresh
-  !c      where r is the disance between them
-
+  !
+  ! threshold for computing interactions:
+  !
+  ! interactions will be ignored for all pairs of sources and targets
+  ! which satisfy |r| < thresh where r is the disance between them
+  !
   thresh = 2.0d0**(-52)*boxsize(0)
 
   call prini(6,13)
-  write(13,*) thresh
+  write(13,*) 'interaction threshold = ', thresh
 
 
   allocate(zeyep(-nmax:nmax),zmone(0:2*nmax))
@@ -738,16 +798,15 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     zmone(i) = -zmone(i-1)
   enddo
 
-  !c     ifprint is an internal information printing flag. 
-  !c     Suppressed if ifprint=0.
-  !c     Prints timing breakdown and other things if ifprint=1.
-  !c     Prints timing breakdown, list information, and other things if ifprint=2.
-  !c       
+  !
+  ! ifprint is an internal information printing flag. 
+  ! Suppressed if ifprint=0.
+  ! Prints timing breakdown and other things if ifprint=1.
+  ! Prints timing breakdown, list information, and other things if ifprint=2.
+  !       
   ifprint=0
-  !c
-  !c
-  !c     ... set the expansion coefficients to zero
-  !c
+
+  ! ... set the expansion coefficients to zero
   !C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j,k,idim)
   do i=1,nexpc
     do k=-ntj,ntj
@@ -760,7 +819,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   enddo
   !C$OMP END PARALLEL DO
 
-  !c       
+
   do i=1,10
     timeinfo(i)=0
   enddo
@@ -769,10 +828,9 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   allocate(xnodes(max_nodes))
   allocate(wts(max_nodes))
 
-
-  !c
-  !c       ... set all multipole and local expansions to zero
-  !c
+  !
+  ! ... set all multipole and local expansions to zero
+  !
   do ilev = 0,nlevels
     !C$OMP PARALLEL DO DEFAULT(SHARED)
     !C$OMP$PRIVATE(ibox)
@@ -784,9 +842,9 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   enddo
 
 
-  !c
-  !ccc       set scjsort
-  !c
+  !
+  ! set scjsort (these are extra output expansion centers)
+  !
   do ilev=0,nlevels
     !C$OMP PARALLEL DO DEFAULT(SHARED)
     !C$OMP$PRIVATE(ibox,nchild,istart,iend,i)
@@ -818,6 +876,8 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
       call prinf('=== STEP 1 (form mp) ====*',i,0)
   call cpu_time(time1)
   !C$        time1=omp_get_wtime()
+
+
   !c
   !c       ... step 1, locate all charges, assign them to boxes, and
   !c       form multipole expansions
@@ -895,6 +955,11 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   !C$    time2=omp_get_wtime()
   timeinfo(1)=time2-time1
 
+
+
+
+
+  
   if(ifprint.ge.1) &
       call prinf('=== STEP 2 (form lo) ===*',i,0)
   call cpu_time(time1)
@@ -993,6 +1058,12 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   !C$    time2=omp_get_wtime()
   timeinfo(2)=time2-time1
 
+
+
+
+
+
+  
   !c       
   if(ifprint .ge. 1) &
       call prinf('=== STEP 3 (merge mp) ====*',i,0)
@@ -1037,31 +1108,27 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
 
 
+
+  !
+  ! ----- Step 4: Crossward pass, multipole-to-local -----
+  ! Note: This is generally the most expensive component of the FMM
+  !
   if(ifprint.ge.1) &
       call prinf('=== Step 4 (mp to loc) ===*',i,0)
-  !c      ... step 3, convert multipole expansions into local
-  !c       expansions
 
   call cpu_time(time1)
-  !C$        time1=omp_get_wtime()
+  !$ time1=omp_get_wtime()
   do ilev = 2,nlevels
 
-    !c
-    !cc       load the necessary quadrature for plane waves
-    !c
-
+    ! load the necessary quadrature for plane waves
     zk2 = zk*boxsize(ilev)
-    if(real(zk2).le.16*pi.and.imag(zk2).le.12*pi) then
+    if(real(zk2).le.16*pi .and. imag(zk2).le.12*pi) then
       ier = 0
 
-      !c
-      !c             get new pw quadrature
-      !c
-
+      ! get new pw quadrature
       call hwts3e(ier,eps,zk2,rlams,whts,nlams)
       call hnumfour(eps,zk2,nlams,nfourier)
       call hnumphys(eps,zk2,nlams,nphysical)
-
 
       nphmax = 0
       nthmax = 0
@@ -1075,6 +1142,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
         if(nfourier(i).gt.nthmax) nthmax = nfourier(i)
         if(nphysical(i).gt.nphmax) nphmax = nphysical(i)
       enddo
+
       allocate(fexp(nn),fexpback(nn))
 
       allocate(xshift(-5:5,nexptotp))
@@ -1089,9 +1157,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
       allocate(mexpp2(nd,nexptotp),mexppall(nd,nexptotp,16))
 
 
-      !c
-      !cc      NOTE: there can be some memory savings here
-      !c
+      ! NOTE: there can be some additional memory savings here
       bigint = 0
       bigint = nboxes
       bigint = bigint*6
@@ -1116,9 +1182,9 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
       allocate(rdsq3(0:nn,0:nn,-nn:nn))
       allocate(rdmsq3(0:nn,0:nn,-nn:nn))
 
+      
       !c     generate rotation matrices and carray
       call getpwrotmat(nn,carray,rdplus,rdminus,rdsq3,rdmsq3,dc)
-
 
       call hrlscini(rlsc,nlams,rlams,zk2,nterms(ilev))
       call hmkexps(rlams,nlams,nphysical,nexptotp,zk2,xshift, &
@@ -1148,7 +1214,6 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
       !cc         compute powers of scaling parameter
       !c          for rescaling the multipole expansions
       !c
-
       r1 = rscales(ilev)
       rsc(0) = 1.0d0
       do i=1,nterms(ilev)
@@ -1167,7 +1232,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
         npts = iend - istart+1
         if(npts.gt.0) then
 
-          !c           rescale multipole expansion
+          ! rescale multipole expansion
           call mpscale(nd,nterms(ilev),rmlexp(iaddr(1,ibox)), &
               rsc,tmp)
 
@@ -1216,18 +1281,17 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
 
 
-      !c
-      !cc         loop over parent boxes and ship plane wave
-      !c          expansions to the first child of parent 
-      !c          boxes. 
-      !c          The codes are now written from a gathering perspective
-      !c
-      !c          so the first child of the parent is the one
-      !c          recieving all the local expansions
-      !c          coming from all the lists
-      !c
-      !c          
-      !c
+      !
+      ! Loop over parent boxes and ship plane wave expansions to the
+      ! first child of parent boxes.
+      !
+
+      !
+      ! The codes are now written from a gathering perspective so the
+      ! first child of the parent is the one recieving all the local
+      ! expansions coming from all the lists
+      !
+
 
       !C$OMP PARALLEL DO DEFAULT (SHARED)
       !C$OMP$PRIVATE(ibox,istart,iend,npts,nchild)
@@ -1383,6 +1447,10 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   timeinfo(4) = time2-time1
 
 
+
+  !
+  ! ----- Step 5: Downward pass, local-to-local -----
+  !
   if(ifprint.ge.1) &
       call prinf('=== Step 5 (split loc) ===*',i,0)
 
@@ -1438,6 +1506,9 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   timeinfo(5) = time2-time1
 
 
+
+
+  
   if(ifprint.ge.1) call prinf('=== step 6 (mp eval) ===*',i,0)
   call cpu_time(time1)
   !C$        time1=omp_get_wtime()
@@ -1579,6 +1650,11 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   !C$        time2=omp_get_wtime()
   timeinfo(6) = time2-time1
 
+
+
+
+
+  
   if(ifprint.ge.1) &
       call prinf('=== step 7 (eval lo) ===*',i,0)
 
