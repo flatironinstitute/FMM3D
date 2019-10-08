@@ -3,5 +3,6 @@ CXX=icpc
 FC=ifort
 FFLAGS= -fPIC -O3 -march=native -funroll-loops -mkl -cxxlib -DSCTL_HAVE_SVML
 LIBS=-lm -cxxlib
+OMPLIBS = 
 OMPFLAGS = -qopenmp
 
