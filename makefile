@@ -41,7 +41,7 @@ MWRAP=../../mwrap-0.33/mwrap
 
 
 # For your OS, override the above by placing make variables in make.inc
--include make.inc
+#-include make.inc
 
 # multi-threaded libs & flags needed
 ifneq ($(OMP),OFF)
@@ -157,10 +157,10 @@ matlab:	$(STATICLIB) matlab/$(GATEWAY).c matlab/$(GATEWAY2).c
 mex:  $(STATICLIB)
 	cd matlab; $(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY) -mb $(MWRAPFILE).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY) -c $(GATEWAY).c $(MWRAPFILE).mw;\
-	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE) $(MEX_LIBS); \
+	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE) $(LIBS); \
 	$(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY2) -mb $(MWRAPFILE2).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY2) -c $(GATEWAY2).c $(MWRAPFILE2).mw;\
-	$(MEX) $(GATEWAY2).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE2) $(MEX_LIBS);
+	$(MEX) $(GATEWAY2).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE2) $(LIBS);
 
 #python
 python:
