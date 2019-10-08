@@ -41,7 +41,7 @@ MWRAP=../../mwrap-0.33/mwrap
 
 
 # For your OS, override the above by placing make variables in make.inc
-#-include make.inc
+-include make.inc
 
 # multi-threaded libs & flags needed
 ifneq ($(OMP),OFF)
