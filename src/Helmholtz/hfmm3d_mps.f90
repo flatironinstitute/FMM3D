@@ -1003,64 +1003,6 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   endif
 
 
-  ! if(ifcharge.eq.0.and.ifdipole.eq.1) then
-  !   do ilev=2,nlevels
-  !     !C$OMP PARALLEL DO DEFAULT(SHARED)
-  !     !C$OMP$PRIVATE(ibox,jbox,nlist4,istart,iend,npts,i)
-  !     !C$OMP$SCHEDULE(DYNAMIC)
-  !     do ibox=laddr(1,ilev),laddr(2,ilev)
-  !       nlist4 = itree(ipointer(26)+ibox-1)
-  !       do i=1,nlist4
-  !         jbox = itree(ipointer(27)+(ibox-1)*mnlist4+i-1)
-
-  !         !c              Form local expansion for all boxes in list3
-  !         !c              of the current box
-
-
-  !         istart = itree(ipointer(10)+jbox-1)
-  !         iend = itree(ipointer(11)+jbox-1)
-  !         npts = iend-istart+1
-  !         if(npts.gt.0) then
-  !           call h3dformtad(nd,zk,rscales(ilev), &
-  !               sourcesort(1,istart), &
-  !               dipvecsort(1,1,istart),npts,centers(1,ibox), &
-  !               nterms(ilev),rmlexp(iaddr(2,ibox)),wlege,nlege)
-  !         endif
-  !       enddo
-  !     enddo
-  !     !C$OMP END PARALLEL DO         
-  !   enddo
-  ! endif
-
-  ! if(ifcharge.eq.1.and.ifdipole.eq.1) then
-  !   do ilev=2,nlevels
-  !     !C$OMP PARALLEL DO DEFAULT(SHARED)
-  !     !C$OMP$PRIVATE(ibox,jbox,nlist4,istart,iend,npts,i)
-  !     !C$OMP$SCHEDULE(DYNAMIC)
-  !     do ibox=laddr(1,ilev),laddr(2,ilev)
-  !       nlist4 = itree(ipointer(26)+ibox-1)
-  !       do i=1,nlist4
-  !         jbox = itree(ipointer(27)+(ibox-1)*mnlist4+i-1)
-
-  !         !c              Form local expansion for all boxes in list3
-  !         !c              of the current box
-
-
-  !         istart = itree(ipointer(10)+jbox-1)
-  !         iend = itree(ipointer(11)+jbox-1)
-  !         npts = iend-istart+1
-  !         if(npts.gt.0) then
-  !           call h3dformtacd(nd,zk,rscales(ilev), &
-  !               sourcesort(1,istart),chargesort(1,istart), &
-  !               dipvecsort(1,1,istart),npts,centers(1,ibox), &
-  !               nterms(ilev),rmlexp(iaddr(2,ibox)),wlege,nlege)
-  !         endif
-  !       enddo
-  !     enddo
-  !     !C$OMP END PARALLEL DO         
-  !   enddo
-  !endif
-
   call cpu_time(time2)
   !$    time2=omp_get_wtime()
   timeinfo(2)=time2-time1
@@ -1069,13 +1011,14 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
 
 
+  !
+  ! Step 3: Upward pass, multipole-to-multipole merges
+  !
   
-  if(ifprint .ge. 1) &
-      call prinf('=== STEP 3 (merge mp) ====*',i,0)
-  call cpu_time(time1)
-  !C$    time1=omp_get_wtime()
-  !c
+  if(ifprint .ge. 1) call prinf('=== STEP 3 (merge mp) ====*',i,0)
 
+  call cpu_time(time1)
+  !$    time1=omp_get_wtime()
 
   do ilev=nlevels-1,0,-1
     nquad2 = nterms(ilev)*2.5
@@ -1108,7 +1051,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   enddo
 
   call cpu_time(time2)
-  !C$    time2=omp_get_wtime()
+  !$    time2=omp_get_wtime()
   timeinfo(3)=time2-time1
 
 
@@ -1118,8 +1061,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   ! ----- Step 4: Crossward pass, multipole-to-local -----
   ! Note: This is generally the most expensive component of the FMM
   !
-  if(ifprint.ge.1) &
-      call prinf('=== Step 4 (mp to loc) ===*',i,0)
+  if(ifprint.ge.1) call prinf('=== Step 4 (mp to loc) ===*',i,0)
 
   call cpu_time(time1)
   !$ time1=omp_get_wtime()
@@ -1188,7 +1130,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
       allocate(rdmsq3(0:nn,0:nn,-nn:nn))
 
       
-      !c     generate rotation matrices and carray
+      ! generate rotation matrices and carray
       call getpwrotmat(nn,carray,rdplus,rdminus,rdsq3,rdmsq3,dc)
 
       call hrlscini(rlsc,nlams,rlams,zk2,nterms(ilev))
@@ -1197,9 +1139,9 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
       call hmkfexp(nlams,nfourier,nphysical,fexp,fexpback)
 
-      !c
-      !cc      zero out mexp
-      !c
+      !
+      ! initialize mexp
+      !
       !C$OMP PARALLEL DO DEFAULT(SHARED)
       !C$OMP$PRIVATE(idim,i,j,k)
       do k=1,6
@@ -1213,22 +1155,20 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
       enddo
       !C$OMP END PARALLEL DO    
 
-
-
-      !c
-      !cc         compute powers of scaling parameter
-      !c          for rescaling the multipole expansions
-      !c
+      !
+      ! compute powers of scaling parameter for rescaling the
+      ! multipole expansions
+      !
       r1 = rscales(ilev)
       rsc(0) = 1.0d0
       do i=1,nterms(ilev)
         rsc(i) = rsc(i-1)*r1
       enddo
 
-      !c
-      !cc         create multipole to plane wave expansion for
-      !c          all boxes at this level
-      !c
+      !
+      ! create multipole to plane wave expansion for all boxes at this
+      ! level
+      !
       !C$OMP PARALLEL DO DEFAULT (SHARED)
       !C$OMP$PRIVATE(ibox,istart,iend,npts,tmp,mexpf1,mexpf2,tmp2)
       do ibox = laddr(1,ilev),laddr(2,ilev)
@@ -1251,10 +1191,10 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
               mexp(1,1,ibox,2),fexp)
 
 
-          !c             form mexpnorth, mexpsouth for current box
+          ! form mexpnorth, mexpsouth for current box
 
-          !c             Rotate mpole for computing mexpnorth and
-          !c             mexpsouth
+          ! Rotate mpole for computing mexpnorth and
+          ! mexpsouth
           call rotztoy(nd,nterms(ilev),tmp, &
               tmp2,rdminus)
 
@@ -1268,7 +1208,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
               nphysical,mexp(1,1,ibox,4),fexp)   
 
 
-          !c             Rotate mpole for computing mexpeast, mexpwest
+          ! Rotate mpole for computing mexpeast, mexpwest
           call rotztox(nd,nterms(ilev),tmp, &
               tmp2,rdplus)
           call hmpoletoexp(nd,tmp2,nterms(ilev),nlams, &
@@ -1284,19 +1224,14 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
       enddo
       !C$OMP END PARALLEL DO       
 
-
-
       !
       ! Loop over parent boxes and ship plane wave expansions to the
       ! first child of parent boxes.
-      !
-
       !
       ! The codes are now written from a gathering perspective so the
       ! first child of the parent is the one recieving all the local
       ! expansions coming from all the lists
       !
-
 
       !C$OMP PARALLEL DO DEFAULT (SHARED)
       !C$OMP$PRIVATE(ibox,istart,iend,npts,nchild)
@@ -1448,19 +1383,16 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     endif
   enddo
   call cpu_time(time2)
-  !C$        time2=omp_get_wtime()
+  !$ time2=omp_get_wtime()
   timeinfo(4) = time2-time1
-
-
 
   !
   ! ----- Step 5: Downward pass, local-to-local -----
   !
-  if(ifprint.ge.1) &
-      call prinf('=== Step 5 (split loc) ===*',i,0)
+  if(ifprint.ge.1) call prinf('=== Step 5 (split loc) ===*',i,0)
 
   call cpu_time(time1)
-  !C$        time1=omp_get_wtime()
+  !$ time1=omp_get_wtime()
   do ilev = 2,nlevels-1
 
     nquad2 = nterms(ilev)*2
@@ -1507,9 +1439,8 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     !C$OMP END PARALLEL DO         
   enddo
   call cpu_time(time2)
-  !C$        time2=omp_get_wtime()
+  !$ time2=omp_get_wtime()
   timeinfo(5) = time2-time1
-
 
 
 
