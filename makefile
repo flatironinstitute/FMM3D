@@ -11,7 +11,7 @@
 CC=gcc
 CXX=g++
 FC=gfortran
-FFLAGS= -fPIC -O3 -march=native -funroll-loops -lstdc++
+FFLAGS= -fPIC -O3 -march=native -funroll-loops 
 
 
 
@@ -20,14 +20,14 @@ CFLAGS+= $(FFLAGS)
 CXXFLAGS= -std=c++11 -DSCTL_PROFILE=5 -DSCTL_VERBOSE
 CXXFLAGS+=$(FFLAGS)
 
-CLINK = -lgfortran -lm -ldl
+CLIBS = -lgfortran -lm -ldl -lstdc++
 
 LIBS = -lm -lstdc++
 
 # extra flags for multithreaded: C/Fortran, MATLAB
 OMPFLAGS = -fopenmp
-OMPLIBS = 
-MOMPFLAGS = -lgomp -D_OPENMP
+OMPLIBS = -lgomp 
+MOMPFLAGS = -D_OPENMP
 
 # flags for MATLAB MEX compilation..
 MFLAGS=-largeArrayDims -lgfortran -DMWF77_UNDERSCORE1 -lm  -ldl
@@ -117,7 +117,6 @@ usage:
 	@echo "  make mex - generate matlab interfaces (for expert users only, requires mwrap)"
 	@echo "  make python - compile and test python interfaces"
 	@echo "  make python3 - compile and test python interfaces using python3"
-	@echo "  make big-test - compile fortran examples for testing large n in test/ (Takes around 60 mins to run both examples on a server with 40 nodes, and around 300GB of memory)"
 	@echo "  make objclean - removal all object files, preserving lib & MEX"
 	@echo "  make clean - also remove lib, MEX, py, and demo executables"
 	@echo "For faster (multicore) making, append the flag -j"
@@ -151,8 +150,8 @@ GATEWAY = $(MWRAPFILE)
 GATEWAY2 = $(MWRAPFILE2)
 
 matlab:	$(STATICLIB) matlab/$(GATEWAY).c matlab/$(GATEWAY2).c
-	$(MEX) matlab/$(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d $(MEX_LIBS);
-	$(MEX) matlab/$(GATEWAY2).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d_legacy $(MEXLIBS);
+	$(MEX) matlab/$(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d $(LIBS);
+	$(MEX) matlab/$(GATEWAY2).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d_legacy $(LIBS);
 
 
 mex:  $(STATICLIB)
@@ -182,22 +181,22 @@ test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/lapr
 	rm print_testreslap.txt
 
 test/helmrouts: 
-	$(FC) $(FFLAGS) test/Helmholtz/test_helmrouts3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_helmrouts3d 
+	$(FC) $(FFLAGS) test/Helmholtz/test_helmrouts3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_helmrouts3d $(LIBS) 
 
 test/hfmm3d:
-	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d $(LIBS)
 
 test/hfmm3d_vec:
-	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_vec.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_vec 
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_vec.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_vec  $(LIBS)
 
 test/laprouts:
-	$(FC) $(FFLAGS) test/Laplace/test_laprouts3d.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_laprouts3d 
+	$(FC) $(FFLAGS) test/Laplace/test_laprouts3d.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_laprouts3d $(LIBS)
 
 test/lfmm3d:
-	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d
+	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d $(LIBS)
 
 test/lfmm3d_vec:
-	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_vec.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d_vec 
+	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_vec.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d_vec $(LIBS) 
 
 
 
@@ -215,23 +214,23 @@ examples: cxxkernel $(STATICLIB) $(TOBJS) examples/ex1_helm examples/ex2_helm ex
 	time -p ./examples/hfmm3d_legacy_example
 
 examples/ex1_lap:
-	$(FC) $(FFLAGS) examples/lfmm3d_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/lfmm3d_example
+	$(FC) $(FFLAGS) examples/lfmm3d_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/lfmm3d_example $(LIBS)
 
 examples/ex2_lap:
-	$(FC) $(FFLAGS) examples/lfmm3d_vec_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/lfmm3d_vec_example
+	$(FC) $(FFLAGS) examples/lfmm3d_vec_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/lfmm3d_vec_example $(LIBS)
 
 examples/ex3_lap:
-	$(FC) $(FFLAGS) examples/lfmm3d_legacy_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/lfmm3d_legacy_example
+	$(FC) $(FFLAGS) examples/lfmm3d_legacy_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/lfmm3d_legacy_example $(LIBS)
 
 
 examples/ex1_helm:
-	$(FC) $(FFLAGS) examples/hfmm3d_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_example
+	$(FC) $(FFLAGS) examples/hfmm3d_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_example $(LIBS)
 
 examples/ex2_helm:
-	$(FC) $(FFLAGS) examples/hfmm3d_vec_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_vec_example
+	$(FC) $(FFLAGS) examples/hfmm3d_vec_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_vec_example $(LIBS)
 
 examples/ex3_helm:
-	$(FC) $(FFLAGS) examples/hfmm3d_legacy_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_legacy_example
+	$(FC) $(FFLAGS) examples/hfmm3d_legacy_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_legacy_example $(LIBS)
 
 
 
@@ -239,11 +238,11 @@ examples/ex3_helm:
 c: $(COBJS) $(OBJS) $(CHEADERS) c/lfmm3d c/hfmm3d
 
 c/lfmm3d:
-	$(CC) $(CFLAGS) c/test_lfmm3d.c $(COBJS) $(OBJS) $(CLINK) -o c/test_lfmm3d
+	$(CC) $(CFLAGS) c/test_lfmm3d.c $(COBJS) $(OBJS) -o c/test_lfmm3d $(CLIBS)
 	time -p c/test_lfmm3d
 
 c/hfmm3d:
-	$(CC) $(CFLAGS) c/test_hfmm3d.c $(COBJS) $(OBJS) $(CLINK) -o c/test_hfmm3d
+	$(CC) $(CFLAGS) c/test_hfmm3d.c $(COBJS) $(OBJS) -o c/test_hfmm3d $(CLIBS)
 	time -p c/test_hfmm3d
 
 
@@ -257,16 +256,16 @@ c-examples: $(COBJS) $(OBJS) $(CHEADERS) c/ex1_lap c/ex2_lap c/ex1_helm c/ex2_he
 	rm fort.13
 
 c/ex1_lap:
-	$(CC) $(CFLAGS) c/lfmm3d_example.c $(COBJS) $(OBJS) $(CLINK) -o c/lfmm3d_example
+	$(CC) $(CFLAGS) c/lfmm3d_example.c $(COBJS) $(OBJS) -o c/lfmm3d_example $(CLIBS)
 
 c/ex2_lap:
-	$(CC) $(CFLAGS) c/lfmm3d_vec_example.c $(COBJS) $(OBJS) $(CLINK) -o c/lfmm3d_vec_example
+	$(CC) $(CFLAGS) c/lfmm3d_vec_example.c $(COBJS) $(OBJS) -o c/lfmm3d_vec_example $(CLIBS) 
 
 c/ex1_helm:
-	$(CC) $(CFLAGS) c/hfmm3d_example.c $(COBJS) $(OBJS) $(CLINK) -o c/hfmm3d_example
+	$(CC) $(CFLAGS) c/hfmm3d_example.c $(COBJS) $(OBJS) -o c/hfmm3d_example $(CLIBS)
 
 c/ex2_helm:
-	$(CC) $(CFLAGS) c/hfmm3d_vec_example.c $(COBJS) $(OBJS) $(CLINK) -o c/hfmm3d_vec_example
+	$(CC) $(CFLAGS) c/hfmm3d_vec_example.c $(COBJS) $(OBJS) -o c/hfmm3d_vec_example $(CLIBS)
 
 clean: objclean
 	rm -f lib-static/*.a lib/*.so
