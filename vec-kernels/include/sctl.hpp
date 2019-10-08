@@ -61,7 +61,7 @@
 #include SCTL_INCLUDE(profile.hpp)
 
 // Print stack trace
-#include SCTL_INCLUDE(stacktrace.h)
-const int sgh = SCTL_NAMESPACE::SetSigHandler(); // Set signal handler
+//#include SCTL_INCLUDE(stacktrace.h)
+//const int sgh = SCTL_NAMESPACE::SetSigHandler(); // Set signal handler
 
 #endif //_SCTL_HPP_

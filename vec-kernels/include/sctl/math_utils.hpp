@@ -32,6 +32,8 @@ template <Integer e, class Real> inline constexpr Real pow(Real b);
 
 template <class Real> inline constexpr Real pow(Real b, Integer e);
 
+double mydrand(){return (double)rand()/RAND_MAX;};
+
 }  // end namespace
 
 #ifdef SCTL_QUAD_T

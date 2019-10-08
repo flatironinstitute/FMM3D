@@ -12,9 +12,9 @@ int main() {
   int32_t Ns = 1000, Nt = 1000, nd = 1;
 
   sctl::Vector<double> Xs(Ns*COORD_DIM), Xt(Nt*COORD_DIM), F(Ns*nd*2), U0(Nt*nd*2), U1(Nt*nd*2);
-  for (auto& x : Xs) x = 10*M_PI*drand48();
-  for (auto& x : Xt) x = 10*M_PI*drand48();
-  for (auto& x : F) x = drand48();
+  for (auto& x : Xs) x = 10*M_PI*mydrand();
+  for (auto& x : Xt) x = 10*M_PI*mydrand();
+  for (auto& x : F) x = mydrand();
   U0 = 0;
   U1 = 0;
 

@@ -2,6 +2,9 @@
 #define _SCTL_SPH_HARM_HPP_
 
 #define SCTL_SHMAXDEG 1024
+#ifndef M_PI
+#define M_PI 3.1415926535897932384626433832795028
+#endif
 
 #include SCTL_INCLUDE(matrix.hpp)
 #include SCTL_INCLUDE(fft_wrapper.hpp)
@@ -305,12 +308,12 @@ template <class Real> class SphericalHarmonics{
         Real R0 = (0.01 + i/20.0);
 
         Vector<Real> x(3), n(3);
-        x[0] = drand48()-0.5;
-        x[1] = drand48()-0.5;
-        x[2] = drand48()-0.5;
-        n[0] = drand48()-0.5;
-        n[1] = drand48()-0.5;
-        n[2] = drand48()-0.5;
+        x[0] = mydrand()-0.5;
+        x[1] = mydrand()-0.5;
+        x[2] = mydrand()-0.5;
+        n[0] = mydrand()-0.5;
+        n[1] = mydrand()-0.5;
+        n[2] = mydrand()-0.5;
         Real R = sqrt<Real>(x[0]*x[0]+x[1]*x[1]+x[2]*x[2]);
         x[0] *= R0 / R;
         x[1] *= R0 / R;

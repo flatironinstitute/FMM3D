@@ -1014,7 +1014,7 @@ template <class Type> void Comm::HyperQuickSort(const Vector<Type>& arr_, Vector
         Integer splt_count;
         {  // Set splt_coun. O( 1 ) -- Let p * splt_count = t
           splt_count = (100 * nelem) / totSize;
-          if (npes > 100) splt_count = (drand48() * totSize) < (100 * nelem) ? 1 : 0;
+          if (npes > 100) splt_count = (mydrand() * totSize) < (100 * nelem) ? 1 : 0;
           if (splt_count > nelem) splt_count = nelem;
           MPI_Allreduce  (&splt_count, &glb_splt_count, 1, CommDatatype<Integer>::value(), CommDatatype<Integer>::sum(), comm);
           if (!glb_splt_count) splt_count = std::min<Long>(1, nelem);
