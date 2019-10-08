@@ -1,22 +1,3 @@
-TESTC99COMPLEX=test_c99_complex
-
-CROSS_FC=$(HOME)/lib/cross_win64/bin/x86_64-w64-mingw32-gfortran -g -O2 -ffast-math -msse2 -shared -fexceptions
-CROSS_CC=$(HOME)/lib/cross_win64/bin/x86_64-w64-mingw32-gcc -g -O2 -ffast-math -msse2 -shared -fexceptions
-CROSS_CXX=$(HOME)/lib/cross_win64/bin/x86_64-w64-mingw32-g++ -g -O2 -ffast-math -msse2 -shared -fexceptions -std=c++11 -DSCTL_PROFILE=5 -DSCTL_VERBOSE
-CROSS_LIBS=-I$(HOME)/lib/matlab-r2010b/extern/include -L$(HOME)/lib/matlab-r2010b/bin/win64 -lmex -lmat -lmx -lm -lgfortran -static
-
-FC=    $(CROSS_FC)
-CC=    $(CROSS_CC)
-CXX=   $(CROSS_CC)
-MEX=   $(CXX)
-MEX_FC=   $(FC)
-MEX_CC=   $(CXX)
-MW=../../mwrap-0.33/mwrap
-MWFLAGS=-c99complex -mex	
-MEX_LIBS=$(CROSS_LIBS) -Wl,--no-undefined 
-MEX_LINK=-o $(MEX_GATEWAY1).mexw64
-FFLAGS=
-CFLAGS=
-CXXFLAGS=
-
-MEX_FLAGS=
+CLIBS = -lgfortran -lm -lquadmath -lstdc++
+MINGW_LPATH=C:\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\lib\gcc\x86_64-w64-mingw32\8.1.0
+MEXLIBS = -lmex -lmat -lmx -lgfortran -lstdc++ -lquadmath -L${MINGW_LPATH}

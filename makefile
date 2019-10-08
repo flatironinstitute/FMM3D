@@ -30,7 +30,7 @@ OMPLIBS = -lgomp
 MOMPFLAGS = -D_OPENMP
 
 # flags for MATLAB MEX compilation..
-MFLAGS=-largeArrayDims -lgfortran -DMWF77_UNDERSCORE1 -lm  -ldl
+MFLAGS=-largeArrayDims -DMWF77_UNDERSCORE1 
 MWFLAGS=-c99complex 
 
 # location of MATLAB's mex compiler
@@ -38,6 +38,8 @@ MEX=mex
 
 # For experts, location of Mwrap executable
 MWRAP=../../mwrap-0.33/mwrap
+
+MEXLIBS=-lm -lstdc++ -ldl -lgfortran
 
 
 # For your OS, override the above by placing make variables in make.inc
@@ -49,12 +51,13 @@ CFLAGS += $(OMPFLAGS)
 FFLAGS += $(OMPFLAGS)
 MFLAGS += $(MOMPFLAGS)
 LIBS += $(OMPLIBS)
+MEXLIBS += $(OMPLIBS)
 endif
 
 
 LIBNAME=libfmm3d
 DYNAMICLIB = $(LIBNAME).so
-STATICLIB = $(LIBNAME).a
+STATICLIB = lib-static/$(LIBNAME).a
 
 # vectorized kernel directory
 SRCDIR = ./vec-kernels/src
@@ -140,7 +143,6 @@ else
 endif
 $(STATICLIB): $(OBJS) 
 	ar rcs $(STATICLIB) $(OBJS);
-	mv $(STATICLIB) lib-static/
 $(DYNAMICLIB): $(OBJS) 
 	$(FC) -shared -fPIC $(OMPFLAGS) $(OBJS) -o $(DYNAMICLIB) $(LIBS); 
 	mv $(DYNAMICLIB) lib/
@@ -153,17 +155,17 @@ GATEWAY = $(MWRAPFILE)
 GATEWAY2 = $(MWRAPFILE2)
 
 matlab:	$(STATICLIB) matlab/$(GATEWAY).c matlab/$(GATEWAY2).c
-	$(MEX) matlab/$(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d $(LIBS);
-	$(MEX) matlab/$(GATEWAY2).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d_legacy $(LIBS);
+	$(MEX) matlab/$(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d $(MEXLIBS)
+	$(MEX) matlab/$(GATEWAY2).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d_legacy $(MEXLIBS)
 
 
 mex:  $(STATICLIB)
 	cd matlab; $(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY) -mb $(MWRAPFILE).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY) -c $(GATEWAY).c $(MWRAPFILE).mw;\
-	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE) $(LIBS); \
+	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE) $(MEXLIBS); \
 	$(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY2) -mb $(MWRAPFILE2).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY2) -c $(GATEWAY2).c $(MWRAPFILE2).mw;\
-	$(MEX) $(GATEWAY2).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE2) $(LIBS);
+	$(MEX) $(GATEWAY2).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE2) $(MEXLIBS);
 
 #python
 python:
