@@ -142,9 +142,9 @@ else
 	@echo "$(STATICLIB) and $(DYNAMICLIB) built, single-threaded versions"
 endif
 $(STATICLIB): $(OBJS) 
-	ar rcs $(STATICLIB) $(OBJS);
+	ar rcs $(STATICLIB) $(OBJS)
 $(DYNAMICLIB): $(OBJS) 
-	$(FC) -shared -fPIC $(OMPFLAGS) $(OBJS) -o $(DYNAMICLIB) $(LIBS); 
+	$(FC) -shared -fPIC $(OMPFLAGS) $(OBJS) -o $(DYNAMICLIB) $(LIBS) 
 	mv $(DYNAMICLIB) lib/
 
 
@@ -160,12 +160,12 @@ matlab:	$(STATICLIB) matlab/$(GATEWAY).c matlab/$(GATEWAY2).c
 
 
 mex:  $(STATICLIB)
-	cd matlab; $(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY) -mb $(MWRAPFILE).mw;\
-	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY) -c $(GATEWAY).c $(MWRAPFILE).mw;\
-	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE) $(MEXLIBS); \
-	$(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY2) -mb $(MWRAPFILE2).mw;\
-	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY2) -c $(GATEWAY2).c $(MWRAPFILE2).mw;\
-	$(MEX) $(GATEWAY2).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE2) $(MEXLIBS);
+	$(MWRAP) $(MWFLAGS) -list -mex matlab/$(GATEWAY) -mb matlab/$(MWRAPFILE).mw
+	$(MWRAP) $(MWFLAGS) -mex matlab/$(GATEWAY) -c matlab/$(GATEWAY).c matlab/$(MWRAPFILE).mw
+	$(MEX) matlab/$(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/$(MWRAPFILE) $(MEXLIBS)
+	$(MWRAP) $(MWFLAGS) -list -mex matlab/$(GATEWAY2) -mb matlab/$(MWRAPFILE2).mw
+	$(MWRAP) $(MWFLAGS) -mex matlab/$(GATEWAY2) -c matlab/$(GATEWAY2).c matlab/$(MWRAPFILE2).mw
+	$(MEX) matlab/$(GATEWAY2).c $(STATICLIB) $(MFLAGS) -output matlab/$(MWRAPFILE2) $(MEXLIBS)
 
 #python
 python:
@@ -211,12 +211,12 @@ test/lfmm3d_vec:
 
 examples: cxxkernel $(STATICLIB) $(TOBJS) examples/ex1_helm examples/ex2_helm examples/ex3_helm \
 	examples/ex1_lap examples/ex2_lap examples/ex3_lap
-	time -p ./examples/lfmm3d_example
-	time -p ./examples/lfmm3d_vec_example
-	time -p ./examples/lfmm3d_legacy_example
-	time -p ./examples/hfmm3d_example
-	time -p ./examples/hfmm3d_vec_example
-	time -p ./examples/hfmm3d_legacy_example
+	./examples/lfmm3d_example
+	./examples/lfmm3d_vec_example
+	./examples/lfmm3d_legacy_example
+	./examples/hfmm3d_example
+	./examples/hfmm3d_vec_example
+	./examples/hfmm3d_legacy_example
 
 examples/ex1_lap:
 	$(FC) $(FFLAGS) examples/lfmm3d_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/lfmm3d_example $(LIBS)
@@ -254,10 +254,10 @@ c/hfmm3d:
 
 # C examples
 c-examples: $(COBJS) $(OBJS) $(CHEADERS) c/ex1_lap c/ex2_lap c/ex1_helm c/ex2_helm 
-	time -p c/lfmm3d_example
-	time -p c/lfmm3d_vec_example
-	time -p c/hfmm3d_example
-	time -p c/hfmm3d_vec_example
+	c/lfmm3d_example
+	c/lfmm3d_vec_example
+	c/hfmm3d_example
+	c/hfmm3d_vec_example
 	rm fort.13
 
 c/ex1_lap:
@@ -302,7 +302,7 @@ clean: objclean
 big-test: $(STATICLIB) $(TOBJS) test/test_lap_big test/test_helm_big
 
 pw-test: $(STATICLIB) $(TOBJS) test/test_helm_pw
-	time -p ./test/Helmholtz/test_hfmm3d_pw
+	./test/Helmholtz/test_hfmm3d_pw
 
 test/test_helm_big:
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_big.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_big
