@@ -1,9 +1,9 @@
-OS = osx
+OS = linux
 
 HOST = gcc
 #HOST = gcc-openmp
-#HOST = intel
-#HOST = intel-openmp
+HOST = intel
+HOST = intel-openmp
 
 PROJECT = hfmm3d_example
 
@@ -42,13 +42,13 @@ ifeq ($(HOST),gcc-openmp)
 endif
 
 ifeq ($(HOST),intel)
-    FC=ifort
-    FFLAGS= -O3 -xW -ip -xHost
+    FC=ifort -L${LDFMM}
+    FFLAGS= -O3 -fPIC -march=native
 endif
 
 ifeq ($(HOST),intel-openmp)
-    FC = ifort
-    FFLAGS= -O3 -xW -ip -xHost -qopenmp
+    FC = ifort -L${LDFMM}
+    FFLAGS= -O3 -fPIC -march=native -qopenmp
 endif
 
 # Test objects
