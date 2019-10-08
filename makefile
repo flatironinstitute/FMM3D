@@ -41,7 +41,7 @@ MWRAP=../../mwrap-0.33/mwrap
 
 
 # For your OS, override the above by placing make variables in make.inc
-#-include make.inc
+-include make.inc
 
 # multi-threaded libs & flags needed
 ifneq ($(OMP),OFF)
@@ -53,8 +53,8 @@ endif
 
 
 LIBNAME=libfmm3d
-DYNAMICLIB = lib/$(LIBNAME).so
-STATICLIB = lib-static/$(LIBNAME).a
+DYNAMICLIB = $(LIBNAME).so
+STATICLIB = $(LIBNAME).a
 
 # vectorized kernel directory
 SRCDIR = ./vec-kernels/src
@@ -139,9 +139,12 @@ else
 	@echo "$(STATICLIB) and $(DYNAMICLIB) built, single-threaded versions"
 endif
 $(STATICLIB): $(OBJS) 
-	ar rcs $(STATICLIB) $(OBJS)
+	ar rcs $(STATICLIB) $(OBJS);
+	mv $(STATICLIB) lib-static/
 $(DYNAMICLIB): $(OBJS) 
-	$(FC) -shared $(OMPFLAGS) $(OBJS) -o $(DYNAMICLIB) $(LIBS) 
+	$(FC) -shared -fPIC $(OMPFLAGS) $(OBJS) -o $(DYNAMICLIB) $(LIBS); 
+	mv $(DYNAMICLIB) lib/
+
 
 # matlab..
 MWRAPFILE = fmm3d

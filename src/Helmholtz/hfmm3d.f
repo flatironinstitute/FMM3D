@@ -305,7 +305,7 @@ c     scaling factor for multipole and local expansions at all levels
 c
       allocate(scales(0:nlevels),nterms(0:nlevels))
       do ilev = 0,nlevels
-          scales(ilev) = boxsize(ilev)
+        scales(ilev) = boxsize(ilev)
       enddo
 
 c
