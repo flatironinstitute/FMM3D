@@ -160,13 +160,13 @@ matlab:	$(STATICLIB) matlab/$(GATEWAY).c matlab/$(GATEWAY2).c
 
 
 mex:  $(STATICLIB)
-	$(MWRAP) $(MWFLAGS) -list -mex matlab/$(GATEWAY) -mb matlab/$(MWRAPFILE).mw
-	$(MWRAP) $(MWFLAGS) -mex matlab/$(GATEWAY) -c matlab/$(GATEWAY).c matlab/$(MWRAPFILE).mw
-	$(MEX) matlab/$(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/$(MWRAPFILE) $(MEXLIBS)
-	$(MWRAP) $(MWFLAGS) -list -mex matlab/$(GATEWAY2) -mb matlab/$(MWRAPFILE2).mw
-	$(MWRAP) $(MWFLAGS) -mex matlab/$(GATEWAY2) -c matlab/$(GATEWAY2).c matlab/$(MWRAPFILE2).mw
-	$(MEX) matlab/$(GATEWAY2).c $(STATICLIB) $(MFLAGS) -output matlab/$(MWRAPFILE2) $(MEXLIBS)
-
+	cd matlab; $(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY) -mb $(MWRAPFILE).mw;\
+	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY) -c $(GATEWAY).c $(MWRAPFILE).mw;\
+	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE) $(MEXLIBS); \
+	$(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY2) -mb $(MWRAPFILE2).mw;\
+	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY2) -c $(GATEWAY2).c $(MWRAPFILE2).mw;\
+	$(MEX) $(GATEWAY2).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE2) $(MEXLIBS);
+	
 #python
 python:
 	cd python && pip install -e . && cd test && pytest -s
