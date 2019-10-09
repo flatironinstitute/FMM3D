@@ -7,6 +7,7 @@ program test_hfmm3d_mp2loc
   integer :: i,j,k,ntest,nd,idim
   integer :: ifcharge,ifdipole,ifpgh,ifpghtarg
   integer :: ipass(18),len1,ntests,isum
+  integer, allocatable :: nterms(:), impole(:)
   
   double precision :: eps, err, hkrand, dnorms(1000), force(10)
   double precision, allocatable :: source(:,:), targ(:,:)
@@ -182,10 +183,21 @@ program test_hfmm3d_mp2loc
   !
   ! now form a multipole expansion at each center
   !
-  nterms = 5
-  allocate( mpole(nd,0:nterms,-nterms:nterms,nc) )
- 
-  nlege = nterms + 10
+  allocate(nterms(nc), impole(nc))
+  ntm = 5
+  allocate( mpole(nd,0:ntm,-ntm:ntm,nc) )
+
+  do i = 1,nc
+    nterms(i) = ntm
+  end do
+
+  impole(1) = 1
+  do i = 1,nc-1
+    len = nd*(nterms(i)+1)*(2*nterms(i)+1)
+    impole(i+1) = impole(i) + len
+  end do
+  
+  nlege = ntm + 10
   lw = 4*(nlege+1)**2
   allocate( wlege(lw) )
 
@@ -193,7 +205,7 @@ program test_hfmm3d_mp2loc
   call ylgndrfwini(nlege, wlege, lw, lused)
   call prinf('after ylgndrfwini, lused = *', lused, 1)
 
-  len = nd*(nterms+1)*(2*nterms+1)*nc
+  len = nd*(ntm+1)*(2*ntm+1)*nc
   call zinitialize(len, mpole)
   
   ns1 = 1
