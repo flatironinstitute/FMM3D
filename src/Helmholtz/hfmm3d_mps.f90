@@ -24,7 +24,7 @@
 
 subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
     charge,ifdipole,dipvec, &
-    nmpole, cmpole, rmpole, mterms, mpole, lterms, local, &
+    nmpole, cmpole, rmpole, mterms, mpole, impole, lterms, local, &
     ifpgh,pot,grad,hess,ntarg, &
     targ,ifpghtarg,pottarg,gradtarg,hesstarg)
   ! c-----------------------------------------------------------------------
@@ -71,12 +71,16 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   !     rmpole:  in: double precision (nmpole)
   !              scaling factors for each multipole expansion
   !
-  !     mterms:  in: integer
-  !              order of the multipole expansions, each expansion is of
-  !              the same number of terms
+  !     mterms:  in: integer (nmpole)
+  !              order of the multipole expansions, each expansion
+  !              can be of a different order
   !
   !     mpole:   in: double complex (nd,0:mterms,-mterms:mterms,nmpole)
   !              coefficients in the multipole expansions
+  !
+  !     impole:  in: integer (nmpole)
+  !              indexing array for mpole, the ith expansion is at
+  !              location mpole(impole(i)) and is of order mterms(i)
   !
   ! c   ifpgh   in: integer
   ! c              flag for evaluating potential/gradient at the sources
@@ -130,7 +134,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   double complex zk
   double precision eps
 
-  integer :: nmpole, mterms
+  integer :: nmpole, mterms, impole(nmpole)
   double precision :: cmpole(3,nmpole), rmpole(nmpole)
   double complex :: mpole(nd,0:mterms,-mterms:mterms,nmpole)
   integer :: lterms
