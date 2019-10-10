@@ -1,3 +1,10 @@
-CLIBS = -lgfortran -lm -lquadmath -lstdc++
+CLIBS = -lgfortran -lm 
 MINGW_LPATH=C:\mingw-w64\x86_64-8.1.0-posix-seh-rt_v6-rev0\mingw64\lib\gcc\x86_64-w64-mingw32\8.1.0
-MEXLIBS = -lmex -lmat -lmx -lgfortran -lstdc++ -lquadmath -L${MINGW_LPATH}
+MEXLIBS = -lmex -lmat -lmx -lgfortran -L${MINGW_LPATH}
+
+ifeq ($(FAST_KER), ON)
+
+CLIBS += -lquadmath -lstdc++
+MEXLIBS += -lquadmath -lstdc++
+
+endif
