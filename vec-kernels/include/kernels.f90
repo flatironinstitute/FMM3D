@@ -52,7 +52,7 @@ interface
     real    *8, intent(in) :: thresh
   end subroutine
 
-  subroutine h3ddirectcp_vec_d(nd, zk, sources, charge, ns, ztarg, nt, pot, thresh) !bind(C, name="h3ddirectcp_vec_d_")
+  subroutine h3ddirectcp(nd, zk, sources, charge, ns, ztarg, nt, pot, thresh) !bind(C, name="h3ddirectcp_")
     implicit none
     integer *4, intent(in) :: nd
     complex*16, intent(in) :: zk
@@ -65,7 +65,7 @@ interface
     real    *8, intent(in) :: thresh
   end subroutine
 
-  subroutine h3ddirectcg_vec_d(nd, zk, sources, charge, ns, ztarg, nt, pot, grad, thresh) !bind(C, name="h3ddirectcg_vec_d_")
+  subroutine h3ddirectcg(nd, zk, sources, charge, ns, ztarg, nt, pot, grad, thresh) !bind(C, name="h3ddirectcg_")
     implicit none
     integer *4, intent(in) :: nd
     complex*16, intent(in) :: zk
@@ -79,7 +79,7 @@ interface
     real    *8, intent(in) :: thresh
   end subroutine
 
-  subroutine h3ddirectdp_vec_d(nd, zk, sources, dipvec, ns, ztarg, nt, pot, thresh) !bind(C, name="h3ddirectdp_vec_d_")
+  subroutine h3ddirectdp(nd, zk, sources, dipvec, ns, ztarg, nt, pot, thresh) !bind(C, name="h3ddirectdp_")
     implicit none
     integer *4, intent(in) :: nd
     complex*16, intent(in) :: zk
@@ -92,7 +92,7 @@ interface
     real    *8, intent(in) :: thresh
   end subroutine
 
-  subroutine h3ddirectdg_vec_d(nd, zk, sources, dipvec, ns, ztarg, nt, pot, grad, thresh) !bind(C, name="h3ddirectdg_vec_d_")
+  subroutine h3ddirectdg(nd, zk, sources, dipvec, ns, ztarg, nt, pot, grad, thresh) !bind(C, name="h3ddirectdg_")
     implicit none
     integer *4, intent(in) :: nd
     complex*16, intent(in) :: zk
@@ -106,7 +106,7 @@ interface
     real    *8, intent(in) :: thresh
   end subroutine
 
-  subroutine h3ddirectcdp_vec_d(nd, zk, sources, charge, dipvec, ns, ztarg, nt, pot, thresh) !bind(C, name="h3ddirectcdp_vec_d_")
+  subroutine h3ddirectcdp(nd, zk, sources, charge, dipvec, ns, ztarg, nt, pot, thresh) !bind(C, name="h3ddirectcdp_")
     implicit none
     integer *4, intent(in) :: nd
     complex*16, intent(in) :: zk
@@ -120,7 +120,7 @@ interface
     real    *8, intent(in) :: thresh
   end subroutine
 
-  subroutine h3ddirectcdg_vec_d(nd, zk, sources, charge, dipvec, ns, ztarg, nt, pot, grad, thresh) !bind(C, name="h3ddirectcdg_vec_d_")
+  subroutine h3ddirectcdg(nd, zk, sources, charge, dipvec, ns, ztarg, nt, pot, grad, thresh) !bind(C, name="h3ddirectcdg_")
     implicit none
     integer *4, intent(in) :: nd
     complex*16, intent(in) :: zk

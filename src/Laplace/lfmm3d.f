@@ -1645,7 +1645,7 @@ C$OMP$SCHEDULE(DYNAMIC)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call l3ddirectcp_vec_d(nd,sourcesort(1,jstart),
+                call l3ddirectcp(nd,sourcesort(1,jstart),
      1             chargesort(1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),thresh)          
               enddo
@@ -1667,7 +1667,7 @@ C$OMP$SCHEDULE(DYNAMIC)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call l3ddirectdp_vec_d(nd,sourcesort(1,jstart),
+                call l3ddirectdp(nd,sourcesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),thresh)          
               enddo
@@ -1689,7 +1689,7 @@ C$OMP$SCHEDULE(DYNAMIC)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call l3ddirectcdp_vec_d(nd,sourcesort(1,jstart),
+                call l3ddirectcdp(nd,sourcesort(1,jstart),
      1             chargesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),thresh)          
@@ -1715,7 +1715,7 @@ C$OMP$SCHEDULE(DYNAMIC)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call l3ddirectcg_vec_d(nd,sourcesort(1,jstart),
+                call l3ddirectcg(nd,sourcesort(1,jstart),
      1             chargesort(1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)   
               enddo
@@ -1738,7 +1738,7 @@ C$OMP$SCHEDULE(DYNAMIC)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call l3ddirectdg_vec_d(nd,sourcesort(1,jstart),
+                call l3ddirectdg(nd,sourcesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)          
               enddo
@@ -1761,7 +1761,7 @@ C$OMP$SCHEDULE(DYNAMIC)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call l3ddirectcdg_vec_d(nd,sourcesort(1,jstart),
+                call l3ddirectcdg(nd,sourcesort(1,jstart),
      1             chargesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)          
@@ -1787,7 +1787,7 @@ C$OMP$SCHEDULE(DYNAMIC)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call l3ddirectcp_vec_d(nd,sourcesort(1,jstart),
+                call l3ddirectcp(nd,sourcesort(1,jstart),
      1             chargesort(1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),thresh)          
               enddo
@@ -1809,7 +1809,7 @@ C$OMP$SCHEDULE(DYNAMIC)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call l3ddirectdp_vec_d(nd,sourcesort(1,jstart),
+                call l3ddirectdp(nd,sourcesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),thresh)          
               enddo
@@ -1831,7 +1831,7 @@ C$OMP$SCHEDULE(DYNAMIC)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call l3ddirectcdp_vec_d(nd,sourcesort(1,jstart),
+                call l3ddirectcdp(nd,sourcesort(1,jstart),
      1             chargesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),thresh)          
@@ -1857,7 +1857,7 @@ C$OMP$SCHEDULE(DYNAMIC)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call l3ddirectcg_vec_d(nd,sourcesort(1,jstart),
+                call l3ddirectcg(nd,sourcesort(1,jstart),
      1             chargesort(1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),gradtarg(1,1,istartt),
      3             thresh)   
@@ -1880,7 +1880,7 @@ C$OMP$SCHEDULE(DYNAMIC)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call l3ddirectdg_vec_d(nd,sourcesort(1,jstart),
+                call l3ddirectdg(nd,sourcesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),gradtarg(1,1,istartt),
      3             thresh)          
@@ -1903,7 +1903,7 @@ C$OMP$SCHEDULE(DYNAMIC)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call l3ddirectcdg_vec_d(nd,sourcesort(1,jstart),
+                call l3ddirectcdg(nd,sourcesort(1,jstart),
      1             chargesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),gradtarg(1,1,istartt),

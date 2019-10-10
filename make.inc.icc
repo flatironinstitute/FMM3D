@@ -1,8 +1,17 @@
 CC=icc
 CXX=icpc
 FC=ifort
-FFLAGS= -fPIC -O3 -march=native -funroll-loops -mkl -DSCTL_HAVE_SVML
-LIBS=-lm -cxxlib
+FFLAGS= -fPIC -O3 -march=native -funroll-loops -mkl 
+LIBS=-lm 
+
+ifeq ($(FAST_KER),ON)
+
+CXXFLAGS = $(FFLAGS)
+CXXFLAGS += -DSCTL_HAVE_SVML
+LIBS += -cxxlib
+
+endif
+
 OMPLIBS = 
 OMPFLAGS = -qopenmp
 CLIBS = -lm -ldl -lifcore

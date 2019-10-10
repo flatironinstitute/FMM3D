@@ -20,9 +20,9 @@ CFLAGS+= $(FFLAGS)
 CXXFLAGS= -std=c++11 -DSCTL_PROFILE=5 -DSCTL_VERBOSE
 CXXFLAGS+=$(FFLAGS)
 
-CLIBS = -lgfortran -lm -ldl -lstdc++
+CLIBS = -lgfortran -lm -ldl 
 
-LIBS = -lm -lstdc++
+LIBS = -lm 
 
 # extra flags for multithreaded: C/Fortran, MATLAB
 OMPFLAGS = -fopenmp
@@ -41,12 +41,20 @@ MWRAP=../../mwrap-0.33/mwrap
 
 MEXLIBS=-lm -lstdc++ -ldl -lgfortran
 
+ifeq ($(FAST_KER),ON)
+
+LIBS += -lstdc++
+CLIBS += -lstdc++
+OMP = ON
+
+endif
+
 
 # For your OS, override the above by placing make variables in make.inc
 -include make.inc
 
 # multi-threaded libs & flags needed
-ifneq ($(OMP),OFF)
+ifeq ($(OMP),ON)
 CFLAGS += $(OMPFLAGS)
 FFLAGS += $(OMPFLAGS)
 MFLAGS += $(MOMPFLAGS)
@@ -71,8 +79,8 @@ COM = src/Common
 COMOBJS = $(COM)/besseljs3d.o $(COM)/cdjseval3d.o $(COM)/dfft.o \
 	$(COM)/fmmcommon.o $(COM)/legeexps.o $(COM)/prini.o \
 	$(COM)/rotgen.o $(COM)/rotproj.o $(COM)/rotviarecur.o \
-	$(COM)/tree_lr_3d.o $(COM)/yrecursion.o $(SRCDIR)/libkernels.o
-
+	$(COM)/tree_lr_3d.o $(COM)/yrecursion.o 
+	
 # Helmholtz objects
 HELM = src/Helmholtz
 HOBJS = $(HELM)/h3dcommon.o $(HELM)/h3dterms.o $(HELM)/h3dtrans.o \
@@ -86,6 +94,15 @@ LOBJS = $(LAP)/lwtsexp_sep1.o $(LAP)/l3dterms.o $(LAP)/l3dtrans.o \
 	$(LAP)/laprouts3d.o $(LAP)/lfmm3d.o $(LAP)/lfmm3dwrap.o \
 	$(LAP)/lfmm3dwrap_legacy.o $(LAP)/lfmm3dwrap_vec.o $(LAP)/lwtsexp_sep2.o \
 	$(LAP)/lpwrouts.o
+
+ifneq ($(FAST_KER),ON)
+LOBJS += $(LAP)/lapkernels.o
+HOBJS += $(HELM)/helmkernels.o
+endif
+
+ifeq ($(FAST_KER),ON)
+COMOBJS+= $(SRCDIR)/libkernels.o
+endif
 
 # Test objects
 TOBJS = $(COM)/hkrand.o $(COM)/dlaran.o
@@ -101,7 +118,7 @@ OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
 default: usage
 
-all: cxxkernel lib examples test python python3 c c-examples matlab
+##all: cxxkernel lib examples test python python3 c c-examples matlab
 
 cxxkernel: $(CXXOBJ)
 
@@ -136,7 +153,7 @@ usage:
 
 # build the library...
 lib: $(STATICLIB) $(DYNAMICLIB)
-ifneq ($(OMP),OFF)
+ifeq ($(OMP),ON)
 	@echo "$(STATICLIB) and $(DYNAMICLIB) built, multithread versions"
 else
 	@echo "$(STATICLIB) and $(DYNAMICLIB) built, single-threaded versions"

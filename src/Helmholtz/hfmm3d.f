@@ -1747,7 +1747,7 @@ C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectcp_vec_d(nd,zk,sourcesort(1,jstart),
+                call h3ddirectcp(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),thresh)          
               enddo
@@ -1768,7 +1768,7 @@ C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectdp_vec_d(nd,zk,sourcesort(1,jstart),
+                call h3ddirectdp(nd,zk,sourcesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),thresh)          
               enddo
@@ -1789,7 +1789,7 @@ C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectcdp_vec_d(nd,zk,sourcesort(1,jstart),
+                call h3ddirectcdp(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),thresh)          
@@ -1814,7 +1814,7 @@ C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectcg_vec_d(nd,zk,sourcesort(1,jstart),
+                call h3ddirectcg(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)   
               enddo
@@ -1835,7 +1835,7 @@ C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectdg_vec_d(nd,zk,sourcesort(1,jstart),
+                call h3ddirectdg(nd,zk,sourcesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)          
               enddo
@@ -1856,7 +1856,7 @@ C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectcdg_vec_d(nd,zk,sourcesort(1,jstart),
+                call h3ddirectcdg(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)          
@@ -1881,7 +1881,7 @@ C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectcp_vec_d(nd,zk,sourcesort(1,jstart),
+                call h3ddirectcp(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),thresh)          
               enddo
@@ -1902,7 +1902,7 @@ C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectdp_vec_d(nd,zk,sourcesort(1,jstart),
+                call h3ddirectdp(nd,zk,sourcesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),thresh)          
               enddo
@@ -1923,7 +1923,7 @@ C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectcdp_vec_d(nd,zk,sourcesort(1,jstart),
+                call h3ddirectcdp(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),thresh)          
@@ -1948,7 +1948,7 @@ C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectcg_vec_d(nd,zk,sourcesort(1,jstart),
+                call h3ddirectcg(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),gradtarg(1,1,istartt),
      3             thresh)   
@@ -1970,7 +1970,7 @@ C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectdg_vec_d(nd,zk,sourcesort(1,jstart),
+                call h3ddirectdg(nd,zk,sourcesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),gradtarg(1,1,istartt),
      3             thresh)          
@@ -1992,7 +1992,7 @@ C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
                 jstart = itree(ipointer(10)+jbox-1)
                 jend = itree(ipointer(11)+jbox-1)
                 npts = jend-jstart+1
-                call h3ddirectcdg_vec_d(nd,zk,sourcesort(1,jstart),
+                call h3ddirectcdg(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,targsort(1,istartt),
      2             npts0,pottarg(1,istartt),gradtarg(1,1,istartt),
