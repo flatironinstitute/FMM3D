@@ -25,8 +25,8 @@ CLIBS = -lgfortran -lm -ldl
 LIBS = -lm 
 
 # extra flags for multithreaded: C/Fortran, MATLAB
-OMPFLAGS = -fopenmp
-OMPLIBS = -lgomp 
+OMPFLAGS =-fopenmp
+OMPLIBS =-lgomp 
 MOMPFLAGS = -D_OPENMP
 
 # flags for MATLAB MEX compilation..
@@ -186,11 +186,11 @@ mex:  $(STATICLIB)
 	$(MEX) $(GATEWAY2).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE2) $(MEXLIBS);
 	
 #python
-python:
-	cd python && pip install -e . && cd test && pytest -s
+python: $(STATICLIB)
+	cd python && export FAST_KER=$(FAST_KER) && export FLIBS='$(LIBS)' && export FFLAGS='$(FFLAGS)' && pip install -e . && cd test && pytest -s
 
 #python
-python3:
+python3: $(STATICLIB)
 	cd python && pip3 install -e . && cd test && python3 -m pytest -s
 
 # testing routines

@@ -1,4 +1,6 @@
 import setuptools
+import string
+import os
 from numpy.distutils.core import setup
 from numpy.distutils.core import Extension
 
@@ -6,13 +8,29 @@ pkg_name = "fmm3dpy"
 
 ## TODO: this should be automatically populated using "read directory, or whatever"
 ## TODO: fix problem with relative location for executable
-list_helm=['h3dcommon.f','helmrouts3d.f','hfmm3dwrap_vec.f','quadread.f',
-'h3dterms.f','hfmm3d.f','hpwrouts.f','h3dtrans.f','hfmm3dwrap.f','hwts3.f','projections.f',
-'numphysfour.f']
-list_lap=['l3dterms.f','l3dtrans.f','laprouts3d.f','lfmm3d.f','lpwrouts.f','lwtsexp_sep1.f',
-'lwtsexp_sep2.f','lfmm3dwrap.f','lfmm3dwrap_vec.f']
-list_common=['besseljs3d.f','tree_lr_3d.f','dlaran.f','hkrand.f','prini.f','rotgen.f','rotviarecur.f',
-'cdjseval3d.f','dfft.f','fmmcommon.f','legeexps.f','rotproj.f','yrecursion.f']
+
+list_helm=['hfmm3dwrap.f','hfmm3dwrap_vec.f']
+list_lap=['lfmm3dwrap.f','lfmm3dwrap_vec.f']
+list_common=[]
+FAST_KER = os.getenv('FAST_KER')
+FLIBS = os.getenv('FLIBS')
+FFLAGS = os.getenv('FFLAGS')
+
+if(FAST_KER=='ON'):
+    list_helm.append('helmkernels_fast.f')
+    list_lap.append('lapkernels_fast.f')
+else:
+    list_helm.append('helmkernels.f')
+    list_lap.append('lapkernels.f')
+
+
+FLIBS = FLIBS.rstrip().split(' ')
+FLIBS = list(filter(None, FLIBS))
+FLIBS.append('../lib-static/libfmm3d.a')
+
+FFLAGS = FFLAGS.rstrip().split(' ')
+FFLAGS = list(filter(None,FFLAGS))
+
 
 c_opts = ['_c','_d','_cd']
 c_opts2 = ['c','d','cd']
@@ -43,18 +61,18 @@ for cd in c_opts2:
 
 ext_helm = Extension(
     name='hfmm3d_fortran',
-    sources=['./src/Helmholtz/'+item for item in list_helm]+['./src/Common/'+item for item in list_common],
+    sources=['../src/Helmholtz/'+item for item in list_helm]+['../src/Common/'+item for item in list_common],
     f2py_options=['only:']+list_int_helm+list_int_helm_vec+list_int_helm_dir+[':'],
-    extra_f77_compile_args=['-O3', '-W','-fopenmp'],
-    extra_link_args=['-O3','-lgomp']
+    extra_f77_compile_args=FFLAGS,
+    extra_link_args=FLIBS
 )
 
 ext_lap = Extension(
     name='lfmm3d_fortran',
-    sources=['./src/Laplace/'+item for item in list_lap]+['./src/Common/'+item for item in list_common],
+    sources=['../src/Laplace/'+item for item in list_lap]+['../src/Common/'+item for item in list_common],
     f2py_options=['only:']+list_int_lap+list_int_lap_vec+list_int_lap_dir+[':'],
-    extra_f77_compile_args=['-O3', '-W','-fopenmp'],
-    extra_link_args=['-O3','-lgomp']
+    extra_f77_compile_args=FFLAGS,
+    extra_link_args=FLIBS
 )
 
 ## TODO: fill in the info below
