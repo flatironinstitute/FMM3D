@@ -101,6 +101,8 @@ HOBJS += $(HELM)/helmkernels.o
 endif
 
 ifeq ($(FAST_KER),ON)
+LOBJS += $(LAP)/lapkernels_fast.o
+HOBJS += $(HELM)/helmkernels_fast.o
 COMOBJS+= $(SRCDIR)/libkernels.o
 endif
 

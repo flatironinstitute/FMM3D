@@ -1,4 +1,5 @@
 c      This file contains the direct evaluation kernels for Helmholtz FMM
+c       using the sctl library
 c
 c      h3ddirectcp:  direct calculation of potential for a collection 
 c                         of charge sources at a collection of targets
@@ -80,34 +81,8 @@ c
       complex *16 charge(nd,ns),pot(nd,nt)
       real *8 thresh
       
-c
-cc     temporary variables
-c
-      real *8 zdiff(3),dd,d
-      complex *16 zkeye,eye,ztmp
-      integer i,j,idim
-      data eye/(0.0d0,1.0d0)/
-
-      zkeye = zk*eye
-
-      do i=1,nt
-        do j=1,ns
-          zdiff(1) = ztarg(1,i)-sources(1,j)
-          zdiff(2) = ztarg(2,i)-sources(2,j)
-          zdiff(3) = ztarg(3,i)-sources(3,j)
-
-          dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
-          d = sqrt(dd)
-          if(d.lt.thresh) goto 1000
-
-          ztmp = exp(zkeye*d)/d
-          do idim=1,nd
-            pot(idim,i) = pot(idim,i) + charge(idim,j)*ztmp
-          enddo
- 1000     continue
-        enddo
-      enddo
-
+      call h3ddirectcp_cpp(nd,zk,sources,charge,ns,ztarg,nt,
+     1            pot,thresh)
 
       return
       end
@@ -172,40 +147,8 @@ c
       complex *16 charge(nd,ns),pot(nd,nt),grad(nd,3,nt)
       real *8 thresh
       
-c
-cc     temporary variables
-c
-      real *8 zdiff(3),dd,d
-      complex *16 zkeye,eye,cd,cd1,ztmp
-      complex *16 ztmp1,ztmp2,ztmp3
-      integer i,j,idim
-      data eye/(0.0d0,1.0d0)/
-
-      zkeye = zk*eye
-
-      do i=1,nt
-        do j=1,ns
-          zdiff(1) = ztarg(1,i)-sources(1,j)
-          zdiff(2) = ztarg(2,i)-sources(2,j)
-          zdiff(3) = ztarg(3,i)-sources(3,j)
-
-          dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
-          d = sqrt(dd)
-          if(d.lt.thresh) goto 1000
-          cd = exp(zkeye*d)/d
-          cd1 = (zkeye*d-1)*cd/dd
-          ztmp1 = cd1*zdiff(1)
-          ztmp2 = cd1*zdiff(2)
-          ztmp3 = cd1*zdiff(3)
-          do idim=1,nd
-            pot(idim,i) = pot(idim,i) + cd*charge(idim,j)
-            grad(idim,1,i) = grad(idim,1,i) + ztmp1*charge(idim,j)
-            grad(idim,2,i) = grad(idim,2,i) + ztmp2*charge(idim,j)
-            grad(idim,3,i) = grad(idim,3,i) + ztmp3*charge(idim,j)
-          enddo
- 1000     continue
-        enddo
-      enddo
+      call h3ddirectcg_cpp(nd,zk,sources,charge,ns,ztarg,nt,
+     1            pot,grad,thresh)
 
 
       return
@@ -275,40 +218,8 @@ c
       complex *16 pot(nd,nt)
       real *8 thresh
       
-c
-cc     temporary variables
-c
-      real *8 zdiff(3),dd,d,dinv
-      complex *16 zkeye,eye,cd,cd1,dotprod
-      integer i,j,idim
-      data eye/(0.0d0,1.0d0)/
-
-      zkeye = zk*eye
-
-      do i=1,nt
-        do j=1,ns
-          zdiff(1) = ztarg(1,i)-sources(1,j)
-          zdiff(2) = ztarg(2,i)-sources(2,j)
-          zdiff(3) = ztarg(3,i)-sources(3,j)
-
-          dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
-          d = sqrt(dd)
-          if(d.lt.thresh) goto 1000
-
-          dinv = 1/d
-          cd = exp(zkeye*d)*dinv
-          cd1 = (1-zkeye*d)*cd/dd
-
-          do idim=1,nd
-            dotprod = zdiff(1)*dipvec(idim,1,j) + 
-     1          zdiff(2)*dipvec(idim,2,j)+
-     1          zdiff(3)*dipvec(idim,3,j)
-            pot(idim,i) = pot(idim,i) + cd1*dotprod
-          enddo
-
- 1000     continue
-        enddo
-      enddo
+      call h3ddirectdp_cpp(nd,zk,sources,
+     1            dipvec,ns,ztarg,nt,pot,thresh)
 
 
       return
@@ -384,51 +295,8 @@ c
       complex *16 pot(nd,nt),grad(nd,3,nt)
       real *8 thresh
       
-c
-cc     temporary variables
-c
-      real *8 zdiff(3),dd,d,dinv,dinv2
-      complex *16 zkeye,eye,cd,cd2,cd3,cd4,dotprod
-      integer i,j,idim
-      data eye/(0.0d0,1.0d0)/
-
-      zkeye = zk*eye
-
-      do i=1,nt
-        do j=1,ns
-          zdiff(1) = ztarg(1,i)-sources(1,j)
-          zdiff(2) = ztarg(2,i)-sources(2,j)
-          zdiff(3) = ztarg(3,i)-sources(3,j)
-
-          dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
-          d = sqrt(dd)
-          if(d.lt.thresh) goto 1000
-
-          dinv = 1/d
-          dinv2 = dinv**2
-          cd = exp(zkeye*d)*dinv
-          cd2 = (zkeye*d-1)*cd*dinv2
-          cd3 = cd*dinv2*(-zkeye*zkeye-3*dinv2+3*zkeye*dinv)
-
-          do idim=1,nd
-          
-            dotprod = zdiff(1)*dipvec(idim,1,j)+
-     1               zdiff(2)*dipvec(idim,2,j)+
-     1               zdiff(3)*dipvec(idim,3,j)
-            cd4 = cd3*dotprod
-
-            pot(idim,i) = pot(idim,i) - cd2*dotprod
-            grad(idim,1,i) = grad(idim,1,i) + (cd4*zdiff(1) - 
-     1         cd2*dipvec(idim,1,j)) 
-            grad(idim,2,i) = grad(idim,2,i) + (cd4*zdiff(2) - 
-     1         cd2*dipvec(idim,2,j))
-            grad(idim,3,i) = grad(idim,3,i) + (cd4*zdiff(3) - 
-     1         cd2*dipvec(idim,3,j))
-          enddo
- 1000     continue
-        enddo
-      enddo
-
+      call h3ddirectdg_cpp(nd,zk,sources,dipvec,ns,ztarg,nt,pot,
+     1   grad,thresh)
 
       return
       end
@@ -496,42 +364,8 @@ c
       complex *16 charge(nd,ns),pot(nd,nt)
       real *8 thresh
       
-c
-cc     temporary variables
-c
-      real *8 zdiff(3),dd,d,dinv
-      complex *16 zkeye,eye,cd,cd1,dotprod
-      integer i,j,idim
-      data eye/(0.0d0,1.0d0)/
-
-      zkeye = zk*eye
-
-      do i=1,nt
-        do j=1,ns
-          zdiff(1) = ztarg(1,i)-sources(1,j)
-          zdiff(2) = ztarg(2,i)-sources(2,j)
-          zdiff(3) = ztarg(3,i)-sources(3,j)
-
-          dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
-          d = sqrt(dd)
-          if(d.lt.thresh) goto 1000
-
-          dinv = 1/d
-          cd = exp(zkeye*d)*dinv
-          cd1 = (1-zkeye*d)*cd/dd
-
-          do idim=1,nd
-            pot(idim,i) = pot(idim,i) + charge(idim,j)*cd
-
-            dotprod = zdiff(1)*dipvec(idim,1,j) + 
-     1          zdiff(2)*dipvec(idim,2,j)+
-     1          zdiff(3)*dipvec(idim,3,j)
-            pot(idim,i) = pot(idim,i) + cd1*dotprod
-          enddo
-
- 1000     continue
-        enddo
-      enddo
+      call h3ddirectcdp_cpp(nd,zk,sources,charge,
+     1            dipvec,ns,ztarg,nt,pot,thresh)
 
 
       return
@@ -608,55 +442,9 @@ c
       complex *16 charge(nd,ns),pot(nd,nt),grad(nd,3,nt)
       real *8 thresh
       
-c
-cc     temporary variables
-c
-      real *8 zdiff(3),dd,d,dinv,dinv2
-      complex *16 zkeye,eye,cd,cd2,cd3,cd4,dotprod
-      integer i,j,idim
-      data eye/(0.0d0,1.0d0)/
 
-      zkeye = zk*eye
-
-      do i=1,nt
-        do j=1,ns
-          zdiff(1) = ztarg(1,i)-sources(1,j)
-          zdiff(2) = ztarg(2,i)-sources(2,j)
-          zdiff(3) = ztarg(3,i)-sources(3,j)
-
-          dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
-          d = sqrt(dd)
-          if(d.lt.thresh) goto 1000
-
-          dinv = 1/d
-          dinv2 = dinv**2
-          cd = exp(zkeye*d)*dinv
-          cd2 = (zkeye*d-1)*cd*dinv2
-          cd3 = cd*dinv2*(-zkeye*zkeye-3*dinv2+3*zkeye*dinv)
-
-          do idim=1,nd
-          
-            pot(idim,i) = pot(idim,i) + cd*charge(idim,j)
-            dotprod = zdiff(1)*dipvec(idim,1,j)+
-     1               zdiff(2)*dipvec(idim,2,j)+
-     1               zdiff(3)*dipvec(idim,3,j)
-            cd4 = cd3*dotprod
-
-            pot(idim,i) = pot(idim,i) - cd2*dotprod
-            grad(idim,1,i) = grad(idim,1,i) + (cd4*zdiff(1) - 
-     1         cd2*dipvec(idim,1,j))
-     2         + cd2*charge(idim,j)*zdiff(1) 
-            grad(idim,2,i) = grad(idim,2,i) + (cd4*zdiff(2) - 
-     1         cd2*dipvec(idim,2,j))
-     2         + cd2*charge(idim,j)*zdiff(2) 
-            grad(idim,3,i) = grad(idim,3,i) + (cd4*zdiff(3) - 
-     1         cd2*dipvec(idim,3,j))
-     2         + cd2*charge(idim,j)*zdiff(3)
-          enddo
- 1000     continue
-        enddo
-      enddo
-
+      call h3ddirectcdg_cpp(nd,zk,sources,charge,
+     1            dipvec,ns,ztarg,nt,pot,grad,thresh)
 
       return
       end
