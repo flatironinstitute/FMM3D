@@ -24,7 +24,7 @@
 
 subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
     charge,ifdipole,dipvec, &
-    nmpole, cmpole, rmpole, mterms, mpole, impole, lterms, local, &
+    nmpole, cmpole, rmpole, mterms, mpole, impole, local, &
     ifpgh,pot,grad,hess,ntarg, &
     targ,ifpghtarg,pottarg,gradtarg,hesstarg)
   ! c-----------------------------------------------------------------------
@@ -105,7 +105,8 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   ! c
   !     local:   out: double complex ()
   !              local expansions at each center, due to all incoming
-  !              multipole expansions (self is ignored)
+  !              multipole expansions (self is ignored). The orders
+  !              are the same as for the incoming mpole.
   !
   ! c   pot:    out: double complex(nd,nsource) 
   ! c               potential at the source locations
@@ -137,7 +138,6 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   integer :: nmpole, mterms, impole(nmpole)
   double precision :: cmpole(3,nmpole), rmpole(nmpole)
   double complex :: mpole(nd,0:mterms,-mterms:mterms,nmpole)
-  integer :: lterms
   double complex :: local(nd,*)
   
   integer ifcharge,ifdipole
@@ -174,6 +174,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   double complex, allocatable :: chargesort(:,:)
   double complex, allocatable :: dipvecsort(:,:,:)
 
+  integer, allocatable :: mtermssort(:)
   double precision, allocatable :: cmpolesort(:,:)
   double precision, allocatable :: rmpolesort(:)
   double complex, allocatable :: mpolesort(:,:,:,:)
@@ -485,12 +486,15 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   !
   allocate(cmpolesort(3,nmpole))
   allocate(rmpolesort(nmpole))
+  allocate(mtermssort(nmpole))
   allocate(mpolesort(nd,0:mterms,-mterms:mterms,nmpole))
   
   call dreorderf(3, nmpole, cmpole, cmpolesort, itree(ipointer(5)))
   call dreorderf(1, nmpole, rmpole, rmpolesort, itree(ipointer(5)))
+  call ireorderf(1, nmpole, mterms, mtermssort, itree(ipointer(5)))
 
   lda = 2*nd*(mterms+1)*(2*mterms+1)
+  print *, '. . . dont forget to repair variable order sort . . . '
   call dreorderf(lda, nmpole, mpole, mpolesort, itree(ipointer(5)))
 
 
@@ -529,6 +533,8 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
     stop
   endif
 
+  allocate( localsort(nd,0:mterms,-mterms:mterms,nmpole) )
+  
 
   !
   ! Memory allocation is complete. 
@@ -541,6 +547,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
       ifcharge,chargesort,&
       ifdipole,dipvecsort,&
       nmpole, cmpolesort, rmpolesort, mterms, mpolesort, &
+      localsort, &
       ntarg,targsort,nexpc,expcsort,radssort, &
       iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp, &
       itree,ltree,ipointer,isep,ndiv,nlevels, &
@@ -617,6 +624,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     ifcharge,chargesort, &
     ifdipole,dipvecsort, &
     nmpole, cmpolesort, rmpolesort, mterms, mpolesort, &
+    localsort, &
     ntarg,targsort,nexpc,expcsort,radssort, &
     iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp, &
     itree,ltree,ipointer,isep,ndiv,nlevels, &
@@ -645,6 +653,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   integer :: nmpole, mterms
   double precision :: cmpolesort(3,nmpole), rmpolesort(nmpole)
   double complex :: mpolesort(nd,0:mterms,-mterms:mterms,nmpole)
+  double complex :: localsort(nd,0:mterms,-mterms:mterms,nmpole)
 
   
   double precision targsort(3,ntarg)
@@ -853,6 +862,20 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     !C$OMP END PARALLEL DO          
   enddo
 
+  
+  !$omp parallel do default (shared) private(i,j,k,l)
+  do l = 1,nmpole
+    do k = -mterms,mterms
+      do j = 0,mterms
+        do i = 1,nd
+          localsort(i,j,k,l) = 0
+        end do
+      end do
+    end do
+  end do
+  !$omp end parallel do
+  
+  
 
   !
   ! set scjsort (these are extra output expansion centers)
@@ -1390,6 +1413,9 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   !$ time2=omp_get_wtime()
   timeinfo(4) = time2-time1
 
+
+
+
   !
   ! ----- Step 5: Downward pass, local-to-local -----
   !
@@ -1446,6 +1472,8 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   !$ time2=omp_get_wtime()
   timeinfo(5) = time2-time1
 
+
+  
 
 
   

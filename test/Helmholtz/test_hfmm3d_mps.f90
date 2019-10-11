@@ -58,7 +58,7 @@ program test_hfmm3d_mp2loc
 
   write(*,*) "=========================================="
   write(*,*) "Testing suite for hfmm3d_mps"
-  write(*,'(a,e11.5)') "Requested precision = ",eps
+  write(*,'(a,e12.5)') "Requested precision = ",eps
 
   open(unit=33,file='print_testres.txt',access='append')
 
@@ -197,6 +197,7 @@ program test_hfmm3d_mp2loc
     len = nd*(nterms(i)+1)*(2*nterms(i)+1)
     impole(i+1) = impole(i) + len
   end do
+
   
   nlege = ntm + 10
   lw = 5*(nlege+1)**2
@@ -277,7 +278,7 @@ program test_hfmm3d_mp2loc
   !write(6,*) 'output: local expansions'
 
   
-  allocate( local(10000000) )
+  allocate( local(lmpole) )
 
   !
   ! now test source to source, charge, 
@@ -299,7 +300,7 @@ program test_hfmm3d_mp2loc
   ifpghtarg = 0
   call hfmm3d_mps(nd, eps, zk, ns, source, ifcharge, &
       charge, ifdipole, dipvec, &
-      nc, centers, rscales, nterms, mpole, impole, lterms, local, &
+      nc, centers, rscales, nterms, mpole, impole, local, &
       ifpgh, pot, grad, hess, ntarg, &
       targ, ifpghtarg, pottarg, gradtarg, hesstarg)
 

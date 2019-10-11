@@ -9,7 +9,7 @@
 
 # compiler, and linking from C, fortran
 
-HOST = linux-gfortran
+HOST = linux-ifort
 
 ifeq ($(HOST),linux-gfortran)
   CC=gcc
