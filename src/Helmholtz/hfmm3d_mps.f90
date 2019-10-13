@@ -568,6 +568,9 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
 
   
 
+  
+  
+
   if(ifpgh.eq.1) then
     call dreorderi(2*nd,nsource,potsort,pot, &
         itree(ipointer(5)))
@@ -1569,49 +1572,50 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
       !C$OMP END PARALLEL DO          
     endif
 
-    if(ifpghtarg.eq.1) then         
-      !C$OMP PARALLEL DO DEFAULT(SHARED)
-      !C$OMP$PRIVATE(ibox,nlist3,istart,iend,npts,i,jbox)
-      !C$OMP$SCHEDULE(DYNAMIC)
-      do ibox=laddr(1,ilev),laddr(2,ilev)
-        nlist3 = itree(ipointer(24)+ibox-1)
-        istart = itree(ipointer(12)+ibox-1)
-        iend = itree(ipointer(13)+ibox-1)
+    ! if(ifpghtarg.eq.1) then         
+    !   !C$OMP PARALLEL DO DEFAULT(SHARED)
+    !   !C$OMP$PRIVATE(ibox,nlist3,istart,iend,npts,i,jbox)
+    !   !C$OMP$SCHEDULE(DYNAMIC)
+    !   do ibox=laddr(1,ilev),laddr(2,ilev)
+    !     nlist3 = itree(ipointer(24)+ibox-1)
+    !     istart = itree(ipointer(12)+ibox-1)
+    !     iend = itree(ipointer(13)+ibox-1)
 
-        npts = iend-istart+1
+    !     npts = iend-istart+1
 
-        do i=1,nlist3
-          jbox = itree(ipointer(25)+(ibox-1)*mnlist3+i-1)
-          call h3dmpevalp(nd,zk,rscales(ilev+1),centers(1,jbox), &
-              rmlexp(iaddr(1,jbox)),nterms(ilev+1), &
-              targsort(1,istart),npts,pottarg(1,istart),wlege,nlege, &
-              thresh)
-        enddo
-      enddo
-      !C$OMP END PARALLEL DO          
-    endif
+    !     do i=1,nlist3
+    !       jbox = itree(ipointer(25)+(ibox-1)*mnlist3+i-1)
+    !       call h3dmpevalp(nd,zk,rscales(ilev+1),centers(1,jbox), &
+    !           rmlexp(iaddr(1,jbox)),nterms(ilev+1), &
+    !           targsort(1,istart),npts,pottarg(1,istart),wlege,nlege, &
+    !           thresh)
+    !     enddo
+    !   enddo
+    !   !C$OMP END PARALLEL DO          
+    ! endif
 
-    if(ifpghtarg.eq.2) then
-      !C$OMP PARALLEL DO DEFAULT(SHARED)
-      !C$OMP$PRIVATE(ibox,nlist3,istart,iend,npts,i,jbox)
-      !C$OMP$SCHEDULE(DYNAMIC)
-      do ibox=laddr(1,ilev),laddr(2,ilev)
-        nlist3 = itree(ipointer(24)+ibox-1)
-        istart = itree(ipointer(12)+ibox-1)
-        iend = itree(ipointer(13)+ibox-1)
+    ! if(ifpghtarg.eq.2) then
+    !   !C$OMP PARALLEL DO DEFAULT(SHARED)
+    !   !C$OMP$PRIVATE(ibox,nlist3,istart,iend,npts,i,jbox)
+    !   !C$OMP$SCHEDULE(DYNAMIC)
+    !   do ibox=laddr(1,ilev),laddr(2,ilev)
+    !     nlist3 = itree(ipointer(24)+ibox-1)
+    !     istart = itree(ipointer(12)+ibox-1)
+    !     iend = itree(ipointer(13)+ibox-1)
 
-        npts = iend-istart+1
+    !     npts = iend-istart+1
 
-        do i=1,nlist3
-          jbox = itree(ipointer(25)+(ibox-1)*mnlist3+i-1)
-          call h3dmpevalg(nd,zk,rscales(ilev+1),centers(1,jbox), &
-              rmlexp(iaddr(1,jbox)),nterms(ilev+1), &
-              targsort(1,istart),npts,pottarg(1,istart), &
-              gradtarg(1,1,istart),wlege,nlege,thresh)
-        enddo
-      enddo
-      !C$OMP END PARALLEL DO
-    endif
+    !     do i=1,nlist3
+    !       jbox = itree(ipointer(25)+(ibox-1)*mnlist3+i-1)
+    !       call h3dmpevalg(nd,zk,rscales(ilev+1),centers(1,jbox), &
+    !           rmlexp(iaddr(1,jbox)),nterms(ilev+1), &
+    !           targsort(1,istart),npts,pottarg(1,istart), &
+    !           gradtarg(1,1,istart),wlege,nlege,thresh)
+    !     enddo
+    !   enddo
+    !   !C$OMP END PARALLEL DO
+    ! endif
+
   enddo
 
   call cpu_time(time2)
@@ -1708,50 +1712,53 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
       !C$OMP END PARALLEL DO         
     endif
 
-    if(ifpghtarg.eq.1) then
-      !C$OMP PARALLEL DO DEFAULT(SHARED)
-      !C$OMP$PRIVATE(ibox,nchild,istart,iend,npts)
-      !C$OMP$SCHEDULE(DYNAMIC)      
-      do ibox = laddr(1,ilev),laddr(2,ilev)
-        nchild=itree(ipointer(3)+ibox-1)
-        if(nchild.eq.0) then 
-          istart = itree(ipointer(12)+ibox-1)
-          iend = itree(ipointer(13)+ibox-1)
-          npts = iend-istart+1
-          call h3dtaevalp(nd,zk,rscales(ilev),centers(1,ibox), &
-              rmlexp(iaddr(2,ibox)),nterms(ilev), &
-              targsort(1,istart), &
-              npts,pottarg(1,istart),wlege,nlege)
-        endif
-      enddo
-      !C$OMP END PARALLEL DO         
-    endif
+    ! if(ifpghtarg.eq.1) then
+    !   !C$OMP PARALLEL DO DEFAULT(SHARED)
+    !   !C$OMP$PRIVATE(ibox,nchild,istart,iend,npts)
+    !   !C$OMP$SCHEDULE(DYNAMIC)      
+    !   do ibox = laddr(1,ilev),laddr(2,ilev)
+    !     nchild=itree(ipointer(3)+ibox-1)
+    !     if(nchild.eq.0) then 
+    !       istart = itree(ipointer(12)+ibox-1)
+    !       iend = itree(ipointer(13)+ibox-1)
+    !       npts = iend-istart+1
+    !       call h3dtaevalp(nd,zk,rscales(ilev),centers(1,ibox), &
+    !           rmlexp(iaddr(2,ibox)),nterms(ilev), &
+    !           targsort(1,istart), &
+    !           npts,pottarg(1,istart),wlege,nlege)
+    !     endif
+    !   enddo
+    !   !C$OMP END PARALLEL DO         
+    ! endif
 
-    if(ifpghtarg.eq.2) then
-      !C$OMP PARALLEL DO DEFAULT(SHARED)
-      !C$OMP$PRIVATE(ibox,nchild,istart,iend,npts)
-      !C$OMP$SCHEDULE(DYNAMIC)      
-      do ibox = laddr(1,ilev),laddr(2,ilev)
-        nchild=itree(ipointer(3)+ibox-1)
-        if(nchild.eq.0) then 
-          istart = itree(ipointer(12)+ibox-1)
-          iend = itree(ipointer(13)+ibox-1)
-          npts = iend-istart+1
+    ! if(ifpghtarg.eq.2) then
+    !   !C$OMP PARALLEL DO DEFAULT(SHARED)
+    !   !C$OMP$PRIVATE(ibox,nchild,istart,iend,npts)
+    !   !C$OMP$SCHEDULE(DYNAMIC)      
+    !   do ibox = laddr(1,ilev),laddr(2,ilev)
+    !     nchild=itree(ipointer(3)+ibox-1)
+    !     if(nchild.eq.0) then 
+    !       istart = itree(ipointer(12)+ibox-1)
+    !       iend = itree(ipointer(13)+ibox-1)
+    !       npts = iend-istart+1
 
-          call h3dtaevalg(nd,zk,rscales(ilev),centers(1,ibox), &
-              rmlexp(iaddr(2,ibox)),nterms(ilev),targsort(1,istart), &
-              npts,pottarg(1,istart),gradtarg(1,1,istart),wlege,nlege)
-        endif
-      enddo
-      !C$OMP END PARALLEL DO         
-    endif
+    !       call h3dtaevalg(nd,zk,rscales(ilev),centers(1,ibox), &
+    !           rmlexp(iaddr(2,ibox)),nterms(ilev),targsort(1,istart), &
+    !           npts,pottarg(1,istart),gradtarg(1,1,istart),wlege,nlege)
+    !     endif
+    !   enddo
+    !   !C$OMP END PARALLEL DO         
+    ! endif
+
   enddo
-
 
   call cpu_time(time2)
   !C$        time2=omp_get_wtime()
   timeinfo(7) = time2 - time1
 
+
+
+  
 
   if(ifprint .ge. 1) call prinf('=== STEP 8 (direct) =====*',i,0)
 
@@ -1800,6 +1807,9 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     !cc           evaluate at the sources
     !c
 
+    !call prinf('ifpgh = *', ifpgh, 1)
+    !stop
+    
     if(ifpgh.eq.1) then
       if(ifcharge.eq.1.and.ifdipole.eq.0) then
         !C$OMP PARALLEL DO DEFAULT(SHARED)     
@@ -1823,255 +1833,257 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
         !C$OMP END PARALLEL DO            
       endif
 
-      if(ifcharge.eq.0.and.ifdipole.eq.1) then
-        !C$OMP PARALLEL DO DEFAULT(SHARED)     
-        !C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
-        do ibox = laddr(1,ilev),laddr(2,ilev)
-          istarts = itree(ipointer(10)+ibox-1)
-          iends = itree(ipointer(11)+ibox-1)
-          npts0 = iends-istarts+1
-          nlist1 = itree(ipointer(20)+ibox-1)
-          do i=1,nlist1
-            jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-            jstart = itree(ipointer(10)+jbox-1)
-            jend = itree(ipointer(11)+jbox-1)
-            npts = jend-jstart+1
-            call h3ddirectdp_vec_d(nd,zk,sourcesort(1,jstart), &
-                dipvecsort(1,1,jstart),npts,sourcesort(1,istarts), &
-                npts0,pot(1,istarts),thresh)          
-          enddo
-        enddo
-        !C$OMP END PARALLEL DO     
-      endif
+      ! if(ifcharge.eq.0.and.ifdipole.eq.1) then
+      !   !C$OMP PARALLEL DO DEFAULT(SHARED)     
+      !   !C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
+      !   do ibox = laddr(1,ilev),laddr(2,ilev)
+      !     istarts = itree(ipointer(10)+ibox-1)
+      !     iends = itree(ipointer(11)+ibox-1)
+      !     npts0 = iends-istarts+1
+      !     nlist1 = itree(ipointer(20)+ibox-1)
+      !     do i=1,nlist1
+      !       jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+      !       jstart = itree(ipointer(10)+jbox-1)
+      !       jend = itree(ipointer(11)+jbox-1)
+      !       npts = jend-jstart+1
+      !       call h3ddirectdp_vec_d(nd,zk,sourcesort(1,jstart), &
+      !           dipvecsort(1,1,jstart),npts,sourcesort(1,istarts), &
+      !           npts0,pot(1,istarts),thresh)          
+      !     enddo
+      !   enddo
+      !   !C$OMP END PARALLEL DO     
+      ! endif
 
-      if(ifcharge.eq.1.and.ifdipole.eq.1) then
-        !C$OMP PARALLEL DO DEFAULT(SHARED)     
-        !C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
-        do ibox = laddr(1,ilev),laddr(2,ilev)
-          istarts = itree(ipointer(10)+ibox-1)
-          iends = itree(ipointer(11)+ibox-1)
-          npts0 = iends-istarts+1
-          nlist1 = itree(ipointer(20)+ibox-1)
-          do i=1,nlist1
-            jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-            jstart = itree(ipointer(10)+jbox-1)
-            jend = itree(ipointer(11)+jbox-1)
-            npts = jend-jstart+1
-            call h3ddirectcdp_vec_d(nd,zk,sourcesort(1,jstart), &
-                chargesort(1,jstart), &
-                dipvecsort(1,1,jstart),npts,sourcesort(1,istarts), &
-                npts0,pot(1,istarts),thresh)          
-          enddo
-        enddo
-        !C$OMP END PARALLEL DO     
-      endif
+      ! if(ifcharge.eq.1.and.ifdipole.eq.1) then
+      !   !C$OMP PARALLEL DO DEFAULT(SHARED)     
+      !   !C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
+      !   do ibox = laddr(1,ilev),laddr(2,ilev)
+      !     istarts = itree(ipointer(10)+ibox-1)
+      !     iends = itree(ipointer(11)+ibox-1)
+      !     npts0 = iends-istarts+1
+      !     nlist1 = itree(ipointer(20)+ibox-1)
+      !     do i=1,nlist1
+      !       jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+      !       jstart = itree(ipointer(10)+jbox-1)
+      !       jend = itree(ipointer(11)+jbox-1)
+      !       npts = jend-jstart+1
+      !       call h3ddirectcdp_vec_d(nd,zk,sourcesort(1,jstart), &
+      !           chargesort(1,jstart), &
+      !           dipvecsort(1,1,jstart),npts,sourcesort(1,istarts), &
+      !           npts0,pot(1,istarts),thresh)          
+      !     enddo
+      !   enddo
+      !   !C$OMP END PARALLEL DO     
+      ! endif
     endif
 
-    if(ifpgh.eq.2) then
-      if(ifcharge.eq.1.and.ifdipole.eq.0) then
-        !C$OMP PARALLEL DO DEFAULT(SHARED)     
-        !C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
-        do ibox = laddr(1,ilev),laddr(2,ilev)
-          istarts = itree(ipointer(10)+ibox-1)
-          iends = itree(ipointer(11)+ibox-1)
-          npts0 = iends-istarts+1
-          nlist1 = itree(ipointer(20)+ibox-1)
+    ! if(ifpgh.eq.2) then
+    !   if(ifcharge.eq.1.and.ifdipole.eq.0) then
+    !     !C$OMP PARALLEL DO DEFAULT(SHARED)     
+    !     !C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
+    !     do ibox = laddr(1,ilev),laddr(2,ilev)
+    !       istarts = itree(ipointer(10)+ibox-1)
+    !       iends = itree(ipointer(11)+ibox-1)
+    !       npts0 = iends-istarts+1
+    !       nlist1 = itree(ipointer(20)+ibox-1)
 
-          do i=1,nlist1
-            jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-            jstart = itree(ipointer(10)+jbox-1)
-            jend = itree(ipointer(11)+jbox-1)
-            npts = jend-jstart+1
-            call h3ddirectcg_vec_d(nd,zk,sourcesort(1,jstart), &
-                chargesort(1,jstart),npts,sourcesort(1,istarts), &
-                npts0,pot(1,istarts),grad(1,1,istarts),thresh)   
-          enddo
-        enddo
-        !C$OMP END PARALLEL DO     
-      endif
+    !       do i=1,nlist1
+    !         jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+    !         jstart = itree(ipointer(10)+jbox-1)
+    !         jend = itree(ipointer(11)+jbox-1)
+    !         npts = jend-jstart+1
+    !         call h3ddirectcg_vec_d(nd,zk,sourcesort(1,jstart), &
+    !             chargesort(1,jstart),npts,sourcesort(1,istarts), &
+    !             npts0,pot(1,istarts),grad(1,1,istarts),thresh)   
+    !       enddo
+    !     enddo
+    !     !C$OMP END PARALLEL DO     
+    !   endif
 
-      if(ifcharge.eq.0.and.ifdipole.eq.1) then
-        !C$OMP PARALLEL DO DEFAULT(SHARED)     
-        !C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
-        do ibox = laddr(1,ilev),laddr(2,ilev)
-          istarts = itree(ipointer(10)+ibox-1)
-          iends = itree(ipointer(11)+ibox-1)
-          npts0 = iends-istarts+1
-          nlist1 = itree(ipointer(20)+ibox-1)
-          do i=1,nlist1
-            jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-            jstart = itree(ipointer(10)+jbox-1)
-            jend = itree(ipointer(11)+jbox-1)
-            npts = jend-jstart+1
-            call h3ddirectdg_vec_d(nd,zk,sourcesort(1,jstart), &
-                dipvecsort(1,1,jstart),npts,sourcesort(1,istarts), &
-                npts0,pot(1,istarts),grad(1,1,istarts),thresh)          
-          enddo
-        enddo
-        !C$OMP END PARALLEL DO     
-      endif
+    !   if(ifcharge.eq.0.and.ifdipole.eq.1) then
+    !     !C$OMP PARALLEL DO DEFAULT(SHARED)     
+    !     !C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
+    !     do ibox = laddr(1,ilev),laddr(2,ilev)
+    !       istarts = itree(ipointer(10)+ibox-1)
+    !       iends = itree(ipointer(11)+ibox-1)
+    !       npts0 = iends-istarts+1
+    !       nlist1 = itree(ipointer(20)+ibox-1)
+    !       do i=1,nlist1
+    !         jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+    !         jstart = itree(ipointer(10)+jbox-1)
+    !         jend = itree(ipointer(11)+jbox-1)
+    !         npts = jend-jstart+1
+    !         call h3ddirectdg_vec_d(nd,zk,sourcesort(1,jstart), &
+    !             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts), &
+    !             npts0,pot(1,istarts),grad(1,1,istarts),thresh)          
+    !       enddo
+    !     enddo
+    !     !C$OMP END PARALLEL DO     
+    !   endif
 
-      if(ifcharge.eq.1.and.ifdipole.eq.1) then
-        !C$OMP PARALLEL DO DEFAULT(SHARED)     
-        !C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
-        do ibox = laddr(1,ilev),laddr(2,ilev)
-          istarts = itree(ipointer(10)+ibox-1)
-          iends = itree(ipointer(11)+ibox-1)
-          npts0 = iends-istarts+1
-          nlist1 = itree(ipointer(20)+ibox-1)
-          do i=1,nlist1
-            jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-            jstart = itree(ipointer(10)+jbox-1)
-            jend = itree(ipointer(11)+jbox-1)
-            npts = jend-jstart+1
-            call h3ddirectcdg_vec_d(nd,zk,sourcesort(1,jstart), &
-                chargesort(1,jstart), &
-                dipvecsort(1,1,jstart),npts,sourcesort(1,istarts), &
-                npts0,pot(1,istarts),grad(1,1,istarts),thresh)          
-          enddo
-        enddo
-        !C$OMP END PARALLEL DO     
-      endif
-    endif
+    !   if(ifcharge.eq.1.and.ifdipole.eq.1) then
+    !     !C$OMP PARALLEL DO DEFAULT(SHARED)     
+    !     !C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
+    !     do ibox = laddr(1,ilev),laddr(2,ilev)
+    !       istarts = itree(ipointer(10)+ibox-1)
+    !       iends = itree(ipointer(11)+ibox-1)
+    !       npts0 = iends-istarts+1
+    !       nlist1 = itree(ipointer(20)+ibox-1)
+    !       do i=1,nlist1
+    !         jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+    !         jstart = itree(ipointer(10)+jbox-1)
+    !         jend = itree(ipointer(11)+jbox-1)
+    !         npts = jend-jstart+1
+    !         call h3ddirectcdg_vec_d(nd,zk,sourcesort(1,jstart), &
+    !             chargesort(1,jstart), &
+    !             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts), &
+    !             npts0,pot(1,istarts),grad(1,1,istarts),thresh)          
+    !       enddo
+    !     enddo
+    !     !C$OMP END PARALLEL DO     
+    !   endif
+    ! endif
 
-    if(ifpghtarg.eq.1) then
-      if(ifcharge.eq.1.and.ifdipole.eq.0) then
-        !C$OMP PARALLEL DO DEFAULT(SHARED)     
-        !C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
-        do ibox = laddr(1,ilev),laddr(2,ilev)
-          istartt = itree(ipointer(12)+ibox-1)
-          iendt = itree(ipointer(13)+ibox-1)
-          npts0 = iendt-istartt+1
-          nlist1 = itree(ipointer(20)+ibox-1)
+    ! if(ifpghtarg.eq.1) then
+    !   if(ifcharge.eq.1.and.ifdipole.eq.0) then
+    !     !C$OMP PARALLEL DO DEFAULT(SHARED)     
+    !     !C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
+    !     do ibox = laddr(1,ilev),laddr(2,ilev)
+    !       istartt = itree(ipointer(12)+ibox-1)
+    !       iendt = itree(ipointer(13)+ibox-1)
+    !       npts0 = iendt-istartt+1
+    !       nlist1 = itree(ipointer(20)+ibox-1)
 
-          do i=1,nlist1
-            jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-            jstart = itree(ipointer(10)+jbox-1)
-            jend = itree(ipointer(11)+jbox-1)
-            npts = jend-jstart+1
-            call h3ddirectcp_vec_d(nd,zk,sourcesort(1,jstart), &
-                chargesort(1,jstart),npts,targsort(1,istartt), &
-                npts0,pottarg(1,istartt),thresh)          
-          enddo
-        enddo
-        !C$OMP END PARALLEL DO     
-      endif
+    !       do i=1,nlist1
+    !         jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+    !         jstart = itree(ipointer(10)+jbox-1)
+    !         jend = itree(ipointer(11)+jbox-1)
+    !         npts = jend-jstart+1
+    !         call h3ddirectcp_vec_d(nd,zk,sourcesort(1,jstart), &
+    !             chargesort(1,jstart),npts,targsort(1,istartt), &
+    !             npts0,pottarg(1,istartt),thresh)          
+    !       enddo
+    !     enddo
+    !     !C$OMP END PARALLEL DO     
+    !   endif
 
-      if(ifcharge.eq.0.and.ifdipole.eq.1) then
-        !C$OMP PARALLEL DO DEFAULT(SHARED)     
-        !C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
-        do ibox = laddr(1,ilev),laddr(2,ilev)
-          istartt = itree(ipointer(12)+ibox-1)
-          iendt = itree(ipointer(13)+ibox-1)
-          npts0 = iendt-istartt+1
-          nlist1 = itree(ipointer(20)+ibox-1)
-          do i=1,nlist1
-            jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-            jstart = itree(ipointer(10)+jbox-1)
-            jend = itree(ipointer(11)+jbox-1)
-            npts = jend-jstart+1
-            call h3ddirectdp_vec_d(nd,zk,sourcesort(1,jstart), &
-                dipvecsort(1,1,jstart),npts,targsort(1,istartt), &
-                npts0,pottarg(1,istartt),thresh)          
-          enddo
-        enddo
-        !C$OMP END PARALLEL DO     
-      endif
+    !   if(ifcharge.eq.0.and.ifdipole.eq.1) then
+    !     !C$OMP PARALLEL DO DEFAULT(SHARED)     
+    !     !C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
+    !     do ibox = laddr(1,ilev),laddr(2,ilev)
+    !       istartt = itree(ipointer(12)+ibox-1)
+    !       iendt = itree(ipointer(13)+ibox-1)
+    !       npts0 = iendt-istartt+1
+    !       nlist1 = itree(ipointer(20)+ibox-1)
+    !       do i=1,nlist1
+    !         jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+    !         jstart = itree(ipointer(10)+jbox-1)
+    !         jend = itree(ipointer(11)+jbox-1)
+    !         npts = jend-jstart+1
+    !         call h3ddirectdp_vec_d(nd,zk,sourcesort(1,jstart), &
+    !             dipvecsort(1,1,jstart),npts,targsort(1,istartt), &
+    !             npts0,pottarg(1,istartt),thresh)          
+    !       enddo
+    !     enddo
+    !     !C$OMP END PARALLEL DO     
+    !   endif
 
-      if(ifcharge.eq.1.and.ifdipole.eq.1) then
-        !C$OMP PARALLEL DO DEFAULT(SHARED)     
-        !C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
-        do ibox = laddr(1,ilev),laddr(2,ilev)
-          istartt = itree(ipointer(12)+ibox-1)
-          iendt = itree(ipointer(13)+ibox-1)
-          npts0 = iendt-istartt+1
-          nlist1 = itree(ipointer(20)+ibox-1)
-          do i=1,nlist1
-            jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-            jstart = itree(ipointer(10)+jbox-1)
-            jend = itree(ipointer(11)+jbox-1)
-            npts = jend-jstart+1
-            call h3ddirectcdp_vec_d(nd,zk,sourcesort(1,jstart), &
-                chargesort(1,jstart), &
-                dipvecsort(1,1,jstart),npts,targsort(1,istartt), &
-                npts0,pottarg(1,istartt),thresh)          
-          enddo
-        enddo
-        !C$OMP END PARALLEL DO     
-      endif
-    endif
+    !   if(ifcharge.eq.1.and.ifdipole.eq.1) then
+    !     !C$OMP PARALLEL DO DEFAULT(SHARED)     
+    !     !C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
+    !     do ibox = laddr(1,ilev),laddr(2,ilev)
+    !       istartt = itree(ipointer(12)+ibox-1)
+    !       iendt = itree(ipointer(13)+ibox-1)
+    !       npts0 = iendt-istartt+1
+    !       nlist1 = itree(ipointer(20)+ibox-1)
+    !       do i=1,nlist1
+    !         jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+    !         jstart = itree(ipointer(10)+jbox-1)
+    !         jend = itree(ipointer(11)+jbox-1)
+    !         npts = jend-jstart+1
+    !         call h3ddirectcdp_vec_d(nd,zk,sourcesort(1,jstart), &
+    !             chargesort(1,jstart), &
+    !             dipvecsort(1,1,jstart),npts,targsort(1,istartt), &
+    !             npts0,pottarg(1,istartt),thresh)          
+    !       enddo
+    !     enddo
+    !     !C$OMP END PARALLEL DO     
+    !   endif
+    ! endif
 
-    if(ifpghtarg.eq.2) then
-      if(ifcharge.eq.1.and.ifdipole.eq.0) then
-        !C$OMP PARALLEL DO DEFAULT(SHARED)     
-        !C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
-        do ibox = laddr(1,ilev),laddr(2,ilev)
-          istartt = itree(ipointer(12)+ibox-1)
-          iendt = itree(ipointer(13)+ibox-1)
-          npts0 = iendt-istartt+1
-          nlist1 = itree(ipointer(20)+ibox-1)
+    ! if(ifpghtarg.eq.2) then
+    !   if(ifcharge.eq.1.and.ifdipole.eq.0) then
+    !     !C$OMP PARALLEL DO DEFAULT(SHARED)     
+    !     !C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
+    !     do ibox = laddr(1,ilev),laddr(2,ilev)
+    !       istartt = itree(ipointer(12)+ibox-1)
+    !       iendt = itree(ipointer(13)+ibox-1)
+    !       npts0 = iendt-istartt+1
+    !       nlist1 = itree(ipointer(20)+ibox-1)
 
-          do i=1,nlist1
-            jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-            jstart = itree(ipointer(10)+jbox-1)
-            jend = itree(ipointer(11)+jbox-1)
-            npts = jend-jstart+1
-            call h3ddirectcg_vec_d(nd,zk,sourcesort(1,jstart), &
-                chargesort(1,jstart),npts,targsort(1,istartt), &
-                npts0,pottarg(1,istartt),gradtarg(1,1,istartt), &
-                thresh)   
-          enddo
-        enddo
-        !C$OMP END PARALLEL DO     
-      endif
+    !       do i=1,nlist1
+    !         jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+    !         jstart = itree(ipointer(10)+jbox-1)
+    !         jend = itree(ipointer(11)+jbox-1)
+    !         npts = jend-jstart+1
+    !         call h3ddirectcg_vec_d(nd,zk,sourcesort(1,jstart), &
+    !             chargesort(1,jstart),npts,targsort(1,istartt), &
+    !             npts0,pottarg(1,istartt),gradtarg(1,1,istartt), &
+    !             thresh)   
+    !       enddo
+    !     enddo
+    !     !C$OMP END PARALLEL DO     
+    !   endif
 
-      if(ifcharge.eq.0.and.ifdipole.eq.1) then
-        !C$OMP PARALLEL DO DEFAULT(SHARED)     
-        !C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
-        do ibox = laddr(1,ilev),laddr(2,ilev)
-          istartt = itree(ipointer(12)+ibox-1)
-          iendt = itree(ipointer(13)+ibox-1)
-          npts0 = iendt-istartt+1
-          nlist1 = itree(ipointer(20)+ibox-1)
-          do i=1,nlist1
-            jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-            jstart = itree(ipointer(10)+jbox-1)
-            jend = itree(ipointer(11)+jbox-1)
-            npts = jend-jstart+1
-            call h3ddirectdg_vec_d(nd,zk,sourcesort(1,jstart), &
-                dipvecsort(1,1,jstart),npts,targsort(1,istartt), &
-                npts0,pottarg(1,istartt),gradtarg(1,1,istartt), &
-                thresh)          
-          enddo
-        enddo
-        !C$OMP END PARALLEL DO     
-      endif
+    !   if(ifcharge.eq.0.and.ifdipole.eq.1) then
+    !     !C$OMP PARALLEL DO DEFAULT(SHARED)     
+    !     !C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
+    !     do ibox = laddr(1,ilev),laddr(2,ilev)
+    !       istartt = itree(ipointer(12)+ibox-1)
+    !       iendt = itree(ipointer(13)+ibox-1)
+    !       npts0 = iendt-istartt+1
+    !       nlist1 = itree(ipointer(20)+ibox-1)
+    !       do i=1,nlist1
+    !         jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+    !         jstart = itree(ipointer(10)+jbox-1)
+    !         jend = itree(ipointer(11)+jbox-1)
+    !         npts = jend-jstart+1
+    !         call h3ddirectdg_vec_d(nd,zk,sourcesort(1,jstart), &
+    !             dipvecsort(1,1,jstart),npts,targsort(1,istartt), &
+    !             npts0,pottarg(1,istartt),gradtarg(1,1,istartt), &
+    !             thresh)          
+    !       enddo
+    !     enddo
+    !     !C$OMP END PARALLEL DO     
+    !   endif
 
-      if(ifcharge.eq.1.and.ifdipole.eq.1) then
-        !C$OMP PARALLEL DO DEFAULT(SHARED)     
-        !C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
-        do ibox = laddr(1,ilev),laddr(2,ilev)
-          istartt = itree(ipointer(12)+ibox-1)
-          iendt = itree(ipointer(13)+ibox-1)
-          npts0 = iendt-istartt+1
-          nlist1 = itree(ipointer(20)+ibox-1)
-          do i=1,nlist1
-            jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-            jstart = itree(ipointer(10)+jbox-1)
-            jend = itree(ipointer(11)+jbox-1)
-            npts = jend-jstart+1
-            call h3ddirectcdg_vec_d(nd,zk,sourcesort(1,jstart), &
-                chargesort(1,jstart), &
-                dipvecsort(1,1,jstart),npts,targsort(1,istartt), &
-                npts0,pottarg(1,istartt),gradtarg(1,1,istartt), &
-                thresh)          
-          enddo
-        enddo
-        !C$OMP END PARALLEL DO     
-      endif
-    endif
+    !   if(ifcharge.eq.1.and.ifdipole.eq.1) then
+    !     !C$OMP PARALLEL DO DEFAULT(SHARED)     
+    !     !C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
+    !     do ibox = laddr(1,ilev),laddr(2,ilev)
+    !       istartt = itree(ipointer(12)+ibox-1)
+    !       iendt = itree(ipointer(13)+ibox-1)
+    !       npts0 = iendt-istartt+1
+    !       nlist1 = itree(ipointer(20)+ibox-1)
+    !       do i=1,nlist1
+    !         jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+    !         jstart = itree(ipointer(10)+jbox-1)
+    !         jend = itree(ipointer(11)+jbox-1)
+    !         npts = jend-jstart+1
+    !         call h3ddirectcdg_vec_d(nd,zk,sourcesort(1,jstart), &
+    !             chargesort(1,jstart), &
+    !             dipvecsort(1,1,jstart),npts,targsort(1,istartt), &
+    !             npts0,pottarg(1,istartt),gradtarg(1,1,istartt), &
+    !             thresh)          
+    !       enddo
+    !     enddo
+    !     !C$OMP END PARALLEL DO     
+    !   endif
+    ! endif
+
   enddo
 
+  
   call cpu_time(time2)
   !C$        time2=omp_get_wtime()
   timeinfo(8) = time2-time1
