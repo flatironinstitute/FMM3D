@@ -6,18 +6,18 @@
 !
 ! Original skeleton code by Manas Rachh, Leslie Greengard, etc.
 ! FMPS re-write by Mike O'Neil, 2019
+! oneil@cims.nyu.edu
 !
 ! The input is assumed to be a collection of multipole expansions,
-! and the output is a collection of local expansions at the same
-! locations which take into account the potentials from all other
-! multipole expansions.
+! each of arbitrary order, and the output is a collection of local
+! expansions at the same locations (and of the same order) which take
+! into account the potentials from all other multipole expansions.
 !
 ! It is assume that all multipole expansions are well-separated, so
 ! that even those in LIST 1 can be translated.
 !
 ! We use exp(ikr)/r for the Green's function., without the 1/4\pi
 ! scaling.
-! 
 !
 !--------------------------------------------------------------------
 !
@@ -27,41 +27,41 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
     nmpole, cmpole, rmpole, mterms, mpole, impole, local, &
     ifpgh,pot,grad,hess,ntarg, &
     targ,ifpghtarg,pottarg,gradtarg,hesstarg)
-  ! c-----------------------------------------------------------------------
-  ! c   INPUT PARAMETERS:
-  ! c
-  ! c   nd:    in: integer
-  ! c             number of densities
-  ! c   
-  ! c   eps:   in: double precision
-  ! c             requested precision
-  ! c
-  ! c   zk:    in: double complex
-  ! c               helmholtz parameter                
-  ! c
-  ! c   nsource in: integer  
-  ! c                number of sources
-  ! c
-  ! c   source  in: double precision (3,nsource)
-  ! c                source(k,j) is the kth component of the jth
-  ! c                source locations
-  ! c
-  ! c   ifcharge  in: integer  
-  ! c             charge computation flag
-  ! c              ifcharge = 1   =>  include charge contribution
-  ! c                                     otherwise do not
-  ! c 
-  ! c   charge    in: double complex (nd,nsource) 
-  ! c              charge strengths
-  ! c
-  ! c   ifdipole   in: integer
-  ! c              dipole computation flag
-  ! c              ifdipole = 1   =>  include dipole contribution
-  ! c                                     otherwise do not
-  ! c
-  ! c   dipvec   in: double precision (nd,3,nsource) 
-  ! c              dipole orientation vectors
-  ! c
+  !-----------------------------------------------------------------------
+  !   INPUT PARAMETERS:
+  !
+  !   nd:    in: integer
+  !             number of densities
+  !   
+  !   eps:   in: double precision
+  !             requested precision
+  !
+  !   zk:    in: double complex
+  !               helmholtz parameter                
+  !
+  !   nsource in: integer  
+  !                number of sources
+  !
+  !   source  in: double precision (3,nsource)
+  !                source(k,j) is the kth component of the jth
+  !                source locations
+  !
+  !   ifcharge  in: integer  
+  !             charge computation flag
+  !              ifcharge = 1   =>  include charge contribution
+  !                                     otherwise do not
+  ! 
+  !   charge    in: double complex (nd,nsource) 
+  !              charge strengths
+  !
+  !   ifdipole   in: integer
+  !              dipole computation flag
+  !              ifdipole = 1   =>  include dipole contribution
+  !                                     otherwise do not
+  !
+  !   dipvec   in: double precision (nd,3,nsource) 
+  !              dipole orientation vectors
+  !
   !     nmpole:  in: integer
   !              number of multipole expansion centers
   !
@@ -82,51 +82,51 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   !              indexing array for mpole, the ith expansion is at
   !              location mpole(impole(i)) and is of order mterms(i)
   !
-  ! c   ifpgh   in: integer
-  ! c              flag for evaluating potential/gradient at the sources
-  ! c              ifpgh = 1, only potential is evaluated
-  ! c              ifpgh = 2, potential and gradients are evaluated
-  ! c
-  ! c
-  ! c   ntarg  in: integer  
-  ! c                 number of targs 
-  ! c
-  ! c   targ  in: double precision (3,ntarg)
-  ! c               targ(k,j) is the kth component of the jth
-  ! c               targ location
-  ! c
-  ! c   ifpghtarg   in: integer
-  ! c              flag for evaluating potential/gradient at the targs
-  ! c              ifpghtarg = 1, only potential is evaluated
-  ! c              ifpghtarg = 2, potential and gradient are evaluated
-  ! c
-  ! c
-  ! c     OUTPUT parameters:
-  ! c
+  !   ifpgh   in: integer
+  !              flag for evaluating potential/gradient at the sources
+  !              ifpgh = 1, only potential is evaluated
+  !              ifpgh = 2, potential and gradients are evaluated
+  !
+  !
+  !   ntarg  in: integer  
+  !                 number of targs 
+  !
+  !   targ  in: double precision (3,ntarg)
+  !               targ(k,j) is the kth component of the jth
+  !               targ location
+  !
+  !   ifpghtarg   in: integer
+  !              flag for evaluating potential/gradient at the targs
+  !              ifpghtarg = 1, only potential is evaluated
+  !              ifpghtarg = 2, potential and gradient are evaluated
+  !
+  !
+  !     OUTPUT parameters:
+  !
   !     local:   out: double complex ()
   !              local expansions at each center, due to all incoming
   !              multipole expansions (self is ignored). The orders
   !              are the same as for the incoming mpole.
   !
-  ! c   pot:    out: double complex(nd,nsource) 
-  ! c               potential at the source locations
-  ! c
-  ! c   grad:   out: double complex(nd,3,nsource)
-  ! c               gradient at the source locations
-  ! c
-  ! c   hess    out: double complex(nd,6,nsource)
-  ! c               hessian at the source locations
-  ! c
-  ! c   pottarg:    out: double complex(nd,ntarg) 
-  ! c               potential at the targ locations
-  ! c
-  ! c   gradtarg:   out: double complex(nd,3,ntarg)
-  ! c               gradient at the targ locations
-  ! c
-  ! c   hesstarg    out: double complex(nd,6,ntarg)
-  ! c                hessian at the target locations
+  !   pot:    out: double complex(nd,nsource) 
+  !               potential at the source locations
+  !
+  !   grad:   out: double complex(nd,3,nsource)
+  !               gradient at the source locations
+  !
+  !   hess    out: double complex(nd,6,nsource)
+  !               hessian at the source locations
+  !
+  !   pottarg:    out: double complex(nd,ntarg) 
+  !               potential at the targ locations
+  !
+  !   gradtarg:   out: double complex(nd,3,ntarg)
+  !               gradient at the targ locations
+  !
+  !   hesstarg    out: double complex(nd,6,ntarg)
+  !                hessian at the target locations
   
-  ! c------------------------------------------------------------------
+  !------------------------------------------------------------------
   
   implicit none
 
@@ -174,7 +174,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   double complex, allocatable :: chargesort(:,:)
   double complex, allocatable :: dipvecsort(:,:,:)
 
-  integer, allocatable :: mtermssort(:)
+  integer, allocatable :: mtermssort(:), impolesort(:)
   double precision, allocatable :: cmpolesort(:,:)
   double precision, allocatable :: rmpolesort(:)
   double complex, allocatable :: mpolesort(:,:,:,:)
@@ -307,7 +307,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   allocate(treecenters(3,nboxes))
 
   !
-  ! Call tree code
+  !all tree code
   !
   call mklraptree(source,nsource,radsrc,targ,ntarg,expc, &
       nexpc,radexp,idivflag,ndiv,isep,mhung,mnbors, &
@@ -457,7 +457,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
 
 
   !
-  ! Compute length of expansions at each level      
+  !ompute length of expansions at each level      
   !
   nmax = 0
   do i=0,nlevels
@@ -491,12 +491,20 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   
   call dreorderf(3, nmpole, cmpole, cmpolesort, itree(ipointer(5)))
   call dreorderf(1, nmpole, rmpole, rmpolesort, itree(ipointer(5)))
+  !call ireorderf(1, nmpole, impole, impolesort, itree(ipointer(5)))
+
+  !call mpolereorderf(nd, nmpole, impole, mterms, mpole, &
+  !    impolesort, mpolesort, itree(ipointer(5)) )
+
   call ireorderf(1, nmpole, mterms, mtermssort, itree(ipointer(5)))
 
   lda = 2*nd*(mterms+1)*(2*mterms+1)
+  print *
   print *, '. . . dont forget to repair variable order sort . . . '
+  print *
   call dreorderf(lda, nmpole, mpole, mpolesort, itree(ipointer(5)))
 
+  
 
   
   !c
@@ -507,15 +515,15 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   if(ifcharge.eq.1) call dreorderf(2*nd,nsource,charge, &
       chargesort, itree(ipointer(5)))
 
-  if(ifdipole.eq.1) then
-    call dreorderf(6*nd,nsource,dipvec,dipvecsort, &
-        itree(ipointer(5)))
-  endif
+  !if(ifdipole.eq.1) then
+  !  call dreorderf(6*nd,nsource,dipvec,dipvecsort, &
+  !      itree(ipointer(5)))
+  !endif
 
   !c
   !cc      reorder targs
   !c
-  call dreorderf(3,ntarg,targ,targsort,itree(ipointer(6)))
+  !call dreorderf(3,ntarg,targ,targsort,itree(ipointer(6)))
 
   !
   ! allocate memory need by multipole, local expansions at all
@@ -538,7 +546,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
 
   !
   ! Memory allocation is complete. 
-  ! Call main fmm routine
+  !all main fmm routine
   !
   call cpu_time(time1)
   !$ time1=omp_get_wtime()
@@ -575,48 +583,84 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
     call dreorderi(2*nd,nsource,potsort,pot, &
         itree(ipointer(5)))
   endif
-  if(ifpgh.eq.2) then 
-    call dreorderi(2*nd,nsource,potsort,pot, &
-        itree(ipointer(5)))
-    call dreorderi(6*nd,nsource,gradsort,grad, &
-        itree(ipointer(5)))
-  endif
+  ! if(ifpgh.eq.2) then 
+  !   call dreorderi(2*nd,nsource,potsort,pot, &
+  !       itree(ipointer(5)))
+  !   call dreorderi(6*nd,nsource,gradsort,grad, &
+  !       itree(ipointer(5)))
+  ! endif
 
-  if(ifpgh.eq.3) then 
-    call dreorderi(2*nd,nsource,potsort,pot, &
-        itree(ipointer(5)))
-    call dreorderi(6*nd,nsource,gradsort,grad, &
-        itree(ipointer(5)))
-    call dreorderi(12*nd,nsource,hesssort,hess, &
-        itree(ipointer(5)))
-  endif
+  ! if(ifpgh.eq.3) then 
+  !   call dreorderi(2*nd,nsource,potsort,pot, &
+  !       itree(ipointer(5)))
+  !   call dreorderi(6*nd,nsource,gradsort,grad, &
+  !       itree(ipointer(5)))
+  !   call dreorderi(12*nd,nsource,hesssort,hess, &
+  !       itree(ipointer(5)))
+  ! endif
 
 
-  if(ifpghtarg.eq.1) then
-    call dreorderi(2*nd,ntarg,pottargsort,pottarg, &
-        itree(ipointer(6)))
-  endif
+  ! if(ifpghtarg.eq.1) then
+  !   call dreorderi(2*nd,ntarg,pottargsort,pottarg, &
+  !       itree(ipointer(6)))
+  ! endif
 
-  if(ifpghtarg.eq.2) then
-    call dreorderi(2*nd,ntarg,pottargsort,pottarg, &
-        itree(ipointer(6)))
-    call dreorderi(6*nd,ntarg,gradtargsort,gradtarg, &
-        itree(ipointer(6)))
-  endif
+  ! if(ifpghtarg.eq.2) then
+  !   call dreorderi(2*nd,ntarg,pottargsort,pottarg, &
+  !       itree(ipointer(6)))
+  !   call dreorderi(6*nd,ntarg,gradtargsort,gradtarg, &
+  !       itree(ipointer(6)))
+  ! endif
 
-  if(ifpghtarg.eq.3) then
-    call dreorderi(2*nd,ntarg,pottargsort,pottarg, &
-        itree(ipointer(6)))
-    call dreorderi(6*nd,ntarg,gradtargsort,gradtarg, &
-        itree(ipointer(6)))
-    call dreorderi(12*nd,ntarg,hesstargsort,hesstarg, &
-        itree(ipointer(6)))
-  endif
+  ! if(ifpghtarg.eq.3) then
+  !   call dreorderi(2*nd,ntarg,pottargsort,pottarg, &
+  !       itree(ipointer(6)))
+  !   call dreorderi(6*nd,ntarg,gradtargsort,gradtarg, &
+  !       itree(ipointer(6)))
+  !   call dreorderi(12*nd,ntarg,hesstargsort,hesstarg, &
+  !       itree(ipointer(6)))
+  ! endif
 
 
   return
 end subroutine hfmm3d_mps
 
+
+
+
+
+subroutine mpolereorder(ndim, nmpole, impole, mterms, mpole, &
+    impolesort, mpolesort, perm)
+  implicit none
+  !
+  ! This subroutine sorts a list of variable order multipole
+  ! expansions, the ith-one of which is located at:
+  !
+  !     mpole( nd, impole(i) )
+  !
+  ! and is of order mterms(i)
+  !
+  !
+  !
+  !      arrsort(j,i) = arr(j,perm(i)), j =1,2,\ldots ndim
+  !                                     i=1,2,\ldots n
+  !
+  integer :: ndim, nmpole, impole(nmpole), mterms(nmpole)
+  integer :: impolesort(nmpole), perm(nmpole)
+  double complex :: mpole(ndim,*), mpolesort(ndim,*)
+
+  integer :: i, idim
+
+  !!!!C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)      
+  !do i=1,n
+  !  do idim=1,ndim
+  !    arrsort(idim,i) = arr(idim,iarr(i))
+  !  enddo
+  !enddo
+  !C$OMP END PARALLEL DO      
+
+  return
+end subroutine mpolereorder
 
 
 
@@ -1010,6 +1054,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
             if (npts .gt. 1) then
               print *, 'need to add loop for list 3 mp2loc!!!'
+              print *, 'multiple MPs in this box'
               stop
             end if
             
@@ -1440,23 +1485,23 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
       npts = 0
 
-      if(ifpghtarg.gt.0) then
-        istart = itree(ipointer(12)+ibox-1)
-        iend = itree(ipointer(13)+ibox-1)
-        npts = npts + iend-istart+1
-      endif
+      ! if(ifpghtarg.gt.0) then
+      !   istart = itree(ipointer(12)+ibox-1)
+      !   iend = itree(ipointer(13)+ibox-1)
+      !   npts = npts + iend-istart+1
+      ! endif
 
-      istart = itree(ipointer(14)+ibox-1)
-      iend = itree(ipointer(17)+ibox-1)
-      npts = npts + iend-istart+1
+      ! istart = itree(ipointer(14)+ibox-1)
+      ! iend = itree(ipointer(17)+ibox-1)
+      ! npts = npts + iend-istart+1
 
-      if(ifpgh.gt.0) then
+      !if(ifpgh.gt.0) then
         istart = itree(ipointer(10)+ibox-1)
         iend = itree(ipointer(11)+ibox-1)
         npts = npts + iend-istart+1
-      endif
+      !endif
 
-      if(npts.gt.0) then
+      if (npts .gt. 0) then
         do i=1,8
           jbox = itree(ipointer(4)+8*(ibox-1)+i-1)
           if(jbox.gt.0) then
@@ -1572,49 +1617,6 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
       !C$OMP END PARALLEL DO          
     endif
 
-    ! if(ifpghtarg.eq.1) then         
-    !   !C$OMP PARALLEL DO DEFAULT(SHARED)
-    !   !C$OMP$PRIVATE(ibox,nlist3,istart,iend,npts,i,jbox)
-    !   !C$OMP$SCHEDULE(DYNAMIC)
-    !   do ibox=laddr(1,ilev),laddr(2,ilev)
-    !     nlist3 = itree(ipointer(24)+ibox-1)
-    !     istart = itree(ipointer(12)+ibox-1)
-    !     iend = itree(ipointer(13)+ibox-1)
-
-    !     npts = iend-istart+1
-
-    !     do i=1,nlist3
-    !       jbox = itree(ipointer(25)+(ibox-1)*mnlist3+i-1)
-    !       call h3dmpevalp(nd,zk,rscales(ilev+1),centers(1,jbox), &
-    !           rmlexp(iaddr(1,jbox)),nterms(ilev+1), &
-    !           targsort(1,istart),npts,pottarg(1,istart),wlege,nlege, &
-    !           thresh)
-    !     enddo
-    !   enddo
-    !   !C$OMP END PARALLEL DO          
-    ! endif
-
-    ! if(ifpghtarg.eq.2) then
-    !   !C$OMP PARALLEL DO DEFAULT(SHARED)
-    !   !C$OMP$PRIVATE(ibox,nlist3,istart,iend,npts,i,jbox)
-    !   !C$OMP$SCHEDULE(DYNAMIC)
-    !   do ibox=laddr(1,ilev),laddr(2,ilev)
-    !     nlist3 = itree(ipointer(24)+ibox-1)
-    !     istart = itree(ipointer(12)+ibox-1)
-    !     iend = itree(ipointer(13)+ibox-1)
-
-    !     npts = iend-istart+1
-
-    !     do i=1,nlist3
-    !       jbox = itree(ipointer(25)+(ibox-1)*mnlist3+i-1)
-    !       call h3dmpevalg(nd,zk,rscales(ilev+1),centers(1,jbox), &
-    !           rmlexp(iaddr(1,jbox)),nterms(ilev+1), &
-    !           targsort(1,istart),npts,pottarg(1,istart), &
-    !           gradtarg(1,1,istart),wlege,nlege,thresh)
-    !     enddo
-    !   enddo
-    !   !C$OMP END PARALLEL DO
-    ! endif
 
   enddo
 
@@ -1693,62 +1695,6 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
       !C$OMP END PARALLEL DO          
     endif
 
-    if(ifpgh.eq.2) then
-      !C$OMP PARALLEL DO DEFAULT(SHARED)
-      !C$OMP$PRIVATE(ibox,nchild,istart,iend,npts)
-      !C$OMP$SCHEDULE(DYNAMIC)      
-      do ibox = laddr(1,ilev),laddr(2,ilev)
-        nchild=itree(ipointer(3)+ibox-1)
-        if(nchild.eq.0) then 
-          istart = itree(ipointer(10)+ibox-1)
-          iend = itree(ipointer(11)+ibox-1)
-          npts = iend-istart+1
-          call h3dtaevalg(nd,zk,rscales(ilev),centers(1,ibox), &
-              rmlexp(iaddr(2,ibox)),nterms(ilev), &
-              sourcesort(1,istart), &
-              npts,pot(1,istart),grad(1,1,istart),wlege,nlege)
-        endif
-      enddo
-      !C$OMP END PARALLEL DO         
-    endif
-
-    ! if(ifpghtarg.eq.1) then
-    !   !C$OMP PARALLEL DO DEFAULT(SHARED)
-    !   !C$OMP$PRIVATE(ibox,nchild,istart,iend,npts)
-    !   !C$OMP$SCHEDULE(DYNAMIC)      
-    !   do ibox = laddr(1,ilev),laddr(2,ilev)
-    !     nchild=itree(ipointer(3)+ibox-1)
-    !     if(nchild.eq.0) then 
-    !       istart = itree(ipointer(12)+ibox-1)
-    !       iend = itree(ipointer(13)+ibox-1)
-    !       npts = iend-istart+1
-    !       call h3dtaevalp(nd,zk,rscales(ilev),centers(1,ibox), &
-    !           rmlexp(iaddr(2,ibox)),nterms(ilev), &
-    !           targsort(1,istart), &
-    !           npts,pottarg(1,istart),wlege,nlege)
-    !     endif
-    !   enddo
-    !   !C$OMP END PARALLEL DO         
-    ! endif
-
-    ! if(ifpghtarg.eq.2) then
-    !   !C$OMP PARALLEL DO DEFAULT(SHARED)
-    !   !C$OMP$PRIVATE(ibox,nchild,istart,iend,npts)
-    !   !C$OMP$SCHEDULE(DYNAMIC)      
-    !   do ibox = laddr(1,ilev),laddr(2,ilev)
-    !     nchild=itree(ipointer(3)+ibox-1)
-    !     if(nchild.eq.0) then 
-    !       istart = itree(ipointer(12)+ibox-1)
-    !       iend = itree(ipointer(13)+ibox-1)
-    !       npts = iend-istart+1
-
-    !       call h3dtaevalg(nd,zk,rscales(ilev),centers(1,ibox), &
-    !           rmlexp(iaddr(2,ibox)),nterms(ilev),targsort(1,istart), &
-    !           npts,pottarg(1,istart),gradtarg(1,1,istart),wlege,nlege)
-    !     endif
-    !   enddo
-    !   !C$OMP END PARALLEL DO         
-    ! endif
 
   enddo
 
@@ -1807,9 +1753,6 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     !cc           evaluate at the sources
     !c
 
-    !call prinf('ifpgh = *', ifpgh, 1)
-    !stop
-    
     if(ifpgh.eq.1) then
       if(ifcharge.eq.1.and.ifdipole.eq.0) then
         !C$OMP PARALLEL DO DEFAULT(SHARED)     
@@ -1833,253 +1776,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
         !C$OMP END PARALLEL DO            
       endif
 
-      ! if(ifcharge.eq.0.and.ifdipole.eq.1) then
-      !   !C$OMP PARALLEL DO DEFAULT(SHARED)     
-      !   !C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
-      !   do ibox = laddr(1,ilev),laddr(2,ilev)
-      !     istarts = itree(ipointer(10)+ibox-1)
-      !     iends = itree(ipointer(11)+ibox-1)
-      !     npts0 = iends-istarts+1
-      !     nlist1 = itree(ipointer(20)+ibox-1)
-      !     do i=1,nlist1
-      !       jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-      !       jstart = itree(ipointer(10)+jbox-1)
-      !       jend = itree(ipointer(11)+jbox-1)
-      !       npts = jend-jstart+1
-      !       call h3ddirectdp_vec_d(nd,zk,sourcesort(1,jstart), &
-      !           dipvecsort(1,1,jstart),npts,sourcesort(1,istarts), &
-      !           npts0,pot(1,istarts),thresh)          
-      !     enddo
-      !   enddo
-      !   !C$OMP END PARALLEL DO     
-      ! endif
-
-      ! if(ifcharge.eq.1.and.ifdipole.eq.1) then
-      !   !C$OMP PARALLEL DO DEFAULT(SHARED)     
-      !   !C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
-      !   do ibox = laddr(1,ilev),laddr(2,ilev)
-      !     istarts = itree(ipointer(10)+ibox-1)
-      !     iends = itree(ipointer(11)+ibox-1)
-      !     npts0 = iends-istarts+1
-      !     nlist1 = itree(ipointer(20)+ibox-1)
-      !     do i=1,nlist1
-      !       jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-      !       jstart = itree(ipointer(10)+jbox-1)
-      !       jend = itree(ipointer(11)+jbox-1)
-      !       npts = jend-jstart+1
-      !       call h3ddirectcdp_vec_d(nd,zk,sourcesort(1,jstart), &
-      !           chargesort(1,jstart), &
-      !           dipvecsort(1,1,jstart),npts,sourcesort(1,istarts), &
-      !           npts0,pot(1,istarts),thresh)          
-      !     enddo
-      !   enddo
-      !   !C$OMP END PARALLEL DO     
-      ! endif
     endif
-
-    ! if(ifpgh.eq.2) then
-    !   if(ifcharge.eq.1.and.ifdipole.eq.0) then
-    !     !C$OMP PARALLEL DO DEFAULT(SHARED)     
-    !     !C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
-    !     do ibox = laddr(1,ilev),laddr(2,ilev)
-    !       istarts = itree(ipointer(10)+ibox-1)
-    !       iends = itree(ipointer(11)+ibox-1)
-    !       npts0 = iends-istarts+1
-    !       nlist1 = itree(ipointer(20)+ibox-1)
-
-    !       do i=1,nlist1
-    !         jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-    !         jstart = itree(ipointer(10)+jbox-1)
-    !         jend = itree(ipointer(11)+jbox-1)
-    !         npts = jend-jstart+1
-    !         call h3ddirectcg_vec_d(nd,zk,sourcesort(1,jstart), &
-    !             chargesort(1,jstart),npts,sourcesort(1,istarts), &
-    !             npts0,pot(1,istarts),grad(1,1,istarts),thresh)   
-    !       enddo
-    !     enddo
-    !     !C$OMP END PARALLEL DO     
-    !   endif
-
-    !   if(ifcharge.eq.0.and.ifdipole.eq.1) then
-    !     !C$OMP PARALLEL DO DEFAULT(SHARED)     
-    !     !C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
-    !     do ibox = laddr(1,ilev),laddr(2,ilev)
-    !       istarts = itree(ipointer(10)+ibox-1)
-    !       iends = itree(ipointer(11)+ibox-1)
-    !       npts0 = iends-istarts+1
-    !       nlist1 = itree(ipointer(20)+ibox-1)
-    !       do i=1,nlist1
-    !         jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-    !         jstart = itree(ipointer(10)+jbox-1)
-    !         jend = itree(ipointer(11)+jbox-1)
-    !         npts = jend-jstart+1
-    !         call h3ddirectdg_vec_d(nd,zk,sourcesort(1,jstart), &
-    !             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts), &
-    !             npts0,pot(1,istarts),grad(1,1,istarts),thresh)          
-    !       enddo
-    !     enddo
-    !     !C$OMP END PARALLEL DO     
-    !   endif
-
-    !   if(ifcharge.eq.1.and.ifdipole.eq.1) then
-    !     !C$OMP PARALLEL DO DEFAULT(SHARED)     
-    !     !C$OMP$PRIVATE(ibox,istarts,iends,npts0,nlist1,i,jbox,jstart,jend,npts)
-    !     do ibox = laddr(1,ilev),laddr(2,ilev)
-    !       istarts = itree(ipointer(10)+ibox-1)
-    !       iends = itree(ipointer(11)+ibox-1)
-    !       npts0 = iends-istarts+1
-    !       nlist1 = itree(ipointer(20)+ibox-1)
-    !       do i=1,nlist1
-    !         jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-    !         jstart = itree(ipointer(10)+jbox-1)
-    !         jend = itree(ipointer(11)+jbox-1)
-    !         npts = jend-jstart+1
-    !         call h3ddirectcdg_vec_d(nd,zk,sourcesort(1,jstart), &
-    !             chargesort(1,jstart), &
-    !             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts), &
-    !             npts0,pot(1,istarts),grad(1,1,istarts),thresh)          
-    !       enddo
-    !     enddo
-    !     !C$OMP END PARALLEL DO     
-    !   endif
-    ! endif
-
-    ! if(ifpghtarg.eq.1) then
-    !   if(ifcharge.eq.1.and.ifdipole.eq.0) then
-    !     !C$OMP PARALLEL DO DEFAULT(SHARED)     
-    !     !C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
-    !     do ibox = laddr(1,ilev),laddr(2,ilev)
-    !       istartt = itree(ipointer(12)+ibox-1)
-    !       iendt = itree(ipointer(13)+ibox-1)
-    !       npts0 = iendt-istartt+1
-    !       nlist1 = itree(ipointer(20)+ibox-1)
-
-    !       do i=1,nlist1
-    !         jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-    !         jstart = itree(ipointer(10)+jbox-1)
-    !         jend = itree(ipointer(11)+jbox-1)
-    !         npts = jend-jstart+1
-    !         call h3ddirectcp_vec_d(nd,zk,sourcesort(1,jstart), &
-    !             chargesort(1,jstart),npts,targsort(1,istartt), &
-    !             npts0,pottarg(1,istartt),thresh)          
-    !       enddo
-    !     enddo
-    !     !C$OMP END PARALLEL DO     
-    !   endif
-
-    !   if(ifcharge.eq.0.and.ifdipole.eq.1) then
-    !     !C$OMP PARALLEL DO DEFAULT(SHARED)     
-    !     !C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
-    !     do ibox = laddr(1,ilev),laddr(2,ilev)
-    !       istartt = itree(ipointer(12)+ibox-1)
-    !       iendt = itree(ipointer(13)+ibox-1)
-    !       npts0 = iendt-istartt+1
-    !       nlist1 = itree(ipointer(20)+ibox-1)
-    !       do i=1,nlist1
-    !         jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-    !         jstart = itree(ipointer(10)+jbox-1)
-    !         jend = itree(ipointer(11)+jbox-1)
-    !         npts = jend-jstart+1
-    !         call h3ddirectdp_vec_d(nd,zk,sourcesort(1,jstart), &
-    !             dipvecsort(1,1,jstart),npts,targsort(1,istartt), &
-    !             npts0,pottarg(1,istartt),thresh)          
-    !       enddo
-    !     enddo
-    !     !C$OMP END PARALLEL DO     
-    !   endif
-
-    !   if(ifcharge.eq.1.and.ifdipole.eq.1) then
-    !     !C$OMP PARALLEL DO DEFAULT(SHARED)     
-    !     !C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
-    !     do ibox = laddr(1,ilev),laddr(2,ilev)
-    !       istartt = itree(ipointer(12)+ibox-1)
-    !       iendt = itree(ipointer(13)+ibox-1)
-    !       npts0 = iendt-istartt+1
-    !       nlist1 = itree(ipointer(20)+ibox-1)
-    !       do i=1,nlist1
-    !         jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-    !         jstart = itree(ipointer(10)+jbox-1)
-    !         jend = itree(ipointer(11)+jbox-1)
-    !         npts = jend-jstart+1
-    !         call h3ddirectcdp_vec_d(nd,zk,sourcesort(1,jstart), &
-    !             chargesort(1,jstart), &
-    !             dipvecsort(1,1,jstart),npts,targsort(1,istartt), &
-    !             npts0,pottarg(1,istartt),thresh)          
-    !       enddo
-    !     enddo
-    !     !C$OMP END PARALLEL DO     
-    !   endif
-    ! endif
-
-    ! if(ifpghtarg.eq.2) then
-    !   if(ifcharge.eq.1.and.ifdipole.eq.0) then
-    !     !C$OMP PARALLEL DO DEFAULT(SHARED)     
-    !     !C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
-    !     do ibox = laddr(1,ilev),laddr(2,ilev)
-    !       istartt = itree(ipointer(12)+ibox-1)
-    !       iendt = itree(ipointer(13)+ibox-1)
-    !       npts0 = iendt-istartt+1
-    !       nlist1 = itree(ipointer(20)+ibox-1)
-
-    !       do i=1,nlist1
-    !         jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-    !         jstart = itree(ipointer(10)+jbox-1)
-    !         jend = itree(ipointer(11)+jbox-1)
-    !         npts = jend-jstart+1
-    !         call h3ddirectcg_vec_d(nd,zk,sourcesort(1,jstart), &
-    !             chargesort(1,jstart),npts,targsort(1,istartt), &
-    !             npts0,pottarg(1,istartt),gradtarg(1,1,istartt), &
-    !             thresh)   
-    !       enddo
-    !     enddo
-    !     !C$OMP END PARALLEL DO     
-    !   endif
-
-    !   if(ifcharge.eq.0.and.ifdipole.eq.1) then
-    !     !C$OMP PARALLEL DO DEFAULT(SHARED)     
-    !     !C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
-    !     do ibox = laddr(1,ilev),laddr(2,ilev)
-    !       istartt = itree(ipointer(12)+ibox-1)
-    !       iendt = itree(ipointer(13)+ibox-1)
-    !       npts0 = iendt-istartt+1
-    !       nlist1 = itree(ipointer(20)+ibox-1)
-    !       do i=1,nlist1
-    !         jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-    !         jstart = itree(ipointer(10)+jbox-1)
-    !         jend = itree(ipointer(11)+jbox-1)
-    !         npts = jend-jstart+1
-    !         call h3ddirectdg_vec_d(nd,zk,sourcesort(1,jstart), &
-    !             dipvecsort(1,1,jstart),npts,targsort(1,istartt), &
-    !             npts0,pottarg(1,istartt),gradtarg(1,1,istartt), &
-    !             thresh)          
-    !       enddo
-    !     enddo
-    !     !C$OMP END PARALLEL DO     
-    !   endif
-
-    !   if(ifcharge.eq.1.and.ifdipole.eq.1) then
-    !     !C$OMP PARALLEL DO DEFAULT(SHARED)     
-    !     !C$OMP$PRIVATE(ibox,istartt,iendt,npts0,nlist1,i,jbox,jstart,jend,npts)
-    !     do ibox = laddr(1,ilev),laddr(2,ilev)
-    !       istartt = itree(ipointer(12)+ibox-1)
-    !       iendt = itree(ipointer(13)+ibox-1)
-    !       npts0 = iendt-istartt+1
-    !       nlist1 = itree(ipointer(20)+ibox-1)
-    !       do i=1,nlist1
-    !         jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-    !         jstart = itree(ipointer(10)+jbox-1)
-    !         jend = itree(ipointer(11)+jbox-1)
-    !         npts = jend-jstart+1
-    !         call h3ddirectcdg_vec_d(nd,zk,sourcesort(1,jstart), &
-    !             chargesort(1,jstart), &
-    !             dipvecsort(1,1,jstart),npts,targsort(1,istartt), &
-    !             npts0,pottarg(1,istartt),gradtarg(1,1,istartt), &
-    !             thresh)          
-    !       enddo
-    !     enddo
-    !     !C$OMP END PARALLEL DO     
-    !   endif
-    ! endif
 
   enddo
 
@@ -2093,6 +1790,30 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     d = d + timeinfo(i)
   enddo
 
+  if (ifprint .eq. 1) then
+    write(6,'(a)') '                             Time    Perct'
+    write(6,'(a,f6.3,a,f6.2,a)') 'Step 1: SHIFT MPs           ',&
+        timeinfo(1), ' ', timeinfo(1)/d*100, '%'
+    write(6,'(a,f6.3,a,f6.2,a)') 'Step 2: FORM LOCAL (LIST 3) ',&
+        timeinfo(2), ' ', timeinfo(2)/d*100, '%'
+    write(6,'(a,f6.3,a,f6.2,a)') 'Step 3: MERGE MPs           ',&
+        timeinfo(3), ' ', timeinfo(3)/d*100, '%'
+    write(6,'(a,f6.3,a,f6.2,a)') 'Step 4: MP to LOCAL         ',&
+        timeinfo(4), ' ', timeinfo(4)/d*100, '%'
+    write(6,'(a,f6.3,a,f6.2,a)') 'Step 5: SPLIT LOCAL         ',&
+        timeinfo(5), ' ', timeinfo(5)/d*100, '%'
+    write(6,'(a,f6.3,a,f6.2,a)') 'Step 6: MP EVAL (LIST 4)    ',&
+        timeinfo(6), ' ', timeinfo(6)/d*100, '%'
+    write(6,'(a,f6.3,a,f6.2,a)') 'Step 7: EVAL LOCALS         ',&
+        timeinfo(7), ' ', timeinfo(7)/d*100, '%'
+    write(6,'(a,f6.3,a,f6.2,a)') 'Step 8: DIRECT EVAL         ',&
+        timeinfo(8), ' ', timeinfo(8)/d*100, '%'
+    
+
+  end if
+  
+
+  
   if(ifprint.ge.1) call prin2('sum(timeinfo)=*',d,1)
 
 
