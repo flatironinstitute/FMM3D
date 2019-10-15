@@ -75,12 +75,12 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   !              order of the multipole expansions, each expansion
   !              can be of a different order
   !
-  !     mpole:   in: double complex (nd,0:mterms,-mterms:mterms,nmpole)
+  !     mpole:   in: double complex (nd,*)
   !              coefficients in the multipole expansions
   !
   !     impole:  in: integer (nmpole)
   !              indexing array for mpole, the ith expansion is at
-  !              location mpole(impole(i)) and is of order mterms(i)
+  !              location mpole(1,impole(i)) and is of order mterms(i)
   !
   !   ifpgh   in: integer
   !              flag for evaluating potential/gradient at the sources
@@ -137,7 +137,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
 
   integer :: nmpole, mterms, impole(nmpole)
   double precision :: cmpole(3,nmpole), rmpole(nmpole)
-  double complex :: mpole(nd,0:mterms,-mterms:mterms,nmpole)
+  double complex :: mpole(nd,*)
   double complex :: local(nd,*)
   
   integer ifcharge,ifdipole
@@ -177,8 +177,8 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   integer, allocatable :: mtermssort(:), impolesort(:)
   double precision, allocatable :: cmpolesort(:,:)
   double precision, allocatable :: rmpolesort(:)
-  double complex, allocatable :: mpolesort(:,:,:,:)
-  double complex, allocatable :: localsort(:,:,:,:)
+  double complex, allocatable :: mpolesort(:,:)
+  double complex, allocatable :: localsort(:,:)
   
   double complex, allocatable :: potsort(:,:),gradsort(:,:,:), &
       hesssort(:,:,:)
@@ -488,7 +488,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   allocate(rmpolesort(nmpole))
   allocate(impolesort(nmpole))
   allocate(mtermssort(nmpole))
-  allocate(mpolesort(nd,0:mterms,-mterms:mterms,nmpole))
+  allocate(mpolesort(nd,(mterms+1)*(2*mterms+1)*nmpole))
 
   call dreorderf(3, nmpole, cmpole, cmpolesort, itree(ipointer(5)))
   call dreorderf(1, nmpole, rmpole, rmpolesort, itree(ipointer(5)))
@@ -508,13 +508,17 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   print *
   print *, '. . . dont forget to repair variable order sort . . . '
   print *
-  call dreorderf(lda, nmpole, mpole, mpolesort, itree(ipointer(5)))
+  !call dreorderf(lda, nmpole, mpole, mpolesort, itree(ipointer(5)))
 
+  !call prinf('perm = *', itree(ipointer(5)), nmpole)
+  !call prin2('after dreorderf, mpolesort = *', mpolesort, 50)
   
   
-  !call mpolereorderf(nd, nmpole, impole, mterms, mpole, &
-  !    impolesort, mpolesort, itree(ipointer(5)) )
+  call mpolereorderf(nd, nmpole, impole, mterms, mpole, &
+      impolesort, mpolesort, itree(ipointer(5)) )
 
+  !call prin2('after mpolereorderf, mpolesort = *', mpolesort, 100)
+  !stop
   
   !c
   !cc       reorder sources
@@ -550,7 +554,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
     stop
   endif
 
-  allocate( localsort(nd,0:mterms,-mterms:mterms,nmpole) )
+  allocate( localsort(nd,(mterms+1)*(2*mterms+1)*nmpole))
   
 
   !
@@ -656,39 +660,33 @@ subroutine mpolereorderf(ndim, nmpole, impole, mterms, mpole, &
   !
   integer :: ndim, nmpole, impole(nmpole), mterms(nmpole)
   integer :: impolesort(nmpole), perm(nmpole)
-  double complex :: mpole(*), mpolesort(*)
+  double complex :: mpole(ndim,*), mpolesort(ndim,*)
 
-  integer :: i, j, mt, len, ijk, lused
+  integer :: i, j, mt, len, ijk, lused, l
 
-  !do i=1,n
-  !  do idim=1,ndim
-  !    arrsort(idim,i) = arr(idim,iarr(i))
-  !  enddo
-  !enddo
-
-  !call prinf('mterms = *', mterms, nmpole)
-  !call prinf('impole = *', impole, nmpole)
-  !stop
-  
-  !ijk = 1
 
   mt = 5
-  !call prinf('nmpole = *', nmpole, 1)
-  !stop
-  !call prinf('ndim = *', ndim, 1)
-  !stop
 
   lused = 0
+
+  !call prinf('perm = *', perm, nmpole)
+
+  !call prinf('ndim = *', ndim, 1)
+  !call prinf('nmpole = *', nmpole, 1)
+  !call prinf('impole = *', impole, nmpole)
+  !call prinf('mterms = *', mterms, nmpole)
   
   !!!!$omp parallel do default(shared) private(i,j,mt,len)
   do i = 1,nmpole
-    !mt = mterms(perm(i))
-    len = ndim*(mt+1)*(2*mt+1)
-    !impolesort(i) = ijk
+
+    mt = mterms(perm(i))
+    len = (mt+1)*(2*mt+1)
+
     do j = 1,len
-      mpolesort(lused+j) = mpole(impole(perm(i))+j)
+      do l = 1,ndim
+        mpolesort(l,lused+j) = mpole(l,impole(perm(i))+j-1)
+      end do
     end do
-    !ijk = ijk + len
     lused = lused + len
   end do
   !!!!$omp end parallel do      
