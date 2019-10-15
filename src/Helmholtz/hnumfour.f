@@ -6,7 +6,7 @@
 
 
       call hwts3dgetd(ier,zk,idomain)
-      print *, "idomain=",idomain
+cccc      print *, "idomain=",idomain
 
       iprec = 0
       if(eps.lt.0.5d-2) iprec = 1

@@ -706,7 +706,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     nsource,sourcesort, &
     ifcharge,chargesort, &
     ifdipole,dipvecsort, &
-    nmpole, cmpolesort, rmpolesort, mterms, mpolesort, &
+    nmpole, cmpolesort, rmpolesort, mtermssort, mpolesort, &
     impolesort, localsort, &
     ntarg,targsort,nexpc,expcsort,radssort, &
     iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp, &
@@ -733,7 +733,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   double complex dipvecsort(nd,3,*)
 
   ! input multipole stuff
-  integer :: nmpole, mterms
+  integer :: nmpole, mtermssort(nmpole)
   double precision :: cmpolesort(3,nmpole), rmpolesort(nmpole)
   double complex :: mpolesort(nd,*)
   integer :: impolesort(nmpole)
@@ -859,7 +859,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   integer iert
   data ima/(0.0d0,1.0d0)/
 
-  integer nlfbox,ier, ifstep2
+  integer nlfbox,ier, ifstep2, mt, ltot
 
 
   ntmax = 1000
@@ -912,7 +912,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   ifprint=1
 
   ! ... set the expansion coefficients to zero
-  !C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j,k,idim)
+  !$omp parallel do default(shared) private(i,j,k,idim)
   do i=1,nexpc
     do k=-ntj,ntj
       do j = 0,ntj
@@ -922,7 +922,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
       enddo
     enddo
   enddo
-  !C$OMP END PARALLEL DO
+  !$omp end parallel do
 
 
   do i=1,10
@@ -937,29 +937,30 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   ! ... set all multipole and local expansions to zero
   !
   do ilev = 0,nlevels
-    !C$OMP PARALLEL DO DEFAULT(SHARED)
-    !C$OMP$PRIVATE(ibox)
+    !$omp parallel do default(shared) private(ibox)
     do ibox = laddr(1,ilev),laddr(2,ilev)
       call mpzero(nd,rmlexp(iaddr(1,ibox)),nterms(ilev))
       call mpzero(nd,rmlexp(iaddr(2,ibox)),nterms(ilev))
     enddo
-    !C$OMP END PARALLEL DO          
+    !$omp end parallel do          
   enddo
 
+  ltot = 0
+  !$omp parallel do default(shared) private(l,mt)
+  do l = 1,nmpole
+    mt = mtermssort(l)
+    ltot = ltot + (mt+1)*(2*mt+1)
+  end do
+  !$omp end parallel do
 
   
-  ! !$omp parallel do default (shared) private(i,j,k,l)
-  ! do l = 1,nmpole
-  !   do k = -mterms,mterms
-  !     do j = 0,mterms
-  !       do i = 1,nd
-  !         localsort(i,j,k,l) = 0
-  !       end do
-  !     end do
-  !   end do
-  ! end do
-  ! !$omp end parallel do
-  
+  !$omp parallel do default (shared) private(i,j,k,l)
+  do l = 1,ltot
+    do i = 1,nd
+      localsort(i,l) = 0
+    end do
+  end do
+  !$omp end parallel do
   
 
   !
@@ -1027,7 +1028,8 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
           
           call h3dmpmp(nd, zk, rmpolesort(istart), &
               cmpolesort(1,istart), mpolesort(:,impolesort(istart)), &
-              mterms, rscales(ilev), centers(1,ibox), &
+              mtermssort(istart), &
+              rscales(ilev), centers(1,ibox), &
               rmlexp(iaddr(1,ibox)), nterms(ilev), &
               radius, xnodes, wts, nquad2)
 
@@ -1037,9 +1039,6 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
           !    rmlexp(iaddr(1,ibox)),wlege,nlege)          
 
         endif
-
-
-        
       enddo
       !$omp end parallel do            
     endif
@@ -1098,7 +1097,9 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
             
             
             call h3dmploc(nd, zk, rmpolesort(istart),&
-                cmpolesort(:,istart), mpolesort(:,impolesort(istart)), mterms, &
+                cmpolesort(:,istart), &
+                mpolesort(:,impolesort(istart)), &
+                mtermssort(istart), &
                 rscales(ilev), centers(1,ibox), &
                 rmlexp(iaddr(2,ibox)), nterms(ilev), &
                 radius, xnodes, wts, nquad2)
@@ -1115,13 +1116,17 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     enddo
   endif
 
-
   call cpu_time(time2)
   !$ time2=omp_get_wtime()
   timeinfo(2)=time2-time1
 
 
 
+  !
+  ! A further optimization could be done, which translations initial
+  ! multipole expansions directly to the center of the parent box,
+  ! eliminating Step 1
+  !
 
 
   !
@@ -1150,7 +1155,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
           iend = itree(ipointer(11)+jbox-1)
           npts = iend-istart+1
 
-          if(npts.gt.0) then
+          if(npts .gt. 0) then
             call h3dmpmp(nd,zk,rscales(ilev+1), &
                 centers(1,jbox),rmlexp(iaddr(1,jbox)), &
                 nterms(ilev+1),rscales(ilev),centers(1,ibox), &
@@ -1223,7 +1228,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
       bigint = bigint*6
       bigint = bigint*nexptotp*nd
 
-      if(ifprint.ge.1) print *, "mexp memory=",bigint/1.0d9
+      !if(ifprint.ge.1) print *, "mexp memory=",bigint/1.0d9
 
 
       allocate(mexp(nd,nexptotp,nboxes,6),stat=iert)
@@ -1610,10 +1615,18 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   !
 
   do ilev=1,nlevels
+
+    nquad2 = nterms(ilev)*2
+    nquad2 = max(6,nquad2)
+    ifinit2 = 1
+    call legewhts(nquad2,xnodes,wts,ifinit2)
+    radius = boxsize(ilev+1)/2*sqrt(3.0d0)
+
+    
     if(ifpgh.eq.1) then         
-      !$omp parallel do default(shared) &
-      !$omp   private(ibox,nlist3,istart,iend,npts,i,jbox) &
-      !$omp   schedule(dynamic)
+      !!$omp parallel do default(shared) &
+      !!$omp   private(ibox,nlist3,istart,iend,npts,i,jbox) &
+      !!$omp   schedule(dynamic)
       do ibox=laddr(1,ilev),laddr(2,ilev)
         nlist3 = itree(ipointer(24)+ibox-1)
         istart = itree(ipointer(10)+ibox-1)
@@ -1627,34 +1640,30 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
               rmlexp(iaddr(1,jbox)),nterms(ilev+1), &
               sourcesort(1,istart),npts,pot(1,istart),wlege,nlege, &
               thresh)
+
+          !print *, 'from mpevalp, pot = ', pot(1,istart)
+          
+          call h3dmploc(nd, zk, rscales(ilev+1), centers(1,jbox), &
+              rmlexp(iaddr(1,jbox)),nterms(ilev+1), &
+              rmpolesort(istart), cmpolesort(1,istart), &
+              localsort(1,impolesort(istart)), mtermssort(istart), &
+              radius, xnodes, wts, nquad2)
+
+          !pot(1,istart) = 0
+          !call h3dtaevalp(nd, zk, rmpolesort(istart), &
+          !    cmpolesort(1,istart), &
+          !    localsort(1,impolesort(istart)), mtermssort(istart), &
+          !    sourcesort(1,istart), &
+          !    npts,pot(1,istart),wlege,nlege)
+
+          
+          !print *, 'from mploc and eval, pot = ', pot(1,istart)
+          !stop
+          
         enddo
       enddo
-      !$omp end parallel do          
+      !!$omp end parallel do          
     endif
-
-    ! if(ifpgh.eq.2) then
-    !   !C$OMP PARALLEL DO DEFAULT(SHARED)
-    !   !C$OMP$PRIVATE(ibox,nlist3,istart,iend,npts,i,jbox)
-    !   !C$OMP$SCHEDULE(DYNAMIC)
-    !   do ibox=laddr(1,ilev),laddr(2,ilev)
-    !     nlist3 = itree(ipointer(24)+ibox-1)
-    !     istart = itree(ipointer(10)+ibox-1)
-    !     iend = itree(ipointer(11)+ibox-1)
-
-    !     npts = iend-istart+1
-
-    !     do i=1,nlist3
-    !       jbox = itree(ipointer(25)+(ibox-1)*mnlist3+i-1)
-    !       call h3dmpevalg(nd,zk,rscales(ilev+1),centers(1,jbox), &
-    !           rmlexp(iaddr(1,jbox)),nterms(ilev+1), &
-    !           sourcesort(1,istart),npts,pot(1,istart), &
-    !           grad(1,1,istart),wlege,nlege,thresh)
-    !     enddo
-    !   enddo
-    !   !C$OMP END PARALLEL DO          
-    ! endif
-
-
   enddo
 
   call cpu_time(time2)
@@ -1817,13 +1826,16 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   call cpu_time(time2)
   !$ time2=omp_get_wtime()
   timeinfo(8) = time2-time1
-  if(ifprint.ge.1) call prin2('timeinfo=*',timeinfo,8)
+
+!!!if(ifprint.ge.1) call prin2('timeinfo=*',timeinfo,8)
   d = 0
   do i = 1,8
     d = d + timeinfo(i)
   enddo
 
   if (ifprint .eq. 1) then
+    print *
+    print *
     write(6,'(a)') '                             Time    Perct'
     write(6,'(a,f6.3,a,f6.2,a)') 'Step 1: SHIFT MPs           ',&
         timeinfo(1), ' ', timeinfo(1)/d*100, '%'
@@ -1843,7 +1855,11 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
         timeinfo(8), ' ', timeinfo(8)/d*100, '%'
     write(6,'(a,f6.3)') 'Total time required         ',&
         d
+    print *
+    print *
   end if
+
+  
   
 
   
