@@ -486,18 +486,24 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   !
   allocate(cmpolesort(3,nmpole))
   allocate(rmpolesort(nmpole))
+  allocate(impolesort(nmpole))
   allocate(mtermssort(nmpole))
   allocate(mpolesort(nd,0:mterms,-mterms:mterms,nmpole))
-  
+
   call dreorderf(3, nmpole, cmpole, cmpolesort, itree(ipointer(5)))
   call dreorderf(1, nmpole, rmpole, rmpolesort, itree(ipointer(5)))
   !call ireorderf(1, nmpole, impole, impolesort, itree(ipointer(5)))
 
-  !call mpolereorderf(nd, nmpole, impole, mterms, mpole, &
-  !    impolesort, mpolesort, itree(ipointer(5)) )
 
+
+  !stop
   call ireorderf(1, nmpole, mterms, mtermssort, itree(ipointer(5)))
 
+  !call prinf('mtermssort = *', mtermssort, nmpole)
+  
+  
+  !stop
+  
   lda = 2*nd*(mterms+1)*(2*mterms+1)
   print *
   print *, '. . . dont forget to repair variable order sort . . . '
@@ -505,6 +511,9 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   call dreorderf(lda, nmpole, mpole, mpolesort, itree(ipointer(5)))
 
   
+  
+  !call mpolereorderf(nd, nmpole, impole, mterms, mpole, &
+  !    impolesort, mpolesort, itree(ipointer(5)) )
 
   
   !c
@@ -629,7 +638,7 @@ end subroutine hfmm3d_mps
 
 
 
-subroutine mpolereorder(ndim, nmpole, impole, mterms, mpole, &
+subroutine mpolereorderf(ndim, nmpole, impole, mterms, mpole, &
     impolesort, mpolesort, perm)
   implicit none
   !
@@ -647,20 +656,45 @@ subroutine mpolereorder(ndim, nmpole, impole, mterms, mpole, &
   !
   integer :: ndim, nmpole, impole(nmpole), mterms(nmpole)
   integer :: impolesort(nmpole), perm(nmpole)
-  double complex :: mpole(ndim,*), mpolesort(ndim,*)
+  double complex :: mpole(*), mpolesort(*)
 
-  integer :: i, idim
+  integer :: i, j, mt, len, ijk, lused
 
-  !!!!C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)      
   !do i=1,n
   !  do idim=1,ndim
   !    arrsort(idim,i) = arr(idim,iarr(i))
   !  enddo
   !enddo
-  !C$OMP END PARALLEL DO      
 
+  !call prinf('mterms = *', mterms, nmpole)
+  !call prinf('impole = *', impole, nmpole)
+  !stop
+  
+  !ijk = 1
+
+  mt = 5
+  !call prinf('nmpole = *', nmpole, 1)
+  !stop
+  !call prinf('ndim = *', ndim, 1)
+  !stop
+
+  lused = 0
+  
+  !!!!$omp parallel do default(shared) private(i,j,mt,len)
+  do i = 1,nmpole
+    !mt = mterms(perm(i))
+    len = ndim*(mt+1)*(2*mt+1)
+    !impolesort(i) = ijk
+    do j = 1,len
+      mpolesort(lused+j) = mpole(impole(perm(i))+j)
+    end do
+    !ijk = ijk + len
+    lused = lused + len
+  end do
+  !!!!$omp end parallel do      
+  
   return
-end subroutine mpolereorder
+end subroutine mpolereorderf
 
 
 
