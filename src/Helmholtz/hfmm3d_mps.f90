@@ -1624,9 +1624,9 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
     
     if(ifpgh.eq.1) then         
-      !!$omp parallel do default(shared) &
-      !!$omp   private(ibox,nlist3,istart,iend,npts,i,jbox) &
-      !!$omp   schedule(dynamic)
+      !$omp parallel do default(shared) &
+      !$omp   private(ibox,nlist3,istart,iend,npts,i,jbox) &
+      !$omp   schedule(dynamic)
       do ibox=laddr(1,ilev),laddr(2,ilev)
         nlist3 = itree(ipointer(24)+ibox-1)
         istart = itree(ipointer(10)+ibox-1)
@@ -1662,7 +1662,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
           
         enddo
       enddo
-      !!$omp end parallel do          
+      !$omp end parallel do          
     endif
   enddo
 
