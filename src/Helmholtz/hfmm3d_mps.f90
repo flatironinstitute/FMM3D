@@ -497,7 +497,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
 
 
   !stop
-  call ireorderf(1, nmpole, mterms, mtermssort, itree(ipointer(5)))
+  !call ireorderf(1, nmpole, mterms, mtermssort, itree(ipointer(5)))
 
   !call prinf('mtermssort = *', mtermssort, nmpole)
   
@@ -515,7 +515,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   
   
   call mpolereorderf(nd, nmpole, impole, mterms, mpole, &
-      impolesort, mpolesort, itree(ipointer(5)) )
+      impolesort, mtermssort, mpolesort, itree(ipointer(5)) )
 
   !call prin2('after mpolereorderf, mpolesort = *', mpolesort, 100)
   !stop
@@ -568,7 +568,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
       ifcharge,chargesort,&
       ifdipole,dipvecsort,&
       nmpole, cmpolesort, rmpolesort, mterms, mpolesort, &
-      localsort, &
+      impolesort, localsort, &
       ntarg,targsort,nexpc,expcsort,radssort, &
       iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp, &
       itree,ltree,ipointer,isep,ndiv,nlevels, &
@@ -643,7 +643,7 @@ end subroutine hfmm3d_mps
 
 
 subroutine mpolereorderf(ndim, nmpole, impole, mterms, mpole, &
-    impolesort, mpolesort, perm)
+    impolesort, mtermssort, mpolesort, perm)
   implicit none
   !
   ! This subroutine sorts a list of variable order multipole
@@ -659,15 +659,14 @@ subroutine mpolereorderf(ndim, nmpole, impole, mterms, mpole, &
   !                                     i=1,2,\ldots n
   !
   integer :: ndim, nmpole, impole(nmpole), mterms(nmpole)
-  integer :: impolesort(nmpole), perm(nmpole)
+  integer :: impolesort(nmpole), mtermssort(nmpole), perm(nmpole)
   double complex :: mpole(ndim,*), mpolesort(ndim,*)
 
   integer :: i, j, mt, len, ijk, lused, l
 
 
-  mt = 5
+  !mt = 5
 
-  lused = 0
 
   !call prinf('perm = *', perm, nmpole)
 
@@ -675,19 +674,24 @@ subroutine mpolereorderf(ndim, nmpole, impole, mterms, mpole, &
   !call prinf('nmpole = *', nmpole, 1)
   !call prinf('impole = *', impole, nmpole)
   !call prinf('mterms = *', mterms, nmpole)
+
+  impolesort(1) = 1
   
   !!!!$omp parallel do default(shared) private(i,j,mt,len)
   do i = 1,nmpole
 
-    mt = mterms(perm(i))
+    mtermssort(i) = mterms(perm(i))
+    mt = mtermssort(i)
     len = (mt+1)*(2*mt+1)
 
     do j = 1,len
       do l = 1,ndim
-        mpolesort(l,lused+j) = mpole(l,impole(perm(i))+j-1)
+        mpolesort(l,impolesort(i)+j-1) = mpole(l,impole(perm(i))+j-1)
       end do
     end do
-    lused = lused + len
+
+    if (i .lt. nmpole) impolesort(i+1) = impolesort(i)+len
+   
   end do
   !!!!$omp end parallel do      
   
@@ -703,7 +707,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     ifcharge,chargesort, &
     ifdipole,dipvecsort, &
     nmpole, cmpolesort, rmpolesort, mterms, mpolesort, &
-    localsort, &
+    impolesort, localsort, &
     ntarg,targsort,nexpc,expcsort,radssort, &
     iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp, &
     itree,ltree,ipointer,isep,ndiv,nlevels, &
@@ -731,7 +735,8 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   ! input multipole stuff
   integer :: nmpole, mterms
   double precision :: cmpolesort(3,nmpole), rmpolesort(nmpole)
-  double complex :: mpolesort(nd,0:mterms,-mterms:mterms,nmpole)
+  double complex :: mpolesort(nd,*)
+  integer :: impolesort(nmpole)
   double complex :: localsort(nd,0:mterms,-mterms:mterms,nmpole)
 
   
@@ -942,17 +947,17 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   enddo
 
   
-  !$omp parallel do default (shared) private(i,j,k,l)
-  do l = 1,nmpole
-    do k = -mterms,mterms
-      do j = 0,mterms
-        do i = 1,nd
-          localsort(i,j,k,l) = 0
-        end do
-      end do
-    end do
-  end do
-  !$omp end parallel do
+  ! !$omp parallel do default (shared) private(i,j,k,l)
+  ! do l = 1,nmpole
+  !   do k = -mterms,mterms
+  !     do j = 0,mterms
+  !       do i = 1,nd
+  !         localsort(i,j,k,l) = 0
+  !       end do
+  !     end do
+  !   end do
+  ! end do
+  ! !$omp end parallel do
   
   
 
@@ -1020,7 +1025,8 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
         if((npts.gt.0) .and. (nchild.eq.0)) then
           
           call h3dmpmp(nd, zk, rmpolesort(istart), &
-              cmpolesort(1,istart), mpolesort(:,:,:,istart), &
+              !cmpolesort(1,istart), mpolesort(:,:,:,istart), &
+              cmpolesort(1,istart), mpolesort(:,impolesort(istart)), &
               mterms, rscales(ilev), centers(1,ibox), &
               rmlexp(iaddr(1,ibox)), nterms(ilev), &
               radius, xnodes, wts, nquad2)
@@ -1092,7 +1098,8 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
             
             
             call h3dmploc(nd, zk, rmpolesort(istart),&
-                cmpolesort(:,istart), mpolesort(:,:,:,istart), mterms, &
+                !cmpolesort(:,istart), mpolesort(:,:,:,istart), mterms, &
+                cmpolesort(:,istart), mpolesort(:,impolesort(istart)), mterms, &
                 rscales(ilev), centers(1,ibox), &
                 rmlexp(iaddr(2,ibox)), nterms(ilev), &
                 radius, xnodes, wts, nquad2)
