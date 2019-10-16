@@ -8,7 +8,7 @@ CLIBS = -lm -ldl -lifcore
 ifeq ($(FAST_KER),ON)
 
 CXXFLAGS = $(FFLAGS)
-CXXFLAGS += -std=c++11 -DSCTL_HAVE_SVML -DSCTL_PROFILE=-1 -DNDEBUG
+CXXFLAGS += -std=c++11 -DSCTL_HAVE_SVML -DSCTL_PROFILE=-1
 LIBS += -cxxlib
 endif
 
