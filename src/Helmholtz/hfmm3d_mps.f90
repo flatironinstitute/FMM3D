@@ -567,7 +567,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
       nsource,sourcesort,&
       ifcharge,chargesort,&
       ifdipole,dipvecsort,&
-      nmpole, cmpolesort, rmpolesort, mterms, mpolesort, &
+      nmpole, cmpolesort, rmpolesort, mtermssort, mpolesort, &
       impolesort, localsort, &
       ntarg,targsort,nexpc,expcsort,radssort, &
       iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp, &
@@ -586,7 +586,10 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   !
   ! de-reorder the output local expansions
   !
+  call mpolereorderi(nd, nmpole, impole, mterms, local, &
+      impolesort, mtermssort, localsort, itree(ipointer(5)) )
 
+  
   
 
   
@@ -664,20 +667,8 @@ subroutine mpolereorderf(ndim, nmpole, impole, mterms, mpole, &
 
   integer :: i, j, mt, len, ijk, lused, l
 
-
-  !mt = 5
-
-
-  !call prinf('perm = *', perm, nmpole)
-
-  !call prinf('ndim = *', ndim, 1)
-  !call prinf('nmpole = *', nmpole, 1)
-  !call prinf('impole = *', impole, nmpole)
-  !call prinf('mterms = *', mterms, nmpole)
-
   impolesort(1) = 1
   
-  !!!!$omp parallel do default(shared) private(i,j,mt,len)
   do i = 1,nmpole
 
     mtermssort(i) = mterms(perm(i))
@@ -693,10 +684,57 @@ subroutine mpolereorderf(ndim, nmpole, impole, mterms, mpole, &
     if (i .lt. nmpole) impolesort(i+1) = impolesort(i)+len
    
   end do
-  !!!!$omp end parallel do      
   
   return
 end subroutine mpolereorderf
+
+
+
+
+
+subroutine mpolereorderi(ndim, nmpole, impole, mterms, mpole, &
+    impolesort, mtermssort, mpolesort, perm)
+  implicit none
+  !
+  ! This subroutine unsorts a list of variable order multipole
+  ! expansions according to the permutation in perm, the ith-one of
+  ! which, on output, is located at:
+  !
+  !     mpole( nd, impole(i) )
+  !
+  ! and is of order mterms(i).
+  !
+  !
+  !
+  !      arrsort(j,i) = arr(j,perm(i)), j =1,2,\ldots ndim
+  !                                     i=1,2,\ldots n
+  !
+  integer :: ndim, nmpole, impole(nmpole), mterms(nmpole)
+  integer :: impolesort(nmpole), mtermssort(nmpole), perm(nmpole)
+  double complex :: mpole(ndim,*), mpolesort(ndim,*)
+
+  integer :: i, j, mt, len, ijk, lused, l
+
+  impolesort(1) = 1
+  
+  do i = 1,nmpole
+
+    mtermssort(i) = mterms(perm(i))
+    mt = mtermssort(i)
+    len = (mt+1)*(2*mt+1)
+
+    do j = 1,len
+      do l = 1,ndim
+        mpolesort(l,impolesort(i)+j-1) = mpole(l,impole(perm(i))+j-1)
+      end do
+    end do
+
+    if (i .lt. nmpole) impolesort(i+1) = impolesort(i)+len
+   
+  end do
+  
+  return
+end subroutine mpolereorderi
 
 
 
@@ -1814,11 +1852,14 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     nquad2 = nterms(ilev)*2
     nquad2 = max(6,nquad2)
     ifinit2 = 1
-    call legewhts(nquad2,xnodes,wts,ifinit2)
-    radius = boxsize(ilev+1)/2*sqrt(3.0d0)
+    call legewhts(nquad2, xnodes, wts, ifinit2)
+    radius = boxsize(ilev)/2*sqrt(3.0d0)/2
 
+    !print *, 'level = ', ilev, ' radius = ', radius
+    
     !
-    ! do final mploc translations for nearfield
+    ! do final mploc translations for nearfield, which are assumed to
+    ! be valid translations, despite them being in the nearfield
     !
 
     if(ifpgh.eq.1) then
@@ -1837,21 +1878,26 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
             jstart = itree(ipointer(10)+jbox-1)
             jend = itree(ipointer(11)+jbox-1)
             npts = jend-jstart+1
-            call h3ddirectcp_vec_d(nd,zk,sourcesort(1,jstart), &
+
+            if (npts .ne. 1) then
+              print *, 'npts = ', npts
+              stop
+            end if
+
+          call h3ddirectcp_vec_d(nd,zk,sourcesort(1,jstart), &
                 chargesort(1,jstart),npts,sourcesort(1,istarts), &
                 npts0,pot(1,istarts),thresh)          
 
 
-            print *, 'finish list 1 mp2loc translations'
+            !print *, 'finish list 1 mp2loc translations'
+
             
-
-            !call h3dmploc(nd, zk, rscales(ilev+1), centers(1,jbox), &
-            !  rmlexp(iaddr(1,jbox)),nterms(ilev+1), &
-            !  rmpolesort(istart), cmpolesort(1,istart), &
-            !  localsort(1,impolesort(istart)), mtermssort(istart), &
-            !  radius, xnodes, wts, nquad2)
-
-
+          call h3dmploc(nd, zk, rmpolesort(jstart),&
+              cmpolesort(1,jstart), &
+              mpolesort(1,impolesort(jstart)), mtermssort(jstart), &
+              rmpolesort(istarts), cmpolesort(1,istarts), &
+              localsort(1,impolesort(istarts)), mtermssort(istarts), &
+              radius, xnodes, wts, nquad2)
 
           enddo
         enddo
@@ -1867,7 +1913,6 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   !$ time2=omp_get_wtime()
   timeinfo(8) = time2-time1
 
-!!!if(ifprint.ge.1) call prin2('timeinfo=*',timeinfo,8)
   d = 0
   do i = 1,8
     d = d + timeinfo(i)
