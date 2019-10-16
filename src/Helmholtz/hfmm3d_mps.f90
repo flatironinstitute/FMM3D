@@ -654,12 +654,23 @@ subroutine mpolereorderf(ndim, nmpole, impole, mterms, mpole, &
   !
   !     mpole( nd, impole(i) )
   !
-  ! and is of order mterms(i)
+  ! and is of order mterms(i). On output, we have that
   !
+  !     mpolesort(*,impolesort(i)) = mpole(*,impole(perm(i)))
   !
+  ! Input:
+  !   ndim - leading dimension, usually the order of vectorization
+  !   nmpole - number of multipole expansions
+  !   impole - indexing array for multipoles
+  !   mterms - orders of each multipole expansion
+  !   mpole - the actual multipole expansions, the ith one of which
+  !       begins at mpole(1,impole(i)) and is of order mterms(i)
+  !   perm - permutation to apply
   !
-  !      arrsort(j,i) = arr(j,perm(i)), j =1,2,\ldots ndim
-  !                                     i=1,2,\ldots n
+  ! Output:
+  !   impolesort - new indexing array of sorted multipole expansions
+  !   mtermssort - new array of multipole orders, sorted
+  !   mpolesort - sorted multipole expansions
   !
   integer :: ndim, nmpole, impole(nmpole), mterms(nmpole)
   integer :: impolesort(nmpole), mtermssort(nmpole), perm(nmpole)
@@ -697,17 +708,26 @@ subroutine mpolereorderi(ndim, nmpole, impole, mterms, mpole, &
   implicit none
   !
   ! This subroutine unsorts a list of variable order multipole
-  ! expansions according to the permutation in perm, the ith-one of
-  ! which, on output, is located at:
+  ! expansions, the ith-one of which, on output, is located at:
   !
   !     mpole( nd, impole(i) )
   !
-  ! and is of order mterms(i).
+  ! and is of order mterms(i). The forward permuting routine is
+  ! mpolereorderf.
   !
+  ! Input:
+  !   ndim - leading dimension, usually the order of vectorization
+  !   nmpole - number of multipole expansions
+  !   impolesort - indexing array of sorted multipole expansions
+  !   mtermssort - array of multipole orders, sorted
+  !   mpolesort - sorted multipole expansions
+  !   perm - permutation to invert
   !
-  !
-  !      arrsort(j,i) = arr(j,perm(i)), j =1,2,\ldots ndim
-  !                                     i=1,2,\ldots n
+  ! Output:
+  !   impole - indexing array for multipoles, unsorted
+  !   mterms - orders of each multipole expansion, unsorted
+  !   mpole - the actual multipole expansions, the ith one of which
+  !       begins at mpole(1,impole(i)) and is of order mterms(i)
   !
   integer :: ndim, nmpole, impole(nmpole), mterms(nmpole)
   integer :: impolesort(nmpole), mtermssort(nmpole), perm(nmpole)
