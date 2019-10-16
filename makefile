@@ -17,7 +17,7 @@ FFLAGS= -fPIC -O3 -march=native -funroll-loops
 
 CFLAGS= -std=c99 
 CFLAGS+= $(FFLAGS) 
-CXXFLAGS= -std=c++11 -DSCTL_PROFILE=5 -DSCTL_VERBOSE
+CXXFLAGS= -std=c++11 -DSCTL_PROFILE=-1 -DNDEBUG
 CXXFLAGS+=$(FFLAGS)
 
 CLIBS = -lgfortran -lm -ldl 

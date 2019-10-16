@@ -79,25 +79,20 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcp_vec_cpp(const 
   zk_[0].Load1(zk+0);
   zk_[1].Load1(zk+1);
   Vec thresh2 = thresh[0] * thresh[0];
-  // load charge
-  sctl::Matrix<Real> Vs_(Nsrc, nd_*KDIM0, sctl::Ptr2Itr<Real>((Real*)charge , nd_*KDIM0*Nsrc), false);
-  Vec Vsrc[Nsrc][nd_][KDIM0];
-  for (sctl::Long s = 0; s < Nsrc; s++) {
-    for (long i = 0; i < nd_; i++) {
-      Vsrc[s][i][0] = Vec::Load1(&Vs_[s][i*KDIM0+0]);
-      Vsrc[s][i][1] = Vec::Load1(&Vs_[s][i*KDIM0+1]);
-    }
-  }
-  // load source
+  // load charge and source
   sctl::Matrix<Real> Xs_(Nsrc, COORD_DIM, sctl::Ptr2Itr<Real>((Real*)sources, COORD_DIM*Nsrc), false);
-  /*
-  Vec Xss[Nsrc][COORD_DIM];
+  sctl::Matrix<Real> Vs_(Nsrc, nd_*KDIM0, sctl::Ptr2Itr<Real>((Real*)charge , nd_*KDIM0*Nsrc), false);
+  //sctl::Vector<Vec> Xsrc(Nsrc*COORD_DIM);
+  sctl::Vector<Vec> Vsrc(Nsrc*nd_*KDIM0);
   for (sctl::Long s = 0; s < Nsrc; s++) {
-    for (sctl::Integer k = 0; k < COORD_DIM; k++) {
-      Xss[s][k] = Vec::Load1(&Xs_[s][k]);
+    //for (sctl::Integer k = 0; k < COORD_DIM; k++) {
+      //Xsrc[s*COORD_DIM+k] = Vec::Load1(&Xs_[s][k]);
+    //}
+    for (long i = 0; i < nd_; i++) {
+      Vsrc[s*nd_*KDIM0+i*KDIM0+0] = Vec::Load1(&Vs_[s][i*KDIM0+0]);
+      Vsrc[s*nd_*KDIM0+i*KDIM0+1] = Vec::Load1(&Vs_[s][i*KDIM0+1]);
     }
   }
-  */
   #pragma omp parallel for schedule(static)
   for (sctl::Long t = 0; t < Ntrg_; t += VecLen) {
     Vec Xtrg[COORD_DIM];
@@ -140,8 +135,8 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcp_vec_cpp(const 
       Vec G1 = sin_izkR * exp_izkR * Rinv;
 
       for (long i = 0; i < nd_; i++) {
-        Vtrg[i][0] += G0 * Vsrc[s][i][0] - G1 * Vsrc[s][i][1];
-        Vtrg[i][1] += G1 * Vsrc[s][i][0] + G0 * Vsrc[s][i][1];
+        Vtrg[i][0] += G0 * Vsrc[s*nd_*KDIM0+i*KDIM0+0] - G1 * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
+        Vtrg[i][1] += G1 * Vsrc[s*nd_*KDIM0+i*KDIM0+0] + G0 * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
       }
     }
     // store
@@ -201,25 +196,20 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcg_vec_cpp(const 
   zk_[0].Load1(zk+0);
   zk_[1].Load1(zk+1);
   Vec thresh2 = thresh[0] * thresh[0];
-  // load charge
-  sctl::Matrix<Real> Vs_(Nsrc, nd_*KDIM0, sctl::Ptr2Itr<Real>((Real*)charge , nd_*KDIM0*Nsrc), false);
-  Vec Vsrc[Nsrc][nd_][KDIM0];
-  for (sctl::Long s = 0; s < Nsrc; s++) {
-    for (long i = 0; i < nd_; i++) {
-      Vsrc[s][i][0] = Vec::Load1(&Vs_[s][i*KDIM0+0]);
-      Vsrc[s][i][1] = Vec::Load1(&Vs_[s][i*KDIM0+1]);
-    }
-  }
-  // load source
+  // load charge and source
   sctl::Matrix<Real> Xs_(Nsrc, COORD_DIM, sctl::Ptr2Itr<Real>((Real*)sources, COORD_DIM*Nsrc), false);
-  /*
-  Vec Xss[Nsrc][COORD_DIM];
+  sctl::Matrix<Real> Vs_(Nsrc, nd_*KDIM0, sctl::Ptr2Itr<Real>((Real*)charge , nd_*KDIM0*Nsrc), false);
+  //sctl::Vector<Vec> Xsrc(Nsrc*COORD_DIM);
+  sctl::Vector<Vec> Vsrc(Nsrc*nd_*KDIM0);
   for (sctl::Long s = 0; s < Nsrc; s++) {
-    for (sctl::Integer k = 0; k < COORD_DIM; k++) {
-      Xss[s][k] = Vec::Load1(&Xs_[s][k]);
+    //for (sctl::Integer k = 0; k < COORD_DIM; k++) {
+      //Xsrc[s*COORD_DIM+k] = Vec::Load1(&Xs_[s][k]);
+    //}
+    for (long i = 0; i < nd_; i++) {
+      Vsrc[s*nd_*KDIM0+i*KDIM0+0] = Vec::Load1(&Vs_[s][i*KDIM0+0]);
+      Vsrc[s*nd_*KDIM0+i*KDIM0+1] = Vec::Load1(&Vs_[s][i*KDIM0+1]);
     }
   }
-  */
   #pragma omp parallel for schedule(static)
   for (sctl::Long t = 0; t < Ntrg_; t += VecLen) {
     Vec Xtrg[COORD_DIM];
@@ -281,11 +271,11 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcg_vec_cpp(const 
       }
 
       for (long i = 0; i < nd_; i++) {
-        Vtrg[i][0] += G0 * Vsrc[s][i][0] - G1 * Vsrc[s][i][1];
-        Vtrg[i][1] += G1 * Vsrc[s][i][0] + G0 * Vsrc[s][i][1];
+        Vtrg[i][0] += G0 * Vsrc[s*nd_*KDIM0+i*KDIM0+0] - G1 * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
+        Vtrg[i][1] += G1 * Vsrc[s*nd_*KDIM0+i*KDIM0+0] + G0 * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
         for (sctl::Integer dimi = 0; dimi < COORD_DIM; dimi++){
-          Gtrg[i][dimi][0] += Ztmp[dimi][0] * Vsrc[s][i][0] - Ztmp[dimi][1] * Vsrc[s][i][1];
-          Gtrg[i][dimi][1] += Ztmp[dimi][1] * Vsrc[s][i][0] + Ztmp[dimi][0] * Vsrc[s][i][1];
+          Gtrg[i][dimi][0] += Ztmp[dimi][0] * Vsrc[s*nd_*KDIM0+i*KDIM0+0] - Ztmp[dimi][1] * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
+          Gtrg[i][dimi][1] += Ztmp[dimi][1] * Vsrc[s*nd_*KDIM0+i*KDIM0+0] + Ztmp[dimi][0] * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
         }
       }
     }
@@ -324,7 +314,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdp_vec_cpp(const 
   sctl::Long Ntrg_ = ((Ntrg+MaxVecLen-1)/MaxVecLen)*MaxVecLen;
 
   //sctl::Matrix<Real> Xs(COORD_DIM, Nsrc);
-  //sctl::Matrix<Real> Vs(nd_*KDIM0*COORD_DIM, Nsrc);
+  //sctl::Matrix<Real> Gs(nd_*KDIM0*COORD_DIM, Nsrc);
   sctl::Matrix<Real> Xt(COORD_DIM, Ntrg_);
   sctl::Matrix<Real> Vt(nd_*KDIM1, Ntrg_);
   { // Set Xs, Vs, Xt, Vt
@@ -338,10 +328,10 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdp_vec_cpp(const 
       }
     };
     //sctl::Matrix<Real> Xs_(Nsrc, COORD_DIM, sctl::Ptr2Itr<Real>((Real*)sources, COORD_DIM*Nsrc), false);
-    //sctl::Matrix<Real> Vs_(Nsrc, nd_*KDIM0*COORD_DIM, sctl::Ptr2Itr<Real>((Real*)dipvec , nd_*KDIM0*COORD_DIM*Nsrc), false);
+    //sctl::Matrix<Real> Gs_(Nsrc, nd_*KDIM0*COORD_DIM, sctl::Ptr2Itr<Real>((Real*)dipvec , nd_*KDIM0*COORD_DIM*Nsrc), false);
     sctl::Matrix<Real> Xt_(Ntrg, COORD_DIM, sctl::Ptr2Itr<Real>((Real*)ztarg  , COORD_DIM*Ntrg), false);
     //transpose(Xs, Xs_);
-    //transpose(Vs, Vs_);
+    //transpose(Gs, Gs_);
     transpose(Xt, Xt_);
     Vt = 0;
   }
@@ -352,29 +342,26 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdp_vec_cpp(const 
   zk_[0].Load1(zk+0);
   zk_[1].Load1(zk+1);
   Vec thresh2 = thresh[0] * thresh[0];
-  // load dipvec
-  sctl::Matrix<Real> Vs_(Nsrc, nd_*KDIM0*COORD_DIM, sctl::Ptr2Itr<Real>((Real*)dipvec , nd_*KDIM0*COORD_DIM*Nsrc), false);
-  Vec Vsrc[Nsrc][nd_][COORD_DIM][KDIM0];
-  for (sctl::Long s = 0; s < Nsrc; s++) {
-    for (long i = 0; i < nd_; i++) {
-      Vsrc[s][i][0][0] = Vec::Load1(&Vs_[s][(0*nd_+i)*KDIM0+0]);
-      Vsrc[s][i][0][1] = Vec::Load1(&Vs_[s][(0*nd_+i)*KDIM0+1]);
-      Vsrc[s][i][1][0] = Vec::Load1(&Vs_[s][(1*nd_+i)*KDIM0+0]);
-      Vsrc[s][i][1][1] = Vec::Load1(&Vs_[s][(1*nd_+i)*KDIM0+1]);
-      Vsrc[s][i][2][0] = Vec::Load1(&Vs_[s][(2*nd_+i)*KDIM0+0]);
-      Vsrc[s][i][2][1] = Vec::Load1(&Vs_[s][(2*nd_+i)*KDIM0+1]);
-    }
-  }
-  // load source
+  // load dipvec and source
   sctl::Matrix<Real> Xs_(Nsrc, COORD_DIM, sctl::Ptr2Itr<Real>((Real*)sources, COORD_DIM*Nsrc), false);
-  /*
-  Vec Xss[Nsrc][COORD_DIM];
+  sctl::Matrix<Real> Gs_(Nsrc, nd_*KDIM0*COORD_DIM, sctl::Ptr2Itr<Real>((Real*)dipvec , nd_*KDIM0*COORD_DIM*Nsrc), false);
+  //sctl::Vector<Vec> Xsrc(Nsrc*COORD_DIM);
+  sctl::Vector<Vec> Gsrc(Nsrc*nd_*COORD_DIM*KDIM0);
   for (sctl::Long s = 0; s < Nsrc; s++) {
-    for (sctl::Integer k = 0; k < COORD_DIM; k++) {
-      Xss[s][k] = Vec::Load1(&Xs_[s][k]);
+    //for (sctl::Integer k = 0; k < COORD_DIM; k++) {
+      //Xsrc[s*COORD_DIM+k] = Vec::Load1(&Xs_[s][k]);
+    //}
+    long s_ind = s*nd_*COORD_DIM*KDIM0;
+    for (long i = 0; i < nd_; i++) {
+      long si_ind = s_ind+i*COORD_DIM*KDIM0;
+      Gsrc[si_ind+0] = Vec::Load1(&Gs_[s][(0*nd_+i)*KDIM0+0]);
+      Gsrc[si_ind+1] = Vec::Load1(&Gs_[s][(0*nd_+i)*KDIM0+1]);
+      Gsrc[si_ind+2] = Vec::Load1(&Gs_[s][(1*nd_+i)*KDIM0+0]);
+      Gsrc[si_ind+3] = Vec::Load1(&Gs_[s][(1*nd_+i)*KDIM0+1]);
+      Gsrc[si_ind+4] = Vec::Load1(&Gs_[s][(2*nd_+i)*KDIM0+0]);
+      Gsrc[si_ind+5] = Vec::Load1(&Gs_[s][(2*nd_+i)*KDIM0+1]);
     }
   }
-  */
   #pragma omp parallel for schedule(static)
   for (sctl::Long t = 0; t < Ntrg_; t += VecLen) {
     Vec Xtrg[COORD_DIM];
@@ -423,9 +410,11 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdp_vec_cpp(const 
       Vec H0 = (tmp0*G0 - tmp1*G1) * Rinv2;
       Vec H1 = (tmp1*G0 + tmp0*G1) * Rinv2;
 
+      long s_ind = s*nd_*COORD_DIM*KDIM0;
       for (long i = 0; i < nd_; i++) {
-        Vec D0 = dX[0]*Vsrc[s][i][0][0] + dX[1]*Vsrc[s][i][1][0] + dX[2]*Vsrc[s][i][2][0];
-        Vec D1 = dX[0]*Vsrc[s][i][0][1] + dX[1]*Vsrc[s][i][1][1] + dX[2]*Vsrc[s][i][2][1];
+        long si_ind = s_ind + i*COORD_DIM*KDIM0;
+        Vec D0 = dX[0]*Gsrc[si_ind+0] + dX[1]*Gsrc[si_ind+2] + dX[2]*Gsrc[si_ind+4];
+        Vec D1 = dX[0]*Gsrc[si_ind+1] + dX[1]*Gsrc[si_ind+3] + dX[2]*Gsrc[si_ind+5];
         Vtrg[i][0] += H0 * D0 - H1 * D1;
         Vtrg[i][1] += H1 * D0 + H0 * D1;
       }
@@ -487,29 +476,26 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdg_vec_cpp(const 
   zk_[0].Load1(zk+0);
   zk_[1].Load1(zk+1);
   Vec thresh2 = thresh[0] * thresh[0];
-  // load dipvec
-  sctl::Matrix<Real> Vs_(Nsrc, nd_*KDIM0*COORD_DIM, sctl::Ptr2Itr<Real>((Real*)dipvec , nd_*KDIM0*COORD_DIM*Nsrc), false);
-  Vec Vsrc[Nsrc][nd_][COORD_DIM][KDIM0];
-  for (sctl::Long s = 0; s < Nsrc; s++) {
-    for (long i = 0; i < nd_; i++) {
-      Vsrc[s][i][0][0] = Vec::Load1(&Vs_[s][(0*nd_+i)*KDIM0+0]);
-      Vsrc[s][i][0][1] = Vec::Load1(&Vs_[s][(0*nd_+i)*KDIM0+1]);
-      Vsrc[s][i][1][0] = Vec::Load1(&Vs_[s][(1*nd_+i)*KDIM0+0]);
-      Vsrc[s][i][1][1] = Vec::Load1(&Vs_[s][(1*nd_+i)*KDIM0+1]);
-      Vsrc[s][i][2][0] = Vec::Load1(&Vs_[s][(2*nd_+i)*KDIM0+0]);
-      Vsrc[s][i][2][1] = Vec::Load1(&Vs_[s][(2*nd_+i)*KDIM0+1]);
-    }
-  }
-  // load source
+  // load dipvec and source
   sctl::Matrix<Real> Xs_(Nsrc, COORD_DIM, sctl::Ptr2Itr<Real>((Real*)sources, COORD_DIM*Nsrc), false);
-  /*
-  Vec Xss[Nsrc][COORD_DIM];
+  sctl::Matrix<Real> Gs_(Nsrc, nd_*KDIM0*COORD_DIM, sctl::Ptr2Itr<Real>((Real*)dipvec , nd_*KDIM0*COORD_DIM*Nsrc), false);
+  //sctl::Vector<Vec> Xsrc(Nsrc*COORD_DIM);
+  sctl::Vector<Vec> Gsrc(Nsrc*nd_*COORD_DIM*KDIM0);
   for (sctl::Long s = 0; s < Nsrc; s++) {
-    for (sctl::Integer k = 0; k < COORD_DIM; k++) {
-      Xss[s][k] = Vec::Load1(&Xs_[s][k]);
+    //for (sctl::Integer k = 0; k < COORD_DIM; k++) {
+      //Xsrc[s*COORD_DIM+k] = Vec::Load1(&Xs_[s][k]);
+    //}
+    long s_ind = s*nd_*COORD_DIM*KDIM0;
+    for (long i = 0; i < nd_; i++) {
+      long si_ind = s_ind+i*COORD_DIM*KDIM0;
+      Gsrc[si_ind+0] = Vec::Load1(&Gs_[s][(0*nd_+i)*KDIM0+0]);
+      Gsrc[si_ind+1] = Vec::Load1(&Gs_[s][(0*nd_+i)*KDIM0+1]);
+      Gsrc[si_ind+2] = Vec::Load1(&Gs_[s][(1*nd_+i)*KDIM0+0]);
+      Gsrc[si_ind+3] = Vec::Load1(&Gs_[s][(1*nd_+i)*KDIM0+1]);
+      Gsrc[si_ind+4] = Vec::Load1(&Gs_[s][(2*nd_+i)*KDIM0+0]);
+      Gsrc[si_ind+5] = Vec::Load1(&Gs_[s][(2*nd_+i)*KDIM0+1]);
     }
   }
-  */
   #pragma omp parallel for schedule(static)
   for (sctl::Long t = 0; t < Ntrg_; t += VecLen) {
     Vec Xtrg[COORD_DIM];
@@ -570,10 +556,12 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdg_vec_cpp(const 
       Vec J0 = (G0 * tmp0 - G1 * tmp1)*Rinv2;
       Vec J1 = (G1 * tmp0 + G0 * tmp1)*Rinv2;
 
+      long s_ind = s*nd_*COORD_DIM*KDIM0;
       for (long i = 0; i < nd_; i++) {
+        long si_ind = s_ind+i*COORD_DIM*KDIM0;
         Vec Ztmp[KDIM0];
-        Vec D0 = dX[0]*Vsrc[s][i][0][0] + dX[1]*Vsrc[s][i][1][0] + dX[2]*Vsrc[s][i][2][0];
-        Vec D1 = dX[0]*Vsrc[s][i][0][1] + dX[1]*Vsrc[s][i][1][1] + dX[2]*Vsrc[s][i][2][1];
+        Vec D0 = dX[0]*Gsrc[si_ind+0] + dX[1]*Gsrc[si_ind+2] + dX[2]*Gsrc[si_ind+4];
+        Vec D1 = dX[0]*Gsrc[si_ind+1] + dX[1]*Gsrc[si_ind+3] + dX[2]*Gsrc[si_ind+5];
         Ztmp[0] = J0*D0 - J1*D1;
         Ztmp[1] = J1*D0 + J0*D1;
         Vtrg[i][0] += H0 * D0 - H1 * D1;
@@ -581,8 +569,8 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdg_vec_cpp(const 
         for (sctl::Integer dimi = 0; dimi < COORD_DIM; dimi++){
           Gtrg[i][dimi][0] += Ztmp[0] * dX[dimi];
           Gtrg[i][dimi][1] += Ztmp[1] * dX[dimi];
-          Gtrg[i][dimi][0] += H0*Vsrc[s][i][dimi][0] - H1*Vsrc[s][i][dimi][1];
-          Gtrg[i][dimi][1] += H1*Vsrc[s][i][dimi][0] + H0*Vsrc[s][i][dimi][1];
+          Gtrg[i][dimi][0] += H0*Gsrc[si_ind+dimi*KDIM0+0] - H1*Gsrc[si_ind+dimi*KDIM0+1];
+          Gtrg[i][dimi][1] += H1*Gsrc[si_ind+dimi*KDIM0+0] + H0*Gsrc[si_ind+dimi*KDIM0+1];
         }
       }
     }
@@ -653,32 +641,30 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdp_vec_cpp(const
   zk_[0].Load1(zk+0);
   zk_[1].Load1(zk+1);
   Vec thresh2 = thresh[0] * thresh[0];
-  // load charge and dipvec
+  // load source, charge and dipvec
+  sctl::Matrix<Real> Xs_(Nsrc, COORD_DIM, sctl::Ptr2Itr<Real>((Real*)sources, COORD_DIM*Nsrc), false);
   sctl::Matrix<Real> Vs_(Nsrc, nd_*KDIM0, sctl::Ptr2Itr<Real>((Real*)charge , nd_*KDIM0*Nsrc), false);
   sctl::Matrix<Real> Gs_(Nsrc, nd_*KDIM0*COORD_DIM, sctl::Ptr2Itr<Real>((Real*)dipvec , nd_*KDIM0*COORD_DIM*Nsrc), false);
-  Vec Vsrc[Nsrc][nd_][KDIM0], Gsrc[Nsrc][nd_][COORD_DIM][KDIM0];
+  //sctl::Vector<Vec> Xsrc(Nsrc*COORD_DIM);
+  sctl::Vector<Vec> Vsrc(Nsrc*nd_*KDIM0);
+  sctl::Vector<Vec> Gsrc(Nsrc*nd_*COORD_DIM*KDIM0);
   for (sctl::Long s = 0; s < Nsrc; s++) {
+    //for (sctl::Integer k = 0; k < COORD_DIM; k++) {
+      //Xsrc[s*COORD_DIM+k] = Vec::Load1(&Xs_[s][k]);
+    //}
+    long s_ind = s*nd_*COORD_DIM*KDIM0;
     for (long i = 0; i < nd_; i++) {
-      Vsrc[s][i][0] = Vec::Load1(&Vs_[s][i*KDIM0+0]);
-      Vsrc[s][i][1] = Vec::Load1(&Vs_[s][i*KDIM0+1]);
-      Gsrc[s][i][0][0] = Vec::Load1(&Gs_[s][(0*nd_+i)*KDIM0+0]);
-      Gsrc[s][i][0][1] = Vec::Load1(&Gs_[s][(0*nd_+i)*KDIM0+1]);
-      Gsrc[s][i][1][0] = Vec::Load1(&Gs_[s][(1*nd_+i)*KDIM0+0]);
-      Gsrc[s][i][1][1] = Vec::Load1(&Gs_[s][(1*nd_+i)*KDIM0+1]);
-      Gsrc[s][i][2][0] = Vec::Load1(&Gs_[s][(2*nd_+i)*KDIM0+0]);
-      Gsrc[s][i][2][1] = Vec::Load1(&Gs_[s][(2*nd_+i)*KDIM0+1]);
+      long si_ind = s_ind+i*COORD_DIM*KDIM0;
+      Vsrc[s*nd_*KDIM0+i*KDIM0+0] = Vec::Load1(&Vs_[s][i*KDIM0+0]);
+      Vsrc[s*nd_*KDIM0+i*KDIM0+1] = Vec::Load1(&Vs_[s][i*KDIM0+1]);
+      Gsrc[si_ind+0] = Vec::Load1(&Gs_[s][(0*nd_+i)*KDIM0+0]);
+      Gsrc[si_ind+1] = Vec::Load1(&Gs_[s][(0*nd_+i)*KDIM0+1]);
+      Gsrc[si_ind+2] = Vec::Load1(&Gs_[s][(1*nd_+i)*KDIM0+0]);
+      Gsrc[si_ind+3] = Vec::Load1(&Gs_[s][(1*nd_+i)*KDIM0+1]);
+      Gsrc[si_ind+4] = Vec::Load1(&Gs_[s][(2*nd_+i)*KDIM0+0]);
+      Gsrc[si_ind+5] = Vec::Load1(&Gs_[s][(2*nd_+i)*KDIM0+1]);
     }
   }
-  // load source
-  sctl::Matrix<Real> Xs_(Nsrc, COORD_DIM, sctl::Ptr2Itr<Real>((Real*)sources, COORD_DIM*Nsrc), false);
-  /*
-  Vec Xss[Nsrc][COORD_DIM];
-  for (sctl::Long s = 0; s < Nsrc; s++) {
-    for (sctl::Integer k = 0; k < COORD_DIM; k++) {
-      Xss[s][k] = Vec::Load1(&Xs_[s][k]);
-    }
-  }
-  */
   #pragma omp parallel for schedule(static)
   for (sctl::Long t = 0; t < Ntrg_; t += VecLen) {
     Vec Xtrg[COORD_DIM];
@@ -727,11 +713,13 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdp_vec_cpp(const
       Vec H0 = (tmp0*G0 - tmp1*G1) * Rinv2;
       Vec H1 = (tmp1*G0 + tmp0*G1) * Rinv2;
 
+      long s_ind = s*nd_*COORD_DIM*KDIM0;
       for (long i = 0; i < nd_; i++) {
-        Vtrg[i][0] += G0 * Vsrc[s][i][0] - G1 * Vsrc[s][i][1];
-        Vtrg[i][1] += G1 * Vsrc[s][i][0] + G0 * Vsrc[s][i][1];
-        Vec D0 = dX[0]*Gsrc[s][i][0][0] + dX[1]*Gsrc[s][i][1][0] + dX[2]*Gsrc[s][i][2][0];
-        Vec D1 = dX[0]*Gsrc[s][i][0][1] + dX[1]*Gsrc[s][i][1][1] + dX[2]*Gsrc[s][i][2][1];
+        long si_ind = s_ind + i*COORD_DIM*KDIM0;
+        Vtrg[i][0] += G0 * Vsrc[s*nd_*KDIM0+i*KDIM0+0] - G1 * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
+        Vtrg[i][1] += G1 * Vsrc[s*nd_*KDIM0+i*KDIM0+0] + G0 * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
+        Vec D0 = dX[0]*Gsrc[si_ind+0] + dX[1]*Gsrc[si_ind+2] + dX[2]*Gsrc[si_ind+4];
+        Vec D1 = dX[0]*Gsrc[si_ind+1] + dX[1]*Gsrc[si_ind+3] + dX[2]*Gsrc[si_ind+5];
         Vtrg[i][0] += H0 * D0 - H1 * D1;
         Vtrg[i][1] += H1 * D0 + H0 * D1;
       }
@@ -796,32 +784,30 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdg_vec_cpp(const
   zk_[0].Load1(zk+0);
   zk_[1].Load1(zk+1);
   Vec thresh2 = thresh[0] * thresh[0];
-  // load charge and dipvec
+  // load source, charge and dipvec
+  sctl::Matrix<Real> Xs_(Nsrc, COORD_DIM, sctl::Ptr2Itr<Real>((Real*)sources, COORD_DIM*Nsrc), false);
   sctl::Matrix<Real> Vs_(Nsrc, nd_*KDIM0, sctl::Ptr2Itr<Real>((Real*)charge , nd_*KDIM0*Nsrc), false);
   sctl::Matrix<Real> Gs_(Nsrc, nd_*KDIM0*COORD_DIM, sctl::Ptr2Itr<Real>((Real*)dipvec , nd_*KDIM0*COORD_DIM*Nsrc), false);
-  Vec Vsrc[Nsrc][nd_][KDIM0], Gsrc[Nsrc][nd_][COORD_DIM][KDIM0];
+  //sctl::Vector<Vec> Xsrc(Nsrc*COORD_DIM);
+  sctl::Vector<Vec> Vsrc(Nsrc*nd_*KDIM0);
+  sctl::Vector<Vec> Gsrc(Nsrc*nd_*COORD_DIM*KDIM0);
   for (sctl::Long s = 0; s < Nsrc; s++) {
+    //for (sctl::Integer k = 0; k < COORD_DIM; k++) {
+      //Xsrc[s*COORD_DIM+k] = Vec::Load1(&Xs_[s][k]);
+    //}
+    long s_ind = s*nd_*COORD_DIM*KDIM0;
     for (long i = 0; i < nd_; i++) {
-      Vsrc[s][i][0] = Vec::Load1(&Vs_[s][i*KDIM0+0]);
-      Vsrc[s][i][1] = Vec::Load1(&Vs_[s][i*KDIM0+1]);
-      Gsrc[s][i][0][0] = Vec::Load1(&Gs_[s][(0*nd_+i)*KDIM0+0]);
-      Gsrc[s][i][0][1] = Vec::Load1(&Gs_[s][(0*nd_+i)*KDIM0+1]);
-      Gsrc[s][i][1][0] = Vec::Load1(&Gs_[s][(1*nd_+i)*KDIM0+0]);
-      Gsrc[s][i][1][1] = Vec::Load1(&Gs_[s][(1*nd_+i)*KDIM0+1]);
-      Gsrc[s][i][2][0] = Vec::Load1(&Gs_[s][(2*nd_+i)*KDIM0+0]);
-      Gsrc[s][i][2][1] = Vec::Load1(&Gs_[s][(2*nd_+i)*KDIM0+1]);
+      long si_ind = s_ind+i*COORD_DIM*KDIM0;
+      Vsrc[s*nd_*KDIM0+i*KDIM0+0] = Vec::Load1(&Vs_[s][i*KDIM0+0]);
+      Vsrc[s*nd_*KDIM0+i*KDIM0+1] = Vec::Load1(&Vs_[s][i*KDIM0+1]);
+      Gsrc[si_ind+0] = Vec::Load1(&Gs_[s][(0*nd_+i)*KDIM0+0]);
+      Gsrc[si_ind+1] = Vec::Load1(&Gs_[s][(0*nd_+i)*KDIM0+1]);
+      Gsrc[si_ind+2] = Vec::Load1(&Gs_[s][(1*nd_+i)*KDIM0+0]);
+      Gsrc[si_ind+3] = Vec::Load1(&Gs_[s][(1*nd_+i)*KDIM0+1]);
+      Gsrc[si_ind+4] = Vec::Load1(&Gs_[s][(2*nd_+i)*KDIM0+0]);
+      Gsrc[si_ind+5] = Vec::Load1(&Gs_[s][(2*nd_+i)*KDIM0+1]);
     }
   }
-  // load source
-  sctl::Matrix<Real> Xs_(Nsrc, COORD_DIM, sctl::Ptr2Itr<Real>((Real*)sources, COORD_DIM*Nsrc), false);
-  /*
-  Vec Xss[Nsrc][COORD_DIM];
-  for (sctl::Long s = 0; s < Nsrc; s++) {
-    for (sctl::Integer k = 0; k < COORD_DIM; k++) {
-      Xss[s][k] = Vec::Load1(&Xs_[s][k]);
-    }
-  }
-  */
   #pragma omp parallel for schedule(static)
   for (sctl::Long t = 0; t < Ntrg_; t += VecLen) {
     Vec Xtrg[COORD_DIM];
@@ -889,29 +875,32 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdg_vec_cpp(const
       }
 
       Vec D0, D1;
+      long s_ind = s*nd_*COORD_DIM*KDIM0;
       for (long i = 0; i < nd_; i++) {
+        long si_ind = s_ind + i*COORD_DIM*KDIM0;
+
         // temp values
-        D0 = dX[0]*Gsrc[s][i][0][0] + dX[1]*Gsrc[s][i][1][0] + dX[2]*Gsrc[s][i][2][0];
-        D1 = dX[0]*Gsrc[s][i][0][1] + dX[1]*Gsrc[s][i][1][1] + dX[2]*Gsrc[s][i][2][1];
+        D0 = dX[0]*Gsrc[si_ind+0] + dX[1]*Gsrc[si_ind+2] + dX[2]*Gsrc[si_ind+4];
+        D1 = dX[0]*Gsrc[si_ind+1] + dX[1]*Gsrc[si_ind+3] + dX[2]*Gsrc[si_ind+5];
         tmp0 = J0*D0 - J1*D1;
         tmp1 = J1*D0 + J0*D1;
 
         // potential
-        Vtrg[i][0] += G0 * Vsrc[s][i][0] - G1 * Vsrc[s][i][1];
-        Vtrg[i][1] += G1 * Vsrc[s][i][0] + G0 * Vsrc[s][i][1];
+        Vtrg[i][0] += G0 * Vsrc[s*nd_*KDIM0+i*KDIM0+0] - G1 * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
+        Vtrg[i][1] += G1 * Vsrc[s*nd_*KDIM0+i*KDIM0+0] + G0 * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
         Vtrg[i][0] += H0 * D0 - H1 * D1;
         Vtrg[i][1] += H1 * D0 + H0 * D1;
         
         // gradient
         for (sctl::Integer dimi = 0; dimi < COORD_DIM; dimi++){
-          Gtrg[i][dimi][0] += Zctmp[dimi][0] * Vsrc[s][i][0] - Zctmp[dimi][1] * Vsrc[s][i][1];
-          Gtrg[i][dimi][1] += Zctmp[dimi][1] * Vsrc[s][i][0] + Zctmp[dimi][0] * Vsrc[s][i][1];
+          Gtrg[i][dimi][0] += Zctmp[dimi][0] * Vsrc[s*nd_*KDIM0+i*KDIM0+0] - Zctmp[dimi][1] * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
+          Gtrg[i][dimi][1] += Zctmp[dimi][1] * Vsrc[s*nd_*KDIM0+i*KDIM0+0] + Zctmp[dimi][0] * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
           
           Gtrg[i][dimi][0] += tmp0 * dX[dimi];
           Gtrg[i][dimi][1] += tmp1 * dX[dimi];
 
-          Gtrg[i][dimi][0] += H0*Gsrc[s][i][dimi][0] - H1*Gsrc[s][i][dimi][1];
-          Gtrg[i][dimi][1] += H1*Gsrc[s][i][dimi][0] + H0*Gsrc[s][i][dimi][1];
+          Gtrg[i][dimi][0] += H0*Gsrc[si_ind+dimi*KDIM0+0] - H1*Gsrc[si_ind+dimi*KDIM0+1];
+          Gtrg[i][dimi][1] += H1*Gsrc[si_ind+dimi*KDIM0+0] + H0*Gsrc[si_ind+dimi*KDIM0+1];
         }
       }
     }
@@ -977,10 +966,11 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcp_vec_cpp(const 
   Vec thresh2 = thresh[0] * thresh[0];
   // load charge
   sctl::Matrix<Real> Vs_(Nsrc, nd_,       sctl::Ptr2Itr<Real>((Real*)charge , nd_*Nsrc),       false);
-  Vec Vsrc[Nsrc][nd_];
+  //Vec Vsrc[Nsrc][nd_];
+  sctl::Vector<Vec> Vsrc(Nsrc*nd_);
   for (sctl::Long s = 0; s < Nsrc; s++) {
     for (long i = 0; i < nd_; i++) {
-      Vsrc[s][i] = Vec::Load1(&Vs_[s][i]);
+      Vsrc[s*nd_+i] = Vec::Load1(&Vs_[s][i]);
     }
   }
   // load source
@@ -1026,7 +1016,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcp_vec_cpp(const 
       Rinv &= (R2 > thresh2);
 
       for (long i = 0; i < nd_; i++) {
-        Vtrg[i] += Vsrc[s][i]*Rinv;
+        Vtrg[i] += Vsrc[s*nd_+i]*Rinv;
       }
     }
     for (long i = 0; i < nd_; i++) {
@@ -1081,10 +1071,11 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcg_vec_cpp(const 
   Vec thresh2 = thresh[0] * thresh[0];
   // load charge
   sctl::Matrix<Real> Vs_(Nsrc, nd_,       sctl::Ptr2Itr<Real>((Real*)charge , nd_*Nsrc),       false);
-  Vec Vsrc[Nsrc][nd_];
+  //Vec Vsrc[Nsrc][nd_];
+  sctl::Vector<Vec> Vsrc(Nsrc*nd_);
   for (sctl::Long s = 0; s < Nsrc; s++) {
     for (long i = 0; i < nd_; i++) {
-      Vsrc[s][i] = Vec::Load1(&Vs_[s][i]);
+      Vsrc[s*nd_+i] = Vec::Load1(&Vs_[s][i]);
     }
   }
   // load source
@@ -1135,10 +1126,10 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcg_vec_cpp(const 
       Vec nRinv3 = -Rinv*Rinv*Rinv;
       Vec ztmp[COORD_DIM] = {nRinv3*dX[0], nRinv3*dX[1], nRinv3*dX[2]};
       for (long i = 0; i < nd_; i++) {
-        Vtrg[i] += Vsrc[s][i]*Rinv;
-        Gtrg[i][0] += Vsrc[s][i]*ztmp[0];
-        Gtrg[i][1] += Vsrc[s][i]*ztmp[1];
-        Gtrg[i][2] += Vsrc[s][i]*ztmp[2];
+        Vtrg[i] += Vsrc[s*nd_+i]*Rinv;
+        Gtrg[i][0] += Vsrc[s*nd_+i]*ztmp[0];
+        Gtrg[i][1] += Vsrc[s*nd_+i]*ztmp[1];
+        Gtrg[i][2] += Vsrc[s*nd_+i]*ztmp[2];
       }
     }
     for (long i = 0; i < nd_; i++) {
@@ -1197,12 +1188,13 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdp_vec_cpp(const 
   Vec thresh2 = thresh[0] * thresh[0];
   // load dipole
   sctl::Matrix<Real> Gs_(Nsrc, nd_*COORD_DIM,       sctl::Ptr2Itr<Real>((Real*)dipvec , nd_*Nsrc),       false);
-  Vec Gsrc[Nsrc][nd_][COORD_DIM];
+  //Vec Gsrc[Nsrc][nd_][COORD_DIM];
+  sctl::Vector<Vec> Gsrc(Nsrc*nd_*COORD_DIM);
   for (sctl::Long s = 0; s < Nsrc; s++) {
     for (long i = 0; i < nd_; i++) {
-      Gsrc[s][i][0] = Vec::Load1(&Gs_[s][0*nd_+i]);
-      Gsrc[s][i][1] = Vec::Load1(&Gs_[s][1*nd_+i]);
-      Gsrc[s][i][2] = Vec::Load1(&Gs_[s][2*nd_+i]);
+      Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+0] = Vec::Load1(&Gs_[s][0*nd_+i]);
+      Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+1] = Vec::Load1(&Gs_[s][1*nd_+i]);
+      Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+2] = Vec::Load1(&Gs_[s][2*nd_+i]);
     }
   }
   // load source
@@ -1250,7 +1242,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdp_vec_cpp(const 
       Vec Rinv3 = Rinv * Rinv * Rinv;
       // TODO: test move Dprod out, faster?
       for (long i = 0; i < nd_; i++) {
-        Vec Dprod = dX[0]*Gsrc[s][i][0] + dX[1]*Gsrc[s][i][1] + dX[2]*Gsrc[s][i][2];
+        Vec Dprod = dX[0]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+0] + dX[1]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+1] + dX[2]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+2];
         Vtrg[i] += Dprod*Rinv3;
       }
     }
@@ -1306,12 +1298,13 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdg_vec_cpp(const 
   Vec thresh2 = thresh[0] * thresh[0];
   // load dipole
   sctl::Matrix<Real> Gs_(Nsrc, nd_*COORD_DIM,       sctl::Ptr2Itr<Real>((Real*)dipvec , nd_*Nsrc),       false);
-  Vec Gsrc[Nsrc][nd_][COORD_DIM];
+  //Vec Gsrc[Nsrc][nd_][COORD_DIM];
+  sctl::Vector<Vec> Gsrc(Nsrc*nd_*COORD_DIM);
   for (sctl::Long s = 0; s < Nsrc; s++) {
     for (long i = 0; i < nd_; i++) {
-      Gsrc[s][i][0] = Vec::Load1(&Gs_[s][0*nd_+i]);
-      Gsrc[s][i][1] = Vec::Load1(&Gs_[s][1*nd_+i]);
-      Gsrc[s][i][2] = Vec::Load1(&Gs_[s][2*nd_+i]);
+      Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+0] = Vec::Load1(&Gs_[s][0*nd_+i]);
+      Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+1] = Vec::Load1(&Gs_[s][1*nd_+i]);
+      Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+2] = Vec::Load1(&Gs_[s][2*nd_+i]);
     }
   }
   // load source
@@ -1363,12 +1356,12 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdg_vec_cpp(const 
       Vec Rinv3 = Rinv * Rinv2;
       Vec Rinv5 =  -3.0*Rinv2*Rinv3;
       for (long i = 0; i < nd_; i++) {
-        Vec Dprod = dX[0]*Gsrc[s][i][0] + dX[1]*Gsrc[s][i][1] + dX[2]*Gsrc[s][i][2];
+        Vec Dprod = dX[0]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+0] + dX[1]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+1] + dX[2]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+2];
         Vec RinvDprod = Rinv5*Dprod;
         Vtrg[i] += Dprod*Rinv3;
-        Gtrg[i][0] += RinvDprod*dX[0] + Rinv3*Gsrc[s][i][0];
-        Gtrg[i][1] += RinvDprod*dX[1] + Rinv3*Gsrc[s][i][1];
-        Gtrg[i][2] += RinvDprod*dX[2] + Rinv3*Gsrc[s][i][2];
+        Gtrg[i][0] += RinvDprod*dX[0] + Rinv3*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+0];
+        Gtrg[i][1] += RinvDprod*dX[1] + Rinv3*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+1];
+        Gtrg[i][2] += RinvDprod*dX[2] + Rinv3*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+2];
       }
     }
     for (long i = 0; i < nd_; i++) {
@@ -1428,14 +1421,16 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdp_vec_cpp(const
   // load charge and dipole
   sctl::Matrix<Real> Vs_(Nsrc, nd_,           sctl::Ptr2Itr<Real>((Real*)charge , nd_*Nsrc),       false);
   sctl::Matrix<Real> Gs_(Nsrc, nd_*COORD_DIM, sctl::Ptr2Itr<Real>((Real*)dipvec , nd_*Nsrc),       false);
-  Vec Vsrc[Nsrc][nd_];
-  Vec Gsrc[Nsrc][nd_][COORD_DIM];
+  //Vec Vsrc[Nsrc][nd_];
+  //Vec Gsrc[Nsrc][nd_][COORD_DIM];
+  sctl::Vector<Vec> Vsrc(Nsrc*nd_);
+  sctl::Vector<Vec> Gsrc(Nsrc*nd_*COORD_DIM);
   for (sctl::Long s = 0; s < Nsrc; s++) {
     for (long i = 0; i < nd_; i++) {
-      Vsrc[s][i] = Vec::Load1(&Vs_[s][i]);
-      Gsrc[s][i][0] = Vec::Load1(&Gs_[s][0*nd_+i]);
-      Gsrc[s][i][1] = Vec::Load1(&Gs_[s][1*nd_+i]);
-      Gsrc[s][i][2] = Vec::Load1(&Gs_[s][2*nd_+i]);
+      Vsrc[s*nd_+i] = Vec::Load1(&Vs_[s][i]);
+      Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+0] = Vec::Load1(&Gs_[s][0*nd_+i]);
+      Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+1] = Vec::Load1(&Gs_[s][1*nd_+i]);
+      Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+2] = Vec::Load1(&Gs_[s][2*nd_+i]);
     }
   }
   // load source
@@ -1482,9 +1477,9 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdp_vec_cpp(const
 
       Vec Rinv3 = Rinv * Rinv * Rinv;
       for (long i = 0; i < nd_; i++) {
-        Vec Dprod = dX[0]*Gsrc[s][i][0] + dX[1]*Gsrc[s][i][1] + dX[2]*Gsrc[s][i][2];
+        Vec Dprod = dX[0]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+0] + dX[1]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+1] + dX[2]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+2];
         Vtrg[i] += Dprod*Rinv3;
-        Vtrg[i] += Vsrc[s][i]*Rinv;
+        Vtrg[i] += Vsrc[s*nd_+i]*Rinv;
       }
     }
     for (long i = 0; i < nd_; i++) {
@@ -1540,14 +1535,16 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdg_vec_cpp(const
   // load charge and dipole
   sctl::Matrix<Real> Vs_(Nsrc, nd_,           sctl::Ptr2Itr<Real>((Real*)charge , nd_*Nsrc),       false);
   sctl::Matrix<Real> Gs_(Nsrc, nd_*COORD_DIM, sctl::Ptr2Itr<Real>((Real*)dipvec , nd_*Nsrc),       false);
-  Vec Vsrc[Nsrc][nd_];
-  Vec Gsrc[Nsrc][nd_][COORD_DIM];
+  //Vec Vsrc[Nsrc][nd_];
+  //Vec Gsrc[Nsrc][nd_][COORD_DIM];
+  sctl::Vector<Vec> Vsrc(Nsrc*nd_);
+  sctl::Vector<Vec> Gsrc(Nsrc*nd_*COORD_DIM);
   for (sctl::Long s = 0; s < Nsrc; s++) {
     for (long i = 0; i < nd_; i++) {
-      Vsrc[s][i] = Vec::Load1(&Vs_[s][i]);
-      Gsrc[s][i][0] = Vec::Load1(&Gs_[s][0*nd_+i]);
-      Gsrc[s][i][1] = Vec::Load1(&Gs_[s][1*nd_+i]);
-      Gsrc[s][i][2] = Vec::Load1(&Gs_[s][2*nd_+i]);
+      Vsrc[s*nd_+i] = Vec::Load1(&Vs_[s][i]);
+      Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+0] = Vec::Load1(&Gs_[s][0*nd_+i]);
+      Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+1] = Vec::Load1(&Gs_[s][1*nd_+i]);
+      Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+2] = Vec::Load1(&Gs_[s][2*nd_+i]);
     }
   }
   // load source
@@ -1601,13 +1598,13 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdg_vec_cpp(const
       Vec Rinv5 =  -3.0*Rinv2*Rinv3;
       Vec ztmp[COORD_DIM] = {nRinv3*dX[0], nRinv3*dX[1], nRinv3*dX[2]};
       for (long i = 0; i < nd_; i++) {
-        Vec Dprod = dX[0]*Gsrc[s][i][0] + dX[1]*Gsrc[s][i][1] + dX[2]*Gsrc[s][i][2];
+        Vec Dprod = dX[0]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+0] + dX[1]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+1] + dX[2]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+2];
         Vtrg[i] += Dprod*Rinv3;
-        Vtrg[i] += Vsrc[s][i]*Rinv;
+        Vtrg[i] += Vsrc[s*nd_+i]*Rinv;
         Vec RinvDprod = Rinv5*Dprod;
-        Gtrg[i][0] += RinvDprod*dX[0] + Rinv3*Gsrc[s][i][0] + Vsrc[s][i]*ztmp[0];
-        Gtrg[i][1] += RinvDprod*dX[1] + Rinv3*Gsrc[s][i][1] + Vsrc[s][i]*ztmp[1];
-        Gtrg[i][2] += RinvDprod*dX[2] + Rinv3*Gsrc[s][i][2] + Vsrc[s][i]*ztmp[2];
+        Gtrg[i][0] += RinvDprod*dX[0] + Rinv3*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+0] + Vsrc[s*nd_+i]*ztmp[0];
+        Gtrg[i][1] += RinvDprod*dX[1] + Rinv3*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+1] + Vsrc[s*nd_+i]*ztmp[1];
+        Gtrg[i][2] += RinvDprod*dX[2] + Rinv3*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+2] + Vsrc[s*nd_+i]*ztmp[2];
       }
     }
     for (long i = 0; i < nd_; i++) {
