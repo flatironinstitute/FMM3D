@@ -19,7 +19,7 @@ program test_hfmm3d_mp2loc
   double complex, allocatable :: dipvec(:,:,:)
   double complex, allocatable :: pot(:,:), pot2(:,:), pottarg(:,:)
   double complex, allocatable :: grad(:,:,:),gradtarg(:,:,:)
-  double complex, allocatable :: mpole(:,:), local(:,:)
+  double complex, allocatable :: mpole(:,:,:,:), local(:,:,:,:)
 
 
   data eye/(0.0d0,1.0d0)/
@@ -184,17 +184,19 @@ program test_hfmm3d_mp2loc
   ! now form a multipole expansion at each center
   !
   allocate(nterms(nc), impole(nc))
-  ntm = 5
-  lmpole = (ntm+1)*(2*ntm+1)*nc
-  allocate( mpole(nd,lmpole) )
+  ntmax = 10
+  allocate( mpole(nd,0:ntmax,-ntmax:ntmax,nc) )
 
+  ntm = 5
   do i = 1,nc
     nterms(i) = ntm
   end do
 
   impole(1) = 1
+  len = (ntmax+1)*(2*ntmax+1)
+  call prinf('len = *', len, 1)
   do i = 1,nc-1
-    len = (nterms(i)+1)*(2*nterms(i)+1)
+    !len = (nterms(i)+1)*(2*nterms(i)+1)
     impole(i+1) = impole(i) + len
   end do
 
@@ -207,7 +209,7 @@ program test_hfmm3d_mp2loc
   call ylgndrfwini(nlege, wlege, lw, lused)
   call prinf('after ylgndrfwini, lused = *', lused, 1)
 
-  len = nd*(ntm+1)*(2*ntm+1)*nc
+  len = nd*(ntmax+1)*(2*ntmax+1)*nc
   call zinitialize(len, mpole)
   
   ns1 = 1
@@ -221,7 +223,7 @@ program test_hfmm3d_mp2loc
   do i = 1,nc
     rscales(i) = rscale
     call h3dformmpc(nd, zk, rscale, source(1,i), charge(1,i), &
-        ns1, centers(1,i), nterms(i), mpole(1,impole(i)), wlege, nlege)
+        ns1, centers(1,i), nterms(i), mpole(1,0,-ntmax,i), wlege, nlege)
   end do
 
   !
@@ -244,7 +246,8 @@ program test_hfmm3d_mp2loc
     
     do j = 1,ns
       if (i .ne. j) then
-        call h3dmpevalp(nd, zk, rscale, centers(1,j), mpole(1,impole(j)), &
+        call h3dmpevalp(nd, zk, rscale, centers(1,j), &
+            mpole(1,0,-ntmax,j), &
             nterms(i), source(1,i), ns1, pot2(1,i), wlege, nlege, thresh)
       end if
     end do
@@ -278,7 +281,7 @@ program test_hfmm3d_mp2loc
   !write(6,*) 'output: local expansions'
 
   
-  allocate( local(nd,lmpole) )
+  allocate( local(nd,0:ntmax,-ntmax:ntmax,nc) )
 
   !
   ! now test source to source, charge, 
@@ -300,7 +303,7 @@ program test_hfmm3d_mp2loc
   ifpghtarg = 0
   call hfmm3d_mps(nd, eps, zk, ns, source, ifcharge, &
       charge, ifdipole, dipvec, &
-      nc, centers, rscales, nterms, mpole, impole, local, &
+      nc, centers, rscales, nterms, ntmax, mpole, impole, local, &
       ifpgh, pot, grad, hess, ntarg, &
       targ, ifpghtarg, pottarg, gradtarg, hesstarg)
 
