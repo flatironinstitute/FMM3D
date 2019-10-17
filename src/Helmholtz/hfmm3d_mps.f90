@@ -24,7 +24,7 @@
 
 subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
     charge,ifdipole,dipvec, &
-    nmpole, cmpole, rmpole, mterms, mtmax, mpole, impole, local, &
+    nmpole, cmpole, rmpole, mterms, mpole, impole, local, &
     ifpgh,pot,grad,hess,ntarg, &
     targ,ifpghtarg,pottarg,gradtarg,hesstarg)
   !-----------------------------------------------------------------------
@@ -135,9 +135,9 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   double complex zk
   double precision eps
 
-  integer :: nmpole, mterms, mtmax, impole(nmpole)
+  integer :: nmpole, mterms(nmpole), impole(nmpole)
   double precision :: cmpole(3,nmpole), rmpole(nmpole)
-  double complex :: mpole(nd,0:mtmax,-mtmax:mtmax,nmpole)
+  double complex :: mpole(nd,*)
   double complex :: local(nd,*)
   
   integer ifcharge,ifdipole
@@ -168,7 +168,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   !
   ! temporary sorted arrays
   !
-  integer :: lda
+  integer :: lmpole, mt, len
   double precision, allocatable :: sourcesort(:,:),targsort(:,:)
   double precision, allocatable :: radsrc(:)
   double complex, allocatable :: chargesort(:,:)
@@ -177,8 +177,8 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   integer, allocatable :: mtermssort(:), impolesort(:)
   double precision, allocatable :: cmpolesort(:,:)
   double precision, allocatable :: rmpolesort(:)
-  double complex, allocatable :: mpolesort(:,:,:,:)
-  double complex, allocatable :: localsort(:,:,:,:)
+  double complex, allocatable :: mpolesort(:)
+  double complex, allocatable :: localsort(:)
   
   double complex, allocatable :: potsort(:,:),gradsort(:,:,:), &
       hesssort(:,:,:)
@@ -488,34 +488,57 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   allocate(rmpolesort(nmpole))
   allocate(impolesort(nmpole))
   allocate(mtermssort(nmpole))
-  allocate(mpolesort(nd,0:mtmax,-mtmax:mtmax,nmpole) )
+
+  lmpole = 0
+  do i = 1,nmpole
+    lmpole = lmpole + (mterms(i)+1)*(2*mterms(i)+1)
+  end do
+  lmpole = nd*lmpole
+  
+  allocate(mpolesort(lmpole) )
 
   print *
   print *, '. . . dont forget to repair variable order sort . . . '
   print *
-  call prinf('mtmax = *', mtmax, 1)
-  call prinf('lda = *', lda, 1)
-  
-  call prinf('impole = *', impole, 50)
+  !call prinf('impole = *', impole, 50)
 
   call dreorderf(3, nmpole, cmpole, cmpolesort, itree(ipointer(5)))
   call dreorderf(1, nmpole, rmpole, rmpolesort, itree(ipointer(5)))
-  !call ireorderf(1, nmpole, impole, impolesort, itree(ipointer(5)))
-  !call ireorderf(1, nmpole, mterms, mtermssort, itree(ipointer(5)))
+  call ireorderf(1, nmpole, mterms, mtermssort, itree(ipointer(5)))
 
-  lda = nd*(mtmax+1)*(2*mtmax+1)*2
-  !call dreorderf(lda, nmpole, mpole, mpolesort, itree(ipointer(5)))
 
+
+
+
+  impolesort(1) = 1
   
-  !call prinf('impolesort = *', impolesort, 50)
-  !stop
+  do i = 1,nmpole
+
+    !mtermssort(i) = mterms(perm(i))
+    mt = mtermssort(i)
+    len = (mt+1)*(2*mt+1)
+
+    ijk = 0
+    do j = 1,len
+      do l = 1,nd
+        !mpolesort(l,impolesort(i)+j-1)  = mpole(l,impole(perm(i))+j-1)
+      end do
+    end do
+
+    if (i .lt. nmpole) impolesort(i+1) = impolesort(i)+len
+   
+  end do
+
+
+
   
   call mpolereorderf(nd, nmpole, impole, mterms, mpole, &
       impolesort, mtermssort, mpolesort, itree(ipointer(5)) )
 
-  !call prinf('impolesort  =*', impolesort, 50)
-  !stop
 
+
+
+  
   
   !c
   !cc       reorder sources
@@ -551,7 +574,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
     stop
   endif
 
-  allocate( localsort(nd,0:mtmax,-mtmax:mtmax,nmpole) )
+  allocate( localsort(lmpole) )
   
 
   !
@@ -564,7 +587,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
       nsource,sourcesort,&
       ifcharge,chargesort,&
       ifdipole,dipvecsort,&
-      nmpole, cmpolesort, rmpolesort, mtermssort, mtmax, mpolesort, &
+      nmpole, cmpolesort, rmpolesort, mtermssort, mpolesort, &
       impolesort, localsort, &
       ntarg,targsort,nexpc,expcsort,radssort, &
       iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp, &
@@ -583,8 +606,6 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   !
   ! de-reorder the output local expansions
   !
-  !call mpolereorderi(nd, nmpole, impole, mterms, local, &
-  !    impolesort, mtermssort, localsort, itree(ipointer(5)) )
 
   
   
@@ -681,7 +702,7 @@ subroutine mpolereorderf(ndim, nmpole, impole, mterms, mpole, &
   
   do i = 1,nmpole
 
-    mtermssort(i) = mterms(perm(i))
+    !mtermssort(i) = mterms(perm(i))
     mt = mtermssort(i)
     len = (mt+1)*(2*mt+1)
 
@@ -702,49 +723,11 @@ end subroutine mpolereorderf
 
 
 
-subroutine mpolereorderi(ndim, nmpole, impole, mterms, mpole, &
-    impolesort, mtermssort, mpolesort, perm)
-  implicit none
-  !
-  ! This routine performs the inverse operation to that of
-  ! mpolereorderf
-  !
-  integer :: ndim, nmpole, impole(nmpole), mterms(nmpole)
-  integer :: impolesort(nmpole), mtermssort(nmpole), perm(nmpole)
-  double complex :: mpole(ndim,*), mpolesort(ndim,*)
-
-  integer :: i, j, mt, len, ijk, lused, l
-
-  
-  
-  do i = 1,nmpole
-
-    mtermssort(perm(i)) = mterms(i)
-    mt = mtermssort(i)
-    len = (mt+1)*(2*mt+1)
-
-    do j = 1,len
-      do l = 1,ndim
-        mpolesort(l,impolesort(i)+j-1) = mpole(l,impole(perm(i))+j-1)
-      end do
-    end do
-
-    if (i .lt. nmpole) impolesort(i+1) = impolesort(i)+len
-   
-  end do
-  
-  return
-end subroutine mpolereorderi
-
-
-
-
-
 subroutine hfmm3dmain_mps(nd,eps,zk, &
     nsource,sourcesort, &
     ifcharge,chargesort, &
     ifdipole,dipvecsort, &
-    nmpole, cmpolesort, rmpolesort, mtermssort, mtmax, mpolesort, &
+    nmpole, cmpolesort, rmpolesort, mtermssort, mpolesort, &
     impolesort, localsort, &
     ntarg,targsort,nexpc,expcsort,radssort, &
     iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp, &
@@ -771,7 +754,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   double complex dipvecsort(nd,3,*)
 
   ! input multipole stuff
-  integer :: nmpole, mtermssort(nmpole), mtmax
+  integer :: nmpole, mtermssort(nmpole)
   double precision :: cmpolesort(3,nmpole), rmpolesort(nmpole)
   double complex :: mpolesort(nd,*)
   integer :: impolesort(nmpole)
