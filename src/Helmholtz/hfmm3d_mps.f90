@@ -138,7 +138,7 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
   integer :: nmpole, mterms(nmpole), impole(nmpole)
   double precision :: cmpole(3,nmpole), rmpole(nmpole)
   double complex :: mpole(*)
-  double complex :: local(nd,*)
+  double complex :: local(*)
   
   integer ifcharge,ifdipole
   integer ifpgh,ifpghtarg
@@ -210,6 +210,8 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
   !        other temporary variables
   !
   integer :: i, j, l, ijk, iert,ifprint,ilev,idim,ier
+  integer :: nlege, lw7, lused7
+  double precision :: wlege(40000)
   double precision time1,time2,omp_get_wtime,second
 
 
@@ -589,6 +591,25 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
 
 
   !
+  ! evaluate the potential using the local expansions instead
+  !
+  nlege = 100
+  lw7 = 40000
+  call ylgndrfwini(nlege, wlege, lw7, lused7)
+
+  
+  do i = 1,nmpole
+    potsort(1,i) = 0
+    call h3dtaevalp(nd, zk, rmpolesort(i), &
+        cmpolesort(1,i), &
+        localsort(impolesort(i)), mtermssort(i), &
+        sourcesort(1,i), 1, potsort(1,i), wlege, nlege)
+
+  end do
+
+  
+
+  !
   ! de-reorder the output local expansions
   !
 
@@ -601,46 +622,9 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
   
 
   if(ifpgh.eq.1) then
-    call dreorderi(2*nd,nsource,potsort,pot, &
+    call dreorderi(2*nd, nsource,potsort,pot, &
         itree(ipointer(5)))
   endif
-  ! if(ifpgh.eq.2) then 
-  !   call dreorderi(2*nd,nsource,potsort,pot, &
-  !       itree(ipointer(5)))
-  !   call dreorderi(6*nd,nsource,gradsort,grad, &
-  !       itree(ipointer(5)))
-  ! endif
-
-  ! if(ifpgh.eq.3) then 
-  !   call dreorderi(2*nd,nsource,potsort,pot, &
-  !       itree(ipointer(5)))
-  !   call dreorderi(6*nd,nsource,gradsort,grad, &
-  !       itree(ipointer(5)))
-  !   call dreorderi(12*nd,nsource,hesssort,hess, &
-  !       itree(ipointer(5)))
-  ! endif
-
-
-  ! if(ifpghtarg.eq.1) then
-  !   call dreorderi(2*nd,ntarg,pottargsort,pottarg, &
-  !       itree(ipointer(6)))
-  ! endif
-
-  ! if(ifpghtarg.eq.2) then
-  !   call dreorderi(2*nd,ntarg,pottargsort,pottarg, &
-  !       itree(ipointer(6)))
-  !   call dreorderi(6*nd,ntarg,gradtargsort,gradtarg, &
-  !       itree(ipointer(6)))
-  ! endif
-
-  ! if(ifpghtarg.eq.3) then
-  !   call dreorderi(2*nd,ntarg,pottargsort,pottarg, &
-  !       itree(ipointer(6)))
-  !   call dreorderi(6*nd,ntarg,gradtargsort,gradtarg, &
-  !       itree(ipointer(6)))
-  !   call dreorderi(12*nd,ntarg,hesstargsort,hesstarg, &
-  !       itree(ipointer(6)))
-  ! endif
 
 
   return
@@ -801,7 +785,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
   integer istart0,istart1,istartm1,nprin
   double precision :: rtmp1,rtmp2,rtmp3,rtmp4, done
-  double complex ima
+  double complex :: ima, cd, cd1, cd2, work(10000)
 
   integer *8 bigint
   integer iert
@@ -1044,7 +1028,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
             
             
             call h3dmploc(nd, zk, rmpolesort(istart),&
-                cmpolesort(:,istart), &
+                cmpolesort(1,istart), &
                 mpolesort(impolesort(istart)), &
                 mtermssort(istart), &
                 rscales(ilev), centers(1,ibox), &
@@ -1567,7 +1551,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     nquad2 = max(6,nquad2)
     ifinit2 = 1
     call legewhts(nquad2,xnodes,wts,ifinit2)
-    radius = boxsize(ilev+1)/2*sqrt(3.0d0)
+    radius = boxsize(ilev)/2*sqrt(3.0d0)/2
 
     
     if(ifpgh.eq.1) then         
@@ -1596,15 +1580,16 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
               localsort(impolesort(istart)), mtermssort(istart), &
               radius, xnodes, wts, nquad2)
 
+          !cd = pot(1,istart)
           !pot(1,istart) = 0
           !call h3dtaevalp(nd, zk, rmpolesort(istart), &
           !    cmpolesort(1,istart), &
-          !    localsort(1,impolesort(istart)), mtermssort(istart), &
+          !    localsort(impolesort(istart)), mtermssort(istart), &
           !    sourcesort(1,istart), &
           !    npts,pot(1,istart),wlege,nlege)
 
-          
           !print *, 'from mploc and eval, pot = ', pot(1,istart)
+          !print *, 'error = *', (cd-pot(1,istart))/cd
           !stop
           
         enddo
@@ -1627,12 +1612,13 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   !
   ! ... step 7, evaluate all local expansions
   !
+  
+  !nquad2 = 2*ntj
+  !nquad2 = max(6,nquad2)
+  !ifinit2 = 1
 
-  nquad2 = 2*ntj
-  nquad2 = max(6,nquad2)
-  ifinit2 = 1
+  !call legewhts(nquad2,xnodes,wts,ifinit2)
 
-  call legewhts(nquad2,xnodes,wts,ifinit2)
   call cpu_time(time1)
   !$ time1=omp_get_wtime()
 
@@ -1673,11 +1659,11 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     nquad2 = max(6,nquad2)
     ifinit2 = 1
     call legewhts(nquad2,xnodes,wts,ifinit2)
-    radius = boxsize(ilev+1)/2*sqrt(3.0d0)
+    radius = boxsize(ilev)/2*sqrt(3.0d0)/4
 
     if(ifpgh.eq.1) then
-      !$omp parallel do default(shared) &
-      !$omp   private(ibox,nchild,istart,iend,npts) schedule(dynamic)
+      !!$omp parallel do default(shared) &
+      !!$omp   private(ibox,nchild,istart,iend,npts) schedule(dynamic)
       do ibox = laddr(1,ilev),laddr(2,ilev)
         nchild=itree(ipointer(3)+ibox-1)
         if(nchild.eq.0) then 
@@ -1689,17 +1675,58 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
               sourcesort(1,istart), &
               npts,pot(1,istart),wlege,nlege)
 
+          cd1 = 0
+          cd2 = 0
+          call h3dtaevalp(nd,zk,rscales(ilev),centers(1,ibox), &
+              rmlexp(iaddr(2,ibox)),nterms(ilev), &
+              sourcesort(1,istart), &
+              npts,cd1,wlege,nlege)
 
+
+
+          do i=1,5000
+            work(i) = 0
+          end do
+          
+
+          print *
+          print *
+          call prinf('istart = *', istart, 1)
+          call prinf('npts = *', npts, 1)
+          call prinf('nterms(ilev) = *', nterms(ilev), 1)
+          call prin2('centers(1,ibox) = *', centers(1,ibox), 3)
+          call prin2('sourcesort(1,istart) = *', &
+              sourcesort(1,istart), 3)
+          call prinf('mtermssort = *', mtermssort(istart), 1)
+          call prin2('cmpolesort(1,istart) = *', &
+              cmpolesort(1,istart), 3)
+
+          mt = nterms(ilev)
+
+          
+          
           call h3dlocloc(nd, zk, rscales(ilev), &
               centers(1,ibox), rmlexp(iaddr(2,ibox)), &
               nterms(ilev), rmpolesort(istart), cmpolesort(1,istart), &
-              localsort(impolesort(istart)), mtermssort(istart), &
+              !localsort(impolesort(istart)), mtermssort(istart), &
+              work, mtermssort(istart), &
               radius, xnodes, wts, nquad2)
 
 
+          call h3dtaevalp(nd, zk, rmpolesort(istart), &
+              cmpolesort(1,istart), work, &
+              mtermssort(istart), &
+              sourcesort(1,istart), npts, cd2, wlege, nlege)
+
+          print *, 'from taeval, cd1 = ', cd1
+          print *, 'from locloc, cd2 = ', cd2
+          print *, 'ratio cd1/cd2 = ', cd1/cd2
+          print *, 'ratio cd2/cd1 = ', cd2/cd1
+          stop
+
         endif
       enddo
-      !$omp end parallel do
+      !!$omp end parallel do
     endif
 
 
