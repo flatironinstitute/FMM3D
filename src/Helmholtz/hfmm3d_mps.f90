@@ -598,14 +598,13 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
   call ylgndrfwini(nlege, wlege, lw7, lused7)
 
   
-  do i = 1,nmpole
-    potsort(1,i) = 0
-    call h3dtaevalp(nd, zk, rmpolesort(i), &
-        cmpolesort(1,i), &
-        localsort(impolesort(i)), mtermssort(i), &
-        sourcesort(1,i), 1, potsort(1,i), wlege, nlege)
-
-  end do
+  !do i = 1,nmpole
+  !  potsort(1,i) = 0
+  !  call h3dtaevalp(nd, zk, rmpolesort(i), &
+  !      cmpolesort(1,i), &
+  !      localsort(impolesort(i)), mtermssort(i), &
+  !      sourcesort(1,i), 1, potsort(1,i), wlege, nlege)
+  !end do
 
   
 
@@ -785,7 +784,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
   integer istart0,istart1,istartm1,nprin
   double precision :: rtmp1,rtmp2,rtmp3,rtmp4, done
-  double complex :: ima, cd, cd1, cd2, work(10000)
+  double complex :: ima, cd, cd1(10), cd2(10), work(100000)
 
   integer *8 bigint
   integer iert
@@ -1567,10 +1566,10 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
         do i=1,nlist3
           jbox = itree(ipointer(25)+(ibox-1)*mnlist3+i-1)
-          call h3dmpevalp(nd,zk,rscales(ilev+1),centers(1,jbox), &
-              rmlexp(iaddr(1,jbox)),nterms(ilev+1), &
-              sourcesort(1,istart),npts,pot(1,istart),wlege,nlege, &
-              thresh)
+          !call h3dmpevalp(nd,zk,rscales(ilev+1),centers(1,jbox), &
+          !    rmlexp(iaddr(1,jbox)),nterms(ilev+1), &
+          !    sourcesort(1,istart),npts,pot(1,istart),wlege,nlege, &
+          !    thresh)
 
           !print *, 'from mpevalp, pot = ', pot(1,istart)
           
@@ -1655,11 +1654,12 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   ! evaluate local expansion at source and target locations
   !
   do ilev = 0,nlevels
+
     nquad2 = nterms(ilev)*2
     nquad2 = max(6,nquad2)
     ifinit2 = 1
-    call legewhts(nquad2,xnodes,wts,ifinit2)
-    radius = boxsize(ilev)/2*sqrt(3.0d0)/4
+    call legewhts(nquad2, xnodes, wts, ifinit2)
+    radius = boxsize(ilev)/2*sqrt(3.0d0)
 
     if(ifpgh.eq.1) then
       !!$omp parallel do default(shared) &
@@ -1670,59 +1670,41 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
           istart = itree(ipointer(10)+ibox-1)
           iend = itree(ipointer(11)+ibox-1)
           npts = iend-istart+1
-          call h3dtaevalp(nd,zk,rscales(ilev),centers(1,ibox), &
-              rmlexp(iaddr(2,ibox)),nterms(ilev), &
-              sourcesort(1,istart), &
-              npts,pot(1,istart),wlege,nlege)
 
-          cd1 = 0
-          cd2 = 0
-          call h3dtaevalp(nd,zk,rscales(ilev),centers(1,ibox), &
-              rmlexp(iaddr(2,ibox)),nterms(ilev), &
-              sourcesort(1,istart), &
-              npts,cd1,wlege,nlege)
+          !call h3dtaevalp(nd,zk,rscales(ilev),centers(1,ibox), &
+          !    rmlexp(iaddr(2,ibox)),nterms(ilev), &
+          !    sourcesort(1,istart), &
+          !    npts,pot(1,istart),wlege,nlege)
 
-
-
-          do i=1,5000
+          do i = 1,10000
             work(i) = 0
           end do
-          
 
-          print *
-          print *
-          call prinf('istart = *', istart, 1)
-          call prinf('npts = *', npts, 1)
-          call prinf('nterms(ilev) = *', nterms(ilev), 1)
-          call prin2('centers(1,ibox) = *', centers(1,ibox), 3)
-          call prin2('sourcesort(1,istart) = *', &
-              sourcesort(1,istart), 3)
-          call prinf('mtermssort = *', mtermssort(istart), 1)
-          call prin2('cmpolesort(1,istart) = *', &
-              cmpolesort(1,istart), 3)
+          r1 = 1
+         ! call h3dlocloc(nd, zk, rscales(ilev), &
+         !     centers(1,ibox), rmlexp(iaddr(2,ibox)), &
+         !     nterms(ilev), r1, cmpolesort(1,istart), &
+         !     work, mtermssort(istart), &
+         !     radius, xnodes, wts, nquad2)
 
-          mt = nterms(ilev)
-
+         ! call h3dtaevalp(nd, zk, r1, &
+         !     cmpolesort(1,istart), work, &
+         !     mtermssort(istart), &
+         !     sourcesort(1,istart), npts, pot(1,istart), &
+         !     wlege, nlege)
           
           
-          call h3dlocloc(nd, zk, rscales(ilev), &
-              centers(1,ibox), rmlexp(iaddr(2,ibox)), &
-              nterms(ilev), rmpolesort(istart), cmpolesort(1,istart), &
-              !localsort(impolesort(istart)), mtermssort(istart), &
-              work, mtermssort(istart), &
-              radius, xnodes, wts, nquad2)
+           call h3dlocloc(nd, zk, rscales(ilev), &
+               centers(1,ibox), rmlexp(iaddr(2,ibox)), &
+               nterms(ilev), rmpolesort(istart), cmpolesort(1,istart), &
+               localsort(impolesort(istart)), mtermssort(istart), &
+               radius, xnodes, wts, nquad2)
 
-
-          call h3dtaevalp(nd, zk, rmpolesort(istart), &
-              cmpolesort(1,istart), work, &
-              mtermssort(istart), &
-              sourcesort(1,istart), npts, cd2, wlege, nlege)
-
-          print *, 'from taeval, cd1 = ', cd1
-          print *, 'from locloc, cd2 = ', cd2
-          print *, 'ratio cd1/cd2 = ', cd1/cd2
-          print *, 'ratio cd2/cd1 = ', cd2/cd1
-          stop
+           call h3dtaevalp(nd, zk, rmpolesort(istart), &
+               cmpolesort(1,istart), localsort(impolesort(istart)), &
+               mtermssort(istart), &
+               sourcesort(1,istart), npts, pot(1,istart), &
+               wlege, nlege)
 
         endif
       enddo
@@ -1820,22 +1802,34 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
               stop
             end if
 
-          call h3ddirectcp_vec_d(nd,zk,sourcesort(1,jstart), &
-                chargesort(1,jstart),npts,sourcesort(1,istarts), &
-                npts0,pot(1,istarts),thresh)          
+           ! call h3ddirectcp_vec_d(nd,zk,sourcesort(1,jstart), &
+           !     chargesort(1,jstart),npts,sourcesort(1,istarts), &
+           !     npts0,pot(1,istarts),thresh)          
 
 
             !print *, 'finish list 1 mp2loc translations'
 
-            
-          call h3dmploc(nd, zk, rmpolesort(jstart),&
-              cmpolesort(1,jstart), &
-              mpolesort(impolesort(jstart)), mtermssort(jstart), &
-              rmpolesort(istarts), cmpolesort(1,istarts), &
-              localsort(impolesort(istarts)), mtermssort(istarts), &
-              radius, xnodes, wts, nquad2)
+            if (jstart .ne. istarts) then
 
+              call h3dmploc(nd, zk, rmpolesort(jstart),&
+                  cmpolesort(1,jstart), &
+                  mpolesort(impolesort(jstart)), mtermssort(jstart), &
+                  rmpolesort(istarts), cmpolesort(1,istarts), &
+                  localsort(impolesort(istarts)), mtermssort(istarts), &
+                  radius, xnodes, wts, nquad2)
+
+            end if
+        
           enddo
+
+           call h3dtaevalp(nd, zk, rmpolesort(istarts), &
+               cmpolesort(1,istarts), localsort(impolesort(istarts)), &
+               mtermssort(istarts), &
+               sourcesort(1,istarts), npts0, pot(1,istarts), &
+               wlege, nlege)
+
+
+
         enddo
         !$omp end parallel do            
       endif
