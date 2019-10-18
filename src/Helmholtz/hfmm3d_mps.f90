@@ -649,64 +649,6 @@ end subroutine hfmm3d_mps
 
 
 
-subroutine mpolereorderf(ndim, nmpole, impole, mterms, mpole, &
-    impolesort, mtermssort, mpolesort, perm)
-  implicit none
-  !
-  ! This subroutine sorts a list of variable order multipole
-  ! expansions, the ith-one of which is located at:
-  !
-  !     mpole( nd, impole(i) )
-  !
-  ! and is of order mterms(i). On output, we have that
-  !
-  !     mpolesort(*,impolesort(i)) = mpole(*,impole(perm(i)))
-  !
-  ! Input:
-  !   ndim - leading dimension, usually the order of vectorization
-  !   nmpole - number of multipole expansions
-  !   impole - indexing array for multipoles
-  !   mterms - orders of each multipole expansion
-  !   mpole - the actual multipole expansions, the ith one of which
-  !       begins at mpole(1,impole(i)) and is of order mterms(i)
-  !   perm - permutation to apply
-  !
-  ! Output:
-  !   impolesort - new indexing array of sorted multipole expansions
-  !   mtermssort - new array of multipole orders, sorted
-  !   mpolesort - sorted multipole expansions
-  !
-  integer :: ndim, nmpole, impole(nmpole), mterms(nmpole)
-  integer :: impolesort(nmpole), mtermssort(nmpole), perm(nmpole)
-  double complex :: mpole(ndim,*), mpolesort(ndim,*)
-
-  integer :: i, j, mt, len, ijk, lused, l
-
-  impolesort(1) = 1
-  
-  do i = 1,nmpole
-
-    !mtermssort(i) = mterms(perm(i))
-    mt = mtermssort(i)
-    len = (mt+1)*(2*mt+1)
-
-    do j = 1,len
-      do l = 1,ndim
-        mpolesort(l,impolesort(i)+j-1)  = mpole(l,impole(perm(i))+j-1)
-      end do
-    end do
-
-    if (i .lt. nmpole) impolesort(i+1) = impolesort(i)+len
-   
-  end do
-  
-  return
-end subroutine mpolereorderf
-
-
-
-
-
 subroutine hfmm3dmain_mps(nd,eps,zk, &
     nsource,sourcesort, &
     ifcharge,chargesort, &
@@ -740,7 +682,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   ! input multipole stuff
   integer :: nmpole, mtermssort(nmpole)
   double precision :: cmpolesort(3,nmpole), rmpolesort(nmpole)
-  double complex :: mpolesort(nd,*)
+  double complex :: mpolesort(*)
   integer :: impolesort(nmpole)
   double complex :: localsort(nd,*)
 
@@ -1032,7 +974,8 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
         if((npts.gt.0) .and. (nchild.eq.0)) then
           
           call h3dmpmp(nd, zk, rmpolesort(istart), &
-              cmpolesort(1,istart), mpolesort(:,impolesort(istart)), &
+              cmpolesort(1,istart), &
+              mpolesort(nd*(impolesort(istart)-1)+1), &
               mtermssort(istart), &
               rscales(ilev), centers(1,ibox), &
               rmlexp(iaddr(1,ibox)), nterms(ilev), &
@@ -1103,7 +1046,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
             
             call h3dmploc(nd, zk, rmpolesort(istart),&
                 cmpolesort(:,istart), &
-                mpolesort(:,impolesort(istart)), &
+                mpolesort(nd*(impolesort(istart)-1)+1), &
                 mtermssort(istart), &
                 rscales(ilev), centers(1,ibox), &
                 rmlexp(iaddr(2,ibox)), nterms(ilev), &
@@ -1861,7 +1804,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
             
           call h3dmploc(nd, zk, rmpolesort(jstart),&
               cmpolesort(1,jstart), &
-              mpolesort(1,impolesort(jstart)), mtermssort(jstart), &
+              mpolesort(nd*(impolesort(jstart)-1)+1), mtermssort(jstart), &
               rmpolesort(istarts), cmpolesort(1,istarts), &
               localsort(1,impolesort(istarts)), mtermssort(istarts), &
               radius, xnodes, wts, nquad2)
