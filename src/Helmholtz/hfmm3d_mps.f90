@@ -22,7 +22,7 @@
 !--------------------------------------------------------------------
 !
 
-subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
+subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
     charge,ifdipole,dipvec, &
     nmpole, cmpole, rmpole, mterms, mpole, impole, local, &
     ifpgh,pot,grad,hess,ntarg, &
@@ -137,7 +137,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
 
   integer :: nmpole, mterms(nmpole), impole(nmpole)
   double precision :: cmpole(3,nmpole), rmpole(nmpole)
-  double complex :: mpole(nd,*)
+  double complex :: mpole(*)
   double complex :: local(nd,*)
   
   integer ifcharge,ifdipole
@@ -209,7 +209,7 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   !
   !        other temporary variables
   !
-  integer i,iert,ifprint,ilev,idim,ier
+  integer :: i, j, l, ijk, iert,ifprint,ilev,idim,ier
   double precision time1,time2,omp_get_wtime,second
 
 
@@ -507,20 +507,18 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
   call ireorderf(1, nmpole, mterms, mtermssort, itree(ipointer(5)))
 
 
-
-
-
-  impolesort(1) = 1
-  
+  impolesort(1) = 1  
   do i = 1,nmpole
 
-    !mtermssort(i) = mterms(perm(i))
     mt = mtermssort(i)
     len = (mt+1)*(2*mt+1)
 
-    ijk = 0
+    ijk = 1
     do j = 1,len
       do l = 1,nd
+        mpolesort(nd*(impolesort(i)-1)+ijk) = &
+            mpole(nd*(impole(itree(ipointer(5)+i-1))-1)+ijk)
+        ijk = ijk + 1
         !mpolesort(l,impolesort(i)+j-1)  = mpole(l,impole(perm(i))+j-1)
       end do
     end do
@@ -528,15 +526,6 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
     if (i .lt. nmpole) impolesort(i+1) = impolesort(i)+len
    
   end do
-
-
-
-  
-  call mpolereorderf(nd, nmpole, impole, mterms, mpole, &
-      impolesort, mtermssort, mpolesort, itree(ipointer(5)) )
-
-
-
 
   
   
@@ -547,11 +536,6 @@ subroutine hfmm3d_mps(nd,eps,zk,nsource,source,ifcharge, &
 
   if(ifcharge.eq.1) call dreorderf(2*nd,nsource,charge, &
       chargesort, itree(ipointer(5)))
-
-  !if(ifdipole.eq.1) then
-  !  call dreorderf(6*nd,nsource,dipvec,dipvecsort, &
-  !      itree(ipointer(5)))
-  !endif
 
   !c
   !cc      reorder targs
