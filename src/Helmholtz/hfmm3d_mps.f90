@@ -516,14 +516,15 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
     ijk = 1
     do j = 1,len
       do l = 1,nd
-        mpolesort(nd*(impolesort(i)-1)+ijk) = &
+        !mpolesort(nd*(impolesort(i)-1)+ijk) = &
+        mpolesort(impolesort(i)+ijk-1) = &
             mpole(nd*(impole(itree(ipointer(5)+i-1))-1)+ijk)
         ijk = ijk + 1
         !mpolesort(l,impolesort(i)+j-1)  = mpole(l,impole(perm(i))+j-1)
       end do
     end do
 
-    if (i .lt. nmpole) impolesort(i+1) = impolesort(i)+len
+    if (i .lt. nmpole) impolesort(i+1) = impolesort(i) + nd*len
    
   end do
 
@@ -684,7 +685,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   double precision :: cmpolesort(3,nmpole), rmpolesort(nmpole)
   double complex :: mpolesort(*)
   integer :: impolesort(nmpole)
-  double complex :: localsort(nd,*)
+  double complex :: localsort(*)
 
   
   double precision targsort(3,ntarg)
@@ -902,10 +903,8 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
   
   !$omp parallel do default (shared) private(i,j,k,l)
-  do l = 1,ltot
-    do i = 1,nd
-      localsort(i,l) = 0
-    end do
+  do l = 1,ltot*nd
+      localsort(l) = 0
   end do
   !$omp end parallel do
   
@@ -975,7 +974,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
           
           call h3dmpmp(nd, zk, rmpolesort(istart), &
               cmpolesort(1,istart), &
-              mpolesort(nd*(impolesort(istart)-1)+1), &
+              mpolesort(impolesort(istart)), &
               mtermssort(istart), &
               rscales(ilev), centers(1,ibox), &
               rmlexp(iaddr(1,ibox)), nterms(ilev), &
@@ -1046,7 +1045,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
             
             call h3dmploc(nd, zk, rmpolesort(istart),&
                 cmpolesort(:,istart), &
-                mpolesort(nd*(impolesort(istart)-1)+1), &
+                mpolesort(impolesort(istart)), &
                 mtermssort(istart), &
                 rscales(ilev), centers(1,ibox), &
                 rmlexp(iaddr(2,ibox)), nterms(ilev), &
@@ -1594,7 +1593,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
           call h3dmploc(nd, zk, rscales(ilev+1), centers(1,jbox), &
               rmlexp(iaddr(1,jbox)),nterms(ilev+1), &
               rmpolesort(istart), cmpolesort(1,istart), &
-              localsort(1,impolesort(istart)), mtermssort(istart), &
+              localsort(impolesort(istart)), mtermssort(istart), &
               radius, xnodes, wts, nquad2)
 
           !pot(1,istart) = 0
@@ -1694,7 +1693,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
           call h3dlocloc(nd, zk, rscales(ilev), &
               centers(1,ibox), rmlexp(iaddr(2,ibox)), &
               nterms(ilev), rmpolesort(istart), cmpolesort(1,istart), &
-              localsort(1,impolesort(istart)), mtermssort(istart), &
+              localsort(impolesort(istart)), mtermssort(istart), &
               radius, xnodes, wts, nquad2)
 
 
@@ -1804,9 +1803,9 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
             
           call h3dmploc(nd, zk, rmpolesort(jstart),&
               cmpolesort(1,jstart), &
-              mpolesort(nd*(impolesort(jstart)-1)+1), mtermssort(jstart), &
+              mpolesort(impolesort(jstart)), mtermssort(jstart), &
               rmpolesort(istarts), cmpolesort(1,istarts), &
-              localsort(1,impolesort(istarts)), mtermssort(istarts), &
+              localsort(impolesort(istarts)), mtermssort(istarts), &
               radius, xnodes, wts, nquad2)
 
           enddo
@@ -1848,8 +1847,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
         timeinfo(7), ' ', timeinfo(7)/d*100, '%'
     write(6,'(a,f6.3,a,f6.2,a)') 'Step 8: DIRECT EVAL         ',&
         timeinfo(8), ' ', timeinfo(8)/d*100, '%'
-    write(6,'(a,f6.3)') 'Total time required         ',&
-        d
+    write(6,'(a,f6.3)') 'Total time required         ', d
     print *
     print *
   end if
