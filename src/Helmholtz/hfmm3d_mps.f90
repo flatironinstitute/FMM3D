@@ -1304,23 +1304,11 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
         npts = 0
 
-        !if(ifpghtarg.gt.0) then
-        !  istart = itree(ipointer(12)+ibox-1)
-        !  iend = itree(ipointer(13)+ibox-1)
-        !  npts = npts + iend-istart+1
-        !endif
-
-        !istart = itree(ipointer(14)+ibox-1)
-        !iend = itree(ipointer(17)+ibox-1)
-        !npts = npts + iend-istart+1
-
         nchild = itree(ipointer(3)+ibox-1)
 
-        !if(ifpgh.gt.0) then
-          istart = itree(ipointer(10)+ibox-1)
-          iend = itree(ipointer(11)+ibox-1)
-          npts = npts + iend-istart+1
-        !endif
+        istart = itree(ipointer(10)+ibox-1)
+        iend = itree(ipointer(11)+ibox-1)
+        npts = npts + iend-istart+1
 
 
         if(npts.gt.0.and.nchild.gt.0) then
