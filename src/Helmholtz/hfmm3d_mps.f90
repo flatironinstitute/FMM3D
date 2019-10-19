@@ -905,23 +905,23 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   !
   ! set scjsort (these are extra output expansion centers)
   !
-  do ilev=0,nlevels
-    !$omp parallel do default(shared) &
-    !$omp private(ibox,nchild,istart,iend,i)
-    do ibox=laddr(1,ilev),laddr(2,ilev)
-      nchild = itree(ipointer(3)+ibox-1)
-      if(nchild.gt.0) then
-        istart = itree(ipointer(16)+ibox-1)
-        iend = itree(ipointer(17)+ibox-1)
-        do i=istart,iend
-          scjsort(i) = rscales(ilev)
-          radssort(i) = min(radssort(i),boxsize(ilev)/32* &
-              sqrt(3.0d0))
-        enddo
-      endif
-    enddo
-    !$omp end parallel do
-  enddo
+  ! do ilev=0,nlevels
+  !   !$omp parallel do default(shared) &
+  !   !$omp private(ibox,nchild,istart,iend,i)
+  !   do ibox=laddr(1,ilev),laddr(2,ilev)
+  !     nchild = itree(ipointer(3)+ibox-1)
+  !     if(nchild.gt.0) then
+  !       istart = itree(ipointer(16)+ibox-1)
+  !       iend = itree(ipointer(17)+ibox-1)
+  !       do i=istart,iend
+  !         scjsort(i) = rscales(ilev)
+  !         radssort(i) = min(radssort(i),boxsize(ilev)/32* &
+  !             sqrt(3.0d0))
+  !       enddo
+  !     endif
+  !   enddo
+  !   !$omp end parallel do
+  ! enddo
 
 
   ! initialize legendre function evaluation routines
@@ -951,7 +951,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     !!!!!!!!!
     radius = boxsize(ilev)/2*sqrt(3.0d0)*1.5d0
 
-    if(ifcharge.eq.1.and.ifdipole.eq.0) then
+    !if(ifcharge.eq.1.and.ifdipole.eq.0) then
 
       !$OMP PARALLEL DO DEFAULT(SHARED) &
       !$OMP   PRIVATE(ibox,npts,istart,iend,nchild)
@@ -981,7 +981,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
         endif
       enddo
       !$omp end parallel do            
-    endif
+    !endif
 
   enddo
 
@@ -1090,6 +1090,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     do ibox = laddr(1,ilev),laddr(2,ilev)
       do i=1,8
         jbox = itree(ipointer(4)+8*(ibox-1)+i-1)
+
         if(jbox.gt.0) then
           istart = itree(ipointer(10)+jbox-1)
           iend = itree(ipointer(11)+jbox-1)
@@ -1303,23 +1304,23 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
         npts = 0
 
-        if(ifpghtarg.gt.0) then
-          istart = itree(ipointer(12)+ibox-1)
-          iend = itree(ipointer(13)+ibox-1)
-          npts = npts + iend-istart+1
-        endif
+        !if(ifpghtarg.gt.0) then
+        !  istart = itree(ipointer(12)+ibox-1)
+        !  iend = itree(ipointer(13)+ibox-1)
+        !  npts = npts + iend-istart+1
+        !endif
 
-        istart = itree(ipointer(14)+ibox-1)
-        iend = itree(ipointer(17)+ibox-1)
-        npts = npts + iend-istart+1
+        !istart = itree(ipointer(14)+ibox-1)
+        !iend = itree(ipointer(17)+ibox-1)
+        !npts = npts + iend-istart+1
 
         nchild = itree(ipointer(3)+ibox-1)
 
-        if(ifpgh.gt.0) then
+        !if(ifpgh.gt.0) then
           istart = itree(ipointer(10)+ibox-1)
           iend = itree(ipointer(11)+ibox-1)
           npts = npts + iend-istart+1
-        endif
+        !endif
 
 
         if(npts.gt.0.and.nchild.gt.0) then
@@ -1467,21 +1468,9 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
       npts = 0
 
-      ! if(ifpghtarg.gt.0) then
-      !   istart = itree(ipointer(12)+ibox-1)
-      !   iend = itree(ipointer(13)+ibox-1)
-      !   npts = npts + iend-istart+1
-      ! endif
-
-      ! istart = itree(ipointer(14)+ibox-1)
-      ! iend = itree(ipointer(17)+ibox-1)
-      ! npts = npts + iend-istart+1
-
-      !if(ifpgh.gt.0) then
-        istart = itree(ipointer(10)+ibox-1)
-        iend = itree(ipointer(11)+ibox-1)
-        npts = npts + iend-istart+1
-      !endif
+      istart = itree(ipointer(10)+ibox-1)
+      iend = itree(ipointer(11)+ibox-1)
+      npts = npts + iend-istart+1
 
       if (npts .gt. 0) then
         do i=1,8
@@ -1504,55 +1493,12 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
 
   
-
-
-  
+  !
+  ! Step 6: Ship multipole expansions to local expansion in List 4
+  !
   if(ifprint.ge.1) call prinf('=== step 6 (mp eval) ===*',i,0)
   call cpu_time(time1)
   !$ time1=omp_get_wtime()
-
-  !c
-  !cc       shift mutlipole expansions to expansion center
-  !c        (Note: this part is not relevant for particle codes.
-  !c         It is relevant only for QBX codes)
-
-!!! 1000 continue
-
-  ! nquad2 = max(6,2*ntj)
-  ! ifinit2 = 1
-  ! call legewhts(nquad2,xnodes,wts,ifinit2)
-  ! do ilev=1,nlevels
-  !   !$omp parallel do default(shared) &
-  !   !$omp private(ibox,nlist3,istart,iend,npts,j,i,jbox) &
-  !   !$omp schedule(dynamic)
-  !   do ibox = laddr(1,ilev),laddr(2,ilev)
-  !     nlist3 = itree(ipointer(24)+ibox-1)
-
-  !     istart = itree(ipointer(16)+ibox-1)
-  !     iend = itree(ipointer(17)+ibox-1)
-
-  !     do j=istart,iend
-  !       do i=1,nlist3
-  !         jbox = itree(ipointer(25)+(ibox-1)*mnlist3+i-1)
-
-  !         !
-  !         ! shift multipole expansion directly from box
-  !         ! center to expansion center
-  !         call h3dmploc(nd,zk,rscales(ilev+1), &
-  !             centers(1,jbox), &
-  !             rmlexp(iaddr(1,jbox)),nterms(ilev+1), &
-  !             scjsort(j),expcsort(1,j), &
-  !             jsort(1,0,-ntj,j),ntj, &
-  !             radssort(j),xnodes,wts,nquad2)
-  !       enddo
-  !     enddo
-  !   enddo
-  !   !$omp end parallel do  
-  ! enddo
-
-  !
-  ! evaluate multipole expansions at source locations
-  !
 
   do ilev=1,nlevels
 
@@ -1562,49 +1508,28 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     call legewhts(nquad2,xnodes,wts,ifinit2)
     radius = boxsize(ilev)/2*sqrt(3.0d0)/2
 
-    
-    if(ifpgh.eq.1) then         
-      !$omp parallel do default(shared) &
-      !$omp   private(ibox,nlist3,istart,iend,npts,i,jbox) &
-      !$omp   schedule(dynamic)
-      do ibox=laddr(1,ilev),laddr(2,ilev)
-        nlist3 = itree(ipointer(24)+ibox-1)
-        istart = itree(ipointer(10)+ibox-1)
-        iend = itree(ipointer(11)+ibox-1)
+    !$omp parallel do default(shared) &
+    !$omp   private(ibox,nlist3,istart,iend,npts,i,jbox) &
+    !$omp   schedule(dynamic)
+    do ibox=laddr(1,ilev),laddr(2,ilev)
+      nlist3 = itree(ipointer(24)+ibox-1)
+      istart = itree(ipointer(10)+ibox-1)
+      iend = itree(ipointer(11)+ibox-1)
 
-        npts = iend-istart+1
+      npts = iend-istart+1
 
-        do i=1,nlist3
-          jbox = itree(ipointer(25)+(ibox-1)*mnlist3+i-1)
-          !call h3dmpevalp(nd,zk,rscales(ilev+1),centers(1,jbox), &
-          !    rmlexp(iaddr(1,jbox)),nterms(ilev+1), &
-          !    sourcesort(1,istart),npts,pot(1,istart),wlege,nlege, &
-          !    thresh)
-
-          !print *, 'from mpevalp, pot = ', pot(1,istart)
-          
-          call h3dmploc(nd, zk, rscales(ilev+1), centers(1,jbox), &
-              rmlexp(iaddr(1,jbox)),nterms(ilev+1), &
-              rmpolesort(istart), cmpolesort(1,istart), &
-              localsort(impolesort(istart)), mtermssort(istart), &
-              radius, xnodes, wts, nquad2)
-
-          !cd = pot(1,istart)
-          !pot(1,istart) = 0
-          !call h3dtaevalp(nd, zk, rmpolesort(istart), &
-          !    cmpolesort(1,istart), &
-          !    localsort(impolesort(istart)), mtermssort(istart), &
-          !    sourcesort(1,istart), &
-          !    npts,pot(1,istart),wlege,nlege)
-
-          !print *, 'from mploc and eval, pot = ', pot(1,istart)
-          !print *, 'error = *', (cd-pot(1,istart))/cd
-          !stop
-          
-        enddo
+      do i=1,nlist3
+        jbox = itree(ipointer(25)+(ibox-1)*mnlist3+i-1)
+        call h3dmploc(nd, zk, rscales(ilev+1), centers(1,jbox), &
+            rmlexp(iaddr(1,jbox)),nterms(ilev+1), &
+            rmpolesort(istart), cmpolesort(1,istart), &
+            localsort(impolesort(istart)), mtermssort(istart), &
+            radius, xnodes, wts, nquad2)
       enddo
-      !$omp end parallel do          
-    endif
+
+    enddo
+    !$omp end parallel do          
+
   enddo
 
   call cpu_time(time2)
@@ -1614,55 +1539,17 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
 
 
-
-  
+  !
+  ! Step 7: Shift local expansions in leaf nodes to the correct
+  ! respective multipole expansion centers
+  !
   if(ifprint.ge.1) &
-      call prinf('=== step 7 (eval lo) ===*',i,0)
-  !
-  ! ... step 7, evaluate all local expansions
-  !
-  
-  !nquad2 = 2*ntj
-  !nquad2 = max(6,nquad2)
-  !ifinit2 = 1
-
-  !call legewhts(nquad2,xnodes,wts,ifinit2)
+      call prinf('=== Step 7 (LOC to CEN) ===*',i,0)
+  print *, 'dont forget to check box radius for translation...'
 
   call cpu_time(time1)
   !$ time1=omp_get_wtime()
 
-  !
-  ! shift local expansion to local epxanion at expansion centers
-  ! (note: this part is not relevant for particle codes.
-  ! it is relevant only for qbx codes)
-  !
-  ! do ilev = 0,nlevels
-  !   !$omp parallel do default(shared) &
-  !   !$omp   private(ibox,nchild,istart,iend,i) schedule(dynamic)
-  !   do ibox = laddr(1,ilev),laddr(2,ilev)
-  !     nchild=itree(ipointer(3)+ibox-1)
-  !     if(nchild.eq.0) then 
-  !       istart = itree(ipointer(16)+ibox-1)
-  !       iend = itree(ipointer(17)+ibox-1)
-  !       do i=istart,iend
-
-  !         call h3dlocloc(nd,zk,rscales(ilev), &
-  !             centers(1,ibox),rmlexp(iaddr(2,ibox)), &
-  !             nterms(ilev),rscales(ilev),expcsort(1,i), &
-  !             jsort(1,0,-ntj,i),ntj,radssort(i),xnodes,wts, &
-  !             nquad2)
-  !       enddo
-  !     endif
-  !   enddo
-  !   !$omp end parallel do
-  ! enddo
-
-
-  print *, 'dont forget to check box radius for translation...'
-  
-  !
-  ! evaluate local expansion at source and target locations
-  !
   do ilev = 0,nlevels
 
     nquad2 = nterms(ilev)*2
@@ -1671,56 +1558,25 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     call legewhts(nquad2, xnodes, wts, ifinit2)
     radius = boxsize(ilev)/2*sqrt(3.0d0)
 
-    if(ifpgh.eq.1) then
-      !!$omp parallel do default(shared) &
-      !!$omp   private(ibox,nchild,istart,iend,npts) schedule(dynamic)
-      do ibox = laddr(1,ilev),laddr(2,ilev)
-        nchild=itree(ipointer(3)+ibox-1)
-        if(nchild.eq.0) then 
-          istart = itree(ipointer(10)+ibox-1)
-          iend = itree(ipointer(11)+ibox-1)
-          npts = iend-istart+1
+    !$omp parallel do default(shared) &
+    !$omp   private(ibox,nchild,istart,iend,npts) schedule(dynamic)
+    do ibox = laddr(1,ilev),laddr(2,ilev)
 
-          !call h3dtaevalp(nd,zk,rscales(ilev),centers(1,ibox), &
-          !    rmlexp(iaddr(2,ibox)),nterms(ilev), &
-          !    sourcesort(1,istart), &
-          !    npts,pot(1,istart),wlege,nlege)
+      nchild=itree(ipointer(3)+ibox-1)
 
-          do i = 1,10000
-            work(i) = 0
-          end do
+      if(nchild.eq.0) then 
+        istart = itree(ipointer(10)+ibox-1)
+        iend = itree(ipointer(11)+ibox-1)
+        npts = iend-istart+1
+        call h3dlocloc(nd, zk, rscales(ilev), &
+            centers(1,ibox), rmlexp(iaddr(2,ibox)), &
+            nterms(ilev), rmpolesort(istart), cmpolesort(1,istart), &
+            localsort(impolesort(istart)), mtermssort(istart), &
+            radius, xnodes, wts, nquad2)
+      endif
 
-          r1 = 1
-         ! call h3dlocloc(nd, zk, rscales(ilev), &
-         !     centers(1,ibox), rmlexp(iaddr(2,ibox)), &
-         !     nterms(ilev), r1, cmpolesort(1,istart), &
-         !     work, mtermssort(istart), &
-         !     radius, xnodes, wts, nquad2)
-
-         ! call h3dtaevalp(nd, zk, r1, &
-         !     cmpolesort(1,istart), work, &
-         !     mtermssort(istart), &
-         !     sourcesort(1,istart), npts, pot(1,istart), &
-         !     wlege, nlege)
-          
-          
-           call h3dlocloc(nd, zk, rscales(ilev), &
-               centers(1,ibox), rmlexp(iaddr(2,ibox)), &
-               nterms(ilev), rmpolesort(istart), cmpolesort(1,istart), &
-               localsort(impolesort(istart)), mtermssort(istart), &
-               radius, xnodes, wts, nquad2)
-
-           !call h3dtaevalp(nd, zk, rmpolesort(istart), &
-           !    cmpolesort(1,istart), localsort(impolesort(istart)), &
-           !    mtermssort(istart), &
-           !    sourcesort(1,istart), npts, pot(1,istart), &
-           !    wlege, nlege)
-
-        endif
-      enddo
-      !!$omp end parallel do
-    endif
-
+    enddo
+    !$omp end parallel do
 
   enddo
 
@@ -1731,50 +1587,14 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
 
   
-
+  !
+  ! Step 8: Direct multipole to local translations for nearfield
+  !
   if(ifprint .ge. 1) call prinf('=== STEP 8 (direct) =====*',i,0)
 
   call cpu_time(time1)
   !$ time1=omp_get_wtime()
 
-  ! !
-  ! !  directly form local expansions for list1 sources
-  ! !  at expansion centers. 
-  ! !  (note: this part is not relevant for particle codes.
-  ! !  It is relevant only for qbx codes)
-  ! !
-
-  ! do ilev=0,nlevels
-  !   !$omp parallel do default(shared) &
-  !   !$omp   private(ibox,istarte,iende,nlist1,i,jbox,jstart,jend)
-  !   do ibox = laddr(1,ilev),laddr(2,ilev)
-  !     istarte = itree(ipointer(16)+ibox-1)
-  !     iende = itree(ipointer(17)+ibox-1)
-
-  !     nlist1 = itree(ipointer(20)+ibox-1)
-
-  !     do i =1,nlist1
-  !       jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-
-
-  !       jstart = itree(ipointer(10)+jbox-1)
-  !       jend = itree(ipointer(11)+jbox-1)
-
-  !       call hfmm3dexpc_direct(nd,zk,jstart,jend,istarte, &
-  !           iende,sourcesort,ifcharge,chargesort,ifdipole, &
-  !           dipvecsort,expcsort,jsort,scjsort,ntj, &
-  !           wlege,nlege)
-  !     enddo
-  !   enddo
-  !   !$omp end parallel do
-  ! enddo
-
-
-
-  !
-  ! directly evaluate potential at sources and targets due to sources
-  !  in list1
-  !
   do ilev=0,nlevels
 
     nquad2 = nterms(ilev)*2
@@ -1783,96 +1603,59 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     call legewhts(nquad2, xnodes, wts, ifinit2)
     radius = boxsize(ilev)/2*sqrt(3.0d0)/2/2
 
-    !print *, 'level = ', ilev, ' radius = ', radius
-    
     !
     ! do final mploc translations for nearfield, which are assumed to
     ! be valid translations, despite them being in the nearfield
     !
 
-    if(ifpgh.eq.1) then
-      if(ifcharge.eq.1.and.ifdipole.eq.0) then
-        !$omp parallel do default(shared) &
-        !$omp   private(ibox,istarts,iends,npts0,nlist1,i) &
-        !$omp   private(jbox,jstart,jend,npts,d)
-        do ibox = laddr(1,ilev),laddr(2,ilev)
-          istarts = itree(ipointer(10)+ibox-1)
-          iends = itree(ipointer(11)+ibox-1)
-          npts0 = iends-istarts+1
-          nlist1 = itree(ipointer(20)+ibox-1)
+    !$omp parallel do default(shared) &
+    !$omp   private(ibox,istarts,iends,npts0,nlist1,i) &
+    !$omp   private(jbox,jstart,jend,npts,d)
+    do ibox = laddr(1,ilev),laddr(2,ilev)
+      istarts = itree(ipointer(10)+ibox-1)
+      iends = itree(ipointer(11)+ibox-1)
+      npts0 = iends-istarts+1
+      nlist1 = itree(ipointer(20)+ibox-1)
 
-          do i=1,nlist1
-            jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-            jstart = itree(ipointer(10)+jbox-1)
-            jend = itree(ipointer(11)+jbox-1)
-            npts = jend-jstart+1
+      do i=1,nlist1
+        jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+        jstart = itree(ipointer(10)+jbox-1)
+        jend = itree(ipointer(11)+jbox-1)
+        npts = jend-jstart+1
 
-            if (npts .ne. 1) then
-              print *, 'npts = ', npts
-              stop
-            end if
+        if (npts .ne. 1) then
+          print *, 'npts = ', npts
+          stop
+        end if
 
-            !call h3ddirectcp_vec_d(nd,zk,sourcesort(1,jstart), &
-            !    chargesort(1,jstart),npts,sourcesort(1,istarts), &
-            !    npts0,pot(1,istarts),thresh)          
+        d = (sourcesort(1,jstart)-sourcesort(1,istarts))**2 &
+            + (sourcesort(2,jstart)-sourcesort(2,istarts))**2 &
+            + (sourcesort(3,jstart)-sourcesort(3,istarts))**2
+        d = sqrt(d)
 
+        if (d .gt. thresh) then
 
-            !print *, 'finish list 1 mp2loc translations'
+          call h3dmploc(nd, zk, rmpolesort(jstart),&
+              cmpolesort(1,jstart), &
+              mpolesort(impolesort(jstart)), mtermssort(jstart), &
+              rmpolesort(istarts), cmpolesort(1,istarts), &
+              localsort(impolesort(istarts)), mtermssort(istarts), &
+              radius, xnodes, wts, nquad2)
+        end if
 
-            ! if (jstart .ne. istarts) then
+      enddo
 
-            d = (sourcesort(1,jstart)-sourcesort(1,istarts))**2 &
-                + (sourcesort(2,jstart)-sourcesort(2,istarts))**2 &
-                + (sourcesort(3,jstart)-sourcesort(3,istarts))**2
-            d = sqrt(d)
-
-            if (d .gt. thresh) then
-            
-              call h3dmploc(nd, zk, rmpolesort(jstart),&
-                  cmpolesort(1,jstart), &
-                  mpolesort(impolesort(jstart)), mtermssort(jstart), &
-                  rmpolesort(istarts), cmpolesort(1,istarts), &
-                  localsort(impolesort(istarts)), mtermssort(istarts), &
-                  radius, xnodes, wts, nquad2)
-            end if
-        
-          enddo
-
-           ! call h3dtaevalp(nd, zk, rmpolesort(istarts), &
-           !     cmpolesort(1,istarts), localsort(impolesort(istarts)), &
-           !     mtermssort(istarts), &
-           !     sourcesort(1,istarts), npts0, pot(1,istarts), &
-           !     wlege, nlege)
-
-
-
-        enddo
-        !$omp end parallel do            
-      endif
-
-    endif
+    enddo
+    !$omp end parallel do            
 
   enddo
 
-
-  ! npts = 1
-  ! do i = 1,nmpole
-    
-  !   call h3dtaevalp(nd, zk, rmpolesort(i), &
-  !       cmpolesort(1,i), localsort(impolesort(i)), &
-  !       mtermssort(i), &
-  !       sourcesort(1,i), npts, pot(1,i), &
-  !       wlege, nlege)
-  ! end do
-         
-
-
-  
   
   call cpu_time(time2)
   !$ time2=omp_get_wtime()
   timeinfo(8) = time2-time1
 
+  
   d = 0
   do i = 1,8
     d = d + timeinfo(i)
@@ -1902,12 +1685,6 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     print *
     print *
   end if
-
-  
-  
-
-  
-  !if(ifprint.ge.1) call prin2('sum(timeinfo)=*',d,1)
 
 
   return
