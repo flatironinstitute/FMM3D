@@ -204,7 +204,7 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
   double precision expc(3),scjsort(1),radexp
   double complex texpssort(100)
   double precision expcsort(3),radssort(1)
-  integer ntj,nexpc,nadd
+  integer ntj,nexpc,nadd, npts
 
   !
   !        other temporary variables
@@ -598,6 +598,16 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
   call ylgndrfwini(nlege, wlege, lw7, lused7)
 
   
+  npts = 1
+  do i = 1,nmpole
+    
+    call h3dtaevalp(nd, zk, rmpolesort(i), &
+        cmpolesort(1,i), localsort(impolesort(i)), &
+        mtermssort(i), &
+        sourcesort(1,i), npts, potsort(1,i), &
+        wlege, nlege)
+  end do
+
   !do i = 1,nmpole
   !  potsort(1,i) = 0
   !  call h3dtaevalp(nd, zk, rmpolesort(i), &
@@ -1700,11 +1710,11 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
                localsort(impolesort(istart)), mtermssort(istart), &
                radius, xnodes, wts, nquad2)
 
-           call h3dtaevalp(nd, zk, rmpolesort(istart), &
-               cmpolesort(1,istart), localsort(impolesort(istart)), &
-               mtermssort(istart), &
-               sourcesort(1,istart), npts, pot(1,istart), &
-               wlege, nlege)
+           !call h3dtaevalp(nd, zk, rmpolesort(istart), &
+           !    cmpolesort(1,istart), localsort(impolesort(istart)), &
+           !    mtermssort(istart), &
+           !    sourcesort(1,istart), npts, pot(1,istart), &
+           !    wlege, nlege)
 
         endif
       enddo
@@ -1771,7 +1781,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     nquad2 = max(6,nquad2)
     ifinit2 = 1
     call legewhts(nquad2, xnodes, wts, ifinit2)
-    radius = boxsize(ilev)/2*sqrt(3.0d0)/2
+    radius = boxsize(ilev)/2*sqrt(3.0d0)/2/2
 
     !print *, 'level = ', ilev, ' radius = ', radius
     
@@ -1784,7 +1794,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
       if(ifcharge.eq.1.and.ifdipole.eq.0) then
         !$omp parallel do default(shared) &
         !$omp   private(ibox,istarts,iends,npts0,nlist1,i) &
-        !$omp   private(jbox,jstart,jend,npts)
+        !$omp   private(jbox,jstart,jend,npts,d)
         do ibox = laddr(1,ilev),laddr(2,ilev)
           istarts = itree(ipointer(10)+ibox-1)
           iends = itree(ipointer(11)+ibox-1)
@@ -1802,31 +1812,37 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
               stop
             end if
 
-           ! call h3ddirectcp_vec_d(nd,zk,sourcesort(1,jstart), &
-           !     chargesort(1,jstart),npts,sourcesort(1,istarts), &
-           !     npts0,pot(1,istarts),thresh)          
+            !call h3ddirectcp_vec_d(nd,zk,sourcesort(1,jstart), &
+            !    chargesort(1,jstart),npts,sourcesort(1,istarts), &
+            !    npts0,pot(1,istarts),thresh)          
 
 
             !print *, 'finish list 1 mp2loc translations'
 
-            if (jstart .ne. istarts) then
+            ! if (jstart .ne. istarts) then
 
+            d = (sourcesort(1,jstart)-sourcesort(1,istarts))**2 &
+                + (sourcesort(2,jstart)-sourcesort(2,istarts))**2 &
+                + (sourcesort(3,jstart)-sourcesort(3,istarts))**2
+            d = sqrt(d)
+
+            if (d .gt. thresh) then
+            
               call h3dmploc(nd, zk, rmpolesort(jstart),&
                   cmpolesort(1,jstart), &
                   mpolesort(impolesort(jstart)), mtermssort(jstart), &
                   rmpolesort(istarts), cmpolesort(1,istarts), &
                   localsort(impolesort(istarts)), mtermssort(istarts), &
                   radius, xnodes, wts, nquad2)
-
             end if
         
           enddo
 
-           call h3dtaevalp(nd, zk, rmpolesort(istarts), &
-               cmpolesort(1,istarts), localsort(impolesort(istarts)), &
-               mtermssort(istarts), &
-               sourcesort(1,istarts), npts0, pot(1,istarts), &
-               wlege, nlege)
+           ! call h3dtaevalp(nd, zk, rmpolesort(istarts), &
+           !     cmpolesort(1,istarts), localsort(impolesort(istarts)), &
+           !     mtermssort(istarts), &
+           !     sourcesort(1,istarts), npts0, pot(1,istarts), &
+           !     wlege, nlege)
 
 
 
@@ -1838,6 +1854,20 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
   enddo
 
+
+  ! npts = 1
+  ! do i = 1,nmpole
+    
+  !   call h3dtaevalp(nd, zk, rmpolesort(i), &
+  !       cmpolesort(1,i), localsort(impolesort(i)), &
+  !       mtermssort(i), &
+  !       sourcesort(1,i), npts, pot(1,i), &
+  !       wlege, nlege)
+  ! end do
+         
+
+
+  
   
   call cpu_time(time2)
   !$ time2=omp_get_wtime()
