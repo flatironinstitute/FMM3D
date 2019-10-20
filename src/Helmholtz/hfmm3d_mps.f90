@@ -22,8 +22,9 @@
 !--------------------------------------------------------------------
 !
 
-subroutine hfmm3d_mps(nd, eps, zk, nsource, ifcharge, &
-    charge,ifdipole,dipvec, &
+subroutine hfmm3d_mps(nd, eps, zk, nsource, &
+    !ifcharge, &
+    !charge,ifdipole,dipvec, &
     nmpole, cmpole, rmpole, mterms, mpole, impole, local, &
     ifpgh,pot,grad,hess,ntarg, &
     targ,ifpghtarg,pottarg,gradtarg,hesstarg)
@@ -46,21 +47,6 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, ifcharge, &
   !                source(k,j) is the kth component of the jth
   !                source locations
   !
-  !   ifcharge  in: integer  
-  !             charge computation flag
-  !              ifcharge = 1   =>  include charge contribution
-  !                                     otherwise do not
-  ! 
-  !   charge    in: double complex (nd,nsource) 
-  !              charge strengths
-  !
-  !   ifdipole   in: integer
-  !              dipole computation flag
-  !              ifdipole = 1   =>  include dipole contribution
-  !                                     otherwise do not
-  !
-  !   dipvec   in: double precision (nd,3,nsource) 
-  !              dipole orientation vectors
   !
   !     nmpole:  in: integer
   !              number of multipole expansion centers
@@ -140,16 +126,16 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, ifcharge, &
   double complex :: mpole(*)
   double complex :: local(*)
   
-  integer ifcharge,ifdipole
+  !integer ifcharge,ifdipole
   integer ifpgh,ifpghtarg
 
   integer nsource,ntarg
 
   !double precision source(3,nsource)
   double precision :: targ(3,ntarg)
-  double complex charge(nd,nsource)
+  !double complex charge(nd,nsource)
 
-  double complex dipvec(nd,3,nsource)
+  !double complex dipvec(nd,3,nsource)
 
   double complex pot(nd,nsource),grad(nd,3,nsource), &
       pottarg(nd,3,ntarg), &
@@ -172,8 +158,8 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, ifcharge, &
   integer :: lmpole, mt, len
   !double precision, allocatable :: sourcesort(:,:),targsort(:,:)
   double precision, allocatable :: radsrc(:)
-  double complex, allocatable :: chargesort(:,:)
-  double complex, allocatable :: dipvecsort(:,:,:)
+  !double complex, allocatable :: chargesort(:,:)
+  !double complex, allocatable :: dipvecsort(:,:,:)
 
   integer, allocatable :: mtermssort(:), impolesort(:)
   double precision, allocatable :: cmpolesort(:,:)
