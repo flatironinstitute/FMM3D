@@ -22,7 +22,8 @@
 !--------------------------------------------------------------------
 !
 
-subroutine hfmm3d_mps(nd, eps, zk, nsource, &
+subroutine hfmm3d_mps(nd, eps, zk, &
+    !nsource, &
     !ifcharge, &
     !charge,ifdipole,dipvec, &
     nmpole, cmpole, rmpole, mterms, mpole, impole, local, &
@@ -129,7 +130,8 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, &
   !integer ifcharge,ifdipole
   integer ifpgh,ifpghtarg
 
-  integer nsource,ntarg
+  !integer nsource
+  integer ntarg
 
   !double precision source(3,nsource)
   double precision :: targ(3,ntarg)
@@ -137,7 +139,7 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, &
 
   !double complex dipvec(nd,3,nsource)
 
-  double complex pot(nd,nsource),grad(nd,3,nsource), &
+  double complex pot(nd,*),grad(nd,3,*), &
       pottarg(nd,3,ntarg), &
       gradtarg(nd,3,ntarg),hess(nd,6,*),hesstarg(nd,6,*)
 
