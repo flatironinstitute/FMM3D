@@ -596,18 +596,9 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
   call ylgndrfwini(nlege, wlege, lw7, lused7)
 
   
-  npts = 1
-  do i = 1,nmpole
-    
-    call h3dtaevalp(nd, zk, rmpolesort(i), &
-        cmpolesort(1,i), localsort(impolesort(i)), &
-        mtermssort(i), &
-        sourcesort(1,i), npts, potsort(1,i), &
-        wlege, nlege)
-  end do
 
 
-  if (1 .eq. 0) then
+  if (1 .eq. 1) then
 
     !
     ! now unsort the local expansions
@@ -621,30 +612,51 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
       ijk = 1
       do j = 1,len
         do l = 1,nd
-          !mpolesort(impolesort(i)+ijk-1) = &
-          !    mpole(nd*(impole(itree(ipointer(5)+i-1))-1)+ijk)
           !do i=1,n
           !  do idim=1,ndim
           !    arrsort(idim,iarr(i)) = arr(idim,i)
           !  enddo
           !enddo
-          ptr = nd*impole(perm)
+          !ptr = nd*impole(perm)
 
-          local(nd*(impole(perm)-1)+ijk) = &
+          local(nd*(impole(itree(ipointer(5)+i-1))-1)+ijk) = &
               localsort(impolesort(i)+ijk-1)
+            
           ijk = ijk + 1
         end do
       end do
     end do
 
+    ! npts = 1
+    ! do i = 1,nmpole
+    !   call h3dtaevalp(nd, zk, rmpole(i), &
+    !       cmpole(1,i), local(nd*(impole(i)-1)+1), &
+    !       mterms(i), source(1,i), npts, pot(1,i), &
+    !       wlege, nlege)
+    ! end do
+
+
+    
+  else
+
+    npts = 1
+    do i = 1,nmpole
+
+      call h3dtaevalp(nd, zk, rmpolesort(i), &
+          cmpolesort(1,i), localsort(impolesort(i)), &
+          mtermssort(i), &
+          sourcesort(1,i), npts, potsort(1,i), &
+          wlege, nlege)
+    end do
+
+    if(ifpgh.eq.1) then
+      call dreorderi(2*nd, nsource,potsort,pot, &
+          itree(ipointer(5)))
+    endif
+
   end if
-
-
-  if(ifpgh.eq.1) then
-    call dreorderi(2*nd, nsource,potsort,pot, &
-        itree(ipointer(5)))
-  endif
-
+  
+  
 
   return
 end subroutine hfmm3d_mps

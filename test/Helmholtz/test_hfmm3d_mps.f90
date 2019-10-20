@@ -201,7 +201,7 @@ program test_hfmm3d_mp2loc
   end do
 
   
-  nlege = 5000
+  nlege = 4000
   lw = 5*(nlege+1)**2
   allocate( wlege(lw) )
 
@@ -307,13 +307,15 @@ program test_hfmm3d_mp2loc
       ifpgh, pot, grad, hess, ntarg, &
       targ, ifpghtarg, pottarg, gradtarg, hesstarg)
 
+  npts = 1
+  do i = 1,nc
+    call h3dtaevalp(nd, zk, rscales(i), &
+        centers(1,i), local(1,impole(i)), &
+        nterms(i), source(1,i), npts, pot(1,i), &
+        wlege, nlege)
+  end do
 
-  !do i = 1,nc
-  !  pot(1,i) = 0
-  !  call h3dtaevalp(nd, zk, rscales(i), &
-  !      centers(1,i), local(1,i), nterms(i), source(1,i), &
-  !      1, pot(1,i), wlege, nlege)
-  !end do
+  
 
   
   call prin2('from hfmm3d, potential = *', pot, 10)
