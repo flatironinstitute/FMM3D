@@ -568,19 +568,13 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
   !
   call cpu_time(time1)
   !$ time1=omp_get_wtime()
-  call hfmm3dmain_mps(nd,eps,zk, &
-      nsource,sourcesort,&
-      ifcharge,chargesort,&
-      ifdipole,dipvecsort,&
+  call hfmm3dmain_mps(nd, eps, zk, nsource, sourcesort, &
       nmpole, cmpolesort, rmpolesort, mtermssort, mpolesort, &
       impolesort, localsort, &
-      ntarg,targsort,nexpc,expcsort,radssort, &
       iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp, &
       itree,ltree,ipointer,isep,ndiv,nlevels, &
       nboxes,boxsize,mnbors,mnlist1,mnlist2,mnlist3,mnlist4, &
-      scales,treecenters,itree(ipointer(1)),nterms, &
-      ifpgh,potsort,gradsort,hesssort,ifpghtarg,pottargsort, &
-      gradtargsort,hesstargsort,ntj,texpssort,scjsort)
+      scales,treecenters,itree(ipointer(1)),nterms )
 
   call cpu_time(time2)
   !$ time2=omp_get_wtime()
@@ -649,10 +643,8 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
           wlege, nlege)
     end do
 
-    if(ifpgh.eq.1) then
       call dreorderi(2*nd, nsource,potsort,pot, &
           itree(ipointer(5)))
-    endif
 
   end if
   
@@ -667,33 +659,23 @@ end subroutine hfmm3d_mps
 
 subroutine hfmm3dmain_mps(nd,eps,zk, &
     nsource,sourcesort, &
-    ifcharge,chargesort, &
-    ifdipole,dipvecsort, &
     nmpole, cmpolesort, rmpolesort, mtermssort, mpolesort, &
     impolesort, localsort, &
-    ntarg,targsort,nexpc,expcsort,radssort, &
     iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp, &
     itree,ltree,ipointer,isep,ndiv,nlevels, &
     nboxes,boxsize,mnbors,mnlist1,mnlist2,mnlist3,mnlist4, &
-    rscales,centers,laddr,nterms,ifpgh,pot,grad,hess, &
-    ifpghtarg,pottarg,gradtarg,hesstarg, &
-    ntj,jsort,scjsort)
+    rscales,centers,laddr,nterms )
   implicit none
 
-  integer nd
-  double precision eps
-  integer nsource,ntarg, nexpc
+  integer :: nd, nsource
+  double precision :: eps
   integer ndiv,nlevels
 
-  integer ifcharge,ifdipole
-  integer ifpgh,ifpghtarg
 
   double complex zk,zk2
 
   double precision sourcesort(3,nsource)
 
-  double complex chargesort(nd,*)
-  double complex dipvecsort(nd,3,*)
 
   ! input multipole stuff
   integer :: nmpole, mtermssort(nmpole)
@@ -703,15 +685,6 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   double complex :: localsort(*)
 
   
-  double precision targsort(3,ntarg)
-
-  double complex pot(nd,*),grad(nd,3,*),hess(nd,6,*)
-  double complex pottarg(nd,*),gradtarg(nd,3,*),hesstarg(nd,6,*)
-
-  integer ntj
-  double precision expcsort(3,nexpc)
-  double complex jsort(nd,0:ntj,-ntj:ntj,nexpc)
-
 
   integer lmptemp
   integer *8 iaddr(2,nboxes), lmptot
@@ -776,7 +749,6 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   double precision, allocatable :: rsc(:)
   double precision r1
 
-  double precision scjsort(nexpc),radssort(nexpc)
 
   !c     temp variables
   integer i,j,k,l,ii,jj,kk,ll,idim
@@ -788,12 +760,11 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   integer jstart,jend
 
   integer ifprint,ifwrite
+  integer ifpgh
 
-  integer ifhesstarg
   double precision d,time1,time2,omp_get_wtime
 
   double precision sourcetmp(3)
-  double complex chargetmp(nd)
 
   integer ix,iy,iz
   double precision rtmp
@@ -824,7 +795,11 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
 
   integer nlfbox,ier, ifstep2, mt, ltot
 
-
+  !
+  ! remnant for debugging from point code
+  !
+  ifpgh = 1
+  
   ntmax = 1000
   allocate(nfourier(ntmax),nphysical(ntmax))
   allocate(rlams(ntmax),whts(ntmax))
@@ -874,18 +849,6 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   !       
   ifprint=1
 
-  ! ... set the expansion coefficients to zero
-  !$omp parallel do default(shared) private(i,j,k,idim)
-  do i=1,nexpc
-    do k=-ntj,ntj
-      do j = 0,ntj
-        do idim=1,nd
-          jsort(idim,j,k,i)=0
-        enddo
-      enddo
-    enddo
-  enddo
-  !$omp end parallel do
 
 
   do i=1,10
@@ -924,27 +887,6 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   !$omp end parallel do
   
 
-  !
-  ! set scjsort (these are extra output expansion centers)
-  !
-  ! do ilev=0,nlevels
-  !   !$omp parallel do default(shared) &
-  !   !$omp private(ibox,nchild,istart,iend,i)
-  !   do ibox=laddr(1,ilev),laddr(2,ilev)
-  !     nchild = itree(ipointer(3)+ibox-1)
-  !     if(nchild.gt.0) then
-  !       istart = itree(ipointer(16)+ibox-1)
-  !       iend = itree(ipointer(17)+ibox-1)
-  !       do i=istart,iend
-  !         scjsort(i) = rscales(ilev)
-  !         radssort(i) = min(radssort(i),boxsize(ilev)/32* &
-  !             sqrt(3.0d0))
-  !       enddo
-  !     endif
-  !   enddo
-  !   !$omp end parallel do
-  ! enddo
-
 
   ! initialize legendre function evaluation routines
   nlege = 100
@@ -973,8 +915,6 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     !!!!!!!!!
     radius = boxsize(ilev)/2*sqrt(3.0d0)*1.5d0
 
-    !if(ifcharge.eq.1.and.ifdipole.eq.0) then
-
       !$OMP PARALLEL DO DEFAULT(SHARED) &
       !$OMP   PRIVATE(ibox,npts,istart,iend,nchild)
       do ibox=laddr(1,ilev),laddr(2,ilev)
@@ -995,15 +935,9 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
               rmlexp(iaddr(1,ibox)), nterms(ilev), &
               radius, xnodes, wts, nquad2)
 
-          !call h3dformmpc(nd,zk,rscales(ilev), &
-          !    sourcesort(1,istart),chargesort(1,istart),npts, &
-          !    centers(1,ibox),nterms(ilev), &
-          !    rmlexp(iaddr(1,ibox)),wlege,nlege)          
-
         endif
       enddo
       !$omp end parallel do            
-    !endif
 
   enddo
 
@@ -1023,60 +957,54 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   call cpu_time(time1)
   !$ time1=omp_get_wtime()
 
+  
+  do ilev=2,nlevels
 
-  if(ifcharge.eq.1.and.ifdipole.eq.0) then
-    do ilev=2,nlevels
+    nquad2 = nterms(ilev)*2.5
+    nquad2 = max(6,nquad2)
+    ifinit2 = 1
+    call legewhts(nquad2,xnodes,wts,ifinit2)
+    radius = boxsize(ilev)/2*sqrt(3.0d0)
 
-      nquad2 = nterms(ilev)*2.5
-      nquad2 = max(6,nquad2)
-      ifinit2 = 1
-      call legewhts(nquad2,xnodes,wts,ifinit2)
-      radius = boxsize(ilev)/2*sqrt(3.0d0)
+    !$omp parallel do default(shared) &
+    !$omp   private(ibox,jbox,nlist4,istart,iend,npts,i) &
+    !$omp   schedule(dynamic)
+    do ibox=laddr(1,ilev),laddr(2,ilev)
+      nlist4 = itree(ipointer(26)+ibox-1)        
 
-      !$omp parallel do default(shared) &
-      !$omp   private(ibox,jbox,nlist4,istart,iend,npts,i) &
-      !$omp   schedule(dynamic)
-      do ibox=laddr(1,ilev),laddr(2,ilev)
-        nlist4 = itree(ipointer(26)+ibox-1)        
+      do i=1,nlist4
+        jbox = itree(ipointer(27)+(ibox-1)*mnlist4+i-1)
 
-        do i=1,nlist4
-          jbox = itree(ipointer(27)+(ibox-1)*mnlist4+i-1)
+        !
+        ! Form local expansion for all boxes in list3 of the current
+        ! box
+        !
+        istart = itree(ipointer(10)+jbox-1)
+        iend = itree(ipointer(11)+jbox-1)
+        npts = iend-istart+1
+        if(npts.gt.0) then
 
-          !
-          ! Form local expansion for all boxes in list3 of the current
-          ! box
-          !
-          istart = itree(ipointer(10)+jbox-1)
-          iend = itree(ipointer(11)+jbox-1)
-          npts = iend-istart+1
-          if(npts.gt.0) then
+          if (npts .gt. 1) then
+            print *, 'need to add loop for list 3 mp2loc!!!'
+            print *, 'multiple MPs in this box'
+            stop
+          end if
 
-            if (npts .gt. 1) then
-              print *, 'need to add loop for list 3 mp2loc!!!'
-              print *, 'multiple MPs in this box'
-              stop
-            end if
-            
-            
-            call h3dmploc(nd, zk, rmpolesort(istart),&
-                cmpolesort(1,istart), &
-                mpolesort(impolesort(istart)), &
-                mtermssort(istart), &
-                rscales(ilev), centers(1,ibox), &
-                rmlexp(iaddr(2,ibox)), nterms(ilev), &
-                radius, xnodes, wts, nquad2)
 
-            
-            !call h3dformtac(nd,zk,rscales(ilev), &
-            !    sourcesort(1,istart),chargesort(1,istart),npts, &
-            !    centers(1,ibox),nterms(ilev), &
-            !    rmlexp(iaddr(2,ibox)),wlege,nlege)
-          endif
-        enddo
+          call h3dmploc(nd, zk, rmpolesort(istart),&
+              cmpolesort(1,istart), &
+              mpolesort(impolesort(istart)), &
+              mtermssort(istart), &
+              rscales(ilev), centers(1,ibox), &
+              rmlexp(iaddr(2,ibox)), nterms(ilev), &
+              radius, xnodes, wts, nquad2)
+
+
+        endif
       enddo
-      !$omp end parallel do
     enddo
-  endif
+    !$omp end parallel do
+  enddo
 
   call cpu_time(time2)
   !$ time2=omp_get_wtime()
@@ -1414,12 +1342,6 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
       do ibox = laddr(1,ilev),laddr(2,ilev)
 
         npts = 0
-        !if(ifpghtarg.gt.0) then
-        !  istart = itree(ipointer(12)+ibox-1)
-        !  iend = itree(ipointer(13)+ibox-1)
-        !  npts = npts + iend - istart + 1
-        !endif
-
         istart = itree(ipointer(14)+ibox-1)
         iend = itree(ipointer(17)+ibox-1)
         npts = npts + iend-istart+1
