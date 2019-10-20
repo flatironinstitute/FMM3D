@@ -290,7 +290,13 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
   ! memory management code for constructing level restricted tree
   !
   iert = 0
-  call mklraptreemem(iert,source,nsource,radsrc,targ,ntarg, &
+  !call mklraptreemem(iert,source,nsource,radsrc,targ,ntarg, &
+  !    expc,nexpc,radexp,idivflag,ndiv,isep,nlmax,nbmax, &
+  !    nlevels,nboxes,mnbors,mnlist1,mnlist2,mnlist3, &
+  !    mnlist4,mhung,ltree)
+
+  ntarg = 0
+  call mklraptreemem(iert,cmpole, nmpole, radsrc,targ,ntarg, &
       expc,nexpc,radexp,idivflag,ndiv,isep,nlmax,nbmax, &
       nlevels,nboxes,mnbors,mnlist1,mnlist2,mnlist3, &
       mnlist4,mhung,ltree)
@@ -311,7 +317,12 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
   !
   !all tree code
   !
-  call mklraptree(source,nsource,radsrc,targ,ntarg,expc, &
+  !call mklraptree(source,nsource,radsrc,targ,ntarg,expc, &
+  !    nexpc,radexp,idivflag,ndiv,isep,mhung,mnbors, &
+  !    mnlist1,mnlist2,mnlist3,mnlist4,nlevels, &
+  !    nboxes,treecenters,boxsize,itree,ltree,ipointer)
+
+  call mklraptree(cmpole, nmpole, radsrc,targ,ntarg,expc, &
       nexpc,radexp,idivflag,ndiv,isep,mhung,mnbors, &
       mnlist1,mnlist2,mnlist3,mnlist4,nlevels, &
       nboxes,treecenters,boxsize,itree,ltree,ipointer)
@@ -320,38 +331,38 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
   !     Allocate sorted source and target arrays      
   !
   
-  allocate(sourcesort(3,nsource))
-  allocate(targsort(3,ntarg))
-  if(ifcharge.eq.1) allocate(chargesort(nd,nsource))
-  if(ifdipole.eq.1) then
-    allocate(dipvecsort(nd,3,nsource))
-  endif
+  !allocate(sourcesort(3,nsource))
+  !allocate(targsort(3,ntarg))
+  !if(ifcharge.eq.1) allocate(chargesort(nd,nsource))
+  !if(ifdipole.eq.1) then
+  !  allocate(dipvecsort(nd,3,nsource))
+  !endif
 
-  if(ifpgh.eq.1) then 
-    allocate(potsort(nd,nsource),gradsort(nd,3,1),hesssort(nd,6,1))
-  else if(ifpgh.eq.2) then
-    allocate(potsort(nd,nsource),gradsort(nd,3,nsource), &
-        hesssort(nd,6,1))
-  else if(ifpgh.eq.3) then
-    allocate(potsort(nd,nsource),gradsort(nd,3,nsource), &
-        hesssort(nd,6,nsource))
-  else
-    allocate(potsort(nd,1),gradsort(nd,3,1),hesssort(nd,6,1))
-  endif
+  ! if(ifpgh.eq.1) then 
+  !   allocate(potsort(nd,nsource),gradsort(nd,3,1),hesssort(nd,6,1))
+  ! else if(ifpgh.eq.2) then
+  !   allocate(potsort(nd,nsource),gradsort(nd,3,nsource), &
+  !       hesssort(nd,6,1))
+  ! else if(ifpgh.eq.3) then
+  !   allocate(potsort(nd,nsource),gradsort(nd,3,nsource), &
+  !       hesssort(nd,6,nsource))
+  ! else
+  !   allocate(potsort(nd,1),gradsort(nd,3,1),hesssort(nd,6,1))
+  ! endif
 
-  if(ifpghtarg.eq.1) then
-    allocate(pottargsort(nd,ntarg),gradtargsort(nd,3,1), &
-        hesstargsort(nd,6,1))
-  else if(ifpghtarg.eq.2) then
-    allocate(pottargsort(nd,ntarg),gradtargsort(nd,3,ntarg), &
-        hesstargsort(nd,6,1))
-  else if(ifpghtarg.eq.3) then
-    allocate(pottargsort(nd,ntarg),gradtargsort(nd,3,ntarg), &
-        hesstargsort(nd,6,ntarg))
-  else
-    allocate(pottargsort(nd,1),gradtargsort(nd,3,1), &
-        hesstargsort(nd,6,1))
-  endif
+  ! if(ifpghtarg.eq.1) then
+  !   allocate(pottargsort(nd,ntarg),gradtargsort(nd,3,1), &
+  !       hesstargsort(nd,6,1))
+  ! else if(ifpghtarg.eq.2) then
+  !   allocate(pottargsort(nd,ntarg),gradtargsort(nd,3,ntarg), &
+  !       hesstargsort(nd,6,1))
+  ! else if(ifpghtarg.eq.3) then
+  !   allocate(pottargsort(nd,ntarg),gradtargsort(nd,3,ntarg), &
+  !       hesstargsort(nd,6,ntarg))
+  ! else
+  !   allocate(pottargsort(nd,1),gradtargsort(nd,3,1), &
+  !       hesstargsort(nd,6,1))
+  ! endif
 
 
   !
@@ -362,100 +373,52 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
     scales(ilev) = boxsize(ilev)
   enddo
 
-  !
-  ! initialize potential and gradient at source locations
-  !
-  if(ifpgh.eq.1) then
-    !C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
-    do i=1,nsource
-      do idim=1,nd
-        potsort(idim,i) = 0
-      enddo
-    enddo
-    !C$OMP END PARALLEL DO
-  endif
-
-  if(ifpgh.eq.2) then
-    !C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
-
-    do i=1,nsource
-      do idim=1,nd
-        potsort(idim,i) = 0
-        gradsort(idim,1,i) = 0
-        gradsort(idim,2,i) = 0
-        gradsort(idim,3,i) = 0
-      enddo
-    enddo
-    !C$OMP END PARALLEL DO
-  endif
-
-
-  if(ifpgh.eq.3) then
-    !C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
-    do i=1,nsource
-      do idim=1,nd
-        potsort(idim,i) = 0
-        gradsort(idim,1,i) = 0
-        gradsort(idim,2,i) = 0
-        gradsort(idim,3,i) = 0
-        hesssort(idim,1,i) = 0
-        hesssort(idim,2,i) = 0
-        hesssort(idim,3,i) = 0
-        hesssort(idim,4,i) = 0
-        hesssort(idim,5,i) = 0
-        hesssort(idim,6,i) = 0
-      enddo
-    enddo
-    !C$OMP END PARALLEL DO
-  endif
-
-
 
   !c
   !cc       initialize potential and gradient  at targ
   !c        locations
   !c
-  if(ifpghtarg.eq.1) then
-    !C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
-    do i=1,ntarg
-      do idim=1,nd
-        pottargsort(idim,i) = 0
-      enddo
-    enddo
-    !C$OMP END PARALLEL DO
-  endif
+  ! if(ifpghtarg.eq.1) then
+  !   !C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
+  !   do i=1,ntarg
+  !     do idim=1,nd
+  !       pottargsort(idim,i) = 0
+  !     enddo
+  !   enddo
+  !   !C$OMP END PARALLEL DO
+  ! endif
 
-  if(ifpghtarg.eq.2) then
-    !C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
-    do i=1,ntarg
-      do idim=1,nd
-        pottargsort(idim,i) = 0
-        gradtargsort(idim,1,i) = 0
-        gradtargsort(idim,2,i) = 0
-        gradtargsort(idim,3,i) = 0
-      enddo
-    enddo
-    !C$OMP END PARALLEL DO
-  endif
+  ! if(ifpghtarg.eq.2) then
+  !   !C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
+  !   do i=1,ntarg
+  !     do idim=1,nd
+  !       pottargsort(idim,i) = 0
+  !       gradtargsort(idim,1,i) = 0
+  !       gradtargsort(idim,2,i) = 0
+  !       gradtargsort(idim,3,i) = 0
+  !     enddo
+  !   enddo
+  !   !C$OMP END PARALLEL DO
+  ! endif
 
-  if(ifpghtarg.eq.3) then
-    !C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
-    do i=1,ntarg
-      do idim=1,nd
-        pottargsort(idim,i) = 0
-        gradtargsort(idim,1,i) = 0
-        gradtargsort(idim,2,i) = 0
-        gradtargsort(idim,3,i) = 0
-        hesstargsort(idim,1,i) = 0
-        hesstargsort(idim,2,i) = 0
-        hesstargsort(idim,3,i) = 0
-        hesstargsort(idim,4,i) = 0
-        hesstargsort(idim,5,i) = 0
-        hesstargsort(idim,6,i) = 0
-      enddo
-    enddo
-    !C$OMP END PARALLEL DO
-  endif
+  ! if(ifpghtarg.eq.3) then
+  !   !C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
+  !   do i=1,ntarg
+  !     do idim=1,nd
+  !       pottargsort(idim,i) = 0
+  !       gradtargsort(idim,1,i) = 0
+  !       gradtargsort(idim,2,i) = 0
+  !       gradtargsort(idim,3,i) = 0
+  !       hesstargsort(idim,1,i) = 0
+  !       hesstargsort(idim,2,i) = 0
+  !       hesstargsort(idim,3,i) = 0
+  !       hesstargsort(idim,4,i) = 0
+  !       hesstargsort(idim,5,i) = 0
+  !       hesstargsort(idim,6,i) = 0
+  !     enddo
+  !   enddo
+  !   !C$OMP END PARALLEL DO
+  ! endif
 
 
   !
@@ -533,10 +496,10 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
   !c
   !cc       reorder sources
   !c
-  call dreorderf(3,nsource,source,sourcesort,itree(ipointer(5)))
+  !call dreorderf(3,nsource,source,sourcesort,itree(ipointer(5)))
 
-  if(ifcharge.eq.1) call dreorderf(2*nd,nsource,charge, &
-      chargesort, itree(ipointer(5)))
+  !if(ifcharge.eq.1) call dreorderf(2*nd,nsource,charge, &
+  !    chargesort, itree(ipointer(5)))
 
   !c
   !cc      reorder targs
@@ -592,8 +555,8 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
   
 
 
-  if (1 .eq. 1) then
-
+  !if (1 .eq. 1) then
+    
     !
     ! now unsort the local expansions
     !
@@ -631,22 +594,22 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
 
 
     
-  else
+  ! else
 
-    npts = 1
-    do i = 1,nmpole
+  !   npts = 1
+  !   do i = 1,nmpole
 
-      call h3dtaevalp(nd, zk, rmpolesort(i), &
-          cmpolesort(1,i), localsort(impolesort(i)), &
-          mtermssort(i), &
-          sourcesort(1,i), npts, potsort(1,i), &
-          wlege, nlege)
-    end do
+  !     call h3dtaevalp(nd, zk, rmpolesort(i), &
+  !         cmpolesort(1,i), localsort(impolesort(i)), &
+  !         mtermssort(i), &
+  !         sourcesort(1,i), npts, potsort(1,i), &
+  !         wlege, nlege)
+  !   end do
 
-      call dreorderi(2*nd, nsource,potsort,pot, &
-          itree(ipointer(5)))
+  !     call dreorderi(2*nd, nsource,potsort,pot, &
+  !         itree(ipointer(5)))
 
-  end if
+  ! end if
   
   
 
