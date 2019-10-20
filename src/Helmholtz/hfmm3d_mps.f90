@@ -23,9 +23,9 @@
 !
 
 subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
-    mpole, impole, local, &
-    pot,grad,hess,ntarg, &
-    targ, pottarg,gradtarg,hesstarg)
+    mpole, impole, local)
+  !, &
+  !  ntarg, targ)
   !-----------------------------------------------------------------------
   !   INPUT PARAMETERS:
   !
@@ -118,27 +118,25 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
   !integer ifpgh,ifpghtarg
 
   !integer nsource
-  integer ntarg
 
   !double precision source(3,nsource)
-  double precision :: targ(3,ntarg)
   !double complex charge(nd,nsource)
 
   !double complex dipvec(nd,3,nsource)
 
-  double complex pot(nd,*),grad(nd,3,*), &
-      pottarg(nd,3,ntarg), &
-      gradtarg(nd,3,ntarg),hess(nd,6,*),hesstarg(nd,6,*)
+  !double complex pot(nd,*),grad(nd,3,*), &
+  !    pottarg(nd,3,ntarg), &
+  !    gradtarg(nd,3,ntarg),hess(nd,6,*),hesstarg(nd,6,*)
 
-  !
   ! Tree variables
-  !
   integer mhung,idivflag,ndiv,isep,nboxes,nbmax,nlevels
   integer *8 ltree
   integer nlmax
+  integer ntarg  
   integer mnbors,mnlist1,mnlist2,mnlist3,mnlist4
   integer *8 ipointer(32)
   integer, allocatable :: itree(:)
+  double precision :: targ(3)
   double precision, allocatable :: treecenters(:,:),boxsize(:)
 
   !
@@ -156,10 +154,10 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
   double complex, allocatable :: mpolesort(:)
   double complex, allocatable :: localsort(:)
   
-  double complex, allocatable :: potsort(:,:),gradsort(:,:,:), &
-      hesssort(:,:,:)
-  double complex, allocatable :: pottargsort(:,:), &
-      gradtargsort(:,:,:),hesstargsort(:,:,:)
+  !double complex, allocatable :: potsort(:,:),gradsort(:,:,:), &
+  !    hesssort(:,:,:)
+  !double complex, allocatable :: pottargsort(:,:), &
+  !    gradtargsort(:,:,:),hesstargsort(:,:,:)
 
   !
   !  temporary fmm arrays
@@ -272,6 +270,9 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
   !    mnlist4,mhung,ltree)
 
   ntarg = 0
+  targ(1) = 0
+  targ(2) = 0
+  targ(3) = 0
   call mklraptreemem(iert,cmpole, nmpole, radsrc,targ,ntarg, &
       expc,nexpc,radexp,idivflag,ndiv,isep,nlmax,nbmax, &
       nlevels,nboxes,mnbors,mnlist1,mnlist2,mnlist3, &

@@ -302,12 +302,12 @@ program test_hfmm3d_mp2loc
   ntarg = 0
   ifpghtarg = 0
   call hfmm3d_mps(nd, eps, zk, &
-      nc, centers, rscales, nterms, mpole, impole, local, &
-      pot, grad, hess, ntarg, &
-      targ, pottarg, gradtarg, hesstarg)
+      nc, centers, rscales, nterms, mpole, impole, local)
+
 
   npts = 1
   do i = 1,nc
+    pot(1,i) = 0
     call h3dtaevalp(nd, zk, rscales(i), &
         centers(1,i), local(1,impole(i)), &
         nterms(i), source(1,i), npts, pot(1,i), &
