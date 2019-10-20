@@ -204,7 +204,7 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
   double precision expc(3),scjsort(1),radexp
   double complex texpssort(100)
   double precision expcsort(3),radssort(1)
-  integer ntj,nexpc,nadd, npts
+  integer ntj,nexpc,nadd, npts, perm, ptr, ifunsort
 
   !
   !        other temporary variables
@@ -518,11 +518,9 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
     ijk = 1
     do j = 1,len
       do l = 1,nd
-        !mpolesort(nd*(impolesort(i)-1)+ijk) = &
         mpolesort(impolesort(i)+ijk-1) = &
             mpole(nd*(impole(itree(ipointer(5)+i-1))-1)+ijk)
         ijk = ijk + 1
-        !mpolesort(l,impolesort(i)+j-1)  = mpole(l,impole(perm(i))+j-1)
       end do
     end do
 
@@ -608,27 +606,39 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
         wlege, nlege)
   end do
 
-  !do i = 1,nmpole
-  !  potsort(1,i) = 0
-  !  call h3dtaevalp(nd, zk, rmpolesort(i), &
-  !      cmpolesort(1,i), &
-  !      localsort(impolesort(i)), mtermssort(i), &
-  !      sourcesort(1,i), 1, potsort(1,i), wlege, nlege)
-  !end do
 
-  
+  if (1 .eq. 0) then
 
-  !
-  ! de-reorder the output local expansions
-  !
+    !
+    ! now unsort the local expansions
+    !
+    do i = 1,nmpole
 
-  
-  
-  
-  
+      perm = itree(ipointer(5)+i-1)
+      mt = mtermssort(i)
+      len = (mt+1)*(2*mt+1)
 
-  
-  
+      ijk = 1
+      do j = 1,len
+        do l = 1,nd
+          !mpolesort(impolesort(i)+ijk-1) = &
+          !    mpole(nd*(impole(itree(ipointer(5)+i-1))-1)+ijk)
+          !do i=1,n
+          !  do idim=1,ndim
+          !    arrsort(idim,iarr(i)) = arr(idim,i)
+          !  enddo
+          !enddo
+          ptr = nd*impole(perm)
+
+          local(nd*(impole(perm)-1)+ijk) = &
+              localsort(impolesort(i)+ijk-1)
+          ijk = ijk + 1
+        end do
+      end do
+    end do
+
+  end if
+
 
   if(ifpgh.eq.1) then
     call dreorderi(2*nd, nsource,potsort,pot, &
@@ -1375,7 +1385,11 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
       deallocate(fexp,fexpback)
 
     else
-      nquad2 = nterms(ilev)*2.2
+
+      print *, 'in else statement in mploc, double check and debug'
+      stop
+      
+      nquad2 = nterms(ilev)*2.2d0
       nquad2 = max(6,nquad2)
       ifinit2 = 1
       ier = 0
@@ -1388,20 +1402,28 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
       do ibox = laddr(1,ilev),laddr(2,ilev)
 
         npts = 0
-        if(ifpghtarg.gt.0) then
-          istart = itree(ipointer(12)+ibox-1)
-          iend = itree(ipointer(13)+ibox-1)
-          npts = npts + iend - istart + 1
-        endif
+        !if(ifpghtarg.gt.0) then
+        !  istart = itree(ipointer(12)+ibox-1)
+        !  iend = itree(ipointer(13)+ibox-1)
+        !  npts = npts + iend - istart + 1
+        !endif
 
         istart = itree(ipointer(14)+ibox-1)
         iend = itree(ipointer(17)+ibox-1)
         npts = npts + iend-istart+1
 
+        call prinf('istart = *', istart, 1)
+        call prinf('iend = *', iend, 1)
+        call prinf('npts = *', npts, 1)
+
         if(ifpgh.gt.0) then
           istart = itree(ipointer(10)+ibox-1)
           iend = itree(ipointer(11)+ibox-1)
           npts = npts + iend-istart+1
+        call prinf('istart = *', istart, 1)
+        call prinf('iend = *', iend, 1)
+        call prinf('npts = *', npts, 1)
+        stop
         endif
 
 
@@ -1425,7 +1447,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
           enddo
         endif
       enddo
-      !$omp end parallel do        
+      !!$omp end parallel do        
     endif
   enddo
   call cpu_time(time2)
