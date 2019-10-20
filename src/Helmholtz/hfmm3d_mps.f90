@@ -568,7 +568,7 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
   !
   call cpu_time(time1)
   !$ time1=omp_get_wtime()
-  call hfmm3dmain_mps(nd, eps, zk, nsource, sourcesort, &
+  call hfmm3dmain_mps(nd, eps, zk, &
       nmpole, cmpolesort, rmpolesort, mtermssort, mpolesort, &
       impolesort, localsort, &
       iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp, &
@@ -657,143 +657,127 @@ end subroutine hfmm3d_mps
 
 
 
-subroutine hfmm3dmain_mps(nd,eps,zk, &
-    nsource,sourcesort, &
+subroutine hfmm3dmain_mps(nd, eps, zk, &
     nmpole, cmpolesort, rmpolesort, mtermssort, mpolesort, &
     impolesort, localsort, &
-    iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp, &
-    itree,ltree,ipointer,isep,ndiv,nlevels, &
-    nboxes,boxsize,mnbors,mnlist1,mnlist2,mnlist3,mnlist4, &
-    rscales,centers,laddr,nterms )
+    iaddr, rmlexp, lmptot, mptemp, mptemp2, lmptemp, &
+    itree, ltree, ipointer, isep, ndiv, nlevels, &
+    nboxes, boxsize, mnbors, mnlist1, mnlist2, mnlist3, mnlist4, &
+    rscales, centers, laddr, nterms )
   implicit none
 
-  integer :: nd, nsource
+  !
+  ! INPUT variables
+  !
+  integer :: nd, ndiv,nlevels
   double precision :: eps
-  integer ndiv,nlevels
-
-
-  double complex zk,zk2
-
-  double precision sourcesort(3,nsource)
-
+  double complex :: zk,zk2
 
   ! input multipole stuff
   integer :: nmpole, mtermssort(nmpole)
   double precision :: cmpolesort(3,nmpole), rmpolesort(nmpole)
   double complex :: mpolesort(*)
   integer :: impolesort(nmpole)
+
+  ! storage stuff for tree and multipole expansions
+  integer :: lmptemp
+  integer *8 :: iaddr(2,nboxes), lmptot
+  double precision :: rmlexp(lmptot)
+  double precision :: mptemp(lmptemp)
+  double precision :: mptemp2(lmptemp)
+
+  ! tree variables
+  integer :: isep
+  integer *8 :: ltree
+  integer :: laddr(2,0:nlevels)
+  integer :: nterms(0:nlevels)
+  integer *8 :: ipointer(32)
+  integer :: itree(ltree)
+  integer :: nboxes
+  integer :: mnbors,mnlist1, mnlist2,mnlist3,mnlist4
+  double precision :: rscales(0:nlevels)
+  double precision :: boxsize(0:nlevels)
+  double precision :: centers(3,nboxes)
+
+  !
+  ! OUTPUT variables
+  !
   double complex :: localsort(*)
 
-  
 
-  integer lmptemp
-  integer *8 iaddr(2,nboxes), lmptot
-  double precision rmlexp(lmptot)
-  double precision mptemp(lmptemp)
-  double precision mptemp2(lmptemp)
+  !
+  ! LOCAL variables
+  !
 
-  double precision timeinfo(10)
-  double precision centers(3,nboxes)
-
-  !c
-  !cc      tree variables
-  !c
-  integer isep
-  integer *8 ltree
-  integer laddr(2,0:nlevels)
-  integer nterms(0:nlevels)
-  integer *8 ipointer(32)
-  integer itree(ltree)
-  integer nboxes
-  double precision rscales(0:nlevels)
-  double precision boxsize(0:nlevels)
-  !c
-  !cc      pw stuff
-  !c
+  ! pw stuff
   integer nuall,ndall,nnall,nsall,neall,nwall
   integer nu1234,nd5678,nn1256,ns3478,ne1357,nw2468
   integer nn12,nn56,ns34,ns78,ne13,ne57,nw24,nw68
   integer ne1,ne3,ne5,ne7,nw2,nw4,nw6,nw8
-
   integer uall(200),dall(200),nall(120),sall(120),eall(72),wall(72)
   integer u1234(36),d5678(36),n1256(24),s3478(24)
   integer e1357(16),w2468(16),n12(20),n56(20),s34(20),s78(20)
   integer e13(20),e57(20),w24(20),w68(20)
   integer e1(20),e3(5),e5(5),e7(5),w2(5),w4(5),w6(5),w8(5)
-
   integer ntmax, nexpmax, nlams, nmax, nthmax, nphmax
+  integer nn,nnn
+  integer nexptot, nexptotp
+  integer, allocatable :: nfourier(:), nphysical(:)
+
+  double precision :: r1
   double precision, allocatable :: carray(:,:), dc(:,:)
   double precision, allocatable :: rdplus(:,:,:)
   double precision, allocatable :: rdminus(:,:,:), rdsq3(:,:,:)
   double precision, allocatable :: rdmsq3(:,:,:)
+  double precision, allocatable :: zmone(:)
+  double precision, allocatable :: rsc(:)
+
   double complex, allocatable :: rdminus2(:,:,:),zeyep(:)
   double complex, allocatable :: rdplus2(:,:,:)
-  double precision, allocatable :: zmone(:)
-  integer nn,nnn
-
   double complex, allocatable :: rlams(:),whts(:)
-
   double complex, allocatable :: rlsc(:,:,:)
-  integer, allocatable :: nfourier(:), nphysical(:)
-  integer nexptot, nexptotp
   double complex, allocatable :: xshift(:,:),yshift(:,:),zshift(:,:)
-
   double complex, allocatable :: fexp(:),fexpback(:)
-
   double complex, allocatable :: mexp(:,:,:,:)
   double complex, allocatable :: tmp(:,:,:),tmp2(:,:,:)
   double complex, allocatable :: mexpf1(:,:),mexpf2(:,:)
-  double complex, allocatable :: mexpp1(:,:),mexpp2(:,:), &
-      mexppall(:,:,:)
+  double complex, allocatable :: mexpp1(:,:),mexpp2(:,:)
+  double complex, allocatable :: mexppall(:,:,:)
 
-  double precision, allocatable :: rsc(:)
-  double precision r1
-
-
-  !c     temp variables
+  ! temp variables
   integer i,j,k,l,ii,jj,kk,ll,idim
   integer ibox,jbox,ilev,npts,npts0
   integer nchild,nlist1,nlist2,nlist3,nlist4
-
   integer istart,iend,istartt,iendt,istarte,iende
   integer istarts,iends
   integer jstart,jend
-
   integer ifprint,ifwrite
   integer ifpgh
-
-  double precision d,time1,time2,omp_get_wtime
-
-  double precision sourcetmp(3)
-
   integer ix,iy,iz
-  double precision rtmp
-  double complex zmul
-
   integer nlege, lw7, lused7, itype
-  double precision wlege(40000)
-
-  double precision thresh
-
-  integer mnbors,mnlist1, mnlist2,mnlist3,mnlist4
-  double complex eye, ztmp,zmult
-  double precision alphaj
   integer ctr,ifinit2
-  double precision, allocatable :: xnodes(:),wts(:)
-  double precision radius
   integer nquad2
   integer maX_nodes
-  double precision pi
-
+  integer iert
   integer istart0,istart1,istartm1,nprin
+  integer nlfbox,ier, ifstep2, mt, ltot
+  integer *8 :: bigint
+  double precision d,time1,time2,omp_get_wtime
+  double precision timeinfo(10)
+  double precision rtmp
+  double precision wlege(40000)
+  double precision thresh
+  double precision alphaj
+  double precision radius
+  double precision pi
   double precision :: rtmp1,rtmp2,rtmp3,rtmp4, done
+  double precision, allocatable :: xnodes(:),wts(:)
+  double complex zmul
+  double complex eye, ztmp,zmult
   double complex :: ima, cd, cd1(10), cd2(10), work(100000)
 
-  integer *8 bigint
-  integer iert
   data ima/(0.0d0,1.0d0)/
 
-  integer nlfbox,ier, ifstep2, mt, ltot
 
   !
   ! remnant for debugging from point code
@@ -848,9 +832,6 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
   ! Prints timing breakdown, list information, and other things if ifprint=2.
   !       
   ifprint=1
-
-
-
   do i=1,10
     timeinfo(i)=0
   enddo
@@ -915,8 +896,8 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
     !!!!!!!!!
     radius = boxsize(ilev)/2*sqrt(3.0d0)*1.5d0
 
-      !$OMP PARALLEL DO DEFAULT(SHARED) &
-      !$OMP   PRIVATE(ibox,npts,istart,iend,nchild)
+      !$omp parallel do default(shared) &
+      !$omp   private(ibox,npts,istart,iend,nchild)
       do ibox=laddr(1,ilev),laddr(2,ilev)
 
         istart = itree(ipointer(10)+ibox-1)
@@ -1261,7 +1242,7 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
         npts = npts + iend-istart+1
 
 
-        if(npts.gt.0.and.nchild.gt.0) then
+        if ((npts.gt.0) .and. (nchild.gt.0)) then
 
 
           call getpwlistall(ibox,boxsize(ilev),nboxes, &
@@ -1572,9 +1553,9 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
           stop
         end if
 
-        d = (sourcesort(1,jstart)-sourcesort(1,istarts))**2 &
-            + (sourcesort(2,jstart)-sourcesort(2,istarts))**2 &
-            + (sourcesort(3,jstart)-sourcesort(3,istarts))**2
+        d = (cmpolesort(1,jstart)-cmpolesort(1,istarts))**2 &
+            + (cmpolesort(2,jstart)-cmpolesort(2,istarts))**2 &
+            + (cmpolesort(3,jstart)-cmpolesort(3,istarts))**2
         d = sqrt(d)
 
         if (d .gt. thresh) then
@@ -1585,7 +1566,15 @@ subroutine hfmm3dmain_mps(nd,eps,zk, &
               rmpolesort(istarts), cmpolesort(1,istarts), &
               localsort(impolesort(istarts)), mtermssort(istarts), &
               radius, xnodes, wts, nquad2)
+        else
+          if (jstart .ne. istarts) then
+            print *, 'two MP centers closer than thresh... '
+            print *, 'thresh = ', thresh
+            print *, 'bombing code!!'
+            stop
+          end if
         end if
+        
 
       enddo
 
