@@ -34,18 +34,15 @@ program test_hfmm3d_mp2loc
 
   nd = 3
 
-  dlam = .5d0
-  zk = 2*pi/dlam + eye*0.02d0
 
-  ns = 1000
+  n1 = 12
+  ns = n1**3
   nc = ns
 
   call prinf('ns = *', ns, 1)
   call prinf('nc = *', nc, 1)
   
   nt = 19
-
-  ntest = 10
 
   allocate(source(3,ns),targ(3,nt), centers(3,nc))
   allocate(charge(nd,ns),dipvec(nd,3,ns))
@@ -60,21 +57,36 @@ program test_hfmm3d_mp2loc
   write(*,*) "Testing suite for hfmm3d_mps"
   write(*,'(a,e12.5)') "Requested precision = ",eps
 
-  open(unit=33,file='print_testres.txt',access='append')
+  boxsize = n1/(2.0d0)
+  dlam = 1/boxsize
+  zk = 2*pi/dlam + eye*0.02d0
 
-  ntests = 18
-  do i=1,ntests
-    ipass(i) = 0
-  enddo
+  call prin2('boxsize in wavelengths = *', boxsize, 1)
+  call prin2('dlam = *', dlam, 1)
+  call prin2('zk = *', zk, 2)
 
   !
   ! generate sources uniformly in the unit cube 
   !
+  h = 1.0d0/(n1+1)
+  ijk = 0
+  do i = 1,n1
+    do j = 1,n1
+      do k = 1,n1
+        ijk = ijk + 1
+        source(1,ijk) = h*i
+        source(2,ijk) = h*j
+        source(3,ijk) = h*k
+      end do
+    end do
+  end do
+  
+  
   dnorm = 0
   do i=1,ns
-    source(1,i) = hkrand(0)**2
-    source(2,i) = hkrand(0)**2
-    source(3,i) = hkrand(0)**2
+    !source(1,i) = hkrand(0)**2
+    !source(2,i) = hkrand(0)**2
+    !source(3,i) = hkrand(0)**2
 
     do idim=1,nd
 
@@ -99,78 +111,10 @@ program test_hfmm3d_mp2loc
     end do
   end do
   
+
+  ! call prin2('min source separation = *', ssep, 1)
   
-  ! !
-  ! ! spread out the sources a little bit
-  ! !
-  ! do l = 1,0
-  !   do i = 1,ns
-  !     force(1) = 0
-  !     force(2) = 0
-  !     force(3) = 0
-  !     do j = 1,ns
-  !       if (i .ne. j) then
-  !         rs = 0
-  !         do k = 1,3
-  !           rs = rs + (source(k,i)-source(k,j))**2
-  !         end do
-  !         rs = sqrt(rs)
-  !         force(1) = (source(1,i)-source(1,j))/rs**3
-  !         force(1) = (source(2,i)-source(2,j))/rs**3
-  !         force(1) = (source(3,i)-source(3,j))/rs**3
-  !         alpha = -1d0
-  !         source(1,i) = source(1,i) + alpha*force(1)
-  !         source(2,i) = source(2,i) + alpha*force(2)
-  !         source(3,i) = source(3,i) + alpha*force(3)
-  !       end if
-  !     end do
-  !   end do
-  ! end do
-  
-  
-  
-
-
-  ! !
-  ! ! generate targets uniformly in the unit cube
-  ! !
-  ! do i=1,nt
-  !   targ(1,i) = hkrand(0)
-  !   targ(2,i) = hkrand(0)
-  !   targ(3,i) = hkrand(0)
-
-  !   do idim=1,nd
-
-  !     pottarg(idim,i) = 0
-  !     gradtarg(idim,1,i) = 0
-  !     gradtarg(idim,2,i) = 0
-  !     gradtarg(idim,3,i) = 0 
-  !   enddo
-  ! enddo
-
-
-  !
-  ! calculate min source separation and min
-  ! target separation
-  !
-  ssep = 1000
-  do i = 1,ns
-    do j = 1,ns
-      if (i .ne. j) then
-        rs = 0
-        do k = 1,3
-          rs = rs + (source(k,i)-source(k,j))**2
-        end do
-        rs = sqrt(rs)
-        if (rs .lt. ssep) ssep = rs
-      end if
-
-    end do
-  end do
-
-  call prin2('min source separation = *', ssep, 1)
-  
-  shift = ssep/1000
+  shift = h/1000
   call prin2('shift = *', shift, 1)
   do i = 1,ns
     centers(1,i) = source(1,i) + shift
@@ -267,12 +211,12 @@ program test_hfmm3d_mp2loc
   end do
 
   do i = 1,nd
-    dnorms(i) = sqrt(dnorms(i))
+    dnorms(i) = sqrt(dnorms(i)/ns/nd)
   end do
 
-  call prin2('diffs in potentials = *', pot2, 10)  
-  call prin2('l2 error in potentials = *', dnorms, nd)
-  
+  call prin2('diffs in potentials = *', pot2, 30)  
+  call prin2('rmse error in potentials = *', dnorms, 1)
+
   !
   ! now try the fmps routine
   !
@@ -287,612 +231,50 @@ program test_hfmm3d_mp2loc
   ! now test source to source, charge, 
   ! with potentials
   !
-  write(6,*) 'testing source to source'
-  write(6,*) 'interaction: charges'
-  write(6,*) 'output: potentials'
+  print *
+  print *
+  print *
+  write(6,*) 'testing multipoles to locals'
+  write(6,*) 'input: multipole expansions'
+  write(6,*) 'output: local expansions'
   write(6,*) 
   write(6,*) 
 
-  call zinitialize(nd*ns, pot)
 
-
-  ifcharge = 1
-  ifdipole = 0
-  ifpgh = 1
-  ntarg = 0
-  ifpghtarg = 0
   call hfmm3d_mps(nd, eps, zk, &
       nc, centers, rscales, nterms, mpole, impole, local)
 
-
+  call zinitialize(nd*nc, pot2)
   npts = 1
   do i = 1,nc
-    pot(1,i) = 0
     call h3dtaevalp(nd, zk, rscales(i), &
         centers(1,i), local(1,impole(i)), &
-        nterms(i), source(1,i), npts, pot(1,i), &
+        nterms(i), source(1,i), npts, pot2(1,i), &
         wlege, nlege)
   end do
-
   
+  call prin2('from hfmm3d_mps, potential = *', pot2, 10)
 
+  err = 0
+  dnorm = 0
+  do j = 1,nc
+    do i = 1,nd
+      err = err + abs(pot(i,j)-pot2(i,j))**2
+      dnorm = dnorm + abs(pot(i,j))**2
+      pot2(i,j) = pot2(i,j) - pot(i,j)
+    end do
+  end do
+
+  !call prin2('diff = *', pot2, 2*nd*ns)
+  !call prin2('err = *', err, 1)
+  !call prin2('dnorm = *', dnorm, 1)
   
-  call prin2('from hfmm3d, potential = *', pot, 10)
-  
-  !call hfmm3d_s_c_p_vec(nd,eps,zk,ns,source,charge, &
-  !pot)
-
-  call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,&
-      dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg, &
-      ntest,err)
-
+  err = sqrt(err/dnorm)
   call prin2('l2 rel err=*',err,1)
-  write(6,*)
-  write(6,*)
-  write(6,*) '================'
-  if(err.lt.eps) ipass(1) = 1
-  call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
-  if(err.ge.eps) write(33,*) str1(1:len1) 
 
 
 
-  ! c
-
-  ! c
-  ! cc     now test source to source, charge, 
-  ! c      with potentials and gradients
-  ! c
-  !        write(6,*) 'testing source to source'
-  !        write(6,*) 'interaction: charges'
-  !        write(6,*) 'output: potentials + gradients'
-  !        write(6,*) 
-  !        write(6,*) 
-
-  !        call hfmm3d_s_c_g_vec(nd,eps,zk,ns,source,charge,
-  !      1      pot,grad)
-
-  !        ifcharge = 1
-  !        ifdipole = 0
-  !        ifpgh = 2
-  !        ifpghtarg = 0
-
-
-  !        call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,
-  !      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-  !      2   ntest,err)
-
-  !        call prin2('l2 rel err=*',err,1)
-  !        write(6,*)
-  !        write(6,*)
-  !        write(6,*) '================'
-  !       if(err.lt.eps) ipass(2) = 1
-  !       call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
-  !       if(err.ge.eps) write(33,*) str1(1:len1) 
-
-
-
-  ! c
-  ! cc     now test source to source, dipole, 
-  ! c      with potentials
-  ! c
-  !        write(6,*) 'testing source to source'
-  !        write(6,*) 'interaction: dipoles'
-  !        write(6,*) 'output: potentials'
-  !        write(6,*) 
-  !        write(6,*) 
-
-  !        call hfmm3d_s_d_p_vec(nd,eps,zk,ns,source,dipvec,
-  !      1      pot)
-
-  !        ifcharge = 0
-  !        ifdipole = 1
-  !        ifpgh = 1
-  !        ifpghtarg = 0
-
-
-  !        call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,
-  !      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-  !      2   ntest,err)
-
-  !        call prin2('l2 rel err=*',err,1)
-  !        write(6,*)
-  !        write(6,*)
-  !        write(6,*) '================'
-  !       if(err.lt.eps) ipass(3) = 1
-  !       call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
-  !       if(err.ge.eps) write(33,*) str1(1:len1) 
-
-
-  ! c
-  ! cc     now test source to source, dipole, 
-  ! c      with potentials and gradients
-  ! c
-  !        write(6,*) 'testing source to source'
-  !        write(6,*) 'interaction: dipoles'
-  !        write(6,*) 'output: potentials + gradients'
-  !        write(6,*) 
-  !        write(6,*) 
-
-  !        call hfmm3d_s_d_g_vec(nd,eps,zk,ns,source,dipvec,
-  !      1      pot,grad)
-
-  !        ifcharge = 0
-  !        ifdipole = 1
-  !        ifpgh = 2
-  !        ifpghtarg = 0
-
-
-  !        call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,
-  !      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-  !      2   ntest,err)
-
-  !        call prin2('l2 rel err=*',err,1)
-  !        write(6,*)
-  !        write(6,*)
-  !        write(6,*) '================'
-  !       if(err.lt.eps) ipass(4) = 1
-  !       call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
-  !       if(err.ge.eps) write(33,*) str1(1:len1) 
-
-  ! c
-  ! cc     now test source to source, charge + dipole, 
-  ! c      with potentials
-  ! c
-  !        write(6,*) 'testing source to source'
-  !        write(6,*) 'interaction: charges + dipoles'
-  !        write(6,*) 'output: potentials'
-  !        write(6,*) 
-  !        write(6,*) 
-
-  !        call hfmm3d_s_cd_p_vec(nd,eps,zk,ns,source,charge,
-  !      1      dipvec,pot)
-
-  !        ifcharge = 1
-  !        ifdipole = 1
-  !        ifpgh = 1
-  !        ifpghtarg = 0 
-
-
-  !        call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,
-  !      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-  !      2   ntest,err)
-
-  !        call prin2('l2 rel err=*',err,1)
-  !        write(6,*)
-  !        write(6,*)
-  !        write(6,*) '================'
-  !       if(err.lt.eps) ipass(5) = 1
-  !       call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
-  !       if(err.ge.eps) write(33,*) str1(1:len1) 
-
-
-  ! c
-  ! cc     now test source to source, charge + dipole, 
-  ! c      with potentials and gradients
-  ! c
-  !        write(6,*) 'testing source to source'
-  !        write(6,*) 'interaction: charges + dipoles'
-  !        write(6,*) 'output: potentials + gradients'
-  !        write(6,*) 
-  !        write(6,*) 
-
-  !        call hfmm3d_s_cd_g_vec(nd,eps,zk,ns,source,charge,
-  !      1      dipvec,pot,grad)
-
-  !        ifcharge = 1
-  !        ifdipole = 1
-  !        ifpgh = 2
-  !        ifpghtarg = 0
-
-
-  !        call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,
-  !      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-  !      2   ntest,err)
-
-  !        call prin2('l2 rel err=*',err,1)
-  !        write(6,*)
-  !        write(6,*)
-  !        write(6,*) '================'
-  !       if(err.lt.eps) ipass(6) = 1
-  !       call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
-  !       if(err.ge.eps) write(33,*) str1(1:len1) 
-
-
-
-  ! c
-  ! cc     now test source to target, charge, 
-  ! c      with potentials
-  ! c
-  !        write(6,*) 'testing source to target'
-  !        write(6,*) 'interaction: charges'
-  !        write(6,*) 'output: potentials'
-  !        write(6,*) 
-  !        write(6,*) 
-
-  !        call hfmm3d_t_c_p_vec(nd,eps,zk,ns,source,charge,
-  !      1      nt,targ,pottarg)
-
-  !        ifcharge = 1
-  !        ifdipole = 0
-  !        ifpgh = 0
-  !        ifpghtarg = 1
-
-
-  !        call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,
-  !      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-  !      2   ntest,err)
-
-  !        call prin2('l2 rel err=*',err,1)
-  !        write(6,*)
-  !        write(6,*)
-  !        write(6,*) '================'
-  !       if(err.lt.eps) ipass(7) = 1
-  !       call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
-  !       if(err.ge.eps) write(33,*) str1(1:len1) 
-
-
-  ! c
-  ! cc     now test source to target, charge, 
-  ! c      with potentials and gradients
-  ! c
-  !        write(6,*) 'testing source to target'
-  !        write(6,*) 'interaction: charges'
-  !        write(6,*) 'output: potentials + gradients'
-  !        write(6,*) 
-  !        write(6,*) 
-
-  !        call hfmm3d_t_c_g_vec(nd,eps,zk,ns,source,charge,
-  !      1      nt,targ,pottarg,gradtarg)
-
-  !        ifcharge = 1
-  !        ifdipole = 0
-  !        ifpgh = 0
-  !        ifpghtarg = 2
-
-
-  !        call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,
-  !      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-  !      2   ntest,err)
-
-  !        call prin2('l2 rel err=*',err,1)
-  !        write(6,*)
-  !        write(6,*)
-  !        write(6,*) '================'
-  !       if(err.lt.eps) ipass(8) = 1
-  !       call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
-  !       if(err.ge.eps) write(33,*) str1(1:len1) 
-
-
-
-  ! c
-  ! cc     now test source to target, dipole, 
-  ! c      with potentials
-  ! c
-  !        write(6,*) 'testing source to target'
-  !        write(6,*) 'interaction: dipoles'
-  !        write(6,*) 'output: potentials'
-  !        write(6,*) 
-  !        write(6,*) 
-
-  !        call hfmm3d_t_d_p_vec(nd,eps,zk,ns,source,dipvec,
-  !      1      nt,targ,pottarg)
-
-  !        ifcharge = 0
-  !        ifdipole = 1
-  !        ifpgh = 0
-  !        ifpghtarg = 1
-
-
-  !        call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,
-  !      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-  !      2   ntest,err)
-
-  !        call prin2('l2 rel err=*',err,1)
-  !        write(6,*)
-  !        write(6,*)
-  !        write(6,*) '================'
-  !       if(err.lt.eps) ipass(9) = 1
-  !       call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
-  !       if(err.ge.eps) write(33,*) str1(1:len1) 
-
-
-  ! c
-  ! cc     now test source to target, dipole, 
-  ! c      with potentials and gradients
-  ! c
-  !        write(6,*) 'testing source to target'
-  !        write(6,*) 'interaction: dipoles'
-  !        write(6,*) 'output: potentials + gradients'
-  !        write(6,*) 
-  !        write(6,*) 
-
-  !        call hfmm3d_t_d_g_vec(nd,eps,zk,ns,source,dipvec,
-  !      1      nt,targ,pottarg,gradtarg)
-
-  !        ifcharge = 0
-  !        ifdipole = 1
-  !        ifpgh = 0
-  !        ifpghtarg = 2
-
-
-  !        call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,
-  !      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-  !      2   ntest,err)
-
-  !        call prin2('l2 rel err=*',err,1)
-  !        write(6,*)
-  !        write(6,*)
-  !        write(6,*) '================'
-  !       if(err.lt.eps) ipass(10) = 1
-  !       call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
-  !       if(err.ge.eps) write(33,*) str1(1:len1) 
-
-  ! c
-  ! cc     now test source to target, charge + dipole, 
-  ! c      with potentials
-  ! c
-  !        write(6,*) 'testing source to target'
-  !        write(6,*) 'interaction: charges + dipoles'
-  !        write(6,*) 'output: potentials'
-  !        write(6,*) 
-  !        write(6,*) 
-
-  !        call hfmm3d_t_cd_p_vec(nd,eps,zk,ns,source,charge,
-  !      1      dipvec,nt,targ,pottarg)
-
-  !        ifcharge = 1
-  !        ifdipole = 1
-  !        ifpgh = 0
-  !        ifpghtarg = 1
-
-
-  !        call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,
-  !      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-  !      2   ntest,err)
-
-  !        call prin2('l2 rel err=*',err,1)
-  !        write(6,*)
-  !        write(6,*)
-  !        write(6,*) '================'
-  !       if(err.lt.eps) ipass(11) = 1
-  !       call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
-  !       if(err.ge.eps) write(33,*) str1(1:len1) 
-
-
-  ! c
-  ! cc     now test source to target, charge + dipole, 
-  ! c      with potentials and gradients
-  ! c
-  !        write(6,*) 'testing source to target'
-  !        write(6,*) 'interaction: charges + dipoles'
-  !        write(6,*) 'output: potentials + gradients'
-  !        write(6,*) 
-  !        write(6,*) 
-
-  !        call hfmm3d_t_cd_g_vec(nd,eps,zk,ns,source,charge,
-  !      1      dipvec,nt,targ,pottarg,gradtarg)
-
-  !        ifcharge = 1
-  !        ifdipole = 1
-  !        ifpgh = 0
-  !        ifpghtarg = 2
-
-
-  !        call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,
-  !      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-  !      2   ntest,err)
-
-  !        call prin2('l2 rel err=*',err,1)
-  !        write(6,*)
-  !        write(6,*)
-  !        write(6,*) '================'
-  !       if(err.lt.eps) ipass(12) = 1
-  !       call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
-  !       if(err.ge.eps) write(33,*) str1(1:len1) 
-
-  ! c
-  ! cc     now test source to source + target, charge, 
-  ! c      with potentials
-  ! c
-  !        write(6,*) 'testing source to source and target'
-  !        write(6,*) 'interaction: charges'
-  !        write(6,*) 'output: potentials'
-  !        write(6,*) 
-  !        write(6,*) 
-
-  !        call hfmm3d_st_c_p_vec(nd,eps,zk,ns,source,charge,
-  !      1      pot,nt,targ,pottarg)
-
-  !        ifcharge = 1
-  !        ifdipole = 0
-  !        ifpgh = 1
-  !        ifpghtarg = 1
-
-
-  !        call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,
-  !      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-  !      2   ntest,err)
-
-  !        call prin2('l2 rel err=*',err,1)
-  !        write(6,*)
-  !        write(6,*)
-  !        write(6,*) '================'
-  !       if(err.lt.eps) ipass(13) = 1
-  !       call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
-  !       if(err.ge.eps) write(33,*) str1(1:len1) 
-
-
-  ! c
-  ! cc     now test source to source + target, charge, 
-  ! c      with potentials and gradients
-  ! c
-  !        write(6,*) 'testing source to source and target'
-  !        write(6,*) 'interaction: charges + dipoles'
-  !        write(6,*) 'output: potentials + gradients'
-  !        write(6,*) 
-  !        write(6,*) 
-
-  !        call hfmm3d_st_c_g_vec(nd,eps,zk,ns,source,charge,
-  !      1      pot,grad,nt,targ,pottarg,gradtarg)
-
-  !        ifcharge = 1
-  !        ifdipole = 0
-  !        ifpgh = 2
-  !        ifpghtarg = 2
-
-
-  !        call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,
-  !      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-  !      2   ntest,err)
-
-  !        call prin2('l2 rel err=*',err,1)
-  !        write(6,*)
-  !        write(6,*)
-  !        write(6,*) '================'
-  !       if(err.lt.eps) ipass(14) = 1
-  !       call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
-  !       if(err.ge.eps) write(33,*) str1(1:len1) 
-
-
-
-  ! c
-  ! cc     now test source to source + target, dipole, 
-  ! c      with potentials
-  ! c
-  !        write(6,*) 'testing source to source and target'
-  !        write(6,*) 'interaction: dipoles'
-  !        write(6,*) 'output: potentials'
-  !        write(6,*) 
-  !        write(6,*) 
-
-  !        call hfmm3d_st_d_p_vec(nd,eps,zk,ns,source,dipvec,
-  !      1      pot,nt,targ,pottarg)
-
-  !        ifcharge = 0
-  !        ifdipole = 1
-  !        ifpgh = 1
-  !        ifpghtarg = 1
-
-
-  !        call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,
-  !      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-  !      2   ntest,err)
-
-  !        call prin2('l2 rel err=*',err,1)
-  !        write(6,*)
-  !        write(6,*)
-  !        write(6,*) '================'
-  !       if(err.lt.eps) ipass(15) = 1
-  !       call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
-  !       if(err.ge.eps) write(33,*) str1(1:len1) 
-
-
-  ! c
-  ! cc     now test source to source + target, dipole, 
-  ! c      with potentials and gradients
-  ! c
-  !        write(6,*) 'testing source to source and target'
-  !        write(6,*) 'interaction: dipoles'
-  !        write(6,*) 'output: potentials + gradients'
-  !        write(6,*) 
-  !        write(6,*) 
-
-  !        call hfmm3d_st_d_g_vec(nd,eps,zk,ns,source,dipvec,
-  !      1      pot,grad,nt,targ,pottarg,gradtarg)
-
-  !        ifcharge = 0
-  !        ifdipole = 1
-  !        ifpgh = 2
-  !        ifpghtarg = 2
-
-
-  !        call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,
-  !      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-  !      2   ntest,err)
-
-  !        call prin2('l2 rel err=*',err,1)
-  !        write(6,*)
-  !        write(6,*)
-  !        write(6,*) '================'
-  !       if(err.lt.eps) ipass(16) = 1
-  !       call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
-  !       if(err.ge.eps) write(33,*) str1(1:len1) 
-
-  ! c
-  ! cc     now test source to source + target, charge + dipole, 
-  ! c      with potentials
-  ! c
-  !        write(6,*) 'testing source to source and target'
-  !        write(6,*) 'interaction: charges + dipoles'
-  !        write(6,*) 'output: potentials'
-  !        write(6,*) 
-  !        write(6,*) 
-
-  !        call hfmm3d_st_cd_p_vec(nd,eps,zk,ns,source,charge,
-  !      1      dipvec,pot,nt,targ,pottarg)
-
-  !        ifcharge = 1
-  !        ifdipole = 1
-  !        ifpgh = 1
-  !        ifpghtarg = 1
-
-
-  !        call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,
-  !      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-  !      2   ntest,err)
-
-  !        call prin2('l2 rel err=*',err,1)
-  !        write(6,*)
-  !        write(6,*)
-  !        write(6,*) '================'
-  !       if(err.lt.eps) ipass(17) = 1
-  !       call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
-  !       if(err.ge.eps) write(33,*) str1(1:len1) 
-
-
-  ! c
-  ! cc     now test source to source + target, charge + dipole, 
-  ! c      with potentials and gradients
-  ! c
-  !        write(6,*) 'testing source to source and target'
-  !        write(6,*) 'interaction: charges + dipoles'
-  !        write(6,*) 'output: potentials + gradients'
-  !        write(6,*) 
-  !        write(6,*) 
-
-  !        call hfmm3d_st_cd_g_vec(nd,eps,zk,ns,source,charge,
-  !      1      dipvec,pot,grad,nt,targ,pottarg,gradtarg)
-
-  !        ifcharge = 1
-  !        ifdipole = 1
-  !        ifpgh = 2
-  !        ifpghtarg = 2
-
-
-  !        call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,
-  !      1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-  !      2   ntest,err)
-
-  !        call prin2('l2 rel err=*',err,1)
-  !        write(6,*)
-  !        write(6,*)
-  !        write(6,*) '================'
-  !       if(err.lt.eps) ipass(18) = 1
-  !       call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
-  !       if(err.ge.eps) write(33,*) str1(1:len1) 
-
-
-  !       isum = 0
-  !       do i=1,ntests
-  !         isum = isum+ipass(i)
-  !       enddo
-
-  !       write(*,'(a,i2,a,i2,a)') 'Successfully completed ',isum,
-  !      1   ' out of ',ntests,' tests in hfmm3d vec testing suite'
-  !       write(33,'(a,i2,a,i2,a)') 'Successfully completed ',isum,
-  !      1   ' out of ',ntests,' tests in hfmm3d vec testing suite'
-  !       close(33)
-
+  
 
   stop
 end program
