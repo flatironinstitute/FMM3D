@@ -22,13 +22,10 @@
 !--------------------------------------------------------------------
 !
 
-subroutine hfmm3d_mps(nd, eps, zk, &
-    !nsource, &
-    !ifcharge, &
-    !charge,ifdipole,dipvec, &
-    nmpole, cmpole, rmpole, mterms, mpole, impole, local, &
-    ifpgh,pot,grad,hess,ntarg, &
-    targ,ifpghtarg,pottarg,gradtarg,hesstarg)
+subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
+    mpole, impole, local, &
+    pot,grad,hess,ntarg, &
+    targ, pottarg,gradtarg,hesstarg)
   !-----------------------------------------------------------------------
   !   INPUT PARAMETERS:
   !
@@ -69,11 +66,6 @@ subroutine hfmm3d_mps(nd, eps, zk, &
   !              indexing array for mpole, the ith expansion is at
   !              location mpole(1,impole(i)) and is of order mterms(i)
   !
-  !   ifpgh   in: integer
-  !              flag for evaluating potential/gradient at the sources
-  !              ifpgh = 1, only potential is evaluated
-  !              ifpgh = 2, potential and gradients are evaluated
-  !
   !
   !   ntarg  in: integer  
   !                 number of targs 
@@ -81,11 +73,6 @@ subroutine hfmm3d_mps(nd, eps, zk, &
   !   targ  in: double precision (3,ntarg)
   !               targ(k,j) is the kth component of the jth
   !               targ location
-  !
-  !   ifpghtarg   in: integer
-  !              flag for evaluating potential/gradient at the targs
-  !              ifpghtarg = 1, only potential is evaluated
-  !              ifpghtarg = 2, potential and gradient are evaluated
   !
   !
   !     OUTPUT parameters:
@@ -128,7 +115,7 @@ subroutine hfmm3d_mps(nd, eps, zk, &
   double complex :: local(*)
   
   !integer ifcharge,ifdipole
-  integer ifpgh,ifpghtarg
+  !integer ifpgh,ifpghtarg
 
   !integer nsource
   integer ntarg

@@ -303,8 +303,8 @@ program test_hfmm3d_mp2loc
   ifpghtarg = 0
   call hfmm3d_mps(nd, eps, zk, &
       nc, centers, rscales, nterms, mpole, impole, local, &
-      ifpgh, pot, grad, hess, ntarg, &
-      targ, ifpghtarg, pottarg, gradtarg, hesstarg)
+      pot, grad, hess, ntarg, &
+      targ, pottarg, gradtarg, hesstarg)
 
   npts = 1
   do i = 1,nc
