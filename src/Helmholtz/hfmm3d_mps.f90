@@ -22,7 +22,7 @@
 !--------------------------------------------------------------------
 !
 
-subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
+subroutine hfmm3d_mps(nd, eps, zk, nsource, ifcharge, &
     charge,ifdipole,dipvec, &
     nmpole, cmpole, rmpole, mterms, mpole, impole, local, &
     ifpgh,pot,grad,hess,ntarg, &
@@ -145,7 +145,8 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
 
   integer nsource,ntarg
 
-  double precision source(3,nsource),targ(3,ntarg)
+  !double precision source(3,nsource)
+  double precision :: targ(3,ntarg)
   double complex charge(nd,nsource)
 
   double complex dipvec(nd,3,nsource)
@@ -169,7 +170,7 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
   ! temporary sorted arrays
   !
   integer :: lmpole, mt, len
-  double precision, allocatable :: sourcesort(:,:),targsort(:,:)
+  !double precision, allocatable :: sourcesort(:,:),targsort(:,:)
   double precision, allocatable :: radsrc(:)
   double complex, allocatable :: chargesort(:,:)
   double complex, allocatable :: dipvecsort(:,:,:)
@@ -277,9 +278,9 @@ subroutine hfmm3d_mps(nd, eps, zk, nsource, source, ifcharge, &
   mnlist4 = 0
   nbmax = 0
 
-  allocate(radsrc(nsource))
+  allocate(radsrc(nmpole))
   !$omp parallel do default(shared) private(i)
-  do i=1,nsource
+  do i=1,nmpole
     radsrc(i) = 0
   enddo
   !$omp end parallel do   
