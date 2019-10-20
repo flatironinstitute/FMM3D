@@ -298,14 +298,9 @@ program test_hfmm3d_mp2loc
 
   ifcharge = 1
   ifdipole = 0
-  ifpgh = 1
-  ntarg = 0
-  ifpghtarg = 0
   call hfmm3d_mps(nd, eps, zk, ns, source, ifcharge, &
       charge, ifdipole, dipvec, &
-      nc, centers, rscales, nterms, mpole, impole, local, &
-      ifpgh, pot, grad, hess, ntarg, &
-      targ, ifpghtarg, pottarg, gradtarg, hesstarg)
+      nc, centers, rscales, nterms, mpole, impole, local)
 
   npts = 1
   do i = 1,nc
@@ -323,10 +318,26 @@ program test_hfmm3d_mp2loc
   !call hfmm3d_s_c_p_vec(nd,eps,zk,ns,source,charge, &
   !pot)
 
-  call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,&
-      dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg, &
-      ntest,err)
+  !call comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole,&
+  !    dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg, &
+  !    ntest,err)
 
+  err = 0
+  dnorm = 0
+  do j = 1,nc
+    do i = 1,nd
+      err = err + abs(pot(i,j)-pot2(i,j))**2
+      dnorm = dnorm + abs(pot2(i,j))**2
+    end do
+  end do
+
+  call prin2('err = *', err, 1)
+  call prin2('dnorm = *', dnorm, 1)
+  
+  err = sqrt(err/dnorm)
+  
+  
+  
   call prin2('l2 rel err=*',err,1)
   write(6,*)
   write(6,*)
