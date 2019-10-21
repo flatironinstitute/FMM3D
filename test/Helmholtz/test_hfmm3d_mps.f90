@@ -19,7 +19,7 @@ program test_hfmm3d_mp2loc
   double complex, allocatable :: dipvec(:,:,:)
   double complex, allocatable :: pot(:,:), pot2(:,:), pottarg(:,:)
   double complex, allocatable :: grad(:,:,:),gradtarg(:,:,:)
-  double complex, allocatable :: mpole(:,:,:,:), local(:,:)
+  double complex, allocatable :: mpole(:), local(:,:)
 
 
   data eye/(0.0d0,1.0d0)/
@@ -129,13 +129,17 @@ program test_hfmm3d_mp2loc
   !
   allocate(nterms(nc), impole(nc))
   ntmax = 10
-  allocate( mpole(nd,0:ntmax,-ntmax:ntmax,nc) )
+  allocate( mpole(nd*(ntmax+1)*(2*ntmax+1)*nc) )
 
   ntm = 5
   do i = 1,nc
+    !nterms(i) = ntm + cos(pi/2*i)
     nterms(i) = ntm
   end do
 
+  !call prinf('nterms = *', nterms, nc)
+  !stop
+  
   impole(1) = 1
   len = (ntmax+1)*(2*ntmax+1)
   call prinf('len = *', len, 1)
@@ -167,7 +171,9 @@ program test_hfmm3d_mp2loc
   do i = 1,nc
     rscales(i) = rscale
     call h3dformmpc(nd, zk, rscale, source(1,i), charge(1,i), &
-        ns1, centers(1,i), nterms(i), mpole(1,0,-ntmax,i), wlege, nlege)
+        !ns1, centers(1,i), nterms(i), mpole(1,0,-ntmax,i), wlege, nlege)
+        ns1, centers(1,i), nterms(i), mpole(nd*(impole(i)-1)+1), &
+        wlege, nlege)
   end do
 
   !
@@ -191,7 +197,8 @@ program test_hfmm3d_mp2loc
     do j = 1,ns
       if (i .ne. j) then
         call h3dmpevalp(nd, zk, rscale, centers(1,j), &
-            mpole(1,0,-ntmax,j), &
+            !mpole(1,0,-ntmax,j), &
+            mpole(nd*(impole(i)-1)+1), &
             nterms(i), source(1,i), ns1, pot2(1,i), wlege, nlege, thresh)
       end if
     end do
@@ -274,6 +281,16 @@ program test_hfmm3d_mp2loc
 
 
 
+  !
+  ! now run a real example, and just compare the output local
+  ! coefficients
+  !
+  print *
+  print *
+  print *
+  print *
+
+  
   
 
   stop
