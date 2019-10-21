@@ -221,6 +221,7 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
   !   ndiv = nsource+ntarg
   ! endif
 
+  print *, 'ndiv still needs to be optimized'
   ndiv = 1
 
   if(ifprint.ge.1) print *, "ndiv =",ndiv
