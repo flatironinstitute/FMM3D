@@ -128,23 +128,19 @@ program test_hfmm3d_mp2loc
   ! now form a multipole expansion at each center
   !
   allocate(nterms(nc), impole(nc))
-  ntmax = 10
-  allocate( mpole(nd*(ntmax+1)*(2*ntmax+1)*nc) )
 
-  ntm = 5
+  ntm = 7
+  ntot = 0
   do i = 1,nc
-    !nterms(i) = ntm + cos(pi/2*i)
-    nterms(i) = ntm
+    nterms(i) = ntm + 2*cos(pi/2*i)
+    ntot = ntot + (nterms(i)+1)*(2*nterms(i)+1)
   end do
 
-  !call prinf('nterms = *', nterms, nc)
-  !stop
-  
+  allocate(mpole(nd*ntot))
+
   impole(1) = 1
-  len = (ntmax+1)*(2*ntmax+1)
-  call prinf('len = *', len, 1)
   do i = 1,nc-1
-    !len = (nterms(i)+1)*(2*nterms(i)+1)
+    len = (nterms(i)+1)*(2*nterms(i)+1)
     impole(i+1) = impole(i) + nd*len
   end do
 
@@ -157,8 +153,7 @@ program test_hfmm3d_mp2loc
   call ylgndrfwini(nlege, wlege, lw, lused)
   call prinf('after ylgndrfwini, lused = *', lused, 1)
 
-  len = nd*(ntmax+1)*(2*ntmax+1)*nc
-  call zinitialize(len, mpole)
+  call zinitialize(nd*ntot, mpole)
   
   ns1 = 1
   rscale = 1
@@ -171,7 +166,6 @@ program test_hfmm3d_mp2loc
   do i = 1,nc
     rscales(i) = rscale
     call h3dformmpc(nd, zk, rscale, source(1,i), charge(1,i), &
-        !ns1, centers(1,i), nterms(i), mpole(1,0,-ntmax,i), wlege, nlege)
         ns1, centers(1,i), nterms(i), mpole(impole(i)), &
         wlege, nlege)
   end do
@@ -197,9 +191,8 @@ program test_hfmm3d_mp2loc
     do j = 1,ns
       if (i .ne. j) then
         call h3dmpevalp(nd, zk, rscale, centers(1,j), &
-            !mpole(1,0,-ntmax,j), &
-            mpole(impole(i)), &
-            nterms(i), source(1,i), ns1, pot2(1,i), wlege, nlege, thresh)
+            mpole(impole(j)), &
+            nterms(j), source(1,i), ns1, pot2(1,i), wlege, nlege, thresh)
       end if
     end do
   end do
@@ -223,7 +216,7 @@ program test_hfmm3d_mp2loc
 
   call prin2('diffs in potentials = *', pot2, 30)  
   call prin2('rmse error in potentials = *', dnorms, 1)
-
+  
   !
   ! now try the fmps routine
   !
@@ -232,8 +225,8 @@ program test_hfmm3d_mp2loc
   !write(6,*) 'output: local expansions'
 
   
-  allocate( local(nd*(ntmax+1)*(2*ntmax+1)*nc) )
-
+  allocate(local(nd*ntot))
+  
   !
   ! now test source to source, charge, 
   ! with potentials
