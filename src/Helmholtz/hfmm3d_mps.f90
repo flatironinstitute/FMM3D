@@ -221,7 +221,7 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
   !   ndiv = nsource+ntarg
   ! endif
 
-  ndiv = 1
+  ndiv = 2
 
   if(ifprint.ge.1) print *, "ndiv =",ndiv
   !stop
@@ -628,7 +628,7 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
   integer ibox,jbox,ilev,npts,npts0
   integer nchild,nlist1,nlist2,nlist3,nlist4
   integer istart,iend,istartt,iendt,istarte,iende
-  integer istarts,iends
+  integer istarts,iends, iloc
   integer jstart,jend
   integer ifprint,ifwrite
   integer ifpgh
@@ -1426,47 +1426,55 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
 
     !$omp parallel do default(shared) &
     !$omp   private(ibox,istarts,iends,npts0,nlist1,i) &
-    !$omp   private(jbox,jstart,jend,npts,d)
+    !$omp   private(jbox,jstart,jend,npts,d,j,iloc)
     do ibox = laddr(1,ilev),laddr(2,ilev)
       istarts = itree(ipointer(10)+ibox-1)
       iends = itree(ipointer(11)+ibox-1)
       npts0 = iends-istarts+1
       nlist1 = itree(ipointer(20)+ibox-1)
 
-      do i=1,nlist1
-        jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
-        jstart = itree(ipointer(10)+jbox-1)
-        jend = itree(ipointer(11)+jbox-1)
-        npts = jend-jstart+1
+      do iloc = istarts,iends
 
-        if (npts .ne. 1) then
-          print *, 'npts = ', npts
-          stop
-        end if
+        do i=1,nlist1
+          jbox = itree(ipointer(21)+mnlist1*(ibox-1)+i-1)
+          jstart = itree(ipointer(10)+jbox-1)
+          jend = itree(ipointer(11)+jbox-1)
+          npts = jend-jstart+1
 
-        d = (cmpolesort(1,jstart)-cmpolesort(1,istarts))**2 &
-            + (cmpolesort(2,jstart)-cmpolesort(2,istarts))**2 &
-            + (cmpolesort(3,jstart)-cmpolesort(3,istarts))**2
-        d = sqrt(d)
+          !if (npts .ne. 1) then
+          !  print *, 'npts = ', npts
+          !  stop
+          !end if
 
-        if (d .gt. thresh) then
-          call h3dmploc(nd, zk, rmpolesort(jstart),&
-              cmpolesort(1,jstart), &
-              mpolesort(impolesort(jstart)), mtermssort(jstart), &
-              rmpolesort(istarts), cmpolesort(1,istarts), &
-              localsort(impolesort(istarts)), mtermssort(istarts), &
-              radius, xnodes, wts, nquad2)
-        else
-          if (jstart .ne. istarts) then
-            print *, 'two MP centers closer than thresh... '
-            print *, 'thresh = ', thresh
-            print *, 'bombing code!!'
-            stop
-          end if
-        end if
-        
+          do j = jstart,jend
 
-      enddo
+            d = (cmpolesort(1,j)-cmpolesort(1,iloc))**2 &
+                + (cmpolesort(2,j)-cmpolesort(2,iloc))**2 &
+                + (cmpolesort(3,j)-cmpolesort(3,iloc))**2
+            d = sqrt(d)
+
+            if (d .gt. thresh) then
+              call h3dmploc(nd, zk, rmpolesort(j),&
+                  cmpolesort(1,j), &
+                  mpolesort(impolesort(j)), mtermssort(j), &
+                  rmpolesort(iloc), cmpolesort(1,iloc), &
+                  localsort(impolesort(iloc)), mtermssort(iloc), &
+                  radius, xnodes, wts, nquad2)
+            else
+              if (j .ne. iloc) then
+                print *, 'two MP centers closer than thresh... '
+                print *, 'thresh = ', thresh
+                print *, 'bombing code!!'
+                stop
+              end if
+            end if
+
+          end do
+
+
+        enddo
+      end do
+
 
     enddo
     !$omp end parallel do            
