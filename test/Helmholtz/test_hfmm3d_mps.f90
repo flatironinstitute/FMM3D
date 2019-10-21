@@ -19,7 +19,7 @@ program test_hfmm3d_mp2loc
   double complex, allocatable :: dipvec(:,:,:)
   double complex, allocatable :: pot(:,:), pot2(:,:), pottarg(:,:)
   double complex, allocatable :: grad(:,:,:),gradtarg(:,:,:)
-  double complex, allocatable :: mpole(:), local(:,:)
+  double complex, allocatable :: mpole(:), local(:)
 
 
   data eye/(0.0d0,1.0d0)/
@@ -145,7 +145,7 @@ program test_hfmm3d_mp2loc
   call prinf('len = *', len, 1)
   do i = 1,nc-1
     !len = (nterms(i)+1)*(2*nterms(i)+1)
-    impole(i+1) = impole(i) + len
+    impole(i+1) = impole(i) + nd*len
   end do
 
   
@@ -172,7 +172,7 @@ program test_hfmm3d_mp2loc
     rscales(i) = rscale
     call h3dformmpc(nd, zk, rscale, source(1,i), charge(1,i), &
         !ns1, centers(1,i), nterms(i), mpole(1,0,-ntmax,i), wlege, nlege)
-        ns1, centers(1,i), nterms(i), mpole(nd*(impole(i)-1)+1), &
+        ns1, centers(1,i), nterms(i), mpole(impole(i)), &
         wlege, nlege)
   end do
 
@@ -198,7 +198,7 @@ program test_hfmm3d_mp2loc
       if (i .ne. j) then
         call h3dmpevalp(nd, zk, rscale, centers(1,j), &
             !mpole(1,0,-ntmax,j), &
-            mpole(nd*(impole(i)-1)+1), &
+            mpole(impole(i)), &
             nterms(i), source(1,i), ns1, pot2(1,i), wlege, nlege, thresh)
       end if
     end do
@@ -232,7 +232,7 @@ program test_hfmm3d_mp2loc
   !write(6,*) 'output: local expansions'
 
   
-  allocate( local(nd,(ntmax+1)*(2*ntmax+1)*nc) )
+  allocate( local(nd*(ntmax+1)*(2*ntmax+1)*nc) )
 
   !
   ! now test source to source, charge, 
@@ -255,7 +255,7 @@ program test_hfmm3d_mp2loc
   npts = 1
   do i = 1,nc
     call h3dtaevalp(nd, zk, rscales(i), &
-        centers(1,i), local(1,impole(i)), &
+        centers(1,i), local(impole(i)), &
         nterms(i), source(1,i), npts, pot2(1,i), &
         wlege, nlege)
   end do

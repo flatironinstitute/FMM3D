@@ -459,7 +459,8 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
     do j = 1,len
       do l = 1,nd
         mpolesort(impolesort(i)+ijk-1) = &
-            mpole(nd*(impole(itree(ipointer(5)+i-1))-1)+ijk)
+            !mpole(nd*(impole(itree(ipointer(5)+i-1))-1)+ijk)
+            mpole(impole(itree(ipointer(5)+i-1))+ijk-1)
         ijk = ijk + 1
       end do
     end do
@@ -553,7 +554,8 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
           !enddo
           !ptr = nd*impole(perm)
 
-          local(nd*(impole(itree(ipointer(5)+i-1))-1)+ijk) = &
+          !local(nd*(impole(itree(ipointer(5)+i-1))-1)+ijk) = &
+          local(impole(itree(ipointer(5)+i-1))+ijk-1) = &
               localsort(impolesort(i)+ijk-1)
             
           ijk = ijk + 1
