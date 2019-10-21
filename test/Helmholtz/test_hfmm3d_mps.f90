@@ -19,6 +19,7 @@ program test_hfmm3d_mp2loc
   double complex, allocatable :: dipvec(:,:,:)
   double complex, allocatable :: pot(:,:), pot2(:,:), pottarg(:,:)
   double complex, allocatable :: grad(:,:,:),gradtarg(:,:,:)
+  double complex, allocatable :: hess(:,:,:),hesstarg(:,:,:)
   double complex, allocatable :: mpole(:), local(:)
 
 
@@ -35,7 +36,7 @@ program test_hfmm3d_mp2loc
   nd = 3
 
 
-  n1 = 12
+  n1 = 30
   ns = n1**3
   nc = ns
 
@@ -48,16 +49,18 @@ program test_hfmm3d_mp2loc
   allocate(charge(nd,ns),dipvec(nd,3,ns))
   allocate(pot(nd,ns), pot2(nd,ns))
   allocate(grad(nd,3,ns))
+  allocate(hess(nd,6,ns))
 
   allocate(pottarg(nd,nt))
   allocate(gradtarg(nd,3,nt))
+  allocate(hesstarg(nd,6,nt))
   eps = 0.5d-9
 
   write(*,*) "=========================================="
   write(*,*) "Testing suite for hfmm3d_mps"
   write(*,'(a,e12.5)') "Requested precision = ",eps
 
-  boxsize = n1/(2.0d0)
+  boxsize = 1
   dlam = 1/boxsize
   zk = 2*pi/dlam + eye*0.02d0
 
@@ -174,55 +177,58 @@ program test_hfmm3d_mp2loc
   ! do the direct calculation
   !
   thresh = 1.0d-15
-  call h3ddirectcp(nd, zk, source, charge, ns, source, ns, &
-      pot, thresh)
+  ifcharge = 1
+  ifdipole = 0
+  ifpgh = 1
+  ntarg = 0
+  ifpghtarg = 0
+  call hfmm3d(nd, eps, zk, ns, source, ifcharge, &
+      charge, ifdipole, dipvec, ifpgh, pot, grad, hess, ntarg, &
+      targ, ifpghtarg, pottarg, gradtarg, hesstarg)
+  
+  !call h3ddirectcp(nd, zk, source, charge, ns, source, ns, &
+  !   pot, thresh)
 
   call prin2('directly, potential = *', pot, 10)
 
-  !
-  ! now evaluate all the multipoles and compare
-  !
-  do i = 1,ns
+  ! !
+  ! ! now evaluate all the multipoles and compare
+  ! !
+  ! do i = 1,ns
 
-    do idim = 1,nd
-      pot2(idim,i) = 0
-    end do
+  !   do idim = 1,nd
+  !     pot2(idim,i) = 0
+  !   end do
     
-    do j = 1,ns
-      if (i .ne. j) then
-        call h3dmpevalp(nd, zk, rscale, centers(1,j), &
-            mpole(impole(j)), &
-            nterms(j), source(1,i), ns1, pot2(1,i), wlege, nlege, thresh)
-      end if
-    end do
-  end do
+  !   do j = 1,ns
+  !     if (i .ne. j) then
+  !       call h3dmpevalp(nd, zk, rscale, centers(1,j), &
+  !           mpole(impole(j)), &
+  !           nterms(j), source(1,i), ns1, pot2(1,i), wlege, nlege, thresh)
+  !     end if
+  !   end do
+  ! end do
 
-  call prin2('from mpeval, potential2 = *', pot2, 10)
+  ! call prin2('from mpeval, potential2 = *', pot2, 10)
 
-  do i = 1,nd
-    dnorms(i) = 0
-  end do
+  ! do i = 1,nd
+  !   dnorms(i) = 0
+  ! end do
 
-  do i = 1,ns
-    do idim = 1,nd
-      dnorms(idim) = dnorms(idim) + abs(pot(idim,i)-pot2(idim,i))**2
-      pot2(idim,i) = pot(idim,i) - pot2(idim,i)
-    end do
-  end do
+  ! do i = 1,ns
+  !   do idim = 1,nd
+  !     dnorms(idim) = dnorms(idim) + abs(pot(idim,i)-pot2(idim,i))**2
+  !     pot2(idim,i) = pot(idim,i) - pot2(idim,i)
+  !   end do
+  ! end do
 
-  do i = 1,nd
-    dnorms(i) = sqrt(dnorms(i)/ns/nd)
-  end do
+  ! do i = 1,nd
+  !   dnorms(i) = sqrt(dnorms(i)/ns/nd)
+  ! end do
 
-  call prin2('diffs in potentials = *', pot2, 30)  
-  call prin2('rmse error in potentials = *', dnorms, 1)
+  ! call prin2('diffs in potentials = *', pot2, 30)  
+  ! call prin2('rmse error in potentials = *', dnorms, 1)
   
-  !
-  ! now try the fmps routine
-  !
-  !write(6,*) 'testing fast multi-particle scattering'
-  !write(6,*) 'input: multipoles'
-  !write(6,*) 'output: local expansions'
 
   
   allocate(local(nd*ntot))

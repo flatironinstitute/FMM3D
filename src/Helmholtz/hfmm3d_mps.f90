@@ -221,7 +221,7 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
   !   ndiv = nsource+ntarg
   ! endif
 
-  ndiv = 2
+  ndiv = 1
 
   if(ifprint.ge.1) print *, "ndiv =",ndiv
   !stop
