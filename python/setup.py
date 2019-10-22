@@ -12,6 +12,7 @@ pkg_name = "fmm3dpy"
 list_helm=['hfmm3dwrap.f','hfmm3dwrap_vec.f']
 list_lap=['lfmm3dwrap.f','lfmm3dwrap_vec.f']
 list_common=[]
+
 FAST_KER = os.getenv('FAST_KER')
 FLIBS = os.getenv('FLIBS')
 FFLAGS = os.getenv('FFLAGS')
@@ -79,7 +80,7 @@ ext_lap = Extension(
 setup(
     name=pkg_name,
     version="0.1.0",
-    author="Leslie Greengard, Zydrunas Gimbutas, Jeremy Magland, and Manas Rachh",
+    author="Leslie Greengard, Zydrunas Gimbutas, Libin Lu, Jeremy Magland, and Manas Rachh",
     author_email="mrachh@flatironinstitute.org",
     description="This pacakge contains basic routines for Laplace and Helmholtz fast multipole methods in three dimensions",
     url="",
