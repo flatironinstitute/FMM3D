@@ -36,7 +36,7 @@ program test_hfmm3d_mp2loc
   nd = 3
 
 
-  n1 = 30
+  n1 = 10
   ns = n1**3
   nc = ns
 
@@ -173,6 +173,7 @@ program test_hfmm3d_mp2loc
         wlege, nlege)
   end do
 
+  
   !
   ! do the direct calculation
   !
@@ -186,49 +187,7 @@ program test_hfmm3d_mp2loc
       charge, ifdipole, dipvec, ifpgh, pot, grad, hess, ntarg, &
       targ, ifpghtarg, pottarg, gradtarg, hesstarg)
   
-  !call h3ddirectcp(nd, zk, source, charge, ns, source, ns, &
-  !   pot, thresh)
-
-  call prin2('directly, potential = *', pot, 10)
-
-  ! !
-  ! ! now evaluate all the multipoles and compare
-  ! !
-  ! do i = 1,ns
-
-  !   do idim = 1,nd
-  !     pot2(idim,i) = 0
-  !   end do
-    
-  !   do j = 1,ns
-  !     if (i .ne. j) then
-  !       call h3dmpevalp(nd, zk, rscale, centers(1,j), &
-  !           mpole(impole(j)), &
-  !           nterms(j), source(1,i), ns1, pot2(1,i), wlege, nlege, thresh)
-  !     end if
-  !   end do
-  ! end do
-
-  ! call prin2('from mpeval, potential2 = *', pot2, 10)
-
-  ! do i = 1,nd
-  !   dnorms(i) = 0
-  ! end do
-
-  ! do i = 1,ns
-  !   do idim = 1,nd
-  !     dnorms(idim) = dnorms(idim) + abs(pot(idim,i)-pot2(idim,i))**2
-  !     pot2(idim,i) = pot(idim,i) - pot2(idim,i)
-  !   end do
-  ! end do
-
-  ! do i = 1,nd
-  !   dnorms(i) = sqrt(dnorms(i)/ns/nd)
-  ! end do
-
-  ! call prin2('diffs in potentials = *', pot2, 30)  
-  ! call prin2('rmse error in potentials = *', dnorms, 1)
-  
+  call prin2('via fmm, potential = *', pot, 10)
 
   
   allocate(local(nd*ntot))
@@ -278,28 +237,38 @@ program test_hfmm3d_mp2loc
   err = sqrt(err/dnorm)
   call prin2('l2 rel err=*',err,1)
 
-
-
-  !
-  ! now run a real example, and just compare the output local
-  ! coefficients
-  !
-  print *
-  print *
-  print *
-  print *
-
   
   
 
   stop
 end program
 
+
+
 ! ----------------------------------------------------------
 ! 
 ! This is the end of the debugging code.
 !
 ! ----------------------------------------------------------
+subroutine prinmp(str, mpole, nterms)
+  implicit double precision (a-h,o-z)
+  character (len=*) :: str
+  double complex :: mpole(0:nterms, -nterms:nterms)
+  double complex :: tmp(-10000:10000)
+
+  print *, trim(str)
+
+  do n = 0,nterms
+    print *
+    write(6,'(a,i2,a,i2,a,i2)') 'n = ', n, '  m = ', -n, '...', n
+    do m = -nterms,nterms
+      tmp(m) = mpole(n,m)
+    end do
+    call prin2('coefs = *', tmp(-n), 2*n+1)
+  end do
+  
+  return
+end subroutine prinmp
 
 
 
