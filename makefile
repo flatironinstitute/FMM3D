@@ -22,6 +22,7 @@ CXXFLAGS+=$(FFLAGS)
 
 CLIBS = -lgfortran -lm -ldl 
 
+
 LIBS = -lm 
 
 # extra flags for multithreaded: C/Fortran, MATLAB
@@ -80,7 +81,7 @@ COMOBJS = $(COM)/besseljs3d.o $(COM)/cdjseval3d.o $(COM)/dfft.o \
 	$(COM)/fmmcommon.o $(COM)/legeexps.o $(COM)/prini.o \
 	$(COM)/rotgen.o $(COM)/rotproj.o $(COM)/rotviarecur.o \
 	$(COM)/tree_lr_3d.o $(COM)/yrecursion.o 
-	
+
 # Helmholtz objects
 HELM = src/Helmholtz
 HOBJS = $(HELM)/h3dcommon.o $(HELM)/h3dterms.o $(HELM)/h3dtrans.o \
@@ -184,7 +185,7 @@ mex:  $(STATICLIB)
 	$(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY2) -mb $(MWRAPFILE2).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY2) -c $(GATEWAY2).c $(MWRAPFILE2).mw;\
 	$(MEX) $(GATEWAY2).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE2) $(MEXLIBS);
-	
+
 #python
 python: $(STATICLIB)
 	cd python && export FAST_KER=$(FAST_KER) && export FLIBS='$(LIBS)' && export FFLAGS='$(FFLAGS)' && pip install -e . && cd test && pytest -s
@@ -221,6 +222,12 @@ test/lfmm3d:
 test/lfmm3d_vec:
 	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_vec.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d_vec $(LIBS) 
 
+
+test_hfmm3d_mps: $(STATICLIB) $(TOBJS)
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_mps.f90 \
+  src/Helmholtz/hfmm3d_mps.f90 $(TOBJS) $(COMOBJS) $(HOBJS) \
+  -o test/Helmholtz/test_hfmm3d_mps
+	(cd test/Helmholtz; ./test_hfmm3d_mps)
 
 
 #
@@ -321,6 +328,7 @@ big-test: $(STATICLIB) $(TOBJS) test/test_lap_big test/test_helm_big
 
 pw-test: $(STATICLIB) $(TOBJS) test/test_helm_pw
 	./test/Helmholtz/test_hfmm3d_pw
+
 
 test/test_helm_big:
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_big.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_big
