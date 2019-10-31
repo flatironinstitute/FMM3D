@@ -31,8 +31,7 @@ directory.
 
 -  For linux, run ``make test``.
 -  For Mac OSX, run ``cp make.inc.mac.macosx_gcc make.inc`` followed by ``make test``.
--  For Windows, run ``copy make.inc.windows make.inc`` followed by
-``mingw32-make test``
+-  For Windows, run ``copy make.inc.windows make.inc`` followed by ``mingw32-make test``
 
 This should compile the static library
 in ``lib-static/`` and some fortran test drivers in ``test/``, then
@@ -52,7 +51,8 @@ run them, printing terminal output ending in::
 .. note ::
    By default the easy-to-install version of the library is compiled. To
    compile the library in its high-performance mode append
-   ``FAST_KER=ON`` to the make task. See :ref:`custom-install` for
+   ``FAST_KER=ON`` to the make task. For instance ``make test`` should be replaced by 
+   ``make test FAST_KER=ON``. See :ref:`custom-install` for
    other options.
    
 
@@ -62,7 +62,7 @@ If this fails see more detailed instructions below. If it succeeds, run
 .. note :: 
    On MacOSX, in order to link with the dynamic libraries, you will
    need to copy libfmm3d.so to ``usr/local/lib``. See any of the
-   makefiles in the ``example`` for an example.
+   makefiles in the ``examples/`` for an example.
 
 Type ``make`` to see a list of other aspects to build (language
 interfaces, etc). Please read `Usage <fortran-c.html>`__ and look in

@@ -54,7 +54,7 @@ The major improvements are the following:
 -  The use of plane wave expansions for diagonalizing the outgoing to incoming translation operators
 -  Vectorization of the FMM, to apply the same kernel with same source and target locations on multiple 
    strength vectors.
--  Optimized direct evaluation of the kernels using `SCTL <https://github.com/dmalhotra/SCTL> 
+-  Optimized direct evaluation of the kernels using `SCTL <https://github.com/dmalhotra/SCTL>`_ 
 -  A redesign of the adaptive tree data structure
 
 For sources and targets distributed in the volume, this code is 4 times

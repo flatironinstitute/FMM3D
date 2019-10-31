@@ -59,7 +59,7 @@ master_doc = 'index'
 # General information about the project.
 project = u'fmm3d'
 copyright = u'2018-2019 The Simons Foundation, Inc. - All Rights Reserved'
-author = u'Zydrunas Gimbutas, Leslie Greengard, Libin Lu, Jeremy Magland, Dhairya Malhotra, Mike O'Neil, Manas Rachh, and Vladimir Rokhlin'
+author = u'Zydrunas Gimbutas, Leslie Greengard, Libin Lu, Jeremy Magland, Dhairya Malhotra, Mike ONeil, Manas Rachh, and Vladimir Rokhlin'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -244,7 +244,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'fmm3d.tex', u'fmm3d Documentation',
-     u'Zydrunas Gimbutas \\and Leslie Greengard \\and Libin Lu \\and Jeremy Magland \\and Dhairya Malhotra \\and Mike O'Neil \\and Manas Rachh \\and Vladimir Rokhlin', 'manual'),
+     u'Zydrunas Gimbutas \\and Leslie Greengard \\and Libin Lu \\and Jeremy Magland \\and Dhairya Malhotra \\and Mike ONeil \\and Manas Rachh \\and Vladimir Rokhlin', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
