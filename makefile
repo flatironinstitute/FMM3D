@@ -344,7 +344,7 @@ debug: $(STATICLIB) $(TOBJS) examples/hfmm3d_deb
 
 
 examples/hfmm3d_deb:
-	$(FC) $(FFLAGS) examples/hfmm3d_debug1.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_debug
+	$(FC) $(FFLAGS) examples/hfmm3d_debug1.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_debug $(LIBS)
 
 objclean: 
 	rm -f $(OBJS) $(COBJS) $(TOBJS)

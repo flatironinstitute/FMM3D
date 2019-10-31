@@ -305,7 +305,7 @@ c     scaling factor for multipole and local expansions at all levels
 c
       allocate(scales(0:nlevels),nterms(0:nlevels))
       do ilev = 0,nlevels
-        scales(ilev) = boxsize(ilev)
+       scales(ilev) = boxsize(ilev)*abs(zk)
       enddo
 
 c
@@ -698,7 +698,7 @@ c      which satisfy |r| < thresh
 c      where r is the disance between them
 
       thresh = 2.0d0**(-52)*boxsize(0)
-
+      
       call prini(6,13)
       write(13,*) thresh
 
@@ -874,6 +874,7 @@ C$OMP END PARALLEL DO
       call cpu_time(time2)
 C$    time2=omp_get_wtime()
       timeinfo(1)=time2-time1
+
 
       if(ifprint.ge.1)
      $   call prinf('=== STEP 2 (form lo) ===*',i,0)
@@ -1100,7 +1101,8 @@ c     generate rotation matrices and carray
             call getpwrotmat(nn,carray,rdplus,rdminus,rdsq3,rdmsq3,dc)
 
 
-            call hrlscini(rlsc,nlams,rlams,zk2,nterms(ilev))
+            call hrlscini(rlsc,nlams,rlams,rscales(ilev),zk2,
+     1         nterms(ilev))
             call hmkexps(rlams,nlams,nphysical,nexptotp,zk2,xshift,
      1           yshift,zshift)
             
@@ -1128,8 +1130,13 @@ c
 cc         compute powers of scaling parameter
 c          for rescaling the multipole expansions
 c
+c          note: the scaling for helmholtz has been eliminated
+c         since it is taken care in the scaling of the legendre
+c         functions
+c
           
-           r1 = rscales(ilev)
+cc           r1 = rscales(ilev)
+           r1 = 1.0d0
            rsc(0) = 1.0d0
            do i=1,nterms(ilev)
              rsc(i) = rsc(i-1)*r1
@@ -1150,7 +1157,7 @@ C$OMP$PRIVATE(ibox,istart,iend,npts,tmp,mexpf1,mexpf2,tmp2)
 c           rescale multipole expansion
                   call mpscale(nd,nterms(ilev),rmlexp(iaddr(1,ibox)),
      1               rsc,tmp)
-
+                
                   call hmpoletoexp(nd,tmp,nterms(ilev),
      1                  nlams,nfourier,nexptot,mexpf1,mexpf2,rlsc) 
 
@@ -1256,7 +1263,8 @@ C$OMP$PRIVATE(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
 
 
                   call hprocessudexp(nd,zk2,ibox,ilev,nboxes,centers,
-     1            itree(ipointer(4)),rscales(ilev),nterms(ilev),
+     1            itree(ipointer(4)),rscales(ilev),boxsize(ilev),
+     2            nterms(ilev),
      2            iaddr,rmlexp,rlams,whts,
      3            nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,
      4            nuall,uall,nu1234,u1234,ndall,dall,nd5678,d5678,
@@ -1266,7 +1274,8 @@ C$OMP$PRIVATE(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
 
 
                   call hprocessnsexp(nd,zk2,ibox,ilev,nboxes,centers,
-     1            itree(ipointer(4)),rscales(ilev),nterms(ilev),
+     1            itree(ipointer(4)),rscales(ilev),boxsize(ilev),
+     2            nterms(ilev),
      2            iaddr,rmlexp,rlams,whts,
      3            nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,
      4            nnall,nall,nn1256,n1256,nn12,n12,nn56,n56,nsall,sall,
@@ -1278,7 +1287,8 @@ C$OMP$PRIVATE(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
      9            fexpback,rlsc)
 
                   call hprocessewexp(nd,zk2,ibox,ilev,nboxes,centers,
-     1            itree(ipointer(4)),rscales(ilev),nterms(ilev),
+     1            itree(ipointer(4)),rscales(ilev),boxsize(ilev),
+     2            nterms(ilev),
      2            iaddr,rmlexp,rlams,whts,
      3            nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,
      4            neall,eall,ne1357,e1357,ne13,e13,ne57,e57,ne1,e1,
