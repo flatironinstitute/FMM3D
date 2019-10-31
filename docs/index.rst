@@ -44,11 +44,17 @@ expansions of the interaction kernel and associated translation
 operators. 
 This library is an improved version of the `FMMLIB3D <https://github.com/zgimbutas/fmmlib3d>`_
 software, Copyright (C) 2010-2012: Leslie Greengard and Zydrunas Gimbutas, released under the 
-BSD license. The major changes are the following:
+BSD license. 
+We provide two implementations of the library - an easy to install
+version with minimal dependencies, and a high-performance optimized
+version (which on some CPUs is 3x faster than the other version). 
+For detailed instructions, see installation.
+The major improvements are the following:
 
 -  The use of plane wave expansions for diagonalizing the outgoing to incoming translation operators
 -  Vectorization of the FMM, to apply the same kernel with same source and target locations on multiple 
    strength vectors.
+-  Optimized direct evaluation of the kernels using `SCTL <https://github.com/dmalhotra/SCTL> 
 -  A redesign of the adaptive tree data structure
 
 For sources and targets distributed in the volume, this code is 4 times
@@ -59,8 +65,7 @@ faster.
 .. note::
    
    The plane wave expansions for the Helmholtz FMMs have only been incorporated
-   for low frequency problems (problems less than 32 wavelengths in size in each dimension), 
-   and real Helmholtz parameter. 
+   for low frequency problems (problems less than 32 wavelengths in size in each dimension). 
 
 
 .. note::

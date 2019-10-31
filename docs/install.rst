@@ -10,7 +10,7 @@ The source code can be downloaded from https://github.com/flatironinstitute/FMM3
 Dependencies
 ************
 
-This library is fully supported for unix/linux and Mac OSX.
+This library is fully supported for unix/linux, Mac OSX, and Windows.
 
 For the basic libraries
 
@@ -30,7 +30,9 @@ Make sure you have dependencies downloaded, and `cd` into your FMM3D
 directory. 
 
 -  For linux, run ``make test``.
--  For Mac OSX, run ``cp make.inc.mac make.inc`` followed by ``make test``.
+-  For Mac OSX, run ``cp make.inc.mac.macosx_gcc make.inc`` followed by ``make test``.
+-  For Windows, run ``copy make.inc.windows make.inc`` followed by
+``mingw32-make test``
 
 This should compile the static library
 in ``lib-static/`` and some fortran test drivers in ``test/``, then
@@ -47,9 +49,21 @@ run them, printing terminal output ending in::
    rm print_testreshelm.txt
    rm print_testreslap.txt
 
+.. note ::
+   By default the easy-to-install version of the library is compiled. To
+   compile the library in its high-performance mode append
+   ``FAST_KER=ON`` to the make task. See :ref:`custom-install` for
+   other options.
+   
+
 If this fails see more detailed instructions below. If it succeeds, run
-``make lib`` and proceed to link to library. Alternatively, 
-try one of our `precompiled linux and OSX binaries <https://users.flatironinstitute.org/~mrachh/fmm3d-binaries.html>`_. 
+``make lib`` and proceed to link to library. 
+
+.. note :: 
+   On MacOSX, in order to link with the dynamic libraries, you will
+   need to copy libfmm3d.so to ``usr/local/lib``. See any of the
+   makefiles in the ``example`` for an example.
+
 Type ``make`` to see a list of other aspects to build (language
 interfaces, etc). Please read `Usage <fortran-c.html>`__ and look in
 ``examples/`` and ``test/`` for other usage examples.
@@ -57,18 +71,28 @@ interfaces, etc). Please read `Usage <fortran-c.html>`__ and look in
 If there is an error in testing on a standard set-up,
 please file a bug report as a New Issue at https://github.com/flatironinstitute/FMM3D/issues
 
+.. _custom-install:
 
 Custom library compilation options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Single-threaded and multithreaded libraries are
+By default, the library is compiled in the easy-to-install mode (i.e.
+single threaded and without using the optimized direct evaluation
+kernels).
+
+In order to enable multi-threaded, append ``OMP=ON`` to the make task.
+
+In order to use the optimized direct evaluation kernels (this
+automatically turns on multithreaded as well), append ``FAST_KER=ON`` to
+the make task.
+
+All of these different libraries are
 built with the same name, so you will have to move them to other
 locations, or build a 2nd copy of the repo, if you want to keep both
 versions.
 
-You *must* do at least ``make objclean`` before changing openmp options.
-
-**Single-threaded**: append ``OMP=OFF`` to the make task.
+You *must* do at least ``make objclean`` before changing openmp
+/fast direct kernel evaluation options.
 
 
 Examples
@@ -131,6 +155,7 @@ There can be confusion and conflicts between various versions of Python and inst
   . env1/bin/activate
 
 Now you are in a virtual environment that starts from scratch. All pip installed packages will go inside the env1 directory. (You can get out of the environment by typing ``deactivate``)
+
 
 
 Building the MATLAB wrappers
