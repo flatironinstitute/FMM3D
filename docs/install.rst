@@ -10,7 +10,7 @@ The source code can be downloaded from https://github.com/flatironinstitute/FMM3
 Dependencies
 ************
 
-This library is fully supported for unix/linux, Mac OSX, and Windows.
+This library is supported for unix/linux, Mac OSX, and Windows.
 
 For the basic libraries
 
@@ -19,11 +19,11 @@ For the basic libraries
 
 Optional:
 
-* for MATLAB wrappers: MATLAB
-* for building new MATLAB wrappers (experts only): ``mwrap``
-* for the Python wrappers you will need ``python3`` and ``pip3``. 
+* for building Python wrappers you will need ``python3`` and ``pip3`` 
+* for building standard MATLAB wrappers: MATLAB
+* for modifying MATLAB wrappers (experts only): ``mwrap``
 
-Quick linux and Mac OSX install instructions
+Quick install instructions
 *********************************************
 
 Make sure you have dependencies downloaded, and `cd` into your FMM3D
@@ -34,8 +34,8 @@ directory.
 -  For Windows, run ``copy make.inc.windows make.inc`` followed by ``mingw32-make test``
 
 This should compile the static library
-in ``lib-static/`` and some fortran test drivers in ``test/``, then
-run them, printing terminal output ending in::
+in ``lib-static/`` and some fortran test drivers in ``test/``, after which it
+runs the test programs. The last 10 lines of the terminal output should be::
 
    cat print_testreshelm.txt
    Successfully completed 5 out of 5 tests in helmrouts3d testing suite
@@ -49,24 +49,25 @@ run them, printing terminal output ending in::
    rm print_testreslap.txt
 
 .. note ::
-   By default the easy-to-install version of the library is compiled. To
-   compile the library in its high-performance mode append
+   By default, ``make test`` creates the easy-to-install version of the library. To
+   compile the library in its high-performance mode, append
    ``FAST_KER=ON`` to the make task. For instance ``make test`` should be replaced by 
    ``make test FAST_KER=ON``. See :ref:`custom-install` for
    other options.
    
 
-If this fails see more detailed instructions below. If it succeeds, run
-``make lib`` and proceed to link to library. 
+If ``make test`` fails, see more detailed instructions below. If it succeeds, run
+``make lib``, which creates the dynamic library (``libfmm3d.so``). You may then
+link to the FMM library using the ``-lfmm3d`` option.
 
 .. note :: 
    On MacOSX, in order to link with the dynamic libraries, you will
    need to copy libfmm3d.so to ``usr/local/lib``. See any of the
-   makefiles in the ``examples/`` for an example.
+   makefiles in the ``examples/`` directory for prototypes.
 
-Type ``make`` to see a list of other aspects to build (language
-interfaces, etc). Please read `Usage <fortran-c.html>`__ and look in
-``examples/`` and ``test/`` for other usage examples.
+Type ``make`` to see a list of other build options (language
+interfaces, etc). Please see `Fortran and C interfaces <fortran-c.html>`__ and look in
+``examples/`` for sample drivers.
 
 If there is an error in testing on a standard set-up,
 please file a bug report as a New Issue at https://github.com/flatironinstitute/FMM3D/issues
@@ -76,14 +77,14 @@ please file a bug report as a New Issue at https://github.com/flatironinstitute/
 Custom library compilation options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-By default, the library is compiled in the easy-to-install mode (i.e.
-single threaded and without using the optimized direct evaluation
-kernels).
+In the (default) easy-to-install version,
+the library is compiled  without using the optimized direct evaluation kernels
+or multi-threading.
 
-In order to enable multi-threaded, append ``OMP=ON`` to the make task.
+In order to enable multi-threading, append ``OMP=ON`` to the make task.
 
 In order to use the optimized direct evaluation kernels (this
-automatically turns on multithreaded as well), append ``FAST_KER=ON`` to
+automatically turns on multithreading as well), append ``FAST_KER=ON`` to
 the make task.
 
 All of these different libraries are
@@ -91,7 +92,7 @@ built with the same name, so you will have to move them to other
 locations, or build a 2nd copy of the repo, if you want to keep both
 versions.
 
-You *must* do at least ``make objclean`` before changing openmp
+You *must* do at least ``make objclean`` before changing to the openmp
 /fast direct kernel evaluation options.
 
 
@@ -101,41 +102,37 @@ Examples
 *  ``make examples`` to compile and run the examples for calling from Fortran.
 *  ``make c-examples`` to compile and run the examples for calling from C.
 
-The ``examples`` and ``test`` directories are good places to see usage 
+The ``examples`` directory is a good place to see usage 
 examples for Fortran.
-There are three example Fortran drivers  
+There are three sample Fortran drivers  
 for both the Laplace and Helmholtz FMMs,
 one which demonstrates the use of FMMs, one which demonstrates
 the use of vectorized FMMs, and one which demonstrates the 
-use of legacy FMMs (`"FMMLIB3D" <https://github.com/zgimbutas/fmmlib3d>`_).
-The Helmholtz examples are ``hfmm3d_example.f``, 
-``hfmm3d_vec_example.f``, and ``hfmm3d_legacy_example.f``.
-We also include sample makefiles (``hfmm3d_example.make``, 
-``hfmm3d_vec_example.make``, and ``hfmm3d_legacy_example.make``) 
-to run these examples which demonstrate
-how to link to the library.
+use of the same calling sequence as FMMLIB3D - so that legacy codes
+are backward compatible with `FMMLIB3D <https://github.com/zgimbutas/fmmlib3d>`_.
 
-
-The analogous example drivers for the Laplace FMM are
+The sample drivers for the Laplace FMM are
 ``lfmm3d_example.f``, ``lfmm3d_vec_example.f``, and
 ``lfmm3d_legacy_example.f``, and the corresponding makefiles
 are ``lfmm3d_example.make``, ``lfmm3d_vec_example.make``, and
-``lfmm3d_legacy_example.make``.
+``lfmm3d_legacy_example.make``. These demonstrate how to link
+to the dynamic library ``libfmm3d.so``.
+The analogous Helmholtz drivers are ``hfmm3d_example.f``,
+``hfmm3d_vec_example.f``, and ``hfmm3d_legacy_example.f``.
+The corresponding makefiles are ``hfmm3d_example.make``, 
+``hfmm3d_vec_example.make``, and ``hfmm3d_legacy_example.make``.
 
-.. note::
-   If you have already compiled the static libraries, make sure that you
-   run make -f ``<makefile>`` clean first.
- 
-We have analogous C example drivers in ``c/``.
+
+Analogous C sample drivers can be found in ``c/``.
 
 
-Building the Python wrappers
+Building Python wrappers
 ****************************
 
 First make sure you have python3 and pip3 installed. 
 
-You may then do ``make python3`` which calls
-pip3 for the install then runs some tests.
+You may then execute ``make python3`` which calls
+pip3 for the install and then runs some tests.
 
 To rerun the tests, you may run ``pytest`` in ``python/`` 
 or alternatively run ``python python/test_hfmm.py`` and 
