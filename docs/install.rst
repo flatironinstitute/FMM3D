@@ -30,7 +30,7 @@ Make sure you have dependencies downloaded, and `cd` into your FMM3D
 directory. 
 
 -  For linux, run ``make test``.
--  For Mac OSX, run ``cp make.inc.mac.macosx_gcc make.inc`` followed by ``make test``.
+-  For Mac OSX, run ``cp make.inc.macosx_gcc make.inc`` followed by ``make test``.
 -  For Windows, run ``copy make.inc.windows make.inc`` followed by ``mingw32-make test``
 
 This should compile the static library
@@ -131,7 +131,8 @@ Building Python wrappers
 
 First make sure you have python3 and pip3 installed. 
 
-You may then execute ``make python3`` which calls
+You may then execute ``make python3`` (after copying over the
+operating system specific make.inc.* file to make.inc) which calls
 pip3 for the install and then runs some tests.
 
 To rerun the tests, you may run ``pytest`` in ``python/`` 
@@ -160,14 +161,14 @@ Building the MATLAB wrappers
 
 First make sure you have MATLAB installed. 
 
-The library comes with precompiled interfaces and can be directly
+The library comes with precompiled interfaces of the easy-to-install version
+of the library and can be directly
 called from MATLAB. However, we **strongly** recommend compiling 
 the mex interfaces on your machine. 
 
-This can be done using ``make matlab`` which links the .m files to
+This can be done using ``make matlab`` (after copying over the operating
+system specific make.inc.* file to make.inc) which links the .m files to
 the .c file in the matlab folder.
-We have included separate make.inc files to enable this compilation
-on Mac OSX or Linux machines.
 
 To run tests, you can run ``matlab test_hfmm3d.m`` and 
 ``matlab test_lfmm3d.m`` and it should return with $0$ crashes.
