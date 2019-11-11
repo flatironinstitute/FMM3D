@@ -657,7 +657,8 @@ c
 c
 c--------------------------------------------------------------------
       subroutine processudexp(nd,ibox,ilev,nboxes,centers,ichild,
-     1           rscale,nterms,iaddr,rmlexp,rlams,whts,nlams,nfourier,
+     1           rscale,bs,nterms,iaddr,rmlexp,rlams,whts,nlams,
+     2           nfourier,
      2           nphysical,nthmax,nexptot,nexptotp,mexp,nuall,uall,
      3           nu1234,u1234,ndall,dall,nd5678,d5678,mexpup,mexpdown,
      4           mexpupphys,mexpdownphys,mexpuall,mexpu5678,mexpdall,
@@ -674,7 +675,7 @@ c-------------------------------------------------------------------
       integer nexptot,nexptotp,nmax
       integer nuall,ndall,nu1234,nd5678
       integer uall(*),dall(*),u1234(*),d5678(*)
-      double precision rscale
+      double precision rscale,bs
       double precision rlams(*),whts(*)
       double complex, allocatable :: tloc(:,:,:)  
       double complex mexp(nd,nexptotp,nboxes,6)
@@ -708,15 +709,15 @@ c      temp variables
       enddo
       
    
-      ctmp(1) = centers(1,ibox) - rscale/2.0d0
-      ctmp(2) = centers(2,ibox) - rscale/2.0d0
-      ctmp(3) = centers(3,ibox) - rscale/2.0d0
+      ctmp(1) = centers(1,ibox) - bs/2.0d0
+      ctmp(2) = centers(2,ibox) - bs/2.0d0
+      ctmp(3) = centers(3,ibox) - bs/2.0d0
        
       do i=1,nuall
         jbox = uall(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(iz,j)*xs(ix,j)*ys(iy,j)
@@ -729,9 +730,9 @@ c      temp variables
 
       do i=1,nu1234
         jbox = u1234(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
 
         do j=1,nexptotp
           zmul = zs(iz,j)*xs(ix,j)*ys(iy,j)
@@ -746,9 +747,9 @@ c      temp variables
       do i=1,ndall
         jbox = dall(i)
 
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
 
         do j=1,nexptotp
           zmul = zs(-iz,j)*xs(-ix,j)*ys(-iy,j)
@@ -761,9 +762,9 @@ c      temp variables
 
       do i=1,nd5678
         jbox = d5678(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
 
         do j=1,nexptotp
           zmul = zs(-iz,j)*xs(-ix,j)*ys(-iy,j)
@@ -801,9 +802,6 @@ c      add contributions due to child 1
      1         nlams,nfourier,nthmax,nexptot,mexpup,mexpdown,
      2         rscale,rlsc)
 
-c
-c         NOTE: fix rscpow to be 1/rscpow
-c
         call mpscale(nd,nterms,tloc,rscpow,tloc)
         call mpadd(nd,tloc,rmlexp(iaddr(2,jbox)),nterms)
 
@@ -1019,7 +1017,8 @@ c      add contributions due to child 8
 c--------------------------------------------------------------------      
 
       subroutine processnsexp(nd,ibox,ilev,nboxes,centers,ichild,
-     1           rscale,nterms,iaddr,rmlexp,rlams,whts,nlams,nfourier,
+     1           rscale,bs,nterms,iaddr,rmlexp,rlams,whts,nlams,
+     2           nfourier,
      2           nphysical,nthmax,nexptot,nexptotp,mexp,nnall,nall,
      3           nn1256,n1256,nn12,n12,nn56,n56,
      4           nsall,sall,ns3478,s3478,ns34,s34,ns78,s78,mexpup,
@@ -1040,7 +1039,7 @@ c-------------------------------------------------------------------
       integer nnall,nsall,nn1256,ns3478,nn12,nn56,ns34,ns78
       integer nall(*),sall(*),n1256(*),s3478(*)
       integer n12(*),n56(*),s34(*),s78(*)
-      double precision rscale
+      double precision rscale,bs
       double complex zk2
       double precision rlams(*),whts(*)
       double complex, allocatable :: tloc(:,:,:)
@@ -1083,16 +1082,16 @@ c      temp variables
       enddo
       
    
-      ctmp(1) = centers(1,ibox) - rscale/2.0d0
-      ctmp(2) = centers(2,ibox) - rscale/2.0d0
-      ctmp(3) = centers(3,ibox) - rscale/2.0d0
+      ctmp(1) = centers(1,ibox) - bs/2.0d0
+      ctmp(2) = centers(2,ibox) - bs/2.0d0
+      ctmp(3) = centers(3,ibox) - bs/2.0d0
        
       do i=1,nnall
         jbox = nall(i)
 
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
            zmul = zs(iy,j)*xs(iz,j)*ys(ix,j)
@@ -1106,9 +1105,9 @@ c      temp variables
 
       do i=1,nn1256
         jbox = n1256(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(iy,j)*xs(iz,j)*ys(ix,j)
@@ -1121,9 +1120,9 @@ c      temp variables
 
       do i=1,nn12
         jbox = n12(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(iy,j)*xs(iz,j)*ys(ix,j)
@@ -1136,9 +1135,9 @@ c      temp variables
 
       do i=1,nn56
         jbox = n56(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(iy,j)*xs(iz,j)*ys(ix,j)
@@ -1152,9 +1151,9 @@ c      temp variables
       do i=1,nsall
         jbox = sall(i)
 
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(-iy,j)*xs(-iz,j)*ys(-ix,j)
@@ -1167,9 +1166,9 @@ c      temp variables
 
       do i=1,ns3478
         jbox = s3478(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(-iy,j)*xs(-iz,j)*ys(-ix,j)
@@ -1182,9 +1181,9 @@ c      temp variables
 
       do i=1,ns34
         jbox = s34(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(-iy,j)*xs(-iz,j)*ys(-ix,j)
@@ -1196,9 +1195,9 @@ c      temp variables
 
       do i=1,ns78
         jbox = s78(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(-iy,j)*xs(-iz,j)*ys(-ix,j)
@@ -1461,7 +1460,8 @@ c      add contributions due to child 8
 c--------------------------------------------------------------------      
 
       subroutine processewexp(nd,ibox,ilev,nboxes,centers,ichild,
-     1           rscale,nterms,iaddr,rmlexp,rlams,whts,nlams,nfourier,
+     1           rscale,bs,nterms,iaddr,rmlexp,rlams,whts,nlams,
+     2           nfourier,
      2           nphysical,nthmax,nexptot,nexptotp,mexp,neall,eall,
      3           ne1357,e1357,ne13,e13,ne57,e57,ne1,e1,ne3,e3,ne5,e5,
      4           ne7,e7,nwall,wall,nw2468,w2468,nw24,w24,nw68,w68,
@@ -1486,7 +1486,7 @@ c-------------------------------------------------------------------
       integer eall(*),wall(*),e1357(*),w2468(*)
       integer e13(*),e57(*),w24(*),w68(*)
       integer e1(*),e3(*),e5(*),e7(*),w2(*),w4(*),w6(*),w8(*)
-      double precision rscale
+      double precision rscale,bs
       double complex zk2
       double precision rlams(*),whts(*)
       double complex, allocatable :: tloc(:,:,:),tloc2(:,:,:)
@@ -1541,15 +1541,15 @@ c      temp variables
       enddo
       
    
-      ctmp(1) = centers(1,ibox) - rscale/2.0d0
-      ctmp(2) = centers(2,ibox) - rscale/2.0d0
-      ctmp(3) = centers(3,ibox) - rscale/2.0d0
+      ctmp(1) = centers(1,ibox) - bs/2.0d0
+      ctmp(2) = centers(2,ibox) - bs/2.0d0
+      ctmp(3) = centers(3,ibox) - bs/2.0d0
        
       do i=1,neall
         jbox = eall(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(ix,j)*xs(-iz,j)*ys(iy,j)
@@ -1562,9 +1562,9 @@ c      temp variables
 
       do i=1,ne1357
         jbox = e1357(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(ix,j)*xs(-iz,j)*ys(iy,j)
@@ -1577,9 +1577,9 @@ c      temp variables
 
       do i=1,ne13
         jbox = e13(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(ix,j)*xs(-iz,j)*ys(iy,j)
@@ -1592,9 +1592,9 @@ c      temp variables
 
       do i=1,ne57
         jbox = e57(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(ix,j)*xs(-iz,j)*ys(iy,j)
@@ -1606,9 +1606,9 @@ c      temp variables
 
       do i=1,ne1
         jbox = e1(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(ix,j)*xs(-iz,j)*ys(iy,j)
@@ -1621,9 +1621,9 @@ c      temp variables
 
       do i=1,ne3
         jbox = e3(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(ix,j)*xs(-iz,j)*ys(iy,j)
@@ -1635,9 +1635,9 @@ c      temp variables
 
       do i=1,ne5
         jbox = e5(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(ix,j)*xs(-iz,j)*ys(iy,j)
@@ -1650,9 +1650,9 @@ c      temp variables
 
       do i=1,ne7
         jbox = e7(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(ix,j)*xs(-iz,j)*ys(iy,j)
@@ -1665,9 +1665,9 @@ c      temp variables
       do i=1,nwall
         jbox = wall(i)
 
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
 
          
         do j=1,nexptotp
@@ -1681,9 +1681,9 @@ c      temp variables
 
       do i=1,nw2468
         jbox = w2468(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(-ix,j)*xs(iz,j)*ys(-iy,j)
@@ -1696,9 +1696,9 @@ c      temp variables
 
       do i=1,nw24
         jbox = w24(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(-ix,j)*xs(iz,j)*ys(-iy,j)
@@ -1712,9 +1712,9 @@ c      temp variables
 
       do i=1,nw68
         jbox = w68(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(-ix,j)*xs(iz,j)*ys(-iy,j)
@@ -1726,9 +1726,9 @@ c      temp variables
 
       do i=1,nw2
         jbox = w2(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(-ix,j)*xs(iz,j)*ys(-iy,j)
@@ -1741,9 +1741,9 @@ c      temp variables
 
       do i=1,nw4
         jbox = w4(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(-ix,j)*xs(iz,j)*ys(-iy,j)
@@ -1755,9 +1755,9 @@ c      temp variables
 
       do i=1,nw6
         jbox = w6(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(-ix,j)*xs(iz,j)*ys(-iy,j)
@@ -1769,9 +1769,9 @@ c      temp variables
 
       do i=1,nw8
         jbox = w8(i)
-        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/rscale
-        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
-        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
         do j=1,nexptotp
           zmul = zs(-ix,j)*xs(iz,j)*ys(-iy,j)

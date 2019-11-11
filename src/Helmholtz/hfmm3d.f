@@ -699,9 +699,6 @@ c      where r is the disance between them
 
       thresh = 2.0d0**(-52)*boxsize(0)
       
-      call prini(6,13)
-      write(13,*) thresh
-
 
       allocate(zeyep(-nmax:nmax),zmone(0:2*nmax))
       

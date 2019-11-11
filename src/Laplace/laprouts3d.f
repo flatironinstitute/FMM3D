@@ -180,7 +180,7 @@ c
         ephi(1)=ephi1
         d = 1.0d0/r
         fr(0) = d
-        d = d/rscale
+        d = d*rscale
         fr(1) = fr(0)*d
         do i=2,nterms+1
           fr(i) = fr(i-1)*d
@@ -323,7 +323,7 @@ c
         sphi = dimag(ephi1)
         d = 1.0d0/r
         fr(0) = d
-        d = d/rscale
+        d = d*rscale
         fr(1) = fr(0)*d
         do i=2,nterms+1
           fr(i) = fr(i-1)*d
@@ -495,7 +495,7 @@ c
         ephi(1)=ephi1
         ephi(-1)=dconjg(ephi1)
         fr(0) = 1.0d0
-        d = r*rscale
+        d = r/rscale
         fr(1) = d
         do i=2,nterms+1
           fr(i) = fr(i-1)*d
@@ -644,7 +644,7 @@ c
         ephi(1)=ephi1
         ephi(-1)=dconjg(ephi1)
         fr(0) = 1.0d0
-        d = r*rscale
+        d = r/rscale
         fr(1) = d
         do i=2,nterms+1
           fr(i) = fr(i-1)*d
@@ -850,7 +850,7 @@ c
         ephi(1)=ephi1
         ephi(-1)=dconjg(ephi1)
         fr(0) = 1.0d0
-        d = r*rscale
+        d = r/rscale
         fr(1) = d
         do i=2,nterms+1
           fr(i) = fr(i-1)*d
@@ -1065,7 +1065,7 @@ c
         cphi = dreal(ephi1)
         sphi = dimag(ephi1)
         fr(0) = 1.0d0
-        d = r*rscale
+        d = r/rscale
         fr(1) = fr(0)*d
         do i=2,nterms+1
           fr(i) = fr(i-1)*d
@@ -1197,7 +1197,7 @@ c     compute exp(eye*m*phi) array
 c
         ephi(0)=done
         ephi(1)=ephi1
-        d = r*rscale
+        d = r/rscale
         fr(0) = 1.0d0
         fr(1) = fr(0)*d
         do i=2,nterms+1
@@ -1375,7 +1375,7 @@ c
         ephi(-1)=dconjg(ephi1)
         d = 1.0d0/r
         fr(0) = d
-        d = d/rscale
+        d = d*rscale
         fr(1) = fr(0)*d
         do i=2,nterms+1
           fr(i) = fr(i-1)*d
@@ -1524,7 +1524,7 @@ c
         ephi(-1)=dconjg(ephi1)
         d = 1.0d0/r
         fr(0) = d
-        d = d/rscale
+        d = d*rscale
         fr(1) = fr(0)*d
         do i=2,nterms+1
           fr(i) = fr(i-1)*d
@@ -1723,7 +1723,7 @@ c
         ephi(-1)=dconjg(ephi1)
         d = 1.0d0/r
         fr(0) = d
-        d = d/rscale
+        d = d*rscale
         fr(1) = fr(0)*d
         do i=2,nterms+1
           fr(i) = fr(i-1)*d

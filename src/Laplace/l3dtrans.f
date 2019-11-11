@@ -191,13 +191,13 @@ C
       allocate(fr(0:nmax))
 c
       fr(0) = 1.0d0
-      d = -zshift*scale
+      d = -zshift/scale
       fr(1) = d
       do l=2,nmax
          fr(l) = fr(l-1)*d
       enddo
 
-      d = scale2/scale
+      d = scale/scale2
       allocate(rscpow(nterms2))
       rscpow(1) = d
       do i=2,nterms2
@@ -408,13 +408,13 @@ C
 c
       d = 1.0d0/zshift
       fr(0) = d
-      d = d/scale
+      d = d*scale
       fr(1) = fr(0)*d
       do l=2,2*nmax
         fr(l) = fr(l-1)*d
       enddo
 
-      d = scale/scale2
+      d = scale2/scale
       rscpow(1) = d
       do l=2,nmax
         rscpow(l) = rscpow(l-1)*d
@@ -631,13 +631,13 @@ c
 c
       d = zshift
       fr(0) = 1.0d0
-      d = d*scale
+      d = d/scale
       fr(1) = d
       do l=2,nterms
          fr(l) = fr(l-1)*d
       enddo
 
-      d = scale/scale2
+      d = scale2/scale
       rscpow(1) = d
       do l=2,nterms
         rscpow(l) = rscpow(l-1)*d

@@ -92,7 +92,7 @@ c                supported
        integer ifpgh,ifpghtarg
 
        integer ntarg,nsource
-
+       
 
        double precision source(3,*),targ(3,*)
        double precision charge(nd,*)
@@ -289,6 +289,8 @@ c
       allocate(scales(0:nlevels),nterms(0:nlevels))
       do ilev = 0,nlevels
         scales(ilev) = boxsize(ilev)
+        scales(ilev) = 1.0d0
+        scales(ilev) = 1.1d0
       enddo
 c
 cc      initialize potential and gradient at source
@@ -1100,8 +1102,8 @@ C$OMP END PARALLEL DO
 
       do ilev=2,nlevels
 
-         rscpow(0) = 1.0d0/rscales(ilev)
-         rtmp = 1.0d0/rscales(ilev)**2
+         rscpow(0) = 1.0d0/boxsize(ilev)
+         rtmp = rscales(ilev)/boxsize(ilev)
          do i=1,nterms(ilev)
             rscpow(i) = rscpow(i-1)*rtmp
          enddo
@@ -1178,7 +1180,7 @@ c
 c          
 c
          rscpow(0) = 1.0d0
-         rtmp = 1.0d0/rscales(ilev)**2
+         rtmp = rscales(ilev)/boxsize(ilev)
          do i=1,nterms(ilev)
             rscpow(i) = rscpow(i-1)*rtmp
          enddo
@@ -1224,7 +1226,8 @@ C$OMP$PRIVATE(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
      7         ne1,e1,ne3,e3,ne5,e5,ne7,e7,nw2,w2,nw4,w4,nw6,w6,nw8,w8)
 
                call processudexp(nd,ibox,ilev,nboxes,centers,
-     1         itree(ipointer(4)),rscales(ilev),nterms(ilev),
+     1         itree(ipointer(4)),rscales(ilev),boxsize(ilev),
+     2         nterms(ilev),
      2         iaddr,rmlexp,rlams,whts,
      3         nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,
      4         nuall,uall,nu1234,u1234,ndall,dall,nd5678,d5678,
@@ -1233,7 +1236,8 @@ C$OMP$PRIVATE(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
      7         yshift,zshift,fexpback,rlsc,rscpow)
                
                call processnsexp(nd,ibox,ilev,nboxes,centers,
-     1         itree(ipointer(4)),rscales(ilev),nterms(ilev),
+     1         itree(ipointer(4)),rscales(ilev),boxsize(ilev),
+     2         nterms(ilev),
      2         iaddr,rmlexp,rlams,whts,
      3         nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,
      4         nnall,nall,nn1256,n1256,nn12,n12,nn56,n56,nsall,sall,
@@ -1245,7 +1249,8 @@ C$OMP$PRIVATE(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
      9         fexpback,rlsc,rscpow)
                
                call processewexp(nd,ibox,ilev,nboxes,centers,
-     1         itree(ipointer(4)),rscales(ilev),nterms(ilev),
+     1         itree(ipointer(4)),rscales(ilev),boxsize(ilev),
+     2         nterms(ilev),
      2         iaddr,rmlexp,rlams,whts,
      3         nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,
      4         neall,eall,ne1357,e1357,ne13,e13,ne57,e57,ne1,e1,

@@ -652,12 +652,6 @@ C$OMP END PARALLEL DO
         
 
         if(ifpghtarg.eq.1) then
-          print *, "Here"
-          print *, nd
-          print *, size(charge_in)
-          print *, size(dipvec_in)
-          print *, ns
-          print *, ntmp
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,nt
             call l3ddirectcdp(nd,source,charge_in,dipvec_in,ns,
