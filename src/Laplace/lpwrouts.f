@@ -483,7 +483,8 @@ c------------------------------------------------
       double complex mexpf(nd,*)
       double complex mexpphys(nd,*),ima
       double complex fexpback(*)
-      double precision alphas(0:100),hh
+      double precision hh
+      double precision, allocatable :: alphas(:)
       integer  nlambs,numfour(nlambs),numphys(nlambs),nthmax
       data ima/(0.0d0,1.0d0)/
 c
@@ -520,6 +521,8 @@ c               etc.
 c
 c------------------------------------------------------------
       done=1.0d0
+
+      allocate(alphas(0:1000))
 c
 c
       pi=datan(done)*4
@@ -575,7 +578,7 @@ c
       double complex fexpe(*)
       double complex fexpo(*)
       double precision     rlams(nlambs)
-      double precision     alphas(0:200)
+      double precision, allocatable :: alphas(:) 
       integer  nlambs,numfour(nlambs),numphys(nlambs),nthmax
       data ima/(0.0d0,1.0d0)/
 c
@@ -618,6 +621,8 @@ c         etc.
 c
 c------------------------------------------------------------
       done=1.0d0
+
+      allocate(alphas(0:1000))
 c
 c
       pi=datan(done)*4

@@ -598,7 +598,7 @@ c***********************************************************************
       complex *16 mexpf(nd,*)
       complex *16 mexpphys(nd,*),ima
       complex *16 fexp2(*)
-      real *8     alphas(0:2000)
+      real *8, allocatable :: alphas(:)
       integer  nlambs,numfour(nlambs),numphys(nlambs)
       data ima/(0.0d0,1.0d0)/
 c***********************************************************************
@@ -637,6 +637,8 @@ c               etc.
 c
 c------------------------------------------------------------
       done=1.0d0
+
+      allocate(alphas(0:3000))
 c
 c
       pi=datan(done)*4
@@ -700,7 +702,7 @@ c***********************************************************************
       complex *16 mexpf(nd,*)
       complex *16 mexpphys(nd,*),ima,ctmp
       complex *16 fexp(*)
-      real *8  alphas(0:1000)
+      real *8, allocatable :: alphas(:) 
       integer  nlambs,numfour(nlambs),numphys(nlambs)
       integer nd,idim
       data ima/(0.0d0,1.0d0)/
@@ -744,6 +746,8 @@ c         etc.
 c
 c------------------------------------------------------------
       done=1.0d0
+
+      allocate(alphas(0:3000))
 c
 c
       pi=datan(done)*4
