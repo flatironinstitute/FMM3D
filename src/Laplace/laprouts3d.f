@@ -330,7 +330,7 @@ c
           ephi(i)=ephi(i-1)*ephi1
         enddo
         do i=0,nterms
-          frder(i) = -(i+1.0d0)*fr(i+1)*rscale
+          frder(i) = -(i+1.0d0)*fr(i+1)/rscale
         enddo
 c
 c    get the associated Legendre functions:
@@ -653,7 +653,7 @@ c
         enddo
         frder(0) = 0.0d0
         do i=1,nterms
-          frder(i) = i*fr(i-1)*rscale
+          frder(i) = i*fr(i-1)/rscale
         enddo
 c
 c     compute coefficients in change of variables from spherical
@@ -719,7 +719,7 @@ c
         enddo
 
         do n=1,nterms
-          fruse = fr(n-1)*rscale
+          fruse = fr(n-1)/rscale
           ur = ynm(n,0)*frder(n)
           utheta = -fruse*ynmd(n,0)*stheta
           ux = ur*rx + utheta*thetax 
@@ -859,7 +859,7 @@ c
         enddo
         frder(0) = 0.0d0
         do i=1,nterms
-          frder(i) = i*fr(i-1)*rscale
+          frder(i) = i*fr(i-1)/rscale
         enddo
 c
 c     compute coefficients in change of variables from spherical
@@ -926,7 +926,7 @@ c
         enddo
 
         do n=1,nterms
-          fruse = fr(n-1)*rscale
+          fruse = fr(n-1)/rscale
           ur = ynm(n,0)*frder(n)
           utheta = -fruse*ynmd(n,0)*stheta
           ux = ur*rx + utheta*thetax 
@@ -1206,7 +1206,7 @@ c
         enddo
         frder(0) = 0
         do i=1,nterms
-          frder(i) = i*fr(i-1)*rscale
+          frder(i) = i*fr(i-1)/rscale
         enddo
 c
 c    get the associated Legendre functions:
@@ -1532,7 +1532,7 @@ c
           ephi(-i)=ephi(-i+1)*ephi(-1)
         enddo
         do i=0,nterms
-          frder(i) = -(i+1.0d0)*fr(i+1)*rscale
+          frder(i) = -(i+1.0d0)*fr(i+1)/rscale
         enddo
 c
 c     compute coefficients in change of variables from spherical
@@ -1731,7 +1731,7 @@ c
           ephi(-i)=ephi(-i+1)*ephi(-1)
         enddo
         do i=0,nterms
-          frder(i) = -(i+1.0d0)*fr(i+1)*rscale
+          frder(i) = -(i+1.0d0)*fr(i+1)/rscale
         enddo
 c
 c     compute coefficients in change of variables from spherical

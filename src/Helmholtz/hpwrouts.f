@@ -2141,3 +2141,706 @@ c      add contributions due to child 8
       return
       end
 c--------------------------------------------------------------------      
+c
+c
+c--------------------------------------------------------------------
+      subroutine hprocesslist3udexp(nd,ibox,nboxes,centers,
+     1           bs,nterms,nexptotp,mexp,nuall,uall,
+     3           ndall,dall,mexpuall,mexpdall,
+     5           xs,ys,zs)
+c--------------------------------------------------------------------
+c      process up down expansions for box ibox
+c-------------------------------------------------------------------
+      implicit none
+      integer idim,nd
+      integer ibox,nboxes,nterms,nlams,nthmax
+      integer nexptot,nexptotp
+      integer nuall,ndall
+      integer uall(*),dall(*)
+      double precision bs
+      double complex mexp(nd,nexptotp,nboxes,6)
+      double precision centers(3,nboxes)
+      double complex mexpuall(nd,nexptotp),mexpdall(nd,nexptotp)
+      double complex xs(-5:5,nexptotp),ys(-5:5,nexptotp)
+      double complex zs(5,nexptotp)
+
+c      temp variables
+      integer jbox,i,ix,iy,iz,j
+      double precision rtmp
+      double complex ztmp,zmul,ztmp2
+     
+      double precision ctmp(3)
+
+
+      do i=1,nexptotp
+        do idim=1,nd
+          mexpuall(idim,i) = 0
+          mexpdall(idim,i) = 0
+        enddo
+      enddo
+      
+   
+      ctmp(1) = centers(1,ibox) - bs/2.0d0
+      ctmp(2) = centers(2,ibox) - bs/2.0d0
+      ctmp(3) = centers(3,ibox) - bs/2.0d0
+  
+      
+      do i=1,nuall
+        jbox = uall(i)
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
+         
+        do j=1,nexptotp
+          zmul = zs(iz,j)*xs(ix,j)*ys(iy,j)
+          do idim=1,nd
+            mexpdall(idim,j) = mexpdall(idim,j) + 
+     1                         mexp(idim,j,jbox,2)*zmul
+          enddo
+        enddo
+      enddo
+
+      do i=1,ndall
+        jbox = dall(i)
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
+
+        do j=1,nexptotp
+          zmul = zs(-iz,j)*xs(-ix,j)*ys(-iy,j)
+          do idim=1,nd
+            mexpuall(idim,j) = mexpuall(idim,j) + 
+     1                         mexp(idim,j,jbox,1)*zmul
+          enddo
+        enddo
+      enddo
+
+
+      return
+      end
+c--------------------------------------------------------------------      
+
+      subroutine hprocesslist3nsexp(nd,ibox,nboxes,centers,
+     1           bs,nterms,nexptotp,mexp,nnall,nall,
+     3           nsall,sall,mexpnall,mexpsall,
+     5           xs,ys,zs)
+c--------------------------------------------------------------------
+c      create up down expansions for box ibox
+c-------------------------------------------------------------------
+      implicit none
+      integer nd
+      integer ibox,nboxes,nterms,nlams,nthmax
+      integer nexptotp
+      integer nnall,nsall
+      integer nall(*),sall(*)
+      double precision bs
+      double complex mexp(nd,nexptotp,nboxes,6)
+      double precision centers(3,*)
+      double complex mexpnall(nd,nexptotp),mexpsall(nd,nexptotp)
+      double complex xs(-5:5,nexptotp),ys(-5:5,nexptotp)
+      double complex zs(5,nexptotp)
+
+c      temp variables
+      integer jbox,i,ix,iy,iz,j,idim
+      double complex ztmp,zmul,ztmp2
+      double precision rtmp
+    
+      double precision ctmp(3)
+
+
+      do i=1,nexptotp
+        do idim=1,nd
+          mexpnall(idim,i) = 0
+          mexpsall(idim,i) = 0
+        enddo
+      enddo
+      
+   
+      ctmp(1) = centers(1,ibox) - bs/2.0d0
+      ctmp(2) = centers(2,ibox) - bs/2.0d0
+      ctmp(3) = centers(3,ibox) - bs/2.0d0
+       
+      do i=1,nnall
+        jbox = nall(i)
+
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
+         
+        do j=1,nexptotp
+           zmul = zs(iy,j)*xs(iz,j)*ys(ix,j)
+           do idim=1,nd
+             mexpsall(idim,j) = mexpsall(idim,j) + 
+     1                          mexp(idim,j,jbox,4)*zmul
+           enddo
+        enddo
+
+      enddo
+
+      do i=1,nsall
+        jbox = sall(i)
+
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
+         
+        do j=1,nexptotp
+          zmul = zs(-iy,j)*xs(-iz,j)*ys(-ix,j)
+          do idim=1,nd
+            mexpnall(idim,j) = mexpnall(idim,j) + 
+     1                         mexp(idim,j,jbox,3)*zmul
+          enddo
+        enddo
+      enddo
+
+      return
+      end
+c--------------------------------------------------------------------      
+
+      subroutine hprocesslist3ewexp(nd,ibox,nboxes,centers,
+     1           bs,nterms,nexptotp,mexp,neall,eall,nwall,wall,
+     4           mexpeall,mexpwall,xs,ys,zs)
+c--------------------------------------------------------------------
+c      create up down expansions for box ibox
+c-------------------------------------------------------------------
+      implicit none
+      integer nd
+      integer ibox,nboxes,nterms,nlams,nthmax
+      integer nexptotp
+      integer neall,nwall
+      integer eall(*),wall(*)
+      double precision bs
+      double complex mexp(nd,nexptotp,nboxes,6)
+      double precision centers(3,*)
+      double complex mexpeall(nd,nexptotp),mexpwall(nd,nexptotp)
+      double complex xs(-5:5,nexptotp),ys(-5:5,nexptotp)
+      double complex zs(5,nexptotp)
+
+c      temp variables
+      integer jbox,i,ix,iy,iz,j,l,idim
+      double complex ztmp,zmul,ztmp2
+      double complex rtmp
+     
+      double precision ctmp(3)
+
+
+      do i=1,nexptotp
+        do idim=1,nd
+          mexpeall(idim,i) = 0
+          mexpwall(idim,i) = 0
+        enddo
+      enddo
+      
+   
+      ctmp(1) = centers(1,ibox) - bs/2.0d0
+      ctmp(2) = centers(2,ibox) - bs/2.0d0
+      ctmp(3) = centers(3,ibox) - bs/2.0d0
+       
+      do i=1,neall
+        jbox = eall(i)
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
+         
+        do j=1,nexptotp
+          zmul = zs(ix,j)*xs(-iz,j)*ys(iy,j)
+          do idim=1,nd
+            mexpwall(idim,j) = mexpwall(idim,j) + 
+     1                         mexp(idim,j,jbox,6)*zmul
+          enddo
+        enddo
+      enddo
+
+      do i=1,nwall
+        jbox = wall(i)
+
+        ix = 1.05d0*(centers(1,jbox)-ctmp(1))/bs
+        iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
+        iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
+
+         
+        do j=1,nexptotp
+          zmul = zs(-ix,j)*xs(iz,j)*ys(-iy,j)
+          do idim=1,nd
+            mexpeall(idim,j) = mexpeall(idim,j) + 
+     1                         mexp(idim,j,jbox,5)*zmul
+          enddo
+        enddo
+      enddo
+
+
+      return
+      end
+c
+c
+c
+c
+c
+c--------------------------------------------------------------------     
+
+      subroutine hpw_ud_eval_p(nd,zk2,center,boxsize,ntarg,targ,nlam,
+     1   rlams,
+     1   whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot)
+      implicit none
+      integer nd
+      real *8 center(3),boxsize,targ(3,ntarg)
+      complex *16 rlams(nlam),pot(nd,ntarg)
+      complex *16 whts(nlam),zk2
+      integer ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
+      complex *16 ima
+      complex *16, allocatable :: cc(:),cc2(:)
+      integer itarg,i,j,k,l,il,ii,iphys,istart,idim
+      real *8 pi2inv,rexp1,alpha,pi2,x,y,z
+      real *8 h,hh,rr
+      complex *16 rz,zsc,rk
+      complex *16, allocatable :: zexp(:),zexpinv(:)
+      data pi2inv/0.15915494309189535d0/
+      data pi2/6.283185307179586d0/
+      data ima/(0.0d0,1.0d0)/
+
+      zsc = -ima/zk2
+
+      allocate(zexp(nlam),zexpinv(nlam),cc(nphmax),cc2(nphmax))
+
+
+
+      do itarg=1,ntarg
+        x = (targ(1,itarg) - center(1))/boxsize
+        y = (targ(2,itarg) - center(2))/boxsize
+        z = (targ(3,itarg) - center(3))/boxsize
+
+
+        do i=1,nlam
+          zexp(i) = exp(-z*rlams(i))*whts(i)
+          zexpinv(i) = exp(z*rlams(i))*whts(i)
+        enddo
+
+
+        istart = 0
+        do il=1,nlam
+          h = pi2/nphys(il)
+          hh = 1.0d0/nphys(il)
+
+          rk = sqrt(rlams(il)**2 + zk2**2)
+
+          do iphys = 1,nphys(il)
+            alpha = (iphys-1)*h
+            cc(iphys) = exp(ima*rk*(x*cos(alpha) + y*sin(alpha)))
+            cc2(iphys) = exp(-ima*rk*(x*cos(alpha) + y*sin(alpha)))
+          enddo
+
+          do iphys = 1,nphys(il)
+            ii = istart + iphys
+            do idim=1,nd
+              rz = 
+     1            (mexpupphys(idim,ii)*zexp(il)*cc(iphys) + 
+     2             mexpdownphys(idim,ii)*zexpinv(il)*cc2(iphys))*hh
+              pot(idim,itarg) = pot(idim,itarg) + rz*zsc 
+            enddo
+          enddo
+          istart = istart + nphys(il)
+        enddo
+      enddo
+
+      return
+      end
+c
+c
+c
+c
+c
+c--------------------------------------------------------------------     
+
+      subroutine hpw_ns_eval_p(nd,zk2,center,boxsize,ntarg,targ,nlam,
+     1   rlams,whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot)
+      implicit none
+      integer nd
+      real *8 center(3),boxsize,targ(3,ntarg)
+      complex *16 rlams(nlam),pot(nd,ntarg)
+      complex *16 whts(nlam),zk2
+      integer ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
+      complex *16 ima
+      complex *16, allocatable :: cc(:),cc2(:)
+      integer itarg,i,j,k,l,il,ii,iphys,istart,idim
+      real *8 pi2inv,rexp1,alpha,pi2,x,y,z
+      real *8 h,hh,rr
+      complex *16 rz,zsc,rk
+      complex *16, allocatable :: zexp(:),zexpinv(:)
+      data pi2inv/0.15915494309189535d0/
+      data pi2/6.283185307179586d0/
+      data ima/(0.0d0,1.0d0)/
+
+      allocate(zexp(nlam),zexpinv(nlam),cc(nphmax),cc2(nphmax))
+
+      zsc = -ima/zk2
+
+
+      do itarg=1,ntarg
+        x = (targ(1,itarg) - center(1))/boxsize
+        y = (targ(2,itarg) - center(2))/boxsize
+        z = (targ(3,itarg) - center(3))/boxsize
+
+        do i=1,nlam
+          zexp(i) = exp(-y*rlams(i))*whts(i)
+          zexpinv(i) = exp(y*rlams(i))*whts(i)
+        enddo
+
+
+        istart = 0
+        do il=1,nlam
+          h = pi2/nphys(il)
+          hh = 1.0d0/nphys(il)
+
+          rk = sqrt(rlams(il)**2 + zk2**2)
+
+          do iphys = 1,nphys(il)
+            alpha = (iphys-1)*h
+            cc(iphys) = exp(ima*rk*(z*cos(alpha) + x*sin(alpha)))
+            cc2(iphys) = exp(-ima*rk*(z*cos(alpha) + x*sin(alpha)))
+          enddo
+
+
+          do iphys = 1,nphys(il)
+            ii = istart + iphys
+            do idim=1,nd
+              rz = 
+     1            (mexpupphys(idim,ii)*zexp(il)*cc(iphys) + 
+     2             mexpdownphys(idim,ii)*zexpinv(il)*cc2(iphys))*hh
+              pot(idim,itarg) = pot(idim,itarg) + rz*zsc 
+            enddo
+          enddo
+          istart = istart + nphys(il)
+
+        enddo
+      enddo
+
+      return
+      end
+c
+c
+c
+c
+c
+c--------------------------------------------------------------------     
+
+      subroutine hpw_ew_eval_p(nd,zk2,center,boxsize,ntarg,targ,nlam,
+     1   rlams,whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot)
+      implicit none
+      integer nd
+      real *8 center(3),boxsize,targ(3,ntarg)
+      complex *16 rlams(nlam),pot(nd,ntarg)
+      complex *16 whts(nlam),zk2
+      integer ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
+      complex *16 ima
+      complex *16, allocatable :: cc(:),cc2(:)
+      integer itarg,i,j,k,l,il,ii,iphys,istart,idim
+      real *8 pi2inv,rexp1,alpha,pi2,x,y,z
+      real *8 h,hh,rr
+      complex *16 rz,zsc,rk
+      complex *16, allocatable :: zexp(:),zexpinv(:)
+      data pi2inv/0.15915494309189535d0/
+      data pi2/6.283185307179586d0/
+      data ima/(0.0d0,1.0d0)/
+
+      allocate(zexp(nlam),zexpinv(nlam),cc(nphmax),cc2(nphmax))
+
+      zsc = -ima/zk2
+
+      do itarg=1,ntarg
+        x = (targ(1,itarg) - center(1))/boxsize
+        y = (targ(2,itarg) - center(2))/boxsize
+        z = (targ(3,itarg) - center(3))/boxsize
+
+
+        do i=1,nlam
+          zexp(i) = exp(-x*rlams(i))*whts(i)
+          zexpinv(i) = exp(x*rlams(i))*whts(i)
+        enddo
+
+
+
+        istart = 0
+        do il=1,nlam
+          h = pi2/nphys(il)
+          hh = 1.0d0/nphys(il)
+
+          rk = sqrt(rlams(il)**2 + zk2**2)
+
+          do iphys = 1,nphys(il)
+            alpha = (iphys-1)*h
+            cc(iphys) = exp(ima*rk*(-z*cos(alpha) + y*sin(alpha)))
+            cc2(iphys) = exp(ima*rk*(z*cos(alpha) - y*sin(alpha)))
+          enddo
+
+          do iphys = 1,nphys(il)
+            ii = istart + iphys
+            do idim=1,nd
+              rz = 
+     1            (mexpupphys(idim,ii)*zexp(il)*cc(iphys) + 
+     2             mexpdownphys(idim,ii)*zexpinv(il)*cc2(iphys))*hh
+              pot(idim,itarg) = pot(idim,itarg) + rz*zsc 
+            enddo
+          enddo
+          istart = istart + nphys(il)
+
+        enddo
+      enddo
+
+      return
+      end
+c
+c
+c
+c
+c
+c--------------------------------------------------------------------     
+
+      subroutine hpw_ud_eval_g(nd,zk2,center,boxsize,ntarg,targ,nlam,
+     1   rlams,whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot,
+     2   grad)
+      implicit none
+      integer nd
+      real *8 center(3),boxsize,targ(3,ntarg)
+      complex *16 rlams(nlam),pot(nd,ntarg)
+      complex *16 grad(nd,3,ntarg),whts(nlam),zk2
+      integer ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
+      complex *16 ima
+      complex *16, allocatable :: cc(:),crc(:),crs(:),cc2(:)
+      integer itarg,i,j,k,l,il,ii,iphys,istart,idim
+      real *8 pi2inv,rexp1,alpha,pi2,x,y,z
+      real *8 h,hh,rr,binv
+      complex *16 rz,rz1,rz2,zsc,rk
+      complex *16, allocatable :: zexp(:),zexpinv(:)
+      data pi2inv/0.15915494309189535d0/
+      data pi2/6.283185307179586d0/
+      data ima/(0.0d0,1.0d0)/
+
+      allocate(zexp(nlam),zexpinv(nlam),cc(nphmax),cc2(nphmax))
+      allocate(crc(nphmax),crs(nphmax))
+
+      binv = 1.0d0/boxsize
+      zsc = -ima/zk2
+
+
+      do itarg=1,ntarg
+        x = (targ(1,itarg) - center(1))/boxsize
+        y = (targ(2,itarg) - center(2))/boxsize
+        z = (targ(3,itarg) - center(3))/boxsize
+
+        do i=1,nlam
+          zexp(i) = exp(-z*rlams(i))*whts(i)
+          zexpinv(i) = exp(z*rlams(i))*whts(i)
+        enddo
+
+
+        istart = 0
+        do il=1,nlam
+          h = pi2/nphys(il)
+          hh = 1.0d0/nphys(il)
+
+          rk = sqrt(rlams(il)**2 + zk2**2)
+
+          do iphys = 1,nphys(il)
+            alpha = (iphys-1)*h
+            crc(iphys) = rk*cos(alpha)*ima
+            crs(iphys) = rk*sin(alpha)*ima
+            cc(iphys) = exp(crc(iphys)*x + crs(iphys)*y)
+            cc2(iphys) = exp(-(crc(iphys)*x + crs(iphys)*y))
+          enddo
+          do iphys = 1,nphys(il)
+            ii = istart + iphys
+            do idim=1,nd
+              rz1 = mexpupphys(idim,ii)*zexp(il)*cc(iphys)*hh*zsc
+              rz2 = mexpdownphys(idim,ii)*zexpinv(il)*cc2(iphys)*hh*zsc
+              rz = rz1 + rz2
+              pot(idim,itarg) = pot(idim,itarg) + rz
+              grad(idim,1,itarg) = grad(idim,1,itarg) + 
+     1            (rz1-rz2)*crc(iphys)*binv
+              grad(idim,2,itarg) = grad(idim,2,itarg) + 
+     1            (rz1-rz2)*crs(iphys)*binv
+              grad(idim,3,itarg) = grad(idim,3,itarg) - 
+     1            (rz1-rz2)*binv*rlams(il)
+            enddo
+          enddo
+          istart = istart + nphys(il)
+        enddo
+      enddo
+
+      return
+      end
+c
+c
+c
+c
+c
+c
+c
+c
+c--------------------------------------------------------------------     
+
+      subroutine hpw_ns_eval_g(nd,zk2,center,boxsize,ntarg,targ,nlam,
+     1  rlams,whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot,
+     2  grad)
+      implicit none
+      integer nd
+      real *8 center(3),boxsize,targ(3,ntarg)
+      complex *16 rlams(nlam),pot(nd,ntarg)
+      complex *16 grad(nd,3,ntarg),whts(nlam),zk2
+      integer ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
+      complex *16 ima
+      complex *16, allocatable :: cc(:),crc(:),crs(:),cc2(:)
+      integer itarg,i,j,k,l,il,ii,iphys,istart,idim
+      real *8 pi2inv,rexp1,alpha,pi2,x,y,z
+      real *8 h,hh,rr,binv
+      complex *16 rz,rz1,rz2,zsc,rk
+      complex *16, allocatable :: zexp(:),zexpinv(:)
+      data pi2inv/0.15915494309189535d0/
+      data pi2/6.283185307179586d0/
+      data ima/(0.0d0,1.0d0)/
+
+      allocate(zexp(nlam),zexpinv(nlam),cc(nphmax),cc2(nphmax))
+      allocate(crc(nphmax),crs(nphmax))
+
+      binv = 1.0d0/boxsize
+
+      zsc = -ima/zk2
+
+      do itarg=1,ntarg
+        x = (targ(1,itarg) - center(1))/boxsize
+        y = (targ(2,itarg) - center(2))/boxsize
+        z = (targ(3,itarg) - center(3))/boxsize
+
+        do i=1,nlam
+          zexp(i) = exp(-y*rlams(i))*whts(i)
+          zexpinv(i) = exp(y*rlams(i))*whts(i)
+        enddo
+
+
+        istart = 0
+        do il=1,nlam
+          h = pi2/nphys(il)
+          hh = 1.0d0/nphys(il)
+
+          rk = sqrt(rlams(il)**2 + zk2**2) 
+
+          do iphys = 1,nphys(il)
+            alpha = (iphys-1)*h
+            crc(iphys) = rk*cos(alpha)*ima
+            crs(iphys) = rk*sin(alpha)*ima
+            cc(iphys) = exp(crc(iphys)*z + crs(iphys)*x)
+            cc2(iphys) = exp(-(crc(iphys)*z + crs(iphys)*x))
+          enddo
+          do iphys = 1,nphys(il)
+            ii = istart + iphys
+            do idim=1,nd
+              rz1 = mexpupphys(idim,ii)*zexp(il)*cc(iphys)*hh*zsc
+              rz2 = mexpdownphys(idim,ii)*zexpinv(il)*cc2(iphys)*hh*zsc
+              rz = rz1 + rz2
+              pot(idim,itarg) = pot(idim,itarg) + rz
+              grad(idim,1,itarg) = grad(idim,1,itarg) + 
+     1            (rz1-rz2)*crs(iphys)*binv
+              grad(idim,2,itarg) = grad(idim,2,itarg) - 
+     1            (rz1-rz2)*binv*rlams(il)
+              grad(idim,3,itarg) = grad(idim,3,itarg) + 
+     1            (rz1-rz2)*crc(iphys)*binv
+
+            enddo
+          enddo
+          istart = istart + nphys(il)
+        enddo
+      enddo
+
+      return
+      end
+c
+c
+c
+c
+c
+c--------------------------------------------------------------------     
+
+      subroutine hpw_ew_eval_g(nd,zk2,center,boxsize,ntarg,targ,nlam,
+     1  rlams,whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot,
+     2  grad)
+      implicit none
+      integer nd
+      real *8 center(3),boxsize,targ(3,ntarg)
+      complex *16 rlams(nlam),pot(nd,ntarg)
+      complex *16 grad(nd,3,ntarg),whts(nlam),zk2
+      integer ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
+      complex *16 ima
+      complex *16, allocatable :: cc(:),crc(:),crs(:),cc2(:)
+      integer itarg,i,j,k,l,il,ii,iphys,istart,idim
+      real *8 pi2inv,rexp1,alpha,pi2,x,y,z
+      real *8 h,hh,rr,binv
+      complex *16 rz,rz1,rz2,rk,zsc
+      complex *16, allocatable :: zexp(:),zexpinv(:)
+      data pi2inv/0.15915494309189535d0/
+      data pi2/6.283185307179586d0/
+      data ima/(0.0d0,1.0d0)/
+
+      allocate(zexp(nlam),zexpinv(nlam),cc(nphmax),cc2(nphmax))
+      allocate(crc(nphmax),crs(nphmax))
+
+      binv = 1.0d0/boxsize
+      zsc = -ima/zk2
+
+
+      do itarg=1,ntarg
+        x = (targ(1,itarg) - center(1))/boxsize
+        y = (targ(2,itarg) - center(2))/boxsize
+        z = (targ(3,itarg) - center(3))/boxsize
+
+        do i=1,nlam
+          zexp(i) = exp(-x*rlams(i))*whts(i)
+          zexpinv(i) = exp(x*rlams(i))*whts(i)
+        enddo
+
+
+        istart = 0
+        do il=1,nlam
+          h = pi2/nphys(il)
+          hh = 1.0d0/nphys(il)
+          
+          rk = sqrt(rlams(il)**2 + zk2**2)
+
+          do iphys = 1,nphys(il)
+            alpha = (iphys-1)*h
+            crc(iphys) = rk*cos(alpha)*ima
+            crs(iphys) = rk*sin(alpha)*ima
+            cc(iphys) = exp(-crc(iphys)*z + crs(iphys)*y)
+            cc2(iphys) = exp(crc(iphys)*z - crs(iphys)*y)
+          enddo
+          do iphys = 1,nphys(il)
+            ii = istart + iphys
+            do idim=1,nd
+              rz1 = mexpupphys(idim,ii)*zexp(il)*cc(iphys)*hh*zsc
+              rz2 = mexpdownphys(idim,ii)*zexpinv(il)*cc2(iphys)*hh*zsc
+              rz = rz1 + rz2
+              pot(idim,itarg) = pot(idim,itarg) + rz
+              grad(idim,1,itarg) = grad(idim,1,itarg) - 
+     1            (rz1-rz2)*binv*rlams(il)
+              grad(idim,2,itarg) = grad(idim,2,itarg) + 
+     1            (rz1-rz2)*crs(iphys)*binv
+              grad(idim,3,itarg) = grad(idim,3,itarg) - 
+     1            (rz1-rz2)*crc(iphys)*binv
+
+            enddo
+          enddo
+          istart = istart + nphys(il)
+        enddo
+      enddo
+
+      return
+      end
+c
+c
+c
+c
+c
