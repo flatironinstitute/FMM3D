@@ -197,8 +197,6 @@ c
          ndiv = nsource+ntarg
        endif
 
-       ndiv = 200
-
 
 
 
