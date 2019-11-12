@@ -56,6 +56,7 @@ SOURCES =  test_laprouts3d.f \
   l3dterms.f \
   l3dtrans.f \
   laprouts3d.f \
+  lapkernels.f \
   rotproj.f \
   dfft.f \
   fmmcommon.f \
