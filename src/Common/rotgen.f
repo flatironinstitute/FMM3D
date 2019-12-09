@@ -44,6 +44,7 @@ c
       integer l,m,mp
 
       allocate(mptemp(nd,0:nterms,-nterms:nterms))
+      call mpzero(nd,mrotate,nterms) 
 
 c     First rotate by -pi/2 radians about the z axis 
 c     in the original coordinate system
@@ -132,6 +133,7 @@ c
 c     Now rotate by pi/2 radians about the y' axis in
 c     the new co-ordinate system
 
+      call mpzero(nd,mrotate,nterms) 
       do l=0,nterms
          do m=-l,l
             do idim=1,nd
@@ -213,6 +215,7 @@ c
 c     rotate by pi/2 radians about the y' axis in
 c     the new co-ordinate system
 
+      call mpzero(nd,mrotate,nterms) 
       do l=0,nterms
          do m=-l,l
             do idim=1,nd
