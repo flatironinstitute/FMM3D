@@ -1007,7 +1007,7 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
       ! generate rotation matrices and carray
       call getpwrotmat(nn,carray,rdplus,rdminus,rdsq3,rdmsq3,dc)
 
-      call hrlscini(rlsc,nlams,rlams,zk2,nterms(ilev))
+      call hrlscini(rlsc,nlams,rlams,rscales(ilev),zk2,nterms(ilev))
       call hmkexps(rlams,nlams,nphysical,nexptotp,zk2,xshift, &
           yshift,zshift)
 
@@ -1032,7 +1032,8 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
       ! compute powers of scaling parameter for rescaling the
       ! multipole expansions
       !
-      r1 = rscales(ilev)
+!!      r1 = rscales(ilev)
+      r1 = 1.0d0
       rsc(0) = 1.0d0
       do i=1,nterms(ilev)
         rsc(i) = rsc(i-1)*r1
@@ -1141,7 +1142,8 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
 
 
           call hprocessudexp(nd,zk2,ibox,ilev,nboxes,centers, &
-              itree(ipointer(4)),rscales(ilev),nterms(ilev), &
+              itree(ipointer(4)),rscales(ilev),boxsize(ilev), &
+              nterms(ilev), &
               iaddr,rmlexp,rlams,whts, &
               nlams,nfourier,nphysical,nthmax,nexptot,nexptotp, &
               mexp, &
@@ -1152,7 +1154,8 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
 
 
           call hprocessnsexp(nd,zk2,ibox,ilev,nboxes,centers,&
-              itree(ipointer(4)),rscales(ilev),nterms(ilev),&
+              itree(ipointer(4)),rscales(ilev),boxsize(ilev), &
+              nterms(ilev),&
               iaddr,rmlexp,rlams,whts,&
               nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,&
               nnall,nall,nn1256,n1256,nn12,n12,nn56,n56,nsall,sall,&
@@ -1164,7 +1167,8 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
               fexpback,rlsc)
 
           call hprocessewexp(nd,zk2,ibox,ilev,nboxes,centers,&
-              itree(ipointer(4)),rscales(ilev),nterms(ilev),&
+              itree(ipointer(4)),rscales(ilev),boxsize(ilev),&
+              nterms(ilev),&
               iaddr,rmlexp,rlams,whts,&
               nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,&
               neall,eall,ne1357,e1357,ne13,e13,ne57,e57,ne1,e1,&
