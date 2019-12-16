@@ -1,7 +1,9 @@
+OS = linux
+
 #HOST = gcc
 HOST = gcc-openmp
 #HOST = intel
-#HOST = intel-openmp
+HOST = intel-openmp
 
 PROJECT = lfmm3d_example
 
@@ -19,31 +21,38 @@ PROJECT = lfmm3d_example
 # the cross compiled libraries. See fmm3d.readthedocs.io/install.html
 # for additional info
 
+
+ifeq ($(OS),osx)
+    LDFMM = /usr/local/lib
+endif
+
+ifeq ($(OS),linux)
+    LDFMM = ./../lib
+endif
+
 ifeq ($(HOST),gcc)
-    FC=gfortran
+    FC=gfortran -L${LDFMM}
     FFLAGS=-fPIC -O3 -funroll-loops -march=native  
 endif
 
 ifeq ($(HOST),gcc-openmp)
-    FC = gfortran
+    FC = gfortran -L${LDFMM}
     FFLAGS=-fPIC -O3 -funroll-loops -march=native -fopenmp 
 endif
 
 ifeq ($(HOST),intel)
-    FC=ifort
+    FC=ifort -L${LDFMM}
     FFLAGS= -O3 -xW -ip -xHost
 endif
 
 ifeq ($(HOST),intel-openmp)
-    FC = ifort
+    FC = ifort -L${LDFMM}
     FFLAGS= -O3 -xW -ip -xHost -qopenmp
 endif
 
 
 
 
-LIBNAME=libfmm3d
-STATICLIB = ../lib-static/$(LIBNAME).a
 
 # Test objects
 TOBJS = $(COM)/hkrand.o $(COM)/dlaran.o
@@ -58,7 +67,7 @@ OBJECTS = lfmm3d_example.o \
     ../src/Common/dlaran.o 
 
 all: $(OBJECTS) 
-	$(FC) $(FFLAGS)  -o $(PROJECT) $(OBJECTS) $(STATICLIB)
+	$(FC) $(FFLAGS)  -o $(PROJECT) $(OBJECTS) -lfmm3d 
 	./$(PROJECT)
 
 

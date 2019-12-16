@@ -1,8 +1,8 @@
 OS = linux
 
-HOST = gcc
-#HOST = gcc-openmp
-HOST = intel
+#HOST = gcc
+HOST = gcc-openmp
+#HOST = intel
 HOST = intel-openmp
 
 PROJECT = hfmm3d_example
@@ -27,7 +27,6 @@ endif
 
 ifeq ($(OS),linux)
     LDFMM = ./../lib
-
 endif
 
 
