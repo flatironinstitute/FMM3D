@@ -1351,7 +1351,7 @@ c           Create the required boxes
                jj = 2
                if(i.eq.1.or.i.eq.2.or.i.eq.5.or.i.eq.6) ii = 1
                if(i.lt.5) jj = 1
-               if(nsc(i)+ntc(i)+nexpcc(i).gt.0) then
+               if(nsc(i)+ntc(i)+nexpcc(i).ge.0) then
 c                 Increment total number of boxes               
                   nboxes = nboxes + 1
                   if(nboxes.gt.nbmax) then
@@ -1502,7 +1502,7 @@ C$OMP$PRIVATE(ibox,dad,i,jbox)
             enddo
             do i=1,nlist1(ibox)
                 jbox = list1(i,ibox)
-                if(ilevel(ibox).gt.ilevel(jbox)) nhunglistsrc(ibox)=
+                if(ilevel(ibox).lt.ilevel(jbox)) nhunglistsrc(ibox)=
      1            nhunglistsrc(ibox) + nhungsrc(jbox)
             enddo
          enddo
@@ -1623,7 +1623,7 @@ c     initialize for level 0
             enddo
             do i=1,nlist1(ibox)
                 jbox = list1(i,ibox)
-                if(ilevel(ibox).gt.ilevel(jbox)) then
+                if(ilevel(ibox).lt.ilevel(jbox)) then
                    do j=1,nhungsrc(jbox)
                       ihunglistsrc(nhunglistsrc(ibox)+j,ibox)=
      1                    isource(ihsfirst(jbox)+j-1)
@@ -3871,7 +3871,7 @@ c           Create the required boxes
                jj = 2
                if(i.eq.1.or.i.eq.2.or.i.eq.5.or.i.eq.6) ii = 1
                if(i.lt.5) jj = 1
-               if(nsc(i)+ntc(i)+nexpcc(i).gt.0) then
+               if(nsc(i)+ntc(i)+nexpcc(i).ge.0) then
 c                 Increment total number of boxes               
                   nboxes = nboxes + 1
                   if(nboxes.gt.nbmax) then
