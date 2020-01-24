@@ -150,7 +150,9 @@ c
       double precision expc(3),scjsort(1),radexp
       double complex texpssort(100)
       double precision expcsort(3),radssort(1)
-      integer ntj,nexpc,nadd
+      integer ntj,nexpc,nadd,ifnear
+
+
 
 c
 cc        other temporary variables
@@ -197,6 +199,10 @@ c
          ndiv = nsource+ntarg
        endif
 
+c
+c       turn on computation of list 1
+c
+      ifnear = 1
 
 
 
@@ -472,7 +478,7 @@ C$      time1=omp_get_wtime()
      $   nboxes,boxsize,mnbors,mnlist1,mnlist2,mnlist3,mnlist4,
      $   scales,treecenters,itree(ipointer(1)),nterms,
      $   ifpgh,potsort,gradsort,hesssort,ifpghtarg,pottargsort,
-     $   gradtargsort,hesstargsort,ntj,texpssort,scjsort)
+     $   gradtargsort,hesstargsort,ntj,texpssort,scjsort,ifnear)
 
       call cpu_time(time2)
 C$        time2=omp_get_wtime()
@@ -537,7 +543,7 @@ c
      $     nboxes,boxsize,mnbors,mnlist1,mnlist2,mnlist3,mnlist4,
      $     rscales,centers,laddr,nterms,ifpgh,pot,grad,hess,
      $     ifpghtarg,pottarg,gradtarg,hesstarg,
-     $     ntj,jsort,scjsort)
+     $     ntj,jsort,scjsort,ifnear)
       implicit none
 
       integer nd
@@ -561,6 +567,7 @@ c
       double complex pottarg(nd,*),gradtarg(nd,3,*),hesstarg(nd,6,*)
 
       integer ntj
+      integer ifnear
       double precision expcsort(3,nexpc)
       double complex jsort(nd,0:ntj,-ntj:ntj,nexpc)
 
@@ -1435,7 +1442,6 @@ cc       shift mutlipole expansions to expansion center
 c        (Note: this part is not relevant for particle codes.
 c         It is relevant only for QBX codes)
 
- 1000 continue
       nquad2 = max(6,2*ntj)
       ifinit2 = 1
       call legewhts(nquad2,xnodes,wts,ifinit2)
@@ -1692,11 +1698,13 @@ C$        time2=omp_get_wtime()
       timeinfo(7) = time2 - time1
 
 
+
       if(ifprint .ge. 1)
      $     call prinf('=== STEP 8 (direct) =====*',i,0)
       call cpu_time(time1)
 C$        time1=omp_get_wtime()
 
+      if(ifnear.eq.0) goto 1000
 c
 cc       directly form local expansions for list1 sources
 c        at expansion centers. 
@@ -2010,6 +2018,8 @@ C$OMP END PARALLEL DO
           endif
         endif
       enddo
+
+ 1000 continue      
  
       call cpu_time(time2)
 C$        time2=omp_get_wtime()

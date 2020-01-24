@@ -144,7 +144,7 @@ c        not used in particle code
        double precision expc(3),scjsort(1),radexp
        double complex texpssort(100)
        double precision expcsort(3)
-       integer ntj,nexpc,nadd
+       integer ntj,nexpc,nadd,ifnear
 
 c
 cc         other temporary variables
@@ -186,6 +186,11 @@ c
        else
          ndiv = nsource+ntarg
        endif
+c
+c       turn on computation of list 1
+c
+      ifnear = 1
+
 
 
 c
@@ -456,7 +461,7 @@ C$      time1=omp_get_wtime()
      $   scales,treecenters,itree(ipointer(1)),nterms,
      $   ifpgh,potsort,gradsort,hesssort,
      $   ifpghtarg,pottargsort,gradtargsort,hesstargsort,ntj,
-     $   texpssort,scjsort)
+     $   texpssort,scjsort,ifnear)
 
       call cpu_time(time2)
 C$        time2=omp_get_wtime()
@@ -524,7 +529,7 @@ c
      $     rscales,centers,laddr,nterms,
      $     ifpgh,pot,grad,hess,
      $     ifpghtarg,pottarg,gradtarg,hesstarg,ntj,
-     $     tsort,scjsort)
+     $     tsort,scjsort,ifnear)
       implicit none
 
       integer nd
@@ -546,7 +551,7 @@ c
       double precision pot(nd,*),grad(nd,3,*),hess(nd,6,*)
       double precision pottarg(nd,*),gradtarg(nd,3,*),hesstarg(nd,6,*)
 
-      integer ntj
+      integer ntj,ifnear
       double precision expcsort(3,nexpc)
       double complex tsort(nd,0:ntj,-ntj:ntj,nexpc)
       double precision scjsort(nexpc)
@@ -1590,6 +1595,7 @@ C$        time2=omp_get_wtime()
       call cpu_time(time1)
 C$        time1=omp_get_wtime()
 
+      if(ifnear.eq.0) goto 1000
 c
 cc       directly form local expansions for list1 sources
 c        at expansion centers. 
@@ -1919,6 +1925,7 @@ C$OMP END PARALLEL DO
           endif
         endif
       enddo
+ 1000 continue      
  
       call cpu_time(time2)
 C$        time2=omp_get_wtime()
