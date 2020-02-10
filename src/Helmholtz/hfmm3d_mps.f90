@@ -638,7 +638,7 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
   integer ctr,ifinit2
   integer nquad2
   integer maX_nodes
-  integer iert
+  integer iert, ifpw
   integer istart0,istart1,istartm1,nprin
   integer nlfbox,ier, ifstep2, mt, ltot
   integer *8 :: bigint
@@ -929,285 +929,353 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
   timeinfo(3)=time2-time1
 
 
-
-
+  
   !
   ! ----- Step 4: Crossward pass, multipole-to-local -----
   ! Note: This is generally the most expensive component of the FMM
   !
-  if(ifprint.ge.1) call prinf('=== Step 4 (mp to loc) ===*',i,0)
+  if (ifprint .ge. 1) &
+      call prinf('=== Step 4 (mp to loc) ===*',i,0)
 
   call cpu_time(time1)
   !$ time1=omp_get_wtime()
-  do ilev = 2,nlevels
-
-    ! load the necessary quadrature for plane waves
-    zk2 = zk*boxsize(ilev)
-    if(real(zk2).le.16*pi .and. imag(zk2).le.12*pi) then
-      ier = 0
-
-      ! get new pw quadrature
-      call hwts3e(ier,eps,zk2,rlams,whts,nlams)
-      call hnumfour(eps,zk2,nlams,nfourier)
-      call hnumphys(eps,zk2,nlams,nphysical)
-
-      nphmax = 0
-      nthmax = 0
-      nexptotp = 0
-      nexptot = 0
-      nn = 0
-      do i=1,nlams
-        nexptotp = nexptotp + nphysical(i)
-        nexptot = nexptot + 2*nfourier(i)+1
-        nn = nn + nfourier(i)*nphysical(i)
-        if(nfourier(i).gt.nthmax) nthmax = nfourier(i)
-        if(nphysical(i).gt.nphmax) nphmax = nphysical(i)
-      enddo
-
-      allocate(fexp(nn),fexpback(nn))
-
-      allocate(xshift(-5:5,nexptotp))
-      allocate(yshift(-5:5,nexptotp))
-      allocate(zshift(5,nexptotp))
-      allocate(rlsc(0:nterms(ilev),0:nterms(ilev),nlams))
-      allocate(tmp(nd,0:nterms(ilev),-nterms(ilev):nterms(ilev)))
-      allocate(tmp2(nd,0:nterms(ilev),-nterms(ilev):nterms(ilev)))
-
-      allocate(mexpf1(nd,nexptot),mexpf2(nd,nexptot), &
-          mexpp1(nd,nexptotp))
-      allocate(mexpp2(nd,nexptotp),mexppall(nd,nexptotp,16))
 
 
-      ! NOTE: there can be some additional memory savings here
-      bigint = 0
-      bigint = nboxes
-      bigint = bigint*6
-      bigint = bigint*nexptotp*nd
+  !
+  ! Set the below flag depending on whether you want planewave
+  ! translations or standard point-and-shoot translations
+  !
+  ifpw = 1
 
-      !if(ifprint.ge.1) print *, "mexp memory=",bigint/1.0d9
+  if (ifpw .eq. 1) then
+  
+    do ilev = 2,nlevels
+
+      ! load the necessary quadrature for plane waves
+      zk2 = zk*boxsize(ilev)
+      if(real(zk2).le.16*pi .and. imag(zk2).le.12*pi) then
+        ier = 0
+
+        ! get new pw quadrature
+        call hwts3e(ier,eps,zk2,rlams,whts,nlams)
+        call hnumfour(eps,zk2,nlams,nfourier)
+        call hnumphys(eps,zk2,nlams,nphysical)
+
+        nphmax = 0
+        nthmax = 0
+        nexptotp = 0
+        nexptot = 0
+        nn = 0
+        do i=1,nlams
+          nexptotp = nexptotp + nphysical(i)
+          nexptot = nexptot + 2*nfourier(i)+1
+          nn = nn + nfourier(i)*nphysical(i)
+          if(nfourier(i).gt.nthmax) nthmax = nfourier(i)
+          if(nphysical(i).gt.nphmax) nphmax = nphysical(i)
+        enddo
+
+        allocate(fexp(nn),fexpback(nn))
+
+        allocate(xshift(-5:5,nexptotp))
+        allocate(yshift(-5:5,nexptotp))
+        allocate(zshift(5,nexptotp))
+        allocate(rlsc(0:nterms(ilev),0:nterms(ilev),nlams))
+        allocate(tmp(nd,0:nterms(ilev),-nterms(ilev):nterms(ilev)))
+        allocate(tmp2(nd,0:nterms(ilev),-nterms(ilev):nterms(ilev)))
+
+        allocate(mexpf1(nd,nexptot),mexpf2(nd,nexptot), &
+            mexpp1(nd,nexptotp))
+        allocate(mexpp2(nd,nexptotp),mexppall(nd,nexptotp,16))
 
 
-      allocate(mexp(nd,nexptotp,nboxes,6),stat=iert)
-      if(iert.ne.0) then
-        print *, "Cannot allocate pw expansion workspace"
-        print *, "bigint=", bigint
-        stop
-      endif
+        ! NOTE: there can be some additional memory savings here
+        bigint = 0
+        bigint = nboxes
+        bigint = bigint*6
+        bigint = bigint*nexptotp*nd
+
+        !if(ifprint.ge.1) print *, "mexp memory=",bigint/1.0d9
 
 
-      nn = nterms(ilev)
-      allocate(carray(4*nn+1,4*nn+1))
-      allocate(dc(0:4*nn,0:4*nn))
-      allocate(rdplus(0:nn,0:nn,-nn:nn))
-      allocate(rdminus(0:nn,0:nn,-nn:nn))
-      allocate(rdsq3(0:nn,0:nn,-nn:nn))
-      allocate(rdmsq3(0:nn,0:nn,-nn:nn))
+        allocate(mexp(nd,nexptotp,nboxes,6),stat=iert)
+        if(iert.ne.0) then
+          print *, "Cannot allocate pw expansion workspace"
+          print *, "bigint=", bigint
+          stop
+        endif
 
-      
-      ! generate rotation matrices and carray
-      call getpwrotmat(nn,carray,rdplus,rdminus,rdsq3,rdmsq3,dc)
 
-      call hrlscini(rlsc,nlams,rlams,rscales(ilev),zk2,nterms(ilev))
-      call hmkexps(rlams,nlams,nphysical,nexptotp,zk2,xshift, &
-          yshift,zshift)
+        nn = nterms(ilev)
+        allocate(carray(4*nn+1,4*nn+1))
+        allocate(dc(0:4*nn,0:4*nn))
+        allocate(rdplus(0:nn,0:nn,-nn:nn))
+        allocate(rdminus(0:nn,0:nn,-nn:nn))
+        allocate(rdsq3(0:nn,0:nn,-nn:nn))
+        allocate(rdmsq3(0:nn,0:nn,-nn:nn))
 
-      call hmkfexp(nlams,nfourier,nphysical,fexp,fexpback)
 
-      !
-      ! initialize mexp
-      !
-      !$omp parallel do default(shared) private(idim,i,j,k)
-      do k=1,6
-        do i=1,nboxes
-          do j=1,nexptotp
-            do idim=1,nd
-              mexp(idim,j,i,k) = 0.0d0
+        ! generate rotation matrices and carray
+        call getpwrotmat(nn,carray,rdplus,rdminus,rdsq3,rdmsq3,dc)
+
+        call hrlscini(rlsc,nlams,rlams,rscales(ilev),zk2,nterms(ilev))
+        call hmkexps(rlams,nlams,nphysical,nexptotp,zk2,xshift, &
+            yshift,zshift)
+
+        call hmkfexp(nlams,nfourier,nphysical,fexp,fexpback)
+
+        !
+        ! initialize mexp
+        !
+        !$omp parallel do default(shared) private(idim,i,j,k)
+        do k=1,6
+          do i=1,nboxes
+            do j=1,nexptotp
+              do idim=1,nd
+                mexp(idim,j,i,k) = 0.0d0
+              enddo
             enddo
           enddo
         enddo
-      enddo
-      !$omp end parallel do    
+        !$omp end parallel do    
 
-      !
-      ! compute powers of scaling parameter for rescaling the
-      ! multipole expansions
-      !
-!!      r1 = rscales(ilev)
-      r1 = 1.0d0
-      rsc(0) = 1.0d0
-      do i=1,nterms(ilev)
-        rsc(i) = rsc(i-1)*r1
-      enddo
+        !
+        ! compute powers of scaling parameter for rescaling the
+        ! multipole expansions
+        !
+        !!      r1 = rscales(ilev)
+        r1 = 1.0d0
+        rsc(0) = 1.0d0
+        do i=1,nterms(ilev)
+          rsc(i) = rsc(i-1)*r1
+        enddo
 
-      !
-      ! create multipole to plane wave expansion for all boxes at this
-      ! level
-      !
-      !$omp parallel do default (shared) &
-      !$omp    private(ibox,istart,iend,npts,tmp,mexpf1,mexpf2,tmp2)
-      do ibox = laddr(1,ilev),laddr(2,ilev)
-        istart = itree(ipointer(10)+ibox-1)
-        iend = itree(ipointer(11)+ibox-1)
-        npts = iend - istart+1
-        if(npts.gt.0) then
+        !
+        ! create multipole to plane wave expansion for all boxes at this
+        ! level
+        !
+        !$omp parallel do default (shared) &
+        !$omp    private(ibox,istart,iend,npts,tmp,mexpf1,mexpf2,tmp2)
+        do ibox = laddr(1,ilev),laddr(2,ilev)
+          istart = itree(ipointer(10)+ibox-1)
+          iend = itree(ipointer(11)+ibox-1)
+          npts = iend - istart+1
+          if(npts.gt.0) then
 
-          ! rescale multipole expansion
-          call mpscale(nd,nterms(ilev),rmlexp(iaddr(1,ibox)), &
-              rsc,tmp)
+            ! rescale multipole expansion
+            call mpscale(nd,nterms(ilev),rmlexp(iaddr(1,ibox)), &
+                rsc,tmp)
 
-          call hmpoletoexp(nd,tmp,nterms(ilev), &
-              nlams,nfourier,nexptot,mexpf1,mexpf2,rlsc) 
+            call hmpoletoexp(nd,tmp,nterms(ilev), &
+                nlams,nfourier,nexptot,mexpf1,mexpf2,rlsc) 
 
-          call hftophys(nd,mexpf1,nlams,nfourier,nphysical, &
-              mexp(1,1,ibox,1),fexp)           
+            call hftophys(nd,mexpf1,nlams,nfourier,nphysical, &
+                mexp(1,1,ibox,1),fexp)           
 
-          call hftophys(nd,mexpf2,nlams,nfourier,nphysical, &
-              mexp(1,1,ibox,2),fexp)
-
-
-          ! form mexpnorth, mexpsouth for current box
-
-          ! Rotate mpole for computing mexpnorth and
-          ! mexpsouth
-          call rotztoy(nd,nterms(ilev),tmp, &
-              tmp2,rdminus)
-
-          call hmpoletoexp(nd,tmp2,nterms(ilev),nlams, &
-              nfourier,nexptot,mexpf1,mexpf2,rlsc)
-
-          call hftophys(nd,mexpf1,nlams,nfourier, &
-              nphysical,mexp(1,1,ibox,3),fexp)           
-
-          call hftophys(nd,mexpf2,nlams,nfourier, &
-              nphysical,mexp(1,1,ibox,4),fexp)   
+            call hftophys(nd,mexpf2,nlams,nfourier,nphysical, &
+                mexp(1,1,ibox,2),fexp)
 
 
-          ! Rotate mpole for computing mexpeast, mexpwest
-          call rotztox(nd,nterms(ilev),tmp, &
-              tmp2,rdplus)
-          call hmpoletoexp(nd,tmp2,nterms(ilev),nlams, &
-              nfourier,nexptot,mexpf1,mexpf2,rlsc)
+            ! form mexpnorth, mexpsouth for current box
 
-          call hftophys(nd,mexpf1,nlams,nfourier, &
-              nphysical,mexp(1,1,ibox,5),fexp)
+            ! Rotate mpole for computing mexpnorth and
+            ! mexpsouth
+            call rotztoy(nd,nterms(ilev),tmp, &
+                tmp2,rdminus)
 
-          call hftophys(nd,mexpf2,nlams,nfourier, &
-              nphysical,mexp(1,1,ibox,6),fexp)           
+            call hmpoletoexp(nd,tmp2,nterms(ilev),nlams, &
+                nfourier,nexptot,mexpf1,mexpf2,rlsc)
 
-        endif
-      enddo
-      !$omp end parallel do       
+            call hftophys(nd,mexpf1,nlams,nfourier, &
+                nphysical,mexp(1,1,ibox,3),fexp)           
 
-      !
-      ! Loop over parent boxes and ship plane wave expansions to the
-      ! first child of parent boxes.
-      !
-      ! The codes are now written from a gathering perspective so the
-      ! first child of the parent is the one recieving all the local
-      ! expansions coming from all the lists
-      !
-
-      !$omp parallel do default (shared) &
-      !$omp private(ibox,istart,iend,npts,nchild) &
-      !$omp private(mexpf1,mexpf2,mexpp1,mexpp2,mexppall) &
-      !$omp private(nuall,uall,ndall,dall,nnall,nall,nsall,sall) &
-      !$omp private(neall,eall,nwall,wall,nu1234,u1234,nd5678,d5678)&
-      !$omp private(nn1256,n1256,ns3478,s3478,ne1357,e1357,nw2468,w2468)&
-      !$omp private(nn12,n12,nn56,n56,ns34,s34,ns78,s78,ne13,e13,ne57,e57)&
-      !$omp private(nw24,w24,nw68,w68,ne1,e1,ne3,e3,ne5,e5,ne7,e7)&
-      !$omp private(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
-      do ibox = laddr(1,ilev-1),laddr(2,ilev-1)
-
-        npts = 0
-
-        nchild = itree(ipointer(3)+ibox-1)
-
-        istart = itree(ipointer(10)+ibox-1)
-        iend = itree(ipointer(11)+ibox-1)
-        npts = npts + iend-istart+1
+            call hftophys(nd,mexpf2,nlams,nfourier, &
+                nphysical,mexp(1,1,ibox,4),fexp)   
 
 
-        if ((npts.gt.0) .and. (nchild.gt.0)) then
+            ! Rotate mpole for computing mexpeast, mexpwest
+            call rotztox(nd,nterms(ilev),tmp, &
+                tmp2,rdplus)
+            call hmpoletoexp(nd,tmp2,nterms(ilev),nlams, &
+                nfourier,nexptot,mexpf1,mexpf2,rlsc)
+
+            call hftophys(nd,mexpf1,nlams,nfourier, &
+                nphysical,mexp(1,1,ibox,5),fexp)
+
+            call hftophys(nd,mexpf2,nlams,nfourier, &
+                nphysical,mexp(1,1,ibox,6),fexp)           
+
+          endif
+        enddo
+        !$omp end parallel do       
+
+        !
+        ! Loop over parent boxes and ship plane wave expansions to the
+        ! first child of parent boxes.
+        !
+        ! The codes are now written from a gathering perspective so the
+        ! first child of the parent is the one recieving all the local
+        ! expansions coming from all the lists
+        !
+
+        !$omp parallel do default (shared) &
+        !$omp private(ibox,istart,iend,npts,nchild) &
+        !$omp private(mexpf1,mexpf2,mexpp1,mexpp2,mexppall) &
+        !$omp private(nuall,uall,ndall,dall,nnall,nall,nsall,sall) &
+        !$omp private(neall,eall,nwall,wall,nu1234,u1234,nd5678,d5678)&
+        !$omp private(nn1256,n1256,ns3478,s3478,ne1357,e1357,nw2468,w2468)&
+        !$omp private(nn12,n12,nn56,n56,ns34,s34,ns78,s78,ne13,e13,ne57,e57)&
+        !$omp private(nw24,w24,nw68,w68,ne1,e1,ne3,e3,ne5,e5,ne7,e7)&
+        !$omp private(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
+        do ibox = laddr(1,ilev-1),laddr(2,ilev-1)
+
+          npts = 0
+
+          nchild = itree(ipointer(3)+ibox-1)
+
+          istart = itree(ipointer(10)+ibox-1)
+          iend = itree(ipointer(11)+ibox-1)
+          npts = npts + iend-istart+1
+
+          if ((npts.gt.0) .and. (nchild.gt.0)) then
+
+            call getpwlistall(ibox,boxsize(ilev),nboxes, &
+                itree(ipointer(18)+ibox-1),itree(ipointer(19)+ &
+                mnbors*(ibox-1)),nchild,itree(ipointer(4)),centers, &
+                isep,nuall,uall,ndall,dall,nnall,nall,nsall,sall, &
+                neall,eall,nwall,wall,nu1234,u1234,nd5678,d5678, &
+                nn1256,n1256,ns3478,s3478,ne1357,e1357,nw2468,w2468, &
+                nn12,n12,nn56,n56,ns34,s34,ns78,s78,ne13,e13,ne57, &
+                e57,nw24,w24,nw68,w68,ne1,e1,ne3,e3,ne5,e5,ne7,e7, &
+                nw2,w2,nw4,w4,nw6,w6,nw8,w8)
 
 
-          call getpwlistall(ibox,boxsize(ilev),nboxes, &
-              itree(ipointer(18)+ibox-1),itree(ipointer(19)+ &
-              mnbors*(ibox-1)),nchild,itree(ipointer(4)),centers, &
-              isep,nuall,uall,ndall,dall,nnall,nall,nsall,sall, &
-              neall,eall,nwall,wall,nu1234,u1234,nd5678,d5678, &
-              nn1256,n1256,ns3478,s3478,ne1357,e1357,nw2468,w2468, &
-              nn12,n12,nn56,n56,ns34,s34,ns78,s78,ne13,e13,ne57, &
-              e57,nw24,w24,nw68,w68,ne1,e1,ne3,e3,ne5,e5,ne7,e7, &
-              nw2,w2,nw4,w4,nw6,w6,nw8,w8)
+            call hprocessudexp(nd,zk2,ibox,ilev,nboxes,centers, &
+                itree(ipointer(4)),rscales(ilev),boxsize(ilev), &
+                nterms(ilev), &
+                iaddr,rmlexp,rlams,whts, &
+                nlams,nfourier,nphysical,nthmax,nexptot,nexptotp, &
+                mexp, &
+                nuall,uall,nu1234,u1234,ndall,dall,nd5678,d5678, &
+                mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1,1), &
+                mexppall(1,1,2),mexppall(1,1,3),mexppall(1,1,4), &
+                xshift,yshift,zshift,fexpback,rlsc)
 
 
-          call hprocessudexp(nd,zk2,ibox,ilev,nboxes,centers, &
-              itree(ipointer(4)),rscales(ilev),boxsize(ilev), &
-              nterms(ilev), &
-              iaddr,rmlexp,rlams,whts, &
-              nlams,nfourier,nphysical,nthmax,nexptot,nexptotp, &
-              mexp, &
-              nuall,uall,nu1234,u1234,ndall,dall,nd5678,d5678, &
-              mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1,1), &
-              mexppall(1,1,2),mexppall(1,1,3),mexppall(1,1,4), &
-              xshift,yshift,zshift,fexpback,rlsc)
+            call hprocessnsexp(nd,zk2,ibox,ilev,nboxes,centers,&
+                itree(ipointer(4)),rscales(ilev),boxsize(ilev), &
+                nterms(ilev),&
+                iaddr,rmlexp,rlams,whts,&
+                nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,&
+                nnall,nall,nn1256,n1256,nn12,n12,nn56,n56,nsall,sall,&
+                ns3478,s3478,ns34,s34,ns78,s78,&
+                mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1,1),&
+                mexppall(1,1,2),mexppall(1,1,3),mexppall(1,1,4),&
+                mexppall(1,1,5),mexppall(1,1,6),mexppall(1,1,7),&
+                mexppall(1,1,8),rdplus,xshift,yshift,zshift, &
+                fexpback,rlsc)
+
+            call hprocessewexp(nd,zk2,ibox,ilev,nboxes,centers,&
+                itree(ipointer(4)),rscales(ilev),boxsize(ilev),&
+                nterms(ilev),&
+                iaddr,rmlexp,rlams,whts,&
+                nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,&
+                neall,eall,ne1357,e1357,ne13,e13,ne57,e57,ne1,e1,&
+                ne3,e3,ne5,e5,ne7,e7,nwall,wall,&
+                nw2468,w2468,nw24,w24,nw68,w68,&
+                nw2,w2,nw4,w4,nw6,w6,nw8,w8,&
+                mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1,1),&
+                mexppall(1,1,2),mexppall(1,1,3),mexppall(1,1,4),&
+                mexppall(1,1,5),mexppall(1,1,6),&
+                mexppall(1,1,7),mexppall(1,1,8),mexppall(1,1,9),&
+                mexppall(1,1,10),mexppall(1,1,11),mexppall(1,1,12),&
+                mexppall(1,1,13),mexppall(1,1,14),mexppall(1,1,15),&
+                mexppall(1,1,16),rdminus,xshift,yshift,zshift,&
+                fexpback,rlsc)
+          endif
+        enddo
+        !$omp end parallel do        
+
+        deallocate(xshift,yshift,zshift,rlsc,tmp,tmp2)
+        deallocate(carray,dc,rdplus,rdminus,rdsq3,rdmsq3)
+
+        deallocate(mexpf1,mexpf2,mexpp1,mexpp2,mexppall,mexp)
+        deallocate(fexp,fexpback)
+
+      else
+
+        print *, 'in else statement in mploc, double check and debug'
+        stop
+
+        ! nquad2 = nterms(ilev)*2.2d0
+        ! nquad2 = max(6,nquad2)
+        ! ifinit2 = 1
+        ! ier = 0
+
+        ! call legewhts(nquad2,xnodes,wts,ifinit2)
+
+        ! radius = boxsize(ilev)/2*sqrt(3.0d0)
+        ! !!$omp parallel do default(shared) &
+        ! !!$omp     private(ibox,istart,iend,npts,nlist2,i,jbox)
+        ! do ibox = laddr(1,ilev),laddr(2,ilev)
+
+        !   npts = 0
+        !   istart = itree(ipointer(14)+ibox-1)
+        !   iend = itree(ipointer(17)+ibox-1)
+        !   npts = npts + iend-istart+1
+
+        !   call prinf('istart = *', istart, 1)
+        !   call prinf('iend = *', iend, 1)
+        !   call prinf('npts = *', npts, 1)
+
+        !   if(ifpgh.gt.0) then
+        !     istart = itree(ipointer(10)+ibox-1)
+        !     iend = itree(ipointer(11)+ibox-1)
+        !     npts = npts + iend-istart+1
+        !     call prinf('istart = *', istart, 1)
+        !     call prinf('iend = *', iend, 1)
+        !     call prinf('npts = *', npts, 1)
+        !     stop
+        !   endif
 
 
-          call hprocessnsexp(nd,zk2,ibox,ilev,nboxes,centers,&
-              itree(ipointer(4)),rscales(ilev),boxsize(ilev), &
-              nterms(ilev),&
-              iaddr,rmlexp,rlams,whts,&
-              nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,&
-              nnall,nall,nn1256,n1256,nn12,n12,nn56,n56,nsall,sall,&
-              ns3478,s3478,ns34,s34,ns78,s78,&
-              mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1,1),&
-              mexppall(1,1,2),mexppall(1,1,3),mexppall(1,1,4),&
-              mexppall(1,1,5),mexppall(1,1,6),mexppall(1,1,7),&
-              mexppall(1,1,8),rdplus,xshift,yshift,zshift, &
-              fexpback,rlsc)
+        !   nlist2 = itree(ipointer(22)+ibox-1)
+        !   if(npts.gt.0) then
+        !     do i =1,nlist2
+        !       jbox = itree(ipointer(23)+mnlist2*(ibox-1)+i-1)
 
-          call hprocessewexp(nd,zk2,ibox,ilev,nboxes,centers,&
-              itree(ipointer(4)),rscales(ilev),boxsize(ilev),&
-              nterms(ilev),&
-              iaddr,rmlexp,rlams,whts,&
-              nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,&
-              neall,eall,ne1357,e1357,ne13,e13,ne57,e57,ne1,e1,&
-              ne3,e3,ne5,e5,ne7,e7,nwall,wall,&
-              nw2468,w2468,nw24,w24,nw68,w68,&
-              nw2,w2,nw4,w4,nw6,w6,nw8,w8,&
-              mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1,1),&
-              mexppall(1,1,2),mexppall(1,1,3),mexppall(1,1,4),&
-              mexppall(1,1,5),mexppall(1,1,6),&
-              mexppall(1,1,7),mexppall(1,1,8),mexppall(1,1,9),&
-              mexppall(1,1,10),mexppall(1,1,11),mexppall(1,1,12),&
-              mexppall(1,1,13),mexppall(1,1,14),mexppall(1,1,15),&
-              mexppall(1,1,16),rdminus,xshift,yshift,zshift,&
-              fexpback,rlsc)
-        endif
-      enddo
-      !$omp end parallel do        
+        !       istart = itree(ipointer(10)+jbox-1)
+        !       iend = itree(ipointer(11)+jbox-1)
+        !       npts = iend-istart+1
 
-      deallocate(xshift,yshift,zshift,rlsc,tmp,tmp2)
-      deallocate(carray,dc,rdplus,rdminus,rdsq3,rdmsq3)
+        !       if(npts.gt.0) then
+        !         call h3dmploc(nd,zk,rscales(ilev), &
+        !             centers(1,jbox), &
+        !             rmlexp(iaddr(1,jbox)),nterms(ilev), &
+        !             rscales(ilev),centers(1,ibox), &
+        !             rmlexp(iaddr(2,ibox)),nterms(ilev), &
+        !             radius,xnodes,wts,nquad2)
+        !       endif
+        !     enddo
+        !   endif
+        ! enddo
+        !!$omp end parallel do        
+      endif
+    enddo
 
-      deallocate(mexpf1,mexpf2,mexpp1,mexpp2,mexppall,mexp)
-      deallocate(fexp,fexpback)
+  else
 
-    else
+    !
+    ! if here, then process MP2LOC using standard point and shoot
+    ! translations
+    !
+    do ilev = 2,nlevels
 
-      print *, 'in else statement in mploc, double check and debug'
-      stop
-      
-      nquad2 = nterms(ilev)*2.2d0
+      nquad2 = nterms(ilev)*2
       nquad2 = max(6,nquad2)
       ifinit2 = 1
-      ier = 0
-
       call legewhts(nquad2,xnodes,wts,ifinit2)
-
       radius = boxsize(ilev)/2*sqrt(3.0d0)
-      !$omp parallel do default(shared) &
-      !$omp     private(ibox,istart,iend,npts,nlist2,i,jbox)
+
       do ibox = laddr(1,ilev),laddr(2,ilev)
 
         npts = 0
@@ -1215,26 +1283,25 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
         iend = itree(ipointer(17)+ibox-1)
         npts = npts + iend-istart+1
 
-        call prinf('istart = *', istart, 1)
-        call prinf('iend = *', iend, 1)
-        call prinf('npts = *', npts, 1)
+        !call prinf('istart = *', istart, 1)
+        !call prinf('iend = *', iend, 1)
+        !call prinf('npts = *', npts, 1)
 
         if(ifpgh.gt.0) then
           istart = itree(ipointer(10)+ibox-1)
           iend = itree(ipointer(11)+ibox-1)
           npts = npts + iend-istart+1
-        call prinf('istart = *', istart, 1)
-        call prinf('iend = *', iend, 1)
-        call prinf('npts = *', npts, 1)
-        stop
+          !call prinf('istart = *', istart, 1)
+          !call prinf('iend = *', iend, 1)
+          !call prinf('npts = *', npts, 1)
+          !stop
         endif
 
-
         nlist2 = itree(ipointer(22)+ibox-1)
-        if(npts.gt.0) then
+
+        if (npts .gt. 0) then
           do i =1,nlist2
             jbox = itree(ipointer(23)+mnlist2*(ibox-1)+i-1)
-
             istart = itree(ipointer(10)+jbox-1)
             iend = itree(ipointer(11)+jbox-1)
             npts = iend-istart+1
@@ -1248,11 +1315,19 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
                   radius,xnodes,wts,nquad2)
             endif
           enddo
-        endif
-      enddo
-      !!$omp end parallel do        
-    endif
-  enddo
+        end if
+      end do
+      
+      
+    
+    end do
+
+  end if
+
+  
+
+
+
   call cpu_time(time2)
   !$ time2=omp_get_wtime()
   timeinfo(4) = time2-time1

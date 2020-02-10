@@ -197,6 +197,7 @@ python3: $(STATICLIB)
 # testing routines
 #
 test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/laprouts test/lfmm3d test/lfmm3d_vec
+	cd test/Helmholtz; ./test_hfmm3d
 	(cd test/Helmholtz; ./run_helmtest.sh)
 	(cd test/Laplace; ./run_laptest.sh)
 	cat print_testreshelm.txt
