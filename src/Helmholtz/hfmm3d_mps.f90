@@ -1206,62 +1206,52 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
 
       else
 
-        print *, 'in else statement in mploc, double check and debug'
-        stop
+        !print *, 'in else statement in mploc, double check and debug'
+        !stop
 
-        ! nquad2 = nterms(ilev)*2.2d0
-        ! nquad2 = max(6,nquad2)
-        ! ifinit2 = 1
-        ! ier = 0
+        nquad2 = nterms(ilev)*2.2d0
+        nquad2 = max(6,nquad2)
+        ifinit2 = 1
+        ier = 0
 
-        ! call legewhts(nquad2,xnodes,wts,ifinit2)
+        call legewhts(nquad2,xnodes,wts,ifinit2)
 
-        ! radius = boxsize(ilev)/2*sqrt(3.0d0)
-        ! !!$omp parallel do default(shared) &
-        ! !!$omp     private(ibox,istart,iend,npts,nlist2,i,jbox)
-        ! do ibox = laddr(1,ilev),laddr(2,ilev)
+        radius = boxsize(ilev)/2*sqrt(3.0d0)
+        !$omp parallel do default(shared) &
+        !$omp     private(ibox,istart,iend,npts,nlist2,i,jbox)
+        do ibox = laddr(1,ilev),laddr(2,ilev)
 
-        !   npts = 0
-        !   istart = itree(ipointer(14)+ibox-1)
-        !   iend = itree(ipointer(17)+ibox-1)
-        !   npts = npts + iend-istart+1
+          npts = 0
+          istart = itree(ipointer(14)+ibox-1)
+          iend = itree(ipointer(17)+ibox-1)
+          npts = npts + iend-istart+1
 
-        !   call prinf('istart = *', istart, 1)
-        !   call prinf('iend = *', iend, 1)
-        !   call prinf('npts = *', npts, 1)
+          if(ifpgh.gt.0) then
+            istart = itree(ipointer(10)+ibox-1)
+            iend = itree(ipointer(11)+ibox-1)
+            npts = npts + iend-istart+1
+          endif
 
-        !   if(ifpgh.gt.0) then
-        !     istart = itree(ipointer(10)+ibox-1)
-        !     iend = itree(ipointer(11)+ibox-1)
-        !     npts = npts + iend-istart+1
-        !     call prinf('istart = *', istart, 1)
-        !     call prinf('iend = *', iend, 1)
-        !     call prinf('npts = *', npts, 1)
-        !     stop
-        !   endif
+          nlist2 = itree(ipointer(22)+ibox-1)
+          if(npts.gt.0) then
+            do i =1,nlist2
+              jbox = itree(ipointer(23)+mnlist2*(ibox-1)+i-1)
+              istart = itree(ipointer(10)+jbox-1)
+              iend = itree(ipointer(11)+jbox-1)
+              npts = iend-istart+1
 
-
-        !   nlist2 = itree(ipointer(22)+ibox-1)
-        !   if(npts.gt.0) then
-        !     do i =1,nlist2
-        !       jbox = itree(ipointer(23)+mnlist2*(ibox-1)+i-1)
-
-        !       istart = itree(ipointer(10)+jbox-1)
-        !       iend = itree(ipointer(11)+jbox-1)
-        !       npts = iend-istart+1
-
-        !       if(npts.gt.0) then
-        !         call h3dmploc(nd,zk,rscales(ilev), &
-        !             centers(1,jbox), &
-        !             rmlexp(iaddr(1,jbox)),nterms(ilev), &
-        !             rscales(ilev),centers(1,ibox), &
-        !             rmlexp(iaddr(2,ibox)),nterms(ilev), &
-        !             radius,xnodes,wts,nquad2)
-        !       endif
-        !     enddo
-        !   endif
-        ! enddo
-        !!$omp end parallel do        
+              if(npts.gt.0) then
+                call h3dmploc(nd,zk,rscales(ilev), &
+                    centers(1,jbox), &
+                    rmlexp(iaddr(1,jbox)),nterms(ilev), &
+                    rscales(ilev),centers(1,ibox), &
+                    rmlexp(iaddr(2,ibox)),nterms(ilev), &
+                    radius,xnodes,wts,nquad2)
+              endif
+            enddo
+          endif
+        enddo
+        !$omp end parallel do        
       endif
     enddo
 
