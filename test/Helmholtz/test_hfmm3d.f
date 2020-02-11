@@ -41,7 +41,7 @@ c
 
       write(*,*) "=========================================="
       write(*,*) "Testing suite for hfmm3d"
-      write(*,'(a,e11.5)') "Requested precision = ",eps
+      write(*,'(a,e11.4)') "Requested precision = ",eps
 
       open(unit=33,file='print_testres.txt',access='append')
 

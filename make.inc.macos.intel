@@ -1,3 +1,8 @@
+#
+# this config tested under Intel Parallel Studio XE Composer Edition
+# for macOS Version 2020 Initial Release
+#
+
 CC=icc
 CXX=icpc
 FC=ifort

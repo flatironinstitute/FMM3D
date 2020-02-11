@@ -162,7 +162,7 @@ c
      1      fld,wlege,nlege,thresh)
 
       err_exp(1) = 10*max(rconv1**(nterms),eps)
-      write(*,'(a,e11.5)') 'Testing formmp and mpeval, expected error='
+      write(*,'(a,e11.4)') 'Testing formmp and mpeval, expected error='
      1   ,err_exp(1)
       call errprint(pot,opot,fld,ofld,errs(1,1))
       if(max(errs(1,1),errs(2,1)).lt.err_exp(1)) ipass(1) = 1
@@ -198,7 +198,7 @@ c
       call l3dmpevalg(nd,rscale2,c1,mpole2,nterms,ztrg,nt,pot,
      1      fld,wlege,nlege,thresh)
       err_exp(2) = 10*max(rconv2**(nterms),eps)
-      write(*,'(a,e11.5)') 'Testing mpmp, expected error='
+      write(*,'(a,e11.4)') 'Testing mpmp, expected error='
      1   ,err_exp(2)
       call errprint(pot,opot,fld,ofld,errs(1,2))
 
@@ -223,7 +223,7 @@ c
       call l3dtaevalg(nd,rscale2,c2,locexp2,nterms2,ztrg,nt,
      1      pot,fld,wlege,nlege)
       err_exp(3) = 10*max(rconv3**(nterms),eps)
-      write(*,'(a,e11.5)') 'Testing mploc, expected error='
+      write(*,'(a,e11.4)') 'Testing mploc, expected error='
      1   ,err_exp(3)
       call errprint(pot,opot,fld,ofld,errs(1,3))
       if(max(errs(1,3),errs(2,3)).lt.err_exp(3)) ipass(3) = 1
@@ -250,7 +250,7 @@ cc    shift local
      1      pot,fld,wlege,nlege)
 
       err_exp(4) = 10*max(rconv3**(nterms),eps)
-      write(*,'(a,e11.5)') 'Testing locloc, expected error='
+      write(*,'(a,e11.4)') 'Testing locloc, expected error='
      1   ,err_exp(4)
       call errprint(pot,opot,fld,ofld,errs(1,4))
       if(max(errs(1,4),errs(2,4)).lt.err_exp(4)) ipass(4) = 1
@@ -275,7 +275,7 @@ c    create local exp from sources
      1      pot,fld,wlege,nlege)
 
       err_exp(5) = 10*max(rconv3**(nterms),eps)
-      write(*,'(a,e11.5)') 'Testing formta and taeval, expected error='
+      write(*,'(a,e11.4)') 'Testing formta and taeval, expected error='
      1   ,err_exp(5)
       call errprint(pot,opot,fld,ofld,errs(1,5))
       if(max(errs(1,5),errs(2,5)).lt.err_exp(5)) ipass(5) = 1
@@ -320,7 +320,7 @@ c
       ddd = sqrt(ddd)
 
       err1 = abs(pot-opot)/abs(opot)
-      write(*,'(a,e11.5,a,e11.5)') 
+      write(*,'(a,e11.4,a,e11.4)') 
      1     'pot error=',err1,'   grad error=',err/ddd
 
       errs(1) = err1 
