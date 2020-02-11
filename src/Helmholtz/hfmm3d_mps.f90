@@ -1279,9 +1279,9 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
       do ibox = laddr(1,ilev),laddr(2,ilev)
 
         npts = 0
-        istart = itree(ipointer(14)+ibox-1)
-        iend = itree(ipointer(17)+ibox-1)
-        npts = npts + iend-istart+1
+        !istart = itree(ipointer(14)+ibox-1)
+        !iend = itree(ipointer(17)+ibox-1)
+        !npts = npts + iend-istart+1
 
         !call prinf('istart = *', istart, 1)
         !call prinf('iend = *', iend, 1)
