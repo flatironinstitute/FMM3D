@@ -28,27 +28,29 @@ LIBS = -lm
 # extra flags for multithreaded: C/Fortran, MATLAB
 OMPFLAGS =-fopenmp
 OMPLIBS =-lgomp 
-MOMPFLAGS = -D_OPENMP
+
+
+
 
 # flags for MATLAB MEX compilation..
 MFLAGS=-largeArrayDims -DMWF77_UNDERSCORE1 
 MWFLAGS=-c99complex 
+MOMPFLAGS = -D_OPENMP
 
 # location of MATLAB's mex compiler
 MEX=mex
 
 # For experts, location of Mwrap executable
 MWRAP=../../mwrap-0.33/mwrap
-
 MEXLIBS=-lm -lstdc++ -ldl -lgfortran
 
 ifeq ($(FAST_KER),ON)
-
-LIBS += -lstdc++
-CLIBS += -lstdc++
-OMP = ON
-
+  LIBS += -lstdc++
+  CLIBS += -lstdc++
+  OMP = ON
 endif
+
+
 
 
 # For your OS, override the above by placing make variables in make.inc
