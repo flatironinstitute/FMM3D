@@ -948,7 +948,10 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
   ifpw = 1
 
   if (ifpw .eq. 1) then
-  
+
+    if (ifprint .ge. 1) &
+        call prinf('=== doing plane waves... ===*',i,0)
+    
     do ilev = 2,nlevels
 
       ! load the necessary quadrature for plane waves
@@ -1268,6 +1271,9 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
     ! if here, then process MP2LOC using standard point and shoot
     ! translations
     !
+    if (ifprint .ge. 1) &
+        call prinf('=== doing p&s ... ===*',i,0)
+
     do ilev = 2,nlevels
 
       nquad2 = nterms(ilev)*2
@@ -1278,30 +1284,27 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
 
       do ibox = laddr(1,ilev),laddr(2,ilev)
 
+        ! get the number of hung points
         npts = 0
-        !istart = itree(ipointer(14)+ibox-1)
-        !iend = itree(ipointer(17)+ibox-1)
-        !npts = npts + iend-istart+1
+        istart = itree(ipointer(14)+ibox-1)
+        iend = itree(ipointer(17)+ibox-1)
+        npts = npts + iend-istart+1
 
-        !call prinf('istart = *', istart, 1)
-        !call prinf('iend = *', iend, 1)
-        !call prinf('npts = *', npts, 1)
-
+        ! get the number of sources
         if(ifpgh.gt.0) then
+          !call tl3d_get_sources0(ipointer, itree, ibox, npts0)
           istart = itree(ipointer(10)+ibox-1)
           iend = itree(ipointer(11)+ibox-1)
           npts = npts + iend-istart+1
-          !call prinf('istart = *', istart, 1)
-          !call prinf('iend = *', iend, 1)
-          !call prinf('npts = *', npts, 1)
-          !stop
         endif
 
+        !call tl3d_get_list20(ipointer, itree, mnlist2, ibox, jboxes)
         nlist2 = itree(ipointer(22)+ibox-1)
 
         if (npts .gt. 0) then
           do i =1,nlist2
             jbox = itree(ipointer(23)+mnlist2*(ibox-1)+i-1)
+            !call tl3d_get_sources0(ipointer, itree, jbox, npts0)
             istart = itree(ipointer(10)+jbox-1)
             iend = itree(ipointer(11)+jbox-1)
             npts = iend-istart+1
