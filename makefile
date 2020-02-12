@@ -152,6 +152,8 @@ usage:
 	$(CC) -c $(CFLAGS) $< -o $@
 %.o: %.f %.h
 	$(FC) -c $(FFLAGS) $< -o $@
+%.o: %.f90 
+	$(FC) -c $(FFLAGS) $< -o $@
 
 # build the library...
 lib: $(STATICLIB) $(DYNAMICLIB)
@@ -331,10 +333,10 @@ pw-test: $(STATICLIB) $(TOBJS) test/test_helm_pw
 
 
 test/test_helm_big:
-	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_big.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_big
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_big.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_big $(LIBS)
 
 test/test_lap_big:
-	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_big.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d_big
+	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_big.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d_big $(LIBS)
 
 test/test_helm_pw:
 	$(FC) $(FFLAGS) test/Helmholtz/test_pwrep_hfmm3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_pw
