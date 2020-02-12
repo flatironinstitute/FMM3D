@@ -1,0 +1,23 @@
+#
+# this config tested under Intel Parallel Studio XE Composer Edition
+# for macOS Version 2020 Initial Release
+#
+
+CC=icc
+CXX=icpc
+FC=ifort
+FFLAGS= -fPIC -O3 -march=native -funroll-loops -mkl 
+LIBS=
+#CLIBS = -lm -ldl -lifcore
+CLIBS = -lm -ldl
+
+ifeq ($(FAST_KER),ON)
+  CXXFLAGS = $(FFLAGS)
+  CXXFLAGS += -std=c++11 -DSCTL_HAVE_SVML -DSCTL_PROFILE=-1
+  LIBS += -cxxlib
+endif
+
+OMPFLAGS = -qopenmp
+OMPLIBS = 
+
+
