@@ -19,7 +19,7 @@ OMPLIBS = -lgomp
 # MATLAB interface:
 MFLAGS += -L/usr/local/lib/gcc/9
 MEX = $(shell ls -d /Applications/MATLAB_R201*.app)/bin/mex
-LIBS = -lm -lstdc++.6
-MEXLIBS= -lm -lstdc++.6 -lgfortran -ldl
+#LIBS = -lm -lstdc++.6
+#MEXLIBS= -lm -lstdc++.6 -lgfortran -ldl
 
 
