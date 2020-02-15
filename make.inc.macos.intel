@@ -13,7 +13,7 @@ CLIBS = -lm -ldl
 
 ifeq ($(FAST_KER),ON)
   CXXFLAGS = $(FFLAGS)
-  CXXFLAGS += -std=c++11 -DSCTL_HAVE_SVML -DSCTL_PROFILE=-1
+  CXXFLAGS += -std=c++11 -DSCTL_HAVE_SVML -DSCTL_PROFILE=-1 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
   LIBS += -cxxlib
 endif
 
