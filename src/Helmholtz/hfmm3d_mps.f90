@@ -638,7 +638,7 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
   integer ctr,ifinit2
   integer nquad2
   integer maX_nodes
-  integer iert, ifpw
+  integer iert, ifpw, ifmp
   integer istart0,istart1,istartm1,nprin
   integer nlfbox,ier, ifstep2, mt, ltot
   integer *8 :: bigint
@@ -946,17 +946,26 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
   ! translations or standard point-and-shoot translations
   !
   ifpw = 1
+  ifmp = 1
 
+  if ( (ifprint .ge. 1) .and. (ifmp .eq. 1) ) &
+      call prinf('=== doing point and shoots... ===*',i,0)
+
+  if ( (ifprint .ge. 1) .and. (ifmp .eq. 0) ) &
+      call prinf('=== doing plane waves... ===*',i,0)
+
+  
   if (ifpw .eq. 1) then
 
-    if (ifprint .ge. 1) &
-        call prinf('=== doing plane waves... ===*',i,0)
+    !if (ifprint .ge. 1) &
+    !    call prinf('=== doing plane waves... ===*',i,0)
     
     do ilev = 2,nlevels
 
       ! load the necessary quadrature for plane waves
       zk2 = zk*boxsize(ilev)
-      if(real(zk2).le.16*pi .and. imag(zk2).le.12*pi) then
+      if ( (real(zk2).le.16*pi) .and. (imag(zk2).le.12*pi) &
+          .and. (ifmp .eq. 0) ) then
         ier = 0
 
         ! get new pw quadrature
