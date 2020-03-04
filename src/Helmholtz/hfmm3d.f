@@ -167,7 +167,7 @@ c     ifprint is an internal information printing flag.
 c     Suppressed if ifprint=0.
 c     Prints timing breakdown and other things if ifprint=1.
 c      
-      ifprint=1
+      ifprint=0
 
 
 
@@ -198,8 +198,6 @@ c
        else
          ndiv = nsource+ntarg
        endif
-
-       ndiv = 200
 
 c
 c       turn on computation of list 1
@@ -314,6 +312,7 @@ c
       allocate(scales(0:nlevels),nterms(0:nlevels))
       do ilev = 0,nlevels
        scales(ilev) = boxsize(ilev)*abs(zk)
+       if(scales(ilev).gt.1) scales(ilev) = 1.0d0
       enddo
 
 c
@@ -732,7 +731,7 @@ c     Suppressed if ifprint=0.
 c     Prints timing breakdown and other things if ifprint=1.
 c     Prints timing breakdown, list information, and other things if ifprint=2.
 c       
-        ifprint=1
+        ifprint=0
 c
 c
 c     ... set the expansion coefficients to zero
@@ -1323,15 +1322,11 @@ C$OMP END PARALLEL DO
             deallocate(fexp,fexpback)
 
          else
-            print *, "In slow mploc because wavenumber is high"
-            print *, "local zk=",real(zk2)
             nquad2 = nterms(ilev)*2.2
             nquad2 = max(6,nquad2)
 
             ifinit2 = 1
             ier = 0
-
-            print *, "nquad2=",nquad2
 
             call legewhts(nquad2,xnodes,wts,ifinit2)
 
