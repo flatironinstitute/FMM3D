@@ -312,6 +312,7 @@ c
       allocate(scales(0:nlevels),nterms(0:nlevels))
       do ilev = 0,nlevels
        scales(ilev) = boxsize(ilev)*abs(zk)
+       if(scales(ilev).gt.1) scales(ilev) = 1.0d0
       enddo
 
 c
@@ -417,6 +418,9 @@ c     Compute length of expansions at each level
          call h3dterms(boxsize(i),zk,eps,nterms(i))
          if(nterms(i).gt.nmax) nmax = nterms(i)
       enddo
+      if(ifprint.ge.1) call prinf('nlevels=*',nlevels,1)
+      if(ifprint.ge.1) call prinf('nterms=*',nterms,nlevels+1)
+      
 c       
 c     Multipole and local expansions will be held in workspace
 c     in locations pointed to by array iaddr(2,nboxes).
@@ -986,7 +990,7 @@ C$    time1=omp_get_wtime()
 c
 
 
-      do ilev=nlevels-1,0,-1
+      do ilev=nlevels-1,1,-1
          nquad2 = nterms(ilev)*2.5
          nquad2 = max(6,nquad2)
          ifinit2 = 1
@@ -1320,6 +1324,7 @@ C$OMP END PARALLEL DO
          else
             nquad2 = nterms(ilev)*2.2
             nquad2 = max(6,nquad2)
+
             ifinit2 = 1
             ier = 0
 

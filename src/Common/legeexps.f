@@ -268,7 +268,7 @@ c
 c
         subroutine legewhts(n,ts,whts,ifwhts)
         implicit double precision (a-h,o-z)
-        dimension ts(*),whts(*),ws2(1000),rats(1000)
+        dimension ts(*),whts(*)
 c
 c        this subroutine constructs the nodes and the
 c        weights of the n-point gaussian quadrature on 

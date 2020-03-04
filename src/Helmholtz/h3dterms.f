@@ -27,9 +27,9 @@ c
 c
 c-----------------------------------------------------------------------------
 c
-      complex *16  zk, z1, z2, z3, jfun(0:2000), ht0,
+      complex *16  zk, z1, z2, z3, jfun(0:5000), ht0,
      1             ht1, ht2, fjder(0:1), ztmp,
-     1             hfun(0:2000), fhder(0:1)
+     1             hfun(0:5000), fhder(0:1)
 c
 c
       z1 = (zk*size)*1.5d0
@@ -39,7 +39,7 @@ c       set frequency to something more reasonable, nterms is
 c       approximately the same for all small frequencies
 c       
 c
-      ntmax = 1000
+      ntmax = 5000
       ifder = 0
       rscale = 1.0d0
       if (cdabs(zk*size) .lt. 1.0d0) rscale = cdabs(zk*size)
@@ -65,7 +65,7 @@ c
 c
 c       ... computational box is too big, set nterms to 1000
 c
-        nterms=1000
+        nterms=5000
 c
       return
       end
