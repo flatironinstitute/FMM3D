@@ -360,6 +360,7 @@ c
 C
       ldc = max(nterms,nterms2)
       nq = max(nquad,2*ldc+2)
+      print *, nterms,nterms2,nq,nquad
 
       allocate(marray(nd,0:ldc,-ldc:ldc))
       allocate(mp2(nd,0:ldc,-ldc:ldc))

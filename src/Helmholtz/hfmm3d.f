@@ -167,7 +167,7 @@ c     ifprint is an internal information printing flag.
 c     Suppressed if ifprint=0.
 c     Prints timing breakdown and other things if ifprint=1.
 c      
-      ifprint=0
+      ifprint=1
 
 
 
@@ -198,6 +198,8 @@ c
        else
          ndiv = nsource+ntarg
        endif
+
+       ndiv = 200
 
 c
 c       turn on computation of list 1
@@ -417,6 +419,9 @@ c     Compute length of expansions at each level
          call h3dterms(boxsize(i),zk,eps,nterms(i))
          if(nterms(i).gt.nmax) nmax = nterms(i)
       enddo
+      if(ifprint.ge.1) call prinf('nlevels=*',nlevels,1)
+      if(ifprint.ge.1) call prinf('nterms=*',nterms,nlevels+1)
+      
 c       
 c     Multipole and local expansions will be held in workspace
 c     in locations pointed to by array iaddr(2,nboxes).
@@ -727,7 +732,7 @@ c     Suppressed if ifprint=0.
 c     Prints timing breakdown and other things if ifprint=1.
 c     Prints timing breakdown, list information, and other things if ifprint=2.
 c       
-        ifprint=0
+        ifprint=1
 c
 c
 c     ... set the expansion coefficients to zero
@@ -986,7 +991,7 @@ C$    time1=omp_get_wtime()
 c
 
 
-      do ilev=nlevels-1,0,-1
+      do ilev=nlevels-1,1,-1
          nquad2 = nterms(ilev)*2.5
          nquad2 = max(6,nquad2)
          ifinit2 = 1
@@ -1318,10 +1323,15 @@ C$OMP END PARALLEL DO
             deallocate(fexp,fexpback)
 
          else
+            print *, "In slow mploc because wavenumber is high"
+            print *, "local zk=",real(zk2)
             nquad2 = nterms(ilev)*2.2
             nquad2 = max(6,nquad2)
+
             ifinit2 = 1
             ier = 0
+
+            print *, "nquad2=",nquad2
 
             call legewhts(nquad2,xnodes,wts,ifinit2)
 
