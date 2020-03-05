@@ -382,10 +382,10 @@ c
       double complex zk
       integer ns,ifcharge,ifdipole,ifpot,iffld,nt
       integer ifpottarg,iffldtarg
-      double precision source(3,1), targ(3,1)
-      double complex charge(1),dipstr(1)
-      double precision dipvec(3,1)
-      double complex pot(1),fld(3,1),pottarg(1),fldtarg(3,1)
+      double precision source(3,*), targ(3,*)
+      double complex charge(*),dipstr(*)
+      double precision dipvec(3,*)
+      double complex pot(*),fld(3,*),pottarg(*),fldtarg(3,*)
 
       double complex, allocatable :: pottmp(:),gradtmp(:,:)
       double complex, allocatable :: pottargtmp(:),gradtargtmp(:,:)
@@ -514,7 +514,8 @@ c
         write(*,*) "Exiting"
         return
       endif
-      thresh = abs(zk)*bsize*1.0d-16
+      thresh = bsize*2.0d0**(-51)
+
 
 
 

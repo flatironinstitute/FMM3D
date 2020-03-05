@@ -641,6 +641,11 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
   integer iert, ifpw, ifmp
   integer istart0,istart1,istartm1,nprin
   integer nlfbox,ier, ifstep2, mt, ltot
+
+
+  integer cntlist4,list4,ilist4
+  integer, allocatable :: nlist4s(:)
+  double complex pgboxwexp(100)
   integer *8 :: bigint
   double precision d,time1,time2,omp_get_wtime
   double precision timeinfo(10)
@@ -657,6 +662,11 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
   double complex :: ima, cd, cd1(10), cd2(10), work(100000)
 
   data ima/(0.0d0,1.0d0)/
+
+!   set list4 plane wave processing to 0
+  cntlist4 = 0
+  allocate(nlist4s(nboxes))
+
 
 
   !
@@ -728,6 +738,7 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
     do ibox = laddr(1,ilev),laddr(2,ilev)
       call mpzero(nd,rmlexp(iaddr(1,ibox)),nterms(ilev))
       call mpzero(nd,rmlexp(iaddr(2,ibox)),nterms(ilev))
+      nlist4s(ibox) = 0
     enddo
     !$omp end parallel do          
   enddo
@@ -946,7 +957,7 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
   ! translations or standard point-and-shoot translations
   !
   ifpw = 1
-  ifmp = 1
+  ifmp = 0
 
   if ( (ifprint .ge. 1) .and. (ifmp .eq. 1) ) &
       call prinf('=== doing point and shoots... ===*',i,0)
@@ -1170,7 +1181,8 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
                 nuall,uall,nu1234,u1234,ndall,dall,nd5678,d5678, &
                 mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1,1), &
                 mexppall(1,1,2),mexppall(1,1,3),mexppall(1,1,4), &
-                xshift,yshift,zshift,fexpback,rlsc)
+                xshift,yshift,zshift,fexpback,rlsc,pgboxwexp,cntlist4, &
+                list4, nlist4s,itree(ipointer(27)),mnlist4)
 
 
             call hprocessnsexp(nd,zk2,ibox,ilev,nboxes,centers,&
@@ -1184,7 +1196,8 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
                 mexppall(1,1,2),mexppall(1,1,3),mexppall(1,1,4),&
                 mexppall(1,1,5),mexppall(1,1,6),mexppall(1,1,7),&
                 mexppall(1,1,8),rdplus,xshift,yshift,zshift, &
-                fexpback,rlsc)
+                fexpback,rlsc,pgboxwexp,cntlist4, list4, &
+                nlist4s,itree(ipointer(27)),mnlist4)
 
             call hprocessewexp(nd,zk2,ibox,ilev,nboxes,centers,&
                 itree(ipointer(4)),rscales(ilev),boxsize(ilev),&
@@ -1202,7 +1215,8 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
                 mexppall(1,1,10),mexppall(1,1,11),mexppall(1,1,12),&
                 mexppall(1,1,13),mexppall(1,1,14),mexppall(1,1,15),&
                 mexppall(1,1,16),rdminus,xshift,yshift,zshift,&
-                fexpback,rlsc)
+                fexpback,rlsc,pgboxwexp,cntlist4,list4, &
+                nlist4s,itree(ipointer(27)),mnlist4)
           endif
         enddo
         !$omp end parallel do        

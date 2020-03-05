@@ -55,9 +55,9 @@ cc      generate sources uniformly in the unit cube
 c
 c
       do i=1,ns
-        source(1,i) = hkrand(0)**2
-        source(2,i) = hkrand(0)**2
-        source(3,i) = hkrand(0)**2
+        source(1,i) = hkrand(0)**3
+        source(2,i) = hkrand(0)**3
+        source(3,i) = hkrand(0)**3
 
         charge(i) = hkrand(0) + eye*hkrand(0)
 

@@ -36,7 +36,7 @@ program test_hfmm3d_mp2loc
   nd = 3
 
 
-  n1 = 10
+  n1 = 3
   ns = n1**3
   nc = ns
 

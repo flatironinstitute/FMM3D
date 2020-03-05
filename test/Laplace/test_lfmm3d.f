@@ -22,8 +22,8 @@ cc      initialize printing routine
 c
       call prini(6,13)
 
-      ns = 2000 
-      nt = 1999
+      ns = 5000 
+      nt = 4999
 
       ntest = 10
 
@@ -55,9 +55,9 @@ cc      generate sources uniformly in the unit cube
 c
 c
       do i=1,ns
-        source(1,i) = hkrand(0)**2
-        source(2,i) = hkrand(0)**2
-        source(3,i) = hkrand(0)**2
+        source(1,i) = hkrand(0)**3
+        source(2,i) = hkrand(0)**3
+        source(3,i) = hkrand(0)**3
 
         charge(i) = hkrand(0) 
 

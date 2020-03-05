@@ -3,10 +3,10 @@ EXEC = int2
 
 #HOST=linux-gfortran-openmp
 #HOST = linux-gfortran
-#HOST= linux-gfortran-openmp
+HOST= linux-gfortran-openmp
 #HOST = linux-ifort
 #HOST = macos
-HOST = macos-intel-openmp
+#HOST = macos-intel-openmp
 
 ifeq ($(HOST),macos)
   FC = gfortran-9
@@ -24,7 +24,7 @@ endif
 
 ifeq ($(HOST),linux-gfortran-openmp)
 FC = gfortran
-FFLAGS = -O3 -c -w --openmp 
+FFLAGS = -fPIC -O3 -c -w --openmp 
 FLINK = gfortran -w -o $(EXEC) --openmp
 endif
 

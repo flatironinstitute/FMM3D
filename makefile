@@ -1,6 +1,5 @@
 # Makefile for FMM3D
-#
-# This is the only makefile; there are no makefiles in subdirectories.
+# # This is the only makefile; there are no makefiles in subdirectories.
 # Users should not need to edit this makefile (doing so would make it
 # hard to stay up to date with repo version). Rather in order to
 # change OS/environment-specific compilers and flags, create 

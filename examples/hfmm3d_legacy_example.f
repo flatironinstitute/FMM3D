@@ -144,13 +144,14 @@ c     ifprint=1 turns on printing of source locations
 c
       ifprint=0
       if (ifprint .eq. 1) then
-        call prin2('source=*',source,3*nsource)
+        call prin2('source=*',source,3*6)
       endif
 
       if (ifprint .eq. 1) then
         if( ifpot.eq.1 ) call prin2('after fmm, pot=*',pot,2*m)
         if( iffld.eq.1 ) call prin2('after fmm, fld=*',fld,3*2*m)
       endif
+
 c
 c       for direct calculation, initialize pot2,fld2 arrays to zero.
 c

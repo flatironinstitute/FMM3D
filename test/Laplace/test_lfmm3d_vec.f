@@ -22,8 +22,8 @@ cc      initialize printing routine
 c
       call prini(6,13)
 
-      ns = 2000
-      nt = 1999
+      ns = 4000
+      nt = 3999
 
       ntest = 10
 

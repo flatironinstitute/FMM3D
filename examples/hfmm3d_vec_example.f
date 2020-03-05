@@ -27,10 +27,10 @@ c
       write(*,*)
       write(*,*)
 
-      zk = 102.2d0
+      zk = 2.2d0
 
-      ns = 1000
-      nt = 1000
+      ns = 10000
+      nt = 10000
       
       nd = 1
 
@@ -55,7 +55,7 @@ c
 
 
 c
-cc      generate sources uniformly in the unit cube 
+cc      generate sources uniformly on the sphere 
 c
 c
       do i=1,ns
