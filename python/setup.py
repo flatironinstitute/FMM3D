@@ -26,7 +26,7 @@ else:
     list_helm.append('helmkernels.f')
     list_helm.append('hndiv.f')
     list_lap.append('lapkernels.f')
-    list_helm.append('lndiv.f')
+    list_lap.append('lndiv.f')
 
 
 FLIBS = FLIBS.rstrip().split(' ')
