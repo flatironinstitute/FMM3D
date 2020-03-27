@@ -177,36 +177,13 @@ c
 cc        set criterion for box subdivision
 c
 
-       if(eps.ge.0.5d-0) then
-         ndiv = 300
-       else if(eps.ge.0.5d-1) then
-         ndiv = 300
-       else if(eps.ge.0.5d-2) then
-         ndiv = 300
-       else if(eps.ge.0.5d-3) then
-         ndiv = 300
-       else if(eps.ge.0.5d-6) then
-         ndiv = 1000
-       else if(eps.ge.0.5d-9) then
-         ndiv = 1000
-       else if(eps.ge.0.5d-12) then
-         ndiv = 1000
-       else if(eps.ge.0.5d-15) then
-         ndiv = 1000
-       else
-         ndiv = nsource+ntarg
-       endif
-
 c
 c       turn on computation of list 1
 c
       ifnear = 1
 
-
-
-
-
-
+      call hndiv(eps,nsource,ntarg,ifcharge,ifdipole,ifpgh,
+     1   ifpghtarg,ndiv,idivflag) 
 
 c
 cc         set tree flags
@@ -222,7 +199,6 @@ c
        nadd = 0
        ntj = 0
 
-       idivflag = 0
 
        mnlist1 = 0
        mnlist2 = 0
@@ -725,7 +701,7 @@ c      for all pairs of sources and targets
 c      which satisfy |r| < thresh
 c      where r is the disance between them
 
-      thresh = 2.0d0**(-52)*boxsize(0)
+      thresh = 2.0d0**(-51)*boxsize(0)
       
 
       allocate(zeyep(-nmax:nmax),zmone(0:2*nmax))

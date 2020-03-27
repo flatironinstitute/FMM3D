@@ -100,12 +100,16 @@ LOBJS = $(LAP)/lwtsexp_sep1.o $(LAP)/l3dterms.o $(LAP)/l3dtrans.o \
 
 ifneq ($(FAST_KER),ON)
 LOBJS += $(LAP)/lapkernels.o
+LOBJS += $(LAP)/lndiv.o
 HOBJS += $(HELM)/helmkernels.o
+HOBJS += $(HELM)/hndiv.o
 endif
 
 ifeq ($(FAST_KER),ON)
 LOBJS += $(LAP)/lapkernels_fast.o
+LOBJS += $(LAP)/lndiv_fast.o
 HOBJS += $(HELM)/helmkernels_fast.o
+HOBJS += $(HELM)/hndiv_fast.o
 COMOBJS+= $(SRCDIR)/libkernels.o
 endif
 

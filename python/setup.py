@@ -19,10 +19,14 @@ FFLAGS = os.getenv('FFLAGS')
 
 if(FAST_KER=='ON'):
     list_helm.append('helmkernels_fast.f')
+    list_helm.append('hndiv_fast.f')
     list_lap.append('lapkernels_fast.f')
+    list_lap.append('lndiv_fast.f')
 else:
     list_helm.append('helmkernels.f')
+    list_helm.append('hndiv.f')
     list_lap.append('lapkernels.f')
+    list_helm.append('lndiv.f')
 
 
 FLIBS = FLIBS.rstrip().split(' ')
