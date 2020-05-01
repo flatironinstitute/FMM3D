@@ -83,8 +83,8 @@ ext_lap = Extension(
 ## TODO: fill in the info below
 setup(
     name=pkg_name,
-    version="0.1.0",
-    author="Leslie Greengard, Zydrunas Gimbutas, Libin Lu, Jeremy Magland, and Manas Rachh",
+    version="1.0.0",
+    author="Zydrunas Gimbutas, Leslie Greengard, Libin Lu, Jeremy Magland, Dhairya Malhotra, Michael O'Neil, Manas Rachh, and Vladimir Rokhlin",
     author_email="mrachh@flatironinstitute.org",
     description="This pacakge contains basic routines for Laplace and Helmholtz fast multipole methods in three dimensions",
     url="",
