@@ -498,12 +498,12 @@ c
 c
       call ylgndrini(nterms,rat1,rat2)
       do jj=1,nquadn
-	    cthetaj = xnodes(jj)
-	    call ylgndrf(nterms,cthetaj,ynm,rat1,rat2)
+        cthetaj = xnodes(jj)
+        call ylgndrf(nterms,cthetaj,ynm,rat1,rat2)
         do m=-ntold,ntold
           do idim=1,nd 
             zmul(idim) = phitemp(idim,jj,m)*wts(jj)/2.0d0
-	        zmul2(idim) = phitempn(idim,jj,m)*wts(jj)/2.0d0
+            zmul2(idim) = phitempn(idim,jj,m)*wts(jj)/2.0d0
           enddo
           do l=abs(m),nterms
             do idim=1,nd
