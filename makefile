@@ -32,7 +32,7 @@ OMPLIBS =-lgomp
 
 
 # flags for MATLAB MEX compilation..
-MFLAGS=-largeArrayDims -DMWF77_UNDERSCORE1 
+MFLAGS=-compatibleArrayDims -DMWF77_UNDERSCORE1 
 MWFLAGS=-c99complex 
 MOMPFLAGS = -D_OPENMP
 
@@ -40,7 +40,7 @@ MOMPFLAGS = -D_OPENMP
 MEX=mex
 
 # For experts, location of Mwrap executable
-MWRAP=../../mwrap-0.33/mwrap
+MWRAP=../../mwrap/mwrap
 MEXLIBS=-lm -lstdc++ -ldl -lgfortran
 
 ifeq ($(FAST_KER),ON)
@@ -196,7 +196,7 @@ mex:  $(STATICLIB)
 
 #python
 python: $(STATICLIB)
-	cd python && export FAST_KER=$(FAST_KER) && export FLIBS='$(LIBS)' && export FFLAGS='$(FFLAGS)' && pip install -e . && cd test && pytest -s
+	cd python && pip install -e . && cd test && pytest -s
 
 #python
 python3: $(STATICLIB)

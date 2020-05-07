@@ -663,7 +663,7 @@ c     end of list 4 variables
 
       pi = 4.0d0*atan(1.0d0)
 
-      thresh = 2.0d0**(-52)*boxsize(0)
+      thresh = 2.0d0**(-51)*boxsize(0)
 
 c     ifprint is an internal information printing flag. 
 c     Suppressed if ifprint=0.

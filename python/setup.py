@@ -3,6 +3,7 @@ import string
 import os
 from numpy.distutils.core import setup
 from numpy.distutils.core import Extension
+from sys import platform
 
 pkg_name = "fmm3dpy"
 
@@ -29,13 +30,11 @@ else:
     list_lap.append('lndiv.f')
 
 
-FLIBS = FLIBS.rstrip().split(' ')
-FLIBS = list(filter(None, FLIBS))
-FLIBS.append('../lib-static/libfmm3d.a')
+FLIBS = []
+FLIBS.append('-lfmm3dbie')
 
-FFLAGS = FFLAGS.rstrip().split(' ')
-FFLAGS = list(filter(None,FFLAGS))
-
+if platform == "darwin":
+    FLIBS.append('-L/usr/local/lib')
 
 c_opts = ['_c','_d','_cd']
 c_opts2 = ['c','d','cd']
@@ -68,7 +67,6 @@ ext_helm = Extension(
     name='hfmm3d_fortran',
     sources=['../src/Helmholtz/'+item for item in list_helm]+['../src/Common/'+item for item in list_common],
     f2py_options=['only:']+list_int_helm+list_int_helm_vec+list_int_helm_dir+[':'],
-    extra_f77_compile_args=FFLAGS,
     extra_link_args=FLIBS
 )
 
@@ -76,7 +74,6 @@ ext_lap = Extension(
     name='lfmm3d_fortran',
     sources=['../src/Laplace/'+item for item in list_lap]+['../src/Common/'+item for item in list_common],
     f2py_options=['only:']+list_int_lap+list_int_lap_vec+list_int_lap_dir+[':'],
-    extra_f77_compile_args=FFLAGS,
     extra_link_args=FLIBS
 )
 
