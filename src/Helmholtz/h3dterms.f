@@ -47,15 +47,18 @@ c
       z2 = (zk*size) * dsqrt(3d0)/2.0d0
 
       call besseljs3d(ntmax, z2, rscale, jfun, ifder, fjder)
+
 c
       xtemp1 = cdabs(jfun(0)*hfun(0))
       xtemp2 = cdabs(jfun(1)*hfun(1))
       xtemp0 = xtemp1+xtemp2
+
+
       nterms = 1
       do j = 2, ntmax
         xtemp1 = cdabs(jfun(j)*hfun(j))
         xtemp2 = cdabs(jfun(j-1)*hfun(j-1))
-        xtemp = xtemp1+xtemp2
+        xtemp = (xtemp1+xtemp2)*abs(hfun(0))
         if(xtemp .lt. eps*xtemp0)then
           nterms = j + 1
           return
@@ -63,7 +66,7 @@ c
 c
       enddo
 c
-c       ... computational box is too big, set nterms to 1000
+c       ... computational box is too big, set nterms to 5000
 c
         nterms=5000
 c

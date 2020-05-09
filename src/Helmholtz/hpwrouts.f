@@ -29,15 +29,23 @@ c
       real *8 rsc,rsctmp
 
       done = 1
-      ima = cmplx(0,done)
-      zmult = cmplx(0,-done)
+      ima = dcmplx(0,done)
+      zmult = dcmplx(0,-done)
       ipow(0) = done
 
       do 900 i=1,nterms
 
       ipow(i) = ipow(i-1)*zmult
 
-900   continue      
+900   continue    
+
+      do i=1,nlambs
+        do j=0,nterms
+          do l=0,nterms
+            rlsc(l,j,i) = 0
+          enddo
+        enddo
+      enddo
 c
       do 2000 nl = 1,nlambs
 

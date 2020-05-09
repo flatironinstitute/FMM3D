@@ -204,8 +204,7 @@ python3: $(STATICLIB)
 
 # testing routines
 #
-test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/laprouts test/lfmm3d test/lfmm3d_vec
-	cd test/Helmholtz; ./test_hfmm3d
+test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_zkbig test/laprouts test/lfmm3d test/lfmm3d_vec
 	(cd test/Helmholtz; ./run_helmtest.sh)
 	(cd test/Laplace; ./run_laptest.sh)
 	cat print_testreshelm.txt
@@ -218,6 +217,9 @@ test/helmrouts:
 
 test/hfmm3d:
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d $(LIBS)
+
+test/hfmm3d_zkbig:
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_zkbig.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_zkbig $(LIBS)
 
 test/hfmm3d_vec:
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_vec.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_vec  $(LIBS)
@@ -337,6 +339,7 @@ big-test: $(STATICLIB) $(TOBJS) test/test_lap_big test/test_helm_big
 
 pw-test: $(STATICLIB) $(TOBJS) test/test_helm_pw
 	./test/Helmholtz/test_hfmm3d_pw
+
 
 
 test/test_helm_big:
