@@ -9,29 +9,23 @@
 
       zk = 300.0d0/10
       call test_helm_zkbig(zk,i1)
-      read *, i
 
       zk = 300.0d0*ima
       call test_helm_zkbig(zk,i2)
-      read *, i
 
       zk = 12*pi*ima*4
       call test_helm_zkbig(zk,i3)
-      read *, i
 
 
       zk = 12*pi*ima/32
 
       call test_helm_zkbig(zk,i4)
-      read *, i
 
       zk = 12*pi*ima + 0.01d0
       call test_helm_zkbig(zk,i5)
-      read *, i
 
       zk = (12*pi*ima + 12*pi)/10
       call test_helm_zkbig(zk,i6)
-      read *, i
 
       nsuccess = i1+i2+i3+i4+i5+i6
       ntest = 6

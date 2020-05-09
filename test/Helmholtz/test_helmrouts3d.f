@@ -43,7 +43,7 @@ c
 c
       done=1
       pi=4.0*atan(done)
-      zk = 0.2d0
+      zk = 1.2d0
 
       write(*,*) "=========================================="
       write(*,*) "Testing suite for helmrouts3d"
@@ -176,8 +176,9 @@ c
 c
 c    mpmp shift
 c
-      radius = sqrt(3.0d0)/2.0d0
+      radius = sqrt(3.0d0)/2.0d0*bsize
       allocate(mpole2(0:nterms2,-nterms2:nterms2))
+
       call mpzero(nd,mpole2,nterms2)
       call h3dmpmp(nd,zk,rscale1,c0,mpole1,nterms,
      1       rscale2,c1,mpole2,nterms2,radius,xnodes,wts,nquad)
@@ -187,8 +188,10 @@ c
       fld(2) = 0
       fld(3) = 0
       nd = 1
-      call h3dmpevalg(nd,zk,rscale2,c1,mpole2,nterms,ztrg,nt,pot,
+
+      call h3dmpevalg(nd,zk,rscale2,c1,mpole2,nterms2,ztrg,nt,pot,
      1      fld,wlege,nlege,thresh)
+
 
       err_exp(2) = 10*max(rconv2**(nterms),eps)
       write(*,'(a,e11.4)') 'Testing mpmp, expected error='
