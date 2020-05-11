@@ -10,28 +10,12 @@ pkg_name = "fmm3dpy"
 ## TODO: this should be automatically populated using "read directory, or whatever"
 ## TODO: fix problem with relative location for executable
 
-list_helm=['hfmm3dwrap.f','hfmm3dwrap_vec.f']
-list_lap=['lfmm3dwrap.f','lfmm3dwrap_vec.f']
+list_helm=['hfmm3dwrap.f','hfmm3dwrap_vec.f','helmkernels.f']
+list_lap=['lfmm3dwrap.f','lfmm3dwrap_vec.f','lapkernels.f']
 list_common=[]
 
-FAST_KER = os.getenv('FAST_KER')
-FLIBS = os.getenv('FLIBS')
-FFLAGS = os.getenv('FFLAGS')
-
-if(FAST_KER=='ON'):
-    list_helm.append('helmkernels_fast.f')
-    list_helm.append('hndiv_fast.f')
-    list_lap.append('lapkernels_fast.f')
-    list_lap.append('lndiv_fast.f')
-else:
-    list_helm.append('helmkernels.f')
-    list_helm.append('hndiv.f')
-    list_lap.append('lapkernels.f')
-    list_lap.append('lndiv.f')
-
-
 FLIBS = []
-FLIBS.append('-lfmm3dbie')
+FLIBS.append('-lfmm3d')
 
 if platform == "darwin":
     FLIBS.append('-L/usr/local/lib')
