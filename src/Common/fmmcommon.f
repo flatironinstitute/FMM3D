@@ -104,8 +104,8 @@ c
 
       implicit none
       integer ndim,idim,i,n
-      double precision arr(ndim,1),arrsort(ndim,1)
-      integer iarr(1)
+      double precision arr(ndim,*),arrsort(ndim,*)
+      integer iarr(*)
 
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)      
       do i=1,n
@@ -134,8 +134,8 @@ c
 
       implicit none
       integer i,idim,ndim,n
-      double precision arr(ndim,1),arrsort(ndim,1)
-      integer iarr(1)
+      double precision arr(ndim,*),arrsort(ndim,*)
+      integer iarr(*)
 
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)      
       do i=1,n
@@ -165,8 +165,8 @@ c
 
       implicit none
       integer ndim,idim,i,n
-      integer arr(ndim,1),arrsort(ndim,1)
-      integer iarr(1)
+      integer arr(ndim,*),arrsort(ndim,*)
+      integer iarr(*)
 
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)      
       do i=1,n
@@ -195,8 +195,8 @@ c
 
       implicit none
       integer i,idim,ndim,n
-      integer arr(ndim,1),arrsort(ndim,1)
-      integer iarr(1)
+      integer arr(ndim,*),arrsort(ndim,*)
+      integer iarr(*)
 
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)      
       do i=1,n
