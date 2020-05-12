@@ -32,7 +32,7 @@ OMPLIBS =-lgomp
 
 
 # flags for MATLAB MEX compilation..
-MFLAGS=-largeArrayDims -DMWF77_UNDERSCORE1 
+MFLAGS=-compatibleArrayDims -DMWF77_UNDERSCORE1 
 MWFLAGS=-c99complex 
 MOMPFLAGS = -D_OPENMP
 
@@ -40,7 +40,7 @@ MOMPFLAGS = -D_OPENMP
 MEX=mex
 
 # For experts, location of Mwrap executable
-MWRAP=../../mwrap-0.33/mwrap
+MWRAP=../../mwrap/mwrap
 MEXLIBS=-lm -lstdc++ -ldl -lgfortran
 
 ifeq ($(FAST_KER),ON)
@@ -123,7 +123,7 @@ CHEADERS = c/cprini.h c/utils.h c/hfmm3d_c.h c/lfmm3d_c.h
 
 OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
-.PHONY: usage lib examples test perftest python all c c-examples matlab python3 big-test pw-test debug
+.PHONY: usage lib examples test perftest python all c c-examples matlab python3 big-test pw-test debug 
 
 default: usage
 
@@ -196,7 +196,7 @@ mex:  $(STATICLIB)
 
 #python
 python: $(STATICLIB)
-	cd python && export FAST_KER=$(FAST_KER) && export FLIBS='$(LIBS)' && export FFLAGS='$(FFLAGS)' && pip install -e . && cd test && pytest -s
+	cd python && pip install -e . && cd test && pytest -s
 
 #python
 python3: $(STATICLIB)
@@ -204,8 +204,7 @@ python3: $(STATICLIB)
 
 # testing routines
 #
-test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/laprouts test/lfmm3d test/lfmm3d_vec
-	cd test/Helmholtz; ./test_hfmm3d
+test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_zkbig test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps
 	(cd test/Helmholtz; ./run_helmtest.sh)
 	(cd test/Laplace; ./run_laptest.sh)
 	cat print_testreshelm.txt
@@ -218,6 +217,9 @@ test/helmrouts:
 
 test/hfmm3d:
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d $(LIBS)
+
+test/hfmm3d_zkbig:
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_zkbig.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_zkbig $(LIBS)
 
 test/hfmm3d_vec:
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_vec.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_vec  $(LIBS)
@@ -234,9 +236,8 @@ test/lfmm3d_vec:
 
 test_hfmm3d_mps: $(STATICLIB) $(TOBJS)
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_mps.f90 \
-  src/Helmholtz/hfmm3d_mps.f90 $(TOBJS) $(COMOBJS) $(HOBJS) \
+  $(TOBJS) $(COMOBJS) $(HOBJS) \
   -o test/Helmholtz/test_hfmm3d_mps
-	(cd test/Helmholtz; ./test_hfmm3d_mps)
 
 
 #
@@ -337,6 +338,7 @@ big-test: $(STATICLIB) $(TOBJS) test/test_lap_big test/test_helm_big
 
 pw-test: $(STATICLIB) $(TOBJS) test/test_helm_pw
 	./test/Helmholtz/test_hfmm3d_pw
+
 
 
 test/test_helm_big:

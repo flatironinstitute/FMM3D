@@ -53,7 +53,11 @@ def hfmm3d(*,eps,zk,sources,charges=None,dipvec=None,
     
     out = Output()
     assert sources.shape[0] == 3, "The first dimension of sources must be 3"
-    ns = sources.shape[1]
+    if(np.size(np.shape(sources))==2):
+        ns = sources.shape[1]
+    if(np.size(np.shape(sources))==1):
+        ns = 1
+
     ifcharge = 0
     ifdipole = 0
     iftarg = 0
@@ -235,7 +239,10 @@ def lfmm3d(*,eps,sources,charges=None,dipvec=None,
 
     out = Output()
     assert sources.shape[0] == 3, "The first dimension of sources must be 3"
-    ns = sources.shape[1]
+    if(np.size(np.shape(sources))==2):
+        ns = sources.shape[1]
+    if(np.size(np.shape(sources))==1):
+        ns = 1
     ifcharge = 0
     ifdipole = 0
     iftarg = 0
@@ -409,9 +416,13 @@ def h3ddir(*,zk,sources,targets,charges=None,dipvec=None,
       Example:
         see hfmmexample.py
     r"""
+
     out = Output()
     assert sources.shape[0] == 3, "The first dimension of sources must be 3"
-    ns = sources.shape[1]
+    if(np.size(np.shape(sources))==2):
+        ns = sources.shape[1]
+    if(np.size(np.shape(sources))==1):
+        ns = 1
     ifcharge = 0
     ifdipole = 0
     if(pgt == 0):
@@ -512,7 +523,10 @@ def l3ddir(*,sources,targets,charges=None,dipvec=None,
 
     out = Output()
     assert sources.shape[0] == 3, "The first dimension of sources must be 3"
-    ns = sources.shape[1]
+    if(np.size(np.shape(sources))==2):
+        ns = sources.shape[1]
+    if(np.size(np.shape(sources))==1):
+        ns = 1
     ifcharge = 0
     ifdipole = 0
     if(pgt == 0):

@@ -35,12 +35,14 @@ directory.
 
 This should compile the static library
 in ``lib-static/`` and some fortran test drivers in ``test/``, after which it
-runs the test programs. The last 10 lines of the terminal output should be::
+runs the test programs. The last 12 lines of the terminal output should be::
 
    cat print_testreshelm.txt
    Successfully completed 5 out of 5 tests in helmrouts3d testing suite
    Successfully completed 18 out of 18 tests in hfmm3d testing suite
+   Successfully completed 6 out of 6 tests in hfmm3d zkbig testing suite
    Successfully completed 18 out of 18 tests in hfmm3d vec testing suite
+   Successfully completed 1 out of 1 tests in helm3d_mps testing suite
    cat print_testreslap.txt
    Successfully completed 5 out of 5 tests in laprouts3d testing suite
    Successfully completed 18 out of 18 tests in lfmm3d testing suite

@@ -1150,6 +1150,8 @@ cf2py intent(out) y, d
 c
       integer nmax, m, n
       double complex z, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u
+      double complex ztmp
+
       u=-sqrt(1-z*z)
       y(0,0)=1
       d(0,0)=0
@@ -1492,9 +1494,13 @@ c
       real*8 scale
 c
       integer m,n
-      double complex u
+      double complex u,ztmp
 c
-      u=-sqrt(1-z*z)
+      ztmp = 1-z*z
+      u=-sqrt(ztmp)
+      if(abs(imag(z)).le.1.0d-16.and.abs(real(z)).gt.1) then
+        if(imag(u).lt.0) u = dconjg(u)
+      endif
       ysc(0,0)=1
       do m=0, nmax
 	 if (m.gt.0)  then

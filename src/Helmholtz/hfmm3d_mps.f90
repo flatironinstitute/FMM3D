@@ -279,6 +279,8 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
       nlevels,nboxes,mnbors,mnlist1,mnlist2,mnlist3, &
       mnlist4,mhung,ltree)
 
+  if(ifprint.ge.1) print *, "nlevels=",nlevels
+
   if(ifprint.ge.1) print *, ltree/1.0d9
 
 

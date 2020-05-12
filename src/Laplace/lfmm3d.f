@@ -898,7 +898,8 @@ C$    time1=omp_get_wtime()
       allocate(pgboxwexp(nd,nexptotp,cntlist4,6))
       allocate(gboxmexp(nd*(nterms(ilev)+1)*
      1                   (2*nterms(ilev)+1),8,cntlist4))
-cccccc  bad code, note gboxmexp is an array not scalar
+
+c   note gboxmexp is an array not scalar
       pgboxwexp=0d0
       gboxmexp=0d0
 c     form mexp for all list4 type box at first ghost box center

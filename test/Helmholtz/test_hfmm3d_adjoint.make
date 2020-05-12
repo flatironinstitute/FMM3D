@@ -79,7 +79,7 @@ all: $(OBJECTS)
 	$(FLINK) $(OBJECTS) $(FEND)
 #	export DYLD_LIBRARY_PATH=../../lib:$(DYLD_LIBRARY_PATH)
 #	$(FLINK) $(OBJECTS) -L'../../lib-static' -lfmm3d $(FEND)
-	./$(EXEC)
+#	./$(EXEC)
 
 clean:
 	rm -f $(OBJECTS)
