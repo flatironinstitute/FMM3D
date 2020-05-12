@@ -58,7 +58,7 @@ c
       do j = 2, ntmax
         xtemp1 = cdabs(jfun(j)*hfun(j))
         xtemp2 = cdabs(jfun(j-1)*hfun(j-1))
-        xtemp = (xtemp1+xtemp2)*abs(hfun(0))
+        xtemp = (xtemp1+xtemp2)*abs(hfun(0))*abs(zk)
         if(xtemp .lt. eps*xtemp0)then
           nterms = j + 1
           return
