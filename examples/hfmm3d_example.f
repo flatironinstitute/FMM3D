@@ -51,7 +51,7 @@ c
 
 
 c
-cc      generate sources uniformly in the unit cube 
+cc      generate sources with distribution unif^2 
 c
 c
       do i=1,ns

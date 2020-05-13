@@ -242,7 +242,6 @@ program test_hfmm3d_mp2loc
   ntest = 1
   if(err.lt.eps) isuccess = 1
 
-  print *, ipass,ntest
   write(33,'(a,i1,a,i1,a)') 'Successfully completed ', &
     isuccess,' out of ',ntest,' tests in helm3d_mps testing suite'
   close(33)

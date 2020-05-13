@@ -36,17 +36,17 @@ ifeq ($(HOST),gcc)
 endif
 
 ifeq ($(HOST),gcc-openmp)
-    FC = gfortran -L${LDFMM}
+    FC = gfortran 
     FFLAGS=-fPIC -O3 -funroll-loops -march=native -fopenmp 
 endif
 
 ifeq ($(HOST),intel)
-    FC=ifort -L${LDFMM}
+    FC=ifort 
     FFLAGS= -O3 -fPIC -march=native
 endif
 
 ifeq ($(HOST),intel-openmp)
-    FC = ifort -L${LDFMM}
+    FC = ifort 
     FFLAGS= -O3 -fPIC -march=native -qopenmp
 endif
 
@@ -70,8 +70,6 @@ all: $(OBJECTS)
 # implicit rules for objects (note -o ensures writes to correct dir)
 %.o: %.f %.h
 	$(FC) -c $(FFLAGS) $< -o $@
-
-	
 
 clean: 
 	rm -f $(OBJECTS) $(PROJECT) fort.13

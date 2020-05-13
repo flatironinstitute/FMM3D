@@ -7,7 +7,7 @@
       done = 1
       pi = atan(done)*4
 
-      zk = 300.0d0/10
+      zk = 300.0d0
       call test_helm_zkbig(zk,i1)
 
       zk = 300.0d0*ima

@@ -10,6 +10,8 @@ c
 c          dreroderi - pertmute a real array with inverse of
 c                      given permutation
 c 
+c          drescale - rescale a vector with a scalar
+c 
 c          mpzero - zero out a multipole/local expansion
 c  
 c          mpadd - add a multipole expansion to an existing one
@@ -208,7 +210,28 @@ C$OMP END PARALLEL DO
 
       return
       end
+c
+c
+c
+c
+c
+c
+      subroutine drescale(n,a,r)
+      implicit none
+      real *8 a(n),r
+      integer i,n
 
+C$OMP PARALLEL DO DEFAULT(SHARED)
+      do i=1,n
+        a(i) = a(i)*r
+      enddo
+C$OMP END PARALLEL DO
+
+      
+
+
+      return
+      end
 
 
 

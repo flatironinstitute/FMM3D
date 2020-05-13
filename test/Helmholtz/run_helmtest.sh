@@ -1,8 +1,8 @@
 rm -rf print_testres.txt
-./test_helmrouts3d
-./test_hfmm3d
-./test_hfmm3d_zkbig
-./test_hfmm3d_vec
-./test_hfmm3d_mps
+./int2-test-helmrouts3d
+./int2-test-hfmm3d
+./int2-test-hfmm3d-zkbig
+./int2-test-hfmm3d-vec
+./int2-test-hfmm3d-mps
 mv print_testres.txt ../../print_testreshelm.txt
 rm -rf fort.13
