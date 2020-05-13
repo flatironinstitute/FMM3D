@@ -117,6 +117,8 @@ c       Tree variables
       integer *8 ipointer(32)
       integer, allocatable :: itree(:)
       double precision, allocatable :: treecenters(:,:),boxsize(:)
+      double precision b0,b0inv,b0inv2,b0inv3
+      double complex zkfmm
 
 c
 cc      temporary sorted arrays
@@ -246,6 +248,9 @@ c       Call tree code
      1               nexpc,radexp,idivflag,ndiv,isep,mhung,mnbors,
      2               mnlist1,mnlist2,mnlist3,mnlist4,nlevels,
      2               nboxes,treecenters,boxsize,itree,ltree,ipointer)
+      b0 = boxsize(0)
+      b0inv = 1.0d0/b0
+      b0inv2 = b0inv**2
 
 
 c     Allocate sorted source and target arrays      
@@ -283,16 +288,7 @@ c     Allocate sorted source and target arrays
      1     hesstargsort(nd,6,1))
       endif
 
-      
-
-c     scaling factor for multipole and local expansions at all levels
-c
-      allocate(scales(0:nlevels),nterms(0:nlevels))
-      do ilev = 0,nlevels
-       scales(ilev) = boxsize(ilev)*abs(zk)
-       if(scales(ilev).gt.1) scales(ilev) = 1
-      enddo
-
+      allocate(nterms(0:nlevels)) 
 c
 cc      initialize potential and gradient at source
 c       locations
@@ -416,18 +412,30 @@ c
 cc       reorder sources
 c
       call dreorderf(3,nsource,source,sourcesort,itree(ipointer(5)))
-      if(ifcharge.eq.1) call dreorderf(2*nd,nsource,charge,chargesort,
+      call drescale(3*nsource,sourcesort,b0inv)
+      if(ifcharge.eq.1) then
+        call dreorderf(2*nd,nsource,charge,chargesort,
      1                     itree(ipointer(5)))
+        call drescale(2*nd*nsource,chargesort,b0inv)
+      endif
 
       if(ifdipole.eq.1) then
          call dreorderf(6*nd,nsource,dipvec,dipvecsort,
      1       itree(ipointer(5)))
+         call drescale(6*nd*nsource,dipvecsort,b0inv2)
       endif
 
 c
 cc      reorder targs
 c
       call dreorderf(3,ntarg,targ,targsort,itree(ipointer(6)))
+      call drescale(3*ntarg,targsort,b0inv)
+c
+c  update tree centers and boxsize
+c
+      call drescale(3*nboxes,treecenters,b0inv)
+      call drescale(nlevels+1,boxsize,b0inv)
+
 c
 c     allocate memory need by multipole, local expansions at all
 c     levels
@@ -444,12 +452,23 @@ c
       endif
 
 
-c     Memory allocation is complete. 
+c     Memory allocation is complete.
+      zkfmm = zk*b0
+
+c
+c     scaling factor for multipole and local expansions at all levels
+c
+      allocate(scales(0:nlevels))
+      do ilev = 0,nlevels
+       scales(ilev) = boxsize(ilev)*abs(zk)
+       if(scales(ilev).gt.1) scales(ilev) = 1
+      enddo
+
 c     Call main fmm routine
 c
       call cpu_time(time1)
 C$    time1=omp_get_wtime()
-      call hfmm3dmain(nd,eps,zk,
+      call hfmm3dmain(nd,eps,zkfmm,
      $   nsource,sourcesort,
      $   ifcharge,chargesort,
      $   ifdipole,dipvecsort,
@@ -467,46 +486,38 @@ C$    time2=omp_get_wtime()
      1   time2-time1,1)
 
 
-      if(ifpgh.eq.1) then
+      if(ifpgh.ge.1) then
         call dreorderi(2*nd,nsource,potsort,pot,
      1                 itree(ipointer(5)))
       endif
-      if(ifpgh.eq.2) then 
-        call dreorderi(2*nd,nsource,potsort,pot,
-     1                 itree(ipointer(5)))
+      if(ifpgh.ge.2) then 
         call dreorderi(6*nd,nsource,gradsort,grad,
      1                 itree(ipointer(5)))
+        call drescale(6*nd*nsource,grad,b0inv)
       endif
 
-      if(ifpgh.eq.3) then 
-        call dreorderi(2*nd,nsource,potsort,pot,
-     1                 itree(ipointer(5)))
-        call dreorderi(6*nd,nsource,gradsort,grad,
-     1                 itree(ipointer(5)))
+      if(ifpgh.ge.3) then 
         call dreorderi(12*nd,nsource,hesssort,hess,
      1                 itree(ipointer(5)))
+        call drescale(12*nd*nsource,hess,b0inv2)
       endif
 
 
-      if(ifpghtarg.eq.1) then
+      if(ifpghtarg.ge.1) then
         call dreorderi(2*nd,ntarg,pottargsort,pottarg,
      1     itree(ipointer(6)))
       endif
 
-      if(ifpghtarg.eq.2) then
-        call dreorderi(2*nd,ntarg,pottargsort,pottarg,
-     1     itree(ipointer(6)))
+      if(ifpghtarg.ge.2) then
         call dreorderi(6*nd,ntarg,gradtargsort,gradtarg,
      1     itree(ipointer(6)))
+        call drescale(6*nd*ntarg,gradtarg,b0inv)
       endif
 
-      if(ifpghtarg.eq.3) then
-        call dreorderi(2*nd,ntarg,pottargsort,pottarg,
-     1     itree(ipointer(6)))
-        call dreorderi(6*nd,ntarg,gradtargsort,gradtarg,
-     1     itree(ipointer(6)))
+      if(ifpghtarg.ge.3) then
         call dreorderi(12*nd,ntarg,hesstargsort,hesstarg,
      1     itree(ipointer(6)))
+        call drescale(12*nd*ntarg,hesstarg,b0inv2)
       endif
 
 
@@ -676,7 +687,8 @@ c     list 4 variables
 c     end of list 4 variables
 
       integer *8 bigint
-      double precision zkiupbound,zi,zkrupbound
+      double precision zkiupbound,zi,zkrupbound,rz
+      integer ilevcutoff
 
       integer iert
       data ima/(0.0d0,1.0d0)/
@@ -688,8 +700,13 @@ c     end of list 4 variables
       allocate(nfourier(ntmax),nphysical(ntmax))
       allocate(rlams(ntmax),whts(ntmax))
 
-
       pi = 4.0d0*atan(1.0d0)
+c     ifprint is an internal information printing flag. 
+c     Suppressed if ifprint=0.
+c     Prints timing breakdown and other things if ifprint=1.
+c     Prints timing breakdown, list information, and other things if ifprint=2.
+c       
+        ifprint=0
 
 c
 c      If imaginary part is greater than 12*pi
@@ -700,10 +717,16 @@ c
       zkrupbound = 16*pi
       zi = imag(zk)
 
+      ilevcutoff = -1
+
       nmax = 0
       do i=0,nlevels
          if(nmax.lt.nterms(i)) nmax = nterms(i)
+         rz = exp(-zi*boxsize(i))/boxsize(i)
+         if(rz.lt.eps) ilevcutoff = i
       enddo
+
+      if(ifprint.ge.1) print *, "ilevcutoff=",ilevcutoff
 
       allocate(rsc(0:nmax))
 
@@ -732,12 +755,6 @@ c      where r is the disance between them
          zmone(i) = -zmone(i-1)
       enddo
 
-c     ifprint is an internal information printing flag. 
-c     Suppressed if ifprint=0.
-c     Prints timing breakdown and other things if ifprint=1.
-c     Prints timing breakdown, list information, and other things if ifprint=2.
-c       
-        ifprint=0
 c
 c
 c     ... set the expansion coefficients to zero
@@ -826,7 +843,7 @@ c       form multipole expansions
 
 
       do ilev=2,nlevels
-        if(zi*boxsize(ilev).lt.zkiupbound) then
+        if(ilev.gt.ilevcutoff) then
           if(ifcharge.eq.1.and.ifdipole.eq.0) then
 C$OMP PARALLEL DO DEFAULT(SHARED)
 C$OMP$PRIVATE(ibox,npts,istart,iend,nchild)
@@ -904,7 +921,7 @@ c
 
 
       do ilev=nlevels-1,1,-1
-        if(zi*boxsize(ilev).lt.zkiupbound) then
+        if(ilev.gt.ilevcutoff) then
           nquad2 = nterms(ilev)*2.5
           nquad2 = max(6,nquad2)
           ifinit2 = 1
@@ -950,7 +967,8 @@ c       expansions and big to small far and small to far big
 C$    time1=omp_get_wtime()
       do ilev = 2,nlevels
         zk2 = zk*boxsize(ilev)
-        if(real(zk2).le.zkrupbound.and.imag(zk2).lt.zkiupbound) then
+        if(real(zk2).le.zkrupbound.and.imag(zk2).lt.zkiupbound.and.
+     1        ilev.gt.ilevcutoff) then
 c             get new pw quadrature
             
           ier = 0
@@ -1434,10 +1452,10 @@ C$OMP END PARALLEL DO
           deallocate(fexp,fexpback)
 
           deallocate(pgboxwexp)
-        else if(real(zk2).gt.zkrupbound.and.imag(zk2).lt.zkiupbound) 
-     1     then
+        else if((real(zk2).gt.zkrupbound.or.imag(zk2).gt.zkiupbound).
+     1            and.ilev.gt.ilevcutoff) then
           nquad2 = nterms(ilev)*2.2
-          if(ifprint.ge.1) print *, "In high freq regime"
+          if(ifprint.ge.1) print *, "In point and shoot regime"
           nquad2 = max(6,nquad2)
 
           ifinit2 = 1
@@ -1592,7 +1610,8 @@ c
       if(ifcharge.eq.1.and.ifdipole.eq.0) then
         do ilev=1,nlevels
           zk2 = zk*boxsize(ilev)
-          if(real(zk2).gt.zkrupbound.and.imag(zk2).lt.zkiupbound) then
+          if((real(zk2).gt.zkrupbound.or.imag(zk2).gt.zkiupbound).
+     1            and.ilev.gt.ilevcutoff) then
 
 C$OMP PARALLEL DO DEFAULT(SHARED)
 C$OMP$PRIVATE(ibox,jbox,nlist4,istart,iend,npts,i)
@@ -1626,7 +1645,8 @@ C$OMP END PARALLEL DO
       if(ifcharge.eq.0.and.ifdipole.eq.1) then
         do ilev=1,nlevels
           zk2 = zk*boxsize(ilev)
-          if(real(zk2).gt.zkrupbound.and.imag(zk2).lt.zkiupbound) then
+          if((real(zk2).gt.zkrupbound.or.imag(zk2).gt.zkiupbound).
+     1            and.ilev.gt.ilevcutoff) then
 
 C$OMP PARALLEL DO DEFAULT(SHARED)
 C$OMP$PRIVATE(ibox,jbox,nlist4,istart,iend,npts,i)
@@ -1660,7 +1680,8 @@ C$OMP END PARALLEL DO
       if(ifcharge.eq.1.and.ifdipole.eq.1) then
         do ilev=1,nlevels
           zk2 = zk*boxsize(ilev)
-          if(real(zk2).gt.zkrupbound.and.imag(zk2).lt.zkiupbound) then
+          if((real(zk2).gt.zkrupbound.or.imag(zk2).gt.zkiupbound).
+     1            and.ilev.gt.ilevcutoff) then
 
 C$OMP PARALLEL DO DEFAULT(SHARED)
 C$OMP$PRIVATE(ibox,jbox,nlist4,istart,iend,npts,i)
@@ -1703,7 +1724,7 @@ C$    time2=omp_get_wtime()
       call cpu_time(time1)
 C$        time1=omp_get_wtime()
       do ilev = 1,nlevels-1
-        if(zi*boxsize(ilev).lt.zkiupbound) then
+        if(ilev.gt.ilevcutoff) then
           nquad2 = nterms(ilev)*2
           nquad2 = max(6,nquad2)
           ifinit2 = 1
@@ -1774,7 +1795,7 @@ c        (note: this part is not relevant for particle codes.
 c        it is relevant only for qbx codes)
 
       do ilev = 0,nlevels
-        if(zi*boxsize(ilev).lt.zkiupbound) then
+        if(ilev.gt.ilevcutoff) then
 C$OMP PARALLEL DO DEFAULT(SHARED)
 C$OMP$PRIVATE(ibox,nchild,istart,iend,i)
 C$OMP$SCHEDULE(DYNAMIC)      
