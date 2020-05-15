@@ -385,29 +385,6 @@ C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
 C$OMP END PARALLEL DO
       endif
 
-
-c     Compute length of expansions at each level      
-      nmax = 0
-      do i=0,nlevels
-         call h3dterms(boxsize(i),zk,eps,nterms(i))
-         if(nterms(i).gt.nmax) nmax = nterms(i)
-      enddo
-      if(ifprint.ge.1) call prinf('nlevels=*',nlevels,1)
-      if(ifprint.ge.1) call prinf('nterms=*',nterms,nlevels+1)
-c       
-c     Multipole and local expansions will be held in workspace
-c     in locations pointed to by array iaddr(2,nboxes).
-c
-c     iiaddr is pointer to iaddr array, itself contained in workspace.
-c     imptemp is pointer for single expansion (dimensioned by nmax)
-c
-c       ... allocate iaddr and temporary arrays
-c
-
-      allocate(iaddr(2,nboxes))
-      lmptemp = (nmax+1)*(2*nmax+1)*2*nd
-      allocate(mptemp(lmptemp),mptemp2(lmptemp))
-
 c
 cc       reorder sources
 c
@@ -436,6 +413,42 @@ c
       call drescale(3*nboxes,treecenters,b0inv)
       call drescale(nlevels+1,boxsize,b0inv)
 
+      zkfmm = zk*b0
+
+c
+c     scaling factor for multipole and local expansions at all levels
+c
+      allocate(scales(0:nlevels))
+      do ilev = 0,nlevels
+       scales(ilev) = boxsize(ilev)*abs(zkfmm)
+       if(scales(ilev).gt.1) scales(ilev) = 1
+      enddo
+
+
+c     Compute length of expansions at each level      
+      nmax = 0
+      if(ifprint.ge.1) call prin2('boxsize=*',boxsize,nlevels+1)
+      if(ifprint.ge.1) call prin2('zkfmm=*',zkfmm,2)
+      do i=0,nlevels
+         call h3dterms(boxsize(i),zkfmm,eps,nterms(i))
+         if(nterms(i).gt.nmax) nmax = nterms(i)
+      enddo
+      if(ifprint.ge.1) call prinf('nlevels=*',nlevels,1)
+      if(ifprint.ge.1) call prinf('nterms=*',nterms,nlevels+1)
+c       
+c     Multipole and local expansions will be held in workspace
+c     in locations pointed to by array iaddr(2,nboxes).
+c
+c     iiaddr is pointer to iaddr array, itself contained in workspace.
+c     imptemp is pointer for single expansion (dimensioned by nmax)
+c
+c       ... allocate iaddr and temporary arrays
+c
+
+      allocate(iaddr(2,nboxes))
+      lmptemp = (nmax+1)*(2*nmax+1)*2*nd
+      allocate(mptemp(lmptemp),mptemp2(lmptemp))
+
 c
 c     allocate memory need by multipole, local expansions at all
 c     levels
@@ -453,17 +466,6 @@ c
 
 
 c     Memory allocation is complete.
-      zkfmm = zk*b0
-
-c
-c     scaling factor for multipole and local expansions at all levels
-c
-      allocate(scales(0:nlevels))
-      do ilev = 0,nlevels
-       scales(ilev) = boxsize(ilev)*abs(zk)
-       if(scales(ilev).gt.1) scales(ilev) = 1
-      enddo
-
 c     Call main fmm routine
 c
       call cpu_time(time1)
@@ -738,6 +740,9 @@ c      which satisfy |r| < thresh
 c      where r is the disance between them
 
       thresh = 2.0d0**(-51)*boxsize(0)
+
+      if(ifprint.ge.1) print *, "thresh=",thresh
+
       
 
       allocate(zeyep(-nmax:nmax),zmone(0:2*nmax))

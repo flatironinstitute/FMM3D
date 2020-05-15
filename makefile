@@ -204,7 +204,7 @@ python3: $(STATICLIB)
 
 # testing routines
 #
-test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_zkbig test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps
+test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_zkbig test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale
 	(cd test/Helmholtz; ./run_helmtest.sh)
 	(cd test/Laplace; ./run_laptest.sh)
 	cat print_testreshelm.txt
@@ -221,6 +221,9 @@ test/hfmm3d:
 test/hfmm3d_zkbig:
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_zkbig.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/int2-test-hfmm3d-zkbig $(LIBS)
 
+test/hfmm3d_scale:
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_scale.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/int2-test-hfmm3d-scale $(LIBS)
+
 test/hfmm3d_vec:
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_vec.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/int2-test-hfmm3d-vec  $(LIBS)
 
@@ -229,6 +232,9 @@ test/laprouts:
 
 test/lfmm3d:
 	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/int2-test-lfmm3d $(LIBS)
+
+test/lfmm3d_scale:
+	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_scale.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/int2-test-lfmm3d-scale $(LIBS)
 
 test/lfmm3d_vec:
 	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_vec.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/int2-test-lfmm3d-vec $(LIBS) 
