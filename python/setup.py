@@ -19,6 +19,8 @@ FLIBS.append('-lfmm3d')
 
 if platform == "darwin":
     FLIBS.append('-L/usr/local/lib')
+if platform =="linux" or platform=="linux2":
+    FLIBS.append(-L../lib")
 
 c_opts = ['_c','_d','_cd']
 c_opts2 = ['c','d','cd']
