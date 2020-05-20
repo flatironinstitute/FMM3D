@@ -39,7 +39,7 @@ MEX=mex
 
 # For experts, location of Mwrap executable
 MWRAP=..\..\mwrap\mwrap
-MINGW_LPATH=C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\lib\gcc\x86_64-w64-mingw32\8.1.0
+MINGW_LPATH=C:\mingw64\lib\gcc\x86_64-w64-mingw32\8.1.0
 MEXLIBS = -lmex -lmat -lmx -lgfortran -lquadmath -L${MINGW_LPATH}
 
 ifeq ($(FAST_KER),ON)

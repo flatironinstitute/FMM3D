@@ -31,26 +31,30 @@ directory.
 
 -  For linux, run ``make test``.
 -  For Mac OSX, run ``cp make.inc.macosx_gcc make.inc`` followed by ``make test``.
--  For Windows, run ``copy make.inc.windows make.inc`` followed by ``mingw32-make test``
+-  For Windows, run ``copy makefile.windows makefile`` followed by ``mingw32-make test``
 
 This should compile the static library
 in ``lib-static/`` and some fortran test drivers in ``test/``, after which it
 runs the test programs. The last 14 lines of the terminal output should be::
 
-   cat print_testreshelm.txt
+   (cat/type) print_testreshelm.txt
    Successfully completed 5 out of 5 tests in helmrouts3d testing suite
    Successfully completed 18 out of 18 tests in hfmm3d testing suite
    Successfully completed 6 out of 6 tests in hfmm3d zkbig testing suite
    Successfully completed 6 out of 6 tests in hfmm3d scale testing suite
    Successfully completed 18 out of 18 tests in hfmm3d vec testing suite
    Successfully completed 1 out of 1 tests in helm3d_mps testing suite
-   cat print_testreslap.txt
+   (cat/type) print_testreslap.txt
    Successfully completed 5 out of 5 tests in laprouts3d testing suite
    Successfully completed 18 out of 18 tests in lfmm3d testing suite
    Successfully completed 2 out of 2 tests in lfmm3d scale testing suite
    Successfully completed 18 out of 18 tests in lfmm3d vec testing suite
-   rm print_testreshelm.txt
-   rm print_testreslap.txt
+   (rm/del) print_testreshelm.txt
+   (rm/del) print_testreslap.txt
+
+The text in brackets is OS dependent. For Unix and OSX, the output is
+``cat`` and ``rm``, while for windows it is ``type`` and ``del``.
+
 
 .. note ::
    By default, ``make test`` creates the easy-to-install version of the library. To
@@ -61,8 +65,10 @@ runs the test programs. The last 14 lines of the terminal output should be::
    
 
 If ``make test`` fails, see more detailed instructions below. If it succeeds, run
-``make lib``, which creates the dynamic library (``libfmm3d.so``). You may then
-link to the FMM library using the ``-lfmm3d`` option.
+``make lib`` (``mingw32-make lib`` on windows), 
+which creates the dynamic library (``libfmm3d.so`` or ``libfmm3d.dll``). 
+You may then link to the FMM library using the ``-lfmm3d`` (``-lfmm3d_dll`` on windows) 
+option.
 
 .. note :: 
    On MacOSX, in order to link with the dynamic libraries, you will
@@ -89,7 +95,8 @@ In order to enable multi-threading, append ``OMP=ON`` to the make task.
 
 In order to use the optimized direct evaluation kernels (this
 automatically turns on multithreading as well), append ``FAST_KER=ON`` to
-the make task.
+the make task. This option is currently *not* supported on Windows.
+
 
 All of these different libraries are
 built with the same name, so you will have to move them to other
@@ -217,7 +224,17 @@ https://brew.sh
 Then do::
   
   brew install gcc 
-  
+
+
+On Windows
+~~~~~~~~~~~~~~~
+
+Download 64 bit mingw from http://mingw-w64.org/doku.php. Follow the
+install instructions and append to the environment variable ``PATH`` the
+location of the bin directory of your mingw installation.
+
+In all the instructions above, ``make`` should be replaced with
+``mingw32-make``.
 
 Tips for installing optional dependencies
 ******************************************
@@ -255,8 +272,9 @@ from the .mw files for which mwrap is required.
 This is not needed for most users.
 `MWrap <http://www.cs.cornell.edu/~bindel/sw/mwrap>`_
 is a very useful MEX interface generator by Dave Bindel.
+
 Make sure you have ``flex`` and ``bison`` installed.
-Download version 0.33 or later from http://www.cs.cornell.edu/~bindel/sw/mwrap, un-tar the package, cd into it, then::
+Download version 0.33.5 or later from https://github.com/zgimbutas/mwrap, un-tar the package, cd into it, then::
   
   make
   sudo cp mwrap /usr/local/bin/

@@ -195,11 +195,11 @@ mex:  $(STATICLIB)
 	$(MEX) $(GATEWAY2).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE2) $(MEXLIBS);
 
 #python
-python: $(STATICLIB)
+python: $(DYNAMICLIB)
 	cd python && pip install -e . && cd test && pytest -s
 
 #python
-python3: $(STATICLIB)
+python3: $(DYNAMICLIB)
 	cd python && pip3 install -e . && cd test && python3 -m pytest -s
 
 # testing routines
