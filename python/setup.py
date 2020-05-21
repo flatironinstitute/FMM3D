@@ -15,12 +15,13 @@ list_lap=['lfmm3dwrap.f','lfmm3dwrap_vec.f','lapkernels.f']
 list_common=[]
 
 FLIBS = []
-FLIBS.append('-lfmm3d')
+FLIBS.append('fmm3d')
 
+FLIBS_DIR = []
 if platform == "darwin":
-    FLIBS.append('-L/usr/local/lib')
+    FLIBS_DIR.append('/usr/local/lib')
 if platform =="linux" or platform=="linux2":
-    FLIBS.append("-L../lib")
+    FLIBS_DIR.append("../lib")
 
 c_opts = ['_c','_d','_cd']
 c_opts2 = ['c','d','cd']
@@ -50,17 +51,19 @@ for cd in c_opts2:
         list_int_lap_dir.append('l3ddirect'+cd+pg)
 
 ext_helm = Extension(
-    name='hfmm3d_fortran',
+    'fmm3dpy.hfmm3d_fortran',
     sources=['../src/Helmholtz/'+item for item in list_helm]+['../src/Common/'+item for item in list_common],
     f2py_options=['only:']+list_int_helm+list_int_helm_vec+list_int_helm_dir+[':'],
-    extra_link_args=FLIBS
+    library_dirs=FLIBS_DIR,
+    libraries=FLIBS
 )
 
 ext_lap = Extension(
-    name='lfmm3d_fortran',
+    'fmm3dpy.lfmm3d_fortran',
     sources=['../src/Laplace/'+item for item in list_lap]+['../src/Common/'+item for item in list_common],
     f2py_options=['only:']+list_int_lap+list_int_lap_vec+list_int_lap_dir+[':'],
-    extra_link_args=FLIBS
+    library_dirs=FLIBS_DIR,
+    libraries=FLIBS
 )
 
 ## TODO: fill in the info below

@@ -202,6 +202,9 @@ python: $(DYNAMICLIB)
 python3: $(DYNAMICLIB)
 	cd python && pip3 install -e . && cd test && python3 -m pytest -s
 
+wheel: $(DYNAMICLIB)
+	(cp lib/libfmm3d* python; cd python; pip3 -v wheel -v -e . -w wheelhouse; delocate-wheel -w fixed_wheel -v wheelhouse/fmm3d*.whl; rm libfmm3d*)
+
 # testing routines
 #
 test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_zkbig test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale
@@ -328,6 +331,8 @@ clean: objclean
 	rm -f examples/hfmm3d_legacy_example
 	rm -f c/int2-*
 	rm -f vec-kernels/src/libkernels.o
+	rm -rf python/fixed_wheel
+	rm -rf python/wheelhouse
 
 big-test: $(STATICLIB) $(TOBJS) test/test_lap_big test/test_helm_big
 
