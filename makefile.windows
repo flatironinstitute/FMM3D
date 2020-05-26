@@ -10,7 +10,7 @@
 CC=gcc
 CXX=g++
 FC=gfortran
-FFLAGS= -fPIC -O3 -mavx2 -funroll-loops 
+FFLAGS= -fPIC -O3 -funroll-loops 
 
 
 
