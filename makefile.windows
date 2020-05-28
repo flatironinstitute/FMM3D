@@ -10,7 +10,7 @@
 CC=gcc
 CXX=g++
 FC=gfortran
-FFLAGS= -fPIC -O3 -mavx2 -funroll-loops 
+FFLAGS= -fPIC -O3 -funroll-loops 
 
 
 
@@ -61,7 +61,7 @@ endif
 LIBNAME=libfmm3d
 DYNAMICLIB = $(LIBNAME).dll
 LLIB = $(LIBNAME)_dll.lib
-STATICLIB = lib-static\$(LIBNAME).a
+STATICLIB = $(LIBNAME).a
 
 # vectorized kernel directory
 SRCDIR = .\vec-kernels\src
@@ -118,7 +118,7 @@ CHEADERS = c\cprini.h c\utils.h c\hfmm3d_c.h c\lfmm3d_c.h
 
 OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
-.PHONY: usage lib examples test perftest python all c c-examples matlab python3 big-test pw-test debug 
+.PHONY: usage lib examples test test-ext python all c c-examples matlab python3 big-test pw-test debug 
 
 default: usage
 
@@ -165,6 +165,7 @@ else
 endif
 $(STATICLIB): $(OBJS) 
 	ar rcs $(STATICLIB) $(OBJS)
+	move $(STATICLIB) lib-static/
 $(DYNAMICLIB): $(OBJS) 
 	$(FC) -shared -fPIC $(OMPFLAGS) $(OBJS) -o $(DYNAMICLIB) $(LIBS) -Wl,--out-implib,$(LLIB)
 	move $(DYNAMICLIB) lib/
@@ -192,17 +193,38 @@ mex:  $(STATICLIB)
 
 #python
 python: $(STATICLIB)
-	cd python && pip install -e . && cd test && pytest -s
+	cd python && export FLIBS='$(LIBS)' && pip install -e . && cd test && pytest -s
 
 #python
 python3: $(STATICLIB)
-	cd python && pip3 install -e . && cd test && python3 -m pytest -s
+	cd python && export FLIBS='$(LIBS)' && pip3 install -e . && cd test && python3 -m pytest -s
 
 # testing routines
 #
 THDIR = test\Helmholtz
 TLDIR = test\Laplace
-test: $(STATICLIB) $(TOBJS) test\helmrouts test\hfmm3d test\hfmm3d_vec test\hfmm3d_zkbig test\hfmm3d_scale test\laprouts test\lfmm3d test\lfmm3d_vec test_hfmm3d_mps test\lfmm3d_scale
+test: $(STATICLIB) $(TOBJS) test\helmrouts test\hfmm3d test\hfmm3d_vec test\hfmm3d_scale test\laprouts test\lfmm3d test\lfmm3d_vec test_hfmm3d_mps test\lfmm3d_scale
+	del -f print_testres.txt
+	$(THDIR)\int2-test-helmrouts3d
+	$(THDIR)\int2-test-hfmm3d
+	$(THDIR)\int2-test-hfmm3d-scale
+	$(THDIR)\int2-test-hfmm3d-vec
+	$(THDIR)\int2-test-hfmm3d-mps
+	move print_testres.txt print_testreshelm.txt
+	del -rf fort.13
+	del -rf print_testres.txt
+	$(TLDIR)\int2-test-laprouts3d
+	$(TLDIR)\int2-test-lfmm3d
+	$(TLDIR)\int2-test-lfmm3d-scale
+	$(TLDIR)\int2-test-lfmm3d-vec
+	move print_testres.txt print_testreslap.txt
+	del -rf fort.13
+	type print_testreshelm.txt
+	type print_testreslap.txt
+	del print_testreshelm.txt
+	del print_testreslap.txt
+
+test-ext: $(STATICLIB) $(TOBJS) test\helmrouts test\hfmm3d test\hfmm3d_vec test\hfmm3d_zkbig test\hfmm3d_scale test\laprouts test\lfmm3d test\lfmm3d_vec test_hfmm3d_mps test\lfmm3d_scale
 	del -f print_testres.txt
 	$(THDIR)\int2-test-helmrouts3d
 	$(THDIR)\int2-test-hfmm3d

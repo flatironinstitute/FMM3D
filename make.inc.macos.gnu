@@ -7,7 +7,8 @@
 CC=gcc-9
 CXX=g++-9
 FC=gfortran-9
-FFLAGS= -fPIC -O3 -march=native -funroll-loops -lstdc++
+FFLAGS= -fPIC -O3 -march=native -funroll-loops 
+
 
 CFLAGS += -I src 
 #CLINK += -Wl,-stack_size,0x40000000

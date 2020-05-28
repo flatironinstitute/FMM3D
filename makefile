@@ -67,7 +67,7 @@ endif
 
 LIBNAME=libfmm3d
 DYNAMICLIB = $(LIBNAME).so
-STATICLIB = lib-static/$(LIBNAME).a
+STATICLIB = $(LIBNAME).a
 
 # vectorized kernel directory
 SRCDIR = ./vec-kernels/src
@@ -123,7 +123,7 @@ CHEADERS = c/cprini.h c/utils.h c/hfmm3d_c.h c/lfmm3d_c.h
 
 OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
-.PHONY: usage lib examples test perftest python all c c-examples matlab python3 big-test pw-test debug 
+.PHONY: usage lib examples test test-ext python all c c-examples matlab python3 big-test pw-test debug 
 
 default: usage
 
@@ -170,6 +170,7 @@ else
 endif
 $(STATICLIB): $(OBJS) 
 	ar rcs $(STATICLIB) $(OBJS)
+	mv $(STATICLIB) lib-static/
 $(DYNAMICLIB): $(OBJS) 
 	$(FC) -shared -fPIC $(OMPFLAGS) $(OBJS) -o $(DYNAMICLIB) $(LIBS) 
 	mv $(DYNAMICLIB) lib/
@@ -195,17 +196,25 @@ mex:  $(STATICLIB)
 	$(MEX) $(GATEWAY2).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE2) $(MEXLIBS);
 
 #python
-python: $(DYNAMICLIB)
-	cd python && pip install -e . && cd test && pytest -s
+python: $(STATICLIB)
+	cd python && export FLIBS='$(LIBS)' && pip install -e . && cd test && pytest -s
 
 #python
-python3: $(DYNAMICLIB)
-	cd python && pip3 install -e . && cd test && python3 -m pytest -s
+python3: $(STATICLIB)
+	cd python && export FLIBS='$(LIBS)' && pip3 install -e . && cd test && python3 -m pytest -s
 
 # testing routines
 #
-test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_zkbig test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale
+test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale
 	(cd test/Helmholtz; ./run_helmtest.sh)
+	(cd test/Laplace; ./run_laptest.sh)
+	cat print_testreshelm.txt
+	cat print_testreslap.txt
+	rm print_testreshelm.txt
+	rm print_testreslap.txt
+
+test-ext: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_zkbig test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale
+	(cd test/Helmholtz; ./run_helmtest_ext.sh)
 	(cd test/Laplace; ./run_laptest.sh)
 	cat print_testreshelm.txt
 	cat print_testreslap.txt

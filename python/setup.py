@@ -14,13 +14,10 @@ list_helm=['hfmm3dwrap.f','hfmm3dwrap_vec.f','helmkernels.f']
 list_lap=['lfmm3dwrap.f','lfmm3dwrap_vec.f','lapkernels.f']
 list_common=[]
 
-FLIBS = []
-FLIBS.append('-lfmm3d')
-
-if platform == "darwin":
-    FLIBS.append('-L/usr/local/lib')
-if platform =="linux" or platform=="linux2":
-    FLIBS.append("-L../lib")
+FLIBS = os.getenv('FLIBS')
+FLIBS = FLIBS.rstrip().split(' ')
+FLIBS = list(filter(None, FLIBS))
+FLIBS.append('../lib-static/libfmm3d.a')
 
 c_opts = ['_c','_d','_cd']
 c_opts2 = ['c','d','cd']
