@@ -237,6 +237,15 @@ program test_hfmm3d_mp2loc
   err = sqrt(err/dnorm)
   call prin2('l2 rel err=*',err,1)
 
+  open(unit=33,file='print_testres.txt',access='append')
+  isuccess = 0
+  ntest = 1
+  if(err.lt.eps) isuccess = 1
+
+  write(33,'(a,i1,a,i1,a)') 'Successfully completed ', &
+    isuccess,' out of ',ntest,' tests in helm3d_mps testing suite'
+  close(33)
+
   
   
 

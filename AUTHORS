@@ -1,0 +1,13 @@
+Authors of FMM3D:
+
+Zydrunas Gimbutas 
+Leslie Greengard <lgreengard@flatironinstitute.org>
+Libin Lu
+Manas Rachh <mrachh@flatironinstitute.org>
+Vladimir Rokhlin
+
+Jeremy Magland contributed support for python interface
+
+Michael O'Neil contributed multiple scattering codes
+
+Dhairya Malhotra contributed [Scientific computing template library SCTL] (https://github.com/dmalhotra/SCTL)

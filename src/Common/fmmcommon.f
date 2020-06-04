@@ -10,6 +10,8 @@ c
 c          dreroderi - pertmute a real array with inverse of
 c                      given permutation
 c 
+c          drescale - rescale a vector with a scalar
+c 
 c          mpzero - zero out a multipole/local expansion
 c  
 c          mpadd - add a multipole expansion to an existing one
@@ -104,8 +106,8 @@ c
 
       implicit none
       integer ndim,idim,i,n
-      double precision arr(ndim,1),arrsort(ndim,1)
-      integer iarr(1)
+      double precision arr(ndim,*),arrsort(ndim,*)
+      integer iarr(*)
 
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)      
       do i=1,n
@@ -134,8 +136,8 @@ c
 
       implicit none
       integer i,idim,ndim,n
-      double precision arr(ndim,1),arrsort(ndim,1)
-      integer iarr(1)
+      double precision arr(ndim,*),arrsort(ndim,*)
+      integer iarr(*)
 
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)      
       do i=1,n
@@ -165,8 +167,8 @@ c
 
       implicit none
       integer ndim,idim,i,n
-      integer arr(ndim,1),arrsort(ndim,1)
-      integer iarr(1)
+      integer arr(ndim,*),arrsort(ndim,*)
+      integer iarr(*)
 
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)      
       do i=1,n
@@ -195,8 +197,8 @@ c
 
       implicit none
       integer i,idim,ndim,n
-      integer arr(ndim,1),arrsort(ndim,1)
-      integer iarr(1)
+      integer arr(ndim,*),arrsort(ndim,*)
+      integer iarr(*)
 
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)      
       do i=1,n
@@ -208,7 +210,28 @@ C$OMP END PARALLEL DO
 
       return
       end
+c
+c
+c
+c
+c
+c
+      subroutine drescale(n,a,r)
+      implicit none
+      real *8 a(n),r
+      integer i,n
 
+C$OMP PARALLEL DO DEFAULT(SHARED)
+      do i=1,n
+        a(i) = a(i)*r
+      enddo
+C$OMP END PARALLEL DO
+
+      
+
+
+      return
+      end
 
 
 

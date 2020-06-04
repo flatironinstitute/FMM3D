@@ -873,7 +873,7 @@ C
 
       SUBROUTINE ZFFTB (N,C,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       C(1)       ,WSAVE(*)
+      DIMENSION       C(*)       ,WSAVE(*)
       IF (N .EQ. 1) RETURN
       IW1 = N+N+1
       IW2 = IW1+N+N
@@ -944,7 +944,7 @@ C
       END
       SUBROUTINE ZFFTF (N,C,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       C(1)       ,WSAVE(*)
+      DIMENSION       C(*)       ,WSAVE(*)
       IF (N .EQ. 1) RETURN
       IW1 = N+N+1
       IW2 = IW1+N+N
@@ -953,7 +953,7 @@ C
       END
       SUBROUTINE ZFFTF1 (N,C,CH,WA,IFAC)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       CH(1)      ,C(1)       ,WA(*)      ,IFAC(*)
+      DIMENSION       CH(*)      ,C(*)       ,WA(*)      ,IFAC(*)
       NF = IFAC(2)
       NA = 0
       L1 = 1
@@ -1030,13 +1030,15 @@ C
       NF = 0
       J = 0
   101 J = J+1
-      IF (J-4) 102,102,103
+      IF ((J-4).le.0) goto 102
+      IF ((J-4).gt.0) goto 103
   102 NTRY = NTRYH(J)
       GO TO 104
   103 NTRY = NTRY+2
   104 NQ = NL/NTRY
       NR = NL-NTRY*NQ
-      IF (NR) 101,105,101
+      IF (NR.eq.0) goto 105
+      IF (NR.ne.0) goto 101
   105 NF = NF+1
       IFAC(NF+2) = NTRY
       NL = NQ
@@ -1087,7 +1089,9 @@ C
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       X(*)       ,WSAVE(*)
       DATA TSQRT2 /2.8284271247461900976033774484193961D0/
-      IF (N-2) 101,102,103
+      IF ((N-2).lt.0) goto 101
+      IF ((N-2).eq.0) goto 102
+      IF ((N-2).gt.0) goto 103
   101 X(1) = 4.0D0*X(1)
       RETURN
   102 X1 = 4.0D0*(X(1)+X(2))
@@ -1099,7 +1103,7 @@ C
       END
       SUBROUTINE DCOSQB1 (N,X,W,XH)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       X(*)       ,W(1)       ,XH(*)
+      DIMENSION       X(*)       ,W(*)       ,XH(*)
       NS2 = (N+1)/2
       NP2 = N+2
       DO 101 I=3,N,2
@@ -1129,7 +1133,9 @@ C
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       X(*)       ,WSAVE(*)
       DATA SQRT2 /1.4142135623730950488016887242096980D0/
-      IF (N-2) 102,101,103
+      IF ((N-2).lt.0) goto 102
+      if ((N-2).eq.0) goto 101
+      IF ((N-2).gt.0) goto 103
   101 TSQX = SQRT2*X(2)
       X(2) = X(1)-TSQX
       X(1) = X(1)+TSQX
@@ -1139,7 +1145,7 @@ C
       END
       SUBROUTINE DCOSQF1 (N,X,W,XH)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       X(*)       ,W(1)       ,XH(*)
+      DIMENSION       X(*)       ,W(*)       ,XH(*)
       NS2 = (N+1)/2
       NP2 = N+2
       DO 101 K=2,NS2
@@ -1182,7 +1188,9 @@ C
       NM1 = N-1
       NP1 = N+1
       NS2 = N/2
-      IF (N-2) 106,101,102
+      IF ((N-2).lt.0) goto 106
+      IF ((N-2).eq.0) goto 101
+      IF ((N-2).gt.0) goto 102
   101 X1H = X(1)+X(2)
       X(2) = X(1)-X(2)
       X(1) = X1H
@@ -1247,13 +1255,15 @@ C
       NF = 0
       J = 0
   101 J = J+1
-      IF (J-4) 102,102,103
+      IF ((J-4).le.0) goto 102
+      IF ((J-4).gt.0) goto 103
   102 NTRY = NTRYH(J)
       GO TO 104
   103 NTRY = NTRY+2
   104 NQ = NL/NTRY
       NR = NL-NTRY*NQ
-      IF (NR) 101,105,101
+      IF (NR.ne.0) goto 101
+      IF (NR.eq.0) goto 105
   105 NF = NF+1
       IFAC(NF+2) = NTRY
       NL = NQ
@@ -1304,7 +1314,9 @@ C
       SUBROUTINE DZFFTB (N,R,AZERO,A,B,WSAVE)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       R(*)       ,A(*)       ,B(*)       ,WSAVE(*)
-      IF (N-2) 101,102,103
+      IF ((N-2).lt.0) goto 101
+      IF ((N-2).eq.0) goto 102
+      IF ((N-2).gt.0) goto 103
   101 R(1) = AZERO
       RETURN
   102 R(1) = AZERO+A(1)
@@ -1326,7 +1338,9 @@ C                       VERSION 3  JUNE 1979
 C
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION       R(*)       ,A(*)       ,B(*)       ,WSAVE(*)
-      IF (N-2) 101,102,103
+      IF ((N-2).lt.0) goto 101
+      IF ((N-2).eq.0) goto 102
+      IF ((N-2).gt.0) goto 103
   101 AZERO = R(1)
       RETURN
   102 AZERO = .5D0*(R(1)+R(2))
@@ -1995,7 +2009,9 @@ C
          CH(1,K,1) = CC(1,1,K)+CC(IDO,2,K)
          CH(1,K,2) = CC(1,1,K)-CC(IDO,2,K)
   101 CONTINUE
-      IF (IDO-2) 107,105,102
+      IF ((IDO-2).lt.0) goto 107
+      IF ((IDO-2).eq.0) goto 105
+      IF ((IDO-2).gt.0) goto 102
   102 IDP2 = IDO+2
       DO 104 K=1,L1
          DO 103 I=3,IDO,2
@@ -2068,7 +2084,9 @@ C
          CH(1,K,3) = TR2-TR3
          CH(1,K,4) = TR1+TR4
   101 CONTINUE
-      IF (IDO-2) 107,105,102
+      IF ((IDO-2).lt.0) goto 107
+      IF ((IDO-2).eq.0) goto 105
+      IF ((IDO-2).gt.0) goto 102
   102 IDP2 = IDO+2
       DO 104 K=1,L1
          DO 103 I=3,IDO,2
@@ -2347,7 +2365,9 @@ C
          CH(1,1,K) = CC(1,K,1)+CC(1,K,2)
          CH(IDO,2,K) = CC(1,K,1)-CC(1,K,2)
   101 CONTINUE
-      IF (IDO-2) 107,105,102
+      IF ((IDO-2).lt.0) goto 107
+      IF ((IDO-2).eq.0) goto 105
+      IF ((IDO-2).gt.0) goto 102
   102 IDP2 = IDO+2
       DO 104 K=1,L1
          DO 103 I=3,IDO,2
@@ -2416,7 +2436,9 @@ C
          CH(IDO,2,K) = CC(1,K,1)-CC(1,K,3)
          CH(1,3,K) = CC(1,K,4)-CC(1,K,2)
   101 CONTINUE
-      IF (IDO-2) 107,105,102
+      IF ((IDO-2).lt.0) goto 107
+      IF ((IDO-2).eq.0) goto 105
+      IF ((IDO-2).gt.0) goto 102
   102 IDP2 = IDO+2
       DO 104 K=1,L1
          DO 103 I=3,IDO,2
@@ -2696,7 +2718,7 @@ C
       END
       SUBROUTINE DFFTB1 (N,C,CH,WA,IFAC)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       CH(1)      ,C(1)       ,WA(*)      ,IFAC(*)
+      DIMENSION       CH(*)      ,C(*)       ,WA(*)      ,IFAC(*)
       NF = IFAC(2)
       NA = 0
       L1 = 1
@@ -2763,7 +2785,7 @@ C
       END
       SUBROUTINE DFFTF1 (N,C,CH,WA,IFAC)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION       CH(1)      ,C(1)       ,WA(*)      ,IFAC(*)
+      DIMENSION       CH(*)      ,C(*)       ,WA(*)      ,IFAC(*)
       NF = IFAC(2)
       NA = 1
       L2 = N
@@ -2836,13 +2858,15 @@ C
       NF = 0
       J = 0
   101 J = J+1
-      IF (J-4) 102,102,103
+      IF ((J-4).le.0) goto 102
+      IF ((J-4).gt.0) goto 103
   102 NTRY = NTRYH(J)
       GO TO 104
   103 NTRY = NTRY+2
   104 NQ = NL/NTRY
       NR = NL-NTRY*NQ
-      IF (NR) 101,105,101
+      IF (NR.ne.0) goto 101
+      IF (NR.eq.0) goto 105
   105 NF = NF+1
       IFAC(NF+2) = NTRY
       NL = NQ
@@ -2940,13 +2964,15 @@ C
       END
       SUBROUTINE DSINT1(N,WAR,WAS,XH,X,IFAC)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      DIMENSION WAR(1),WAS(1),X(*),XH(*),IFAC(*)
+      DIMENSION WAR(*),WAS(*),X(*),XH(*),IFAC(*)
       DATA SQRT3 /1.7320508075688772935274463415058723D0/
       DO 100 I=1,N
       XH(I) = WAR(I)
       WAR(I) = X(I)
   100 CONTINUE
-      IF (N-2) 101,102,103
+      IF ((N-2).lt.0) goto 101
+      IF ((N-2).eq.0) goto 102
+      IF ((N-2).gt.0) goto 103
   101 XH(1) = XH(1)+XH(1)
       GO TO 106
   102 XHOLD = SQRT3*(XH(1)+XH(2))

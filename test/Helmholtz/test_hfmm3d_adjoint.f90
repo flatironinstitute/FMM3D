@@ -104,9 +104,9 @@ program test_hfmm3d_adjoint
   ll0 = 1
   mm0 = 1
   ll1 = 2
-  mm1 = 2
+  mm1 = 1
   call prin2('from mpmpmat, entry = *', mpmpmat(ll1,mm1,ll0,mm0), 2)
-  call prin2('from mpmpmat, entry+1 = *', mpmpmat(ll1+1,mm1,ll0,mm0), 2)
+  !call prin2('from mpmpmat, entry+1 = *', mpmpmat(ll1+1,mm1,ll0,mm0), 2)
 
 
   ! now do the locloc mat
@@ -146,33 +146,40 @@ program test_hfmm3d_adjoint
   radius = sqrt(3.0d0)
   do l1 = 0,nterms1
     do m1 = -l1,l1
-      mpole1(1,l1,m1) = 1
-      call h3dlocloc(nd, zk, sc1, center1, mpole1, nterms1, &
-          sc0, center0, mpole0, nterms0, &
+      mpole0(1,l1,m1) = 1
+      !call h3dlocloc(nd, zk, sc1, center1, mpole1, nterms1, &
+      !    sc0, center0, mpole0, nterms0, &
+      !    radius, xnodes, wts, nquad)
+      call h3dlocloc(nd, zk, sc0, center0, mpole0, nterms0, &
+          sc1, center1, mpole1, nterms1, &
           radius, xnodes, wts, nquad)
-      mpole1(1,l1,m1) = 0
+      mpole0(1,l1,m1) = 0
 
       do l0 = 0,nterms0
         do m0 = -l0,l0
-          loclocmat(l0,m0,l1,m1) = mpole0(1,l0,m0)
+          loclocmat(l0,m0,l1,m1) = mpole1(1,l0,m0)
         end do
       end do
       
     end do
   end do
 
-  
-  call prin2('from loclocmat, transpose entry = *', &
-      loclocmat(ll0,mm0,ll1,mm1), 2)
+  call prin2('from loclocmat, entry = *',  &
+      loclocmat(ll1,mm1,ll0,mm0), 2)
 
-  call prin2('from loclocmat, transpose entry+1 = *', &
-      loclocmat(ll0,mm0,ll1+1,mm1), 2)
+  zrat = mpmpmat(ll1,mm1,ll0,mm0)/loclocmat(ll1,mm1,ll0,mm0)
+      
+  ! call prin2('from loclocmat, transpose entry = *', &
+  !     loclocmat(ll0,mm0,ll1,mm1), 2)
 
-  zrat = mpmpmat(ll1,mm1,ll0,mm0)/loclocmat(ll0,mm0,ll1,mm1)
-  zrat1 = mpmpmat(ll1+1,mm1,ll0,mm0)/loclocmat(ll0,mm0,ll1+1,mm1)
+  ! call prin2('from loclocmat, transpose entry+1 = *', &
+  !     loclocmat(ll0,mm0,ll1+1,mm1), 2)
+
+  !zrat = mpmpmat(ll1,mm1,ll0,mm0)/loclocmat(ll0,mm0,ll1,mm1)
+  !zrat1 = mpmpmat(ll1+1,mm1,ll0,mm0)/loclocmat(ll0,mm0,ll1+1,mm1)
 
   call prin2('ratio = *', zrat, 2)
-  call prin2('ratio1 = *', zrat1, 2)
+  !call prin2('ratio1 = *', zrat1, 2)
   
   stop
 end program test_hfmm3d_adjoint

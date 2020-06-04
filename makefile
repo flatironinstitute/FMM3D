@@ -32,7 +32,7 @@ OMPLIBS =-lgomp
 
 
 # flags for MATLAB MEX compilation..
-MFLAGS=-largeArrayDims -DMWF77_UNDERSCORE1 
+MFLAGS=-compatibleArrayDims -DMWF77_UNDERSCORE1 
 MWFLAGS=-c99complex 
 MOMPFLAGS = -D_OPENMP
 
@@ -40,7 +40,7 @@ MOMPFLAGS = -D_OPENMP
 MEX=mex
 
 # For experts, location of Mwrap executable
-MWRAP=../../mwrap-0.33/mwrap
+MWRAP=../../mwrap/mwrap
 MEXLIBS=-lm -lstdc++ -ldl -lgfortran
 
 ifeq ($(FAST_KER),ON)
@@ -67,7 +67,7 @@ endif
 
 LIBNAME=libfmm3d
 DYNAMICLIB = $(LIBNAME).so
-STATICLIB = lib-static/$(LIBNAME).a
+STATICLIB = $(LIBNAME).a
 
 # vectorized kernel directory
 SRCDIR = ./vec-kernels/src
@@ -123,7 +123,7 @@ CHEADERS = c/cprini.h c/utils.h c/hfmm3d_c.h c/lfmm3d_c.h
 
 OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
-.PHONY: usage lib examples test perftest python all c c-examples matlab python3 big-test pw-test debug
+.PHONY: usage lib examples test test-ext python all c c-examples matlab python3 big-test pw-test debug 
 
 default: usage
 
@@ -170,6 +170,7 @@ else
 endif
 $(STATICLIB): $(OBJS) 
 	ar rcs $(STATICLIB) $(OBJS)
+	mv $(STATICLIB) lib-static/
 $(DYNAMICLIB): $(OBJS) 
 	$(FC) -shared -fPIC $(OMPFLAGS) $(OBJS) -o $(DYNAMICLIB) $(LIBS) 
 	mv $(DYNAMICLIB) lib/
@@ -196,16 +197,15 @@ mex:  $(STATICLIB)
 
 #python
 python: $(STATICLIB)
-	cd python && export FAST_KER=$(FAST_KER) && export FLIBS='$(LIBS)' && export FFLAGS='$(FFLAGS)' && pip install -e . && cd test && pytest -s
+	cd python && export FLIBS='$(LIBS)' && pip install -e . && cd test && pytest -s
 
 #python
 python3: $(STATICLIB)
-	cd python && pip3 install -e . && cd test && python3 -m pytest -s
+	cd python && export FLIBS='$(LIBS)' && pip3 install -e . && cd test && python3 -m pytest -s
 
 # testing routines
 #
-test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/laprouts test/lfmm3d test/lfmm3d_vec
-	cd test/Helmholtz; ./test_hfmm3d
+test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale
 	(cd test/Helmholtz; ./run_helmtest.sh)
 	(cd test/Laplace; ./run_laptest.sh)
 	cat print_testreshelm.txt
@@ -213,30 +213,46 @@ test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/lapr
 	rm print_testreshelm.txt
 	rm print_testreslap.txt
 
+test-ext: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_zkbig test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale
+	(cd test/Helmholtz; ./run_helmtest_ext.sh)
+	(cd test/Laplace; ./run_laptest.sh)
+	cat print_testreshelm.txt
+	cat print_testreslap.txt
+	rm print_testreshelm.txt
+	rm print_testreslap.txt
+
 test/helmrouts: 
-	$(FC) $(FFLAGS) test/Helmholtz/test_helmrouts3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_helmrouts3d $(LIBS) 
+	$(FC) $(FFLAGS) test/Helmholtz/test_helmrouts3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/int2-test-helmrouts3d $(LIBS) 
 
 test/hfmm3d:
-	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d $(LIBS)
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/int2-test-hfmm3d $(LIBS)
+
+test/hfmm3d_zkbig:
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_zkbig.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/int2-test-hfmm3d-zkbig $(LIBS)
+
+test/hfmm3d_scale:
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_scale.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/int2-test-hfmm3d-scale $(LIBS)
 
 test/hfmm3d_vec:
-	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_vec.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_vec  $(LIBS)
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_vec.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/int2-test-hfmm3d-vec  $(LIBS)
 
 test/laprouts:
-	$(FC) $(FFLAGS) test/Laplace/test_laprouts3d.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_laprouts3d $(LIBS)
+	$(FC) $(FFLAGS) test/Laplace/test_laprouts3d.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/int2-test-laprouts3d $(LIBS)
 
 test/lfmm3d:
-	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d $(LIBS)
+	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/int2-test-lfmm3d $(LIBS)
+
+test/lfmm3d_scale:
+	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_scale.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/int2-test-lfmm3d-scale $(LIBS)
 
 test/lfmm3d_vec:
-	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_vec.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/test_lfmm3d_vec $(LIBS) 
+	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_vec.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/int2-test-lfmm3d-vec $(LIBS) 
 
 
 test_hfmm3d_mps: $(STATICLIB) $(TOBJS)
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_mps.f90 \
-  src/Helmholtz/hfmm3d_mps.f90 $(TOBJS) $(COMOBJS) $(HOBJS) \
-  -o test/Helmholtz/test_hfmm3d_mps
-	(cd test/Helmholtz; ./test_hfmm3d_mps)
+  $(TOBJS) $(COMOBJS) $(HOBJS) \
+  -o test/Helmholtz/int2-test-hfmm3d-mps
 
 
 #
@@ -245,31 +261,31 @@ test_hfmm3d_mps: $(STATICLIB) $(TOBJS)
 
 examples: cxxkernel $(STATICLIB) $(TOBJS) examples/ex1_helm examples/ex2_helm examples/ex3_helm \
 	examples/ex1_lap examples/ex2_lap examples/ex3_lap
-	./examples/lfmm3d_example
-	./examples/lfmm3d_vec_example
-	./examples/lfmm3d_legacy_example
-	./examples/hfmm3d_example
-	./examples/hfmm3d_vec_example
-	./examples/hfmm3d_legacy_example
+	./examples/int2-lfmm3d-example
+	./examples/int2-lfmm3d-vec-example
+	./examples/int2-lfmm3d-legacy-example
+	./examples/int2-hfmm3d-example
+	./examples/int2-hfmm3d-vec-example
+	./examples/int2-hfmm3d-legacy-example
 
 examples/ex1_lap:
-	$(FC) $(FFLAGS) examples/lfmm3d_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/lfmm3d_example $(LIBS)
+	$(FC) $(FFLAGS) examples/lfmm3d_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/int2-lfmm3d-example $(LIBS)
 
 examples/ex2_lap:
-	$(FC) $(FFLAGS) examples/lfmm3d_vec_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/lfmm3d_vec_example $(LIBS)
+	$(FC) $(FFLAGS) examples/lfmm3d_vec_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/int2-lfmm3d-vec-example $(LIBS)
 
 examples/ex3_lap:
-	$(FC) $(FFLAGS) examples/lfmm3d_legacy_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/lfmm3d_legacy_example $(LIBS)
+	$(FC) $(FFLAGS) examples/lfmm3d_legacy_example.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/int2-lfmm3d-legacy-example $(LIBS)
 
 
 examples/ex1_helm:
-	$(FC) $(FFLAGS) examples/hfmm3d_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_example $(LIBS)
+	$(FC) $(FFLAGS) examples/hfmm3d_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/int2-hfmm3d-example $(LIBS)
 
 examples/ex2_helm:
-	$(FC) $(FFLAGS) examples/hfmm3d_vec_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_vec_example $(LIBS)
+	$(FC) $(FFLAGS) examples/hfmm3d_vec_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/int2-hfmm3d-vec-example $(LIBS)
 
 examples/ex3_helm:
-	$(FC) $(FFLAGS) examples/hfmm3d_legacy_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_legacy_example $(LIBS)
+	$(FC) $(FFLAGS) examples/hfmm3d_legacy_example.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/int2-hfmm3d-legacy-example $(LIBS)
 
 
 
@@ -277,34 +293,34 @@ examples/ex3_helm:
 c: $(COBJS) $(OBJS) $(CHEADERS) c/lfmm3d c/hfmm3d
 
 c/lfmm3d:
-	$(CC) $(CFLAGS) c/test_lfmm3d.c $(COBJS) $(OBJS) -o c/test_lfmm3d $(CLIBS)
-	time -p c/test_lfmm3d
+	$(CC) $(CFLAGS) c/test_lfmm3d.c $(COBJS) $(OBJS) -o c/int2-test-lfmm3d $(CLIBS)
+	time -p c/int2-test-lfmm3d
 
 c/hfmm3d:
-	$(CC) $(CFLAGS) c/test_hfmm3d.c $(COBJS) $(OBJS) -o c/test_hfmm3d $(CLIBS)
-	time -p c/test_hfmm3d
+	$(CC) $(CFLAGS) c/test_hfmm3d.c $(COBJS) $(OBJS) -o c/int2-test-hfmm3d $(CLIBS)
+	time -p c/int2-test-hfmm3d
 
 
 
 # C examples
 c-examples: $(COBJS) $(OBJS) $(CHEADERS) c/ex1_lap c/ex2_lap c/ex1_helm c/ex2_helm 
-	c/lfmm3d_example
-	c/lfmm3d_vec_example
-	c/hfmm3d_example
-	c/hfmm3d_vec_example
+	c/int2-lfmm3d-example
+	c/int2-lfmm3d-vec-example
+	c/int2-hfmm3d-example
+	c/int2-hfmm3d-vec-example
 	rm fort.13
 
 c/ex1_lap:
-	$(CC) $(CFLAGS) c/lfmm3d_example.c $(COBJS) $(OBJS) -o c/lfmm3d_example $(CLIBS)
+	$(CC) $(CFLAGS) c/lfmm3d_example.c $(COBJS) $(OBJS) -o c/int2-lfmm3d-example $(CLIBS)
 
 c/ex2_lap:
-	$(CC) $(CFLAGS) c/lfmm3d_vec_example.c $(COBJS) $(OBJS) -o c/lfmm3d_vec_example $(CLIBS) 
+	$(CC) $(CFLAGS) c/lfmm3d_vec_example.c $(COBJS) $(OBJS) -o c/int2-lfmm3d-vec-example $(CLIBS) 
 
 c/ex1_helm:
-	$(CC) $(CFLAGS) c/hfmm3d_example.c $(COBJS) $(OBJS) -o c/hfmm3d_example $(CLIBS)
+	$(CC) $(CFLAGS) c/hfmm3d_example.c $(COBJS) $(OBJS) -o c/int2-hfmm3d-example $(CLIBS)
 
 c/ex2_helm:
-	$(CC) $(CFLAGS) c/hfmm3d_vec_example.c $(COBJS) $(OBJS) -o c/hfmm3d_vec_example $(CLIBS)
+	$(CC) $(CFLAGS) c/hfmm3d_vec_example.c $(COBJS) $(OBJS) -o c/int2-hfmm3d-vec-example $(CLIBS)
 
 clean: objclean
 	rm -f lib-static/*.a lib/*.so
@@ -314,29 +330,19 @@ clean: objclean
 	rm -f examples/lfmm3d_example
 	rm -f examples/lfmm3d_vec_example
 	rm -f examples/lfmm3d_legacy_example
-	rm -f test/Laplace/test_lfmm3d
-	rm -f test/Laplace/test_lfmm3d_vec
-	rm -f test/Laplace/test_lfmm3d_big
-	rm -f test/Laplace/test_laprouts3d
-	rm -f test/Helmholtz/test_hfmm3d
-	rm -f test/Helmholtz/test_hfmm3d_vec
-	rm -f test/Helmholtz/test_hfmm3d_big
-	rm -f test/Helmholtz/test_helmrouts3d
+	rm -f test/Laplace/int2-*
+	rm -f test/Helmholtz/int2-*
 	rm -f examples/hfmm3d_example
 	rm -f examples/hfmm3d_vec_example
 	rm -f examples/hfmm3d_legacy_example
-	rm -f c/hfmm3d_example
-	rm -f c/hfmm3d_vec_example
-	rm -f c/lfmm3d_example
-	rm -f c/lfmm3d_vec_example
-	rm -f c/test_hfmm3d
-	rm -f c/test_lfmm3d
+	rm -f c/int2-*
 	rm -f vec-kernels/src/libkernels.o
 
 big-test: $(STATICLIB) $(TOBJS) test/test_lap_big test/test_helm_big
 
 pw-test: $(STATICLIB) $(TOBJS) test/test_helm_pw
 	./test/Helmholtz/test_hfmm3d_pw
+
 
 
 test/test_helm_big:

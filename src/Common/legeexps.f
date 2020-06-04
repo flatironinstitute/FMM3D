@@ -111,7 +111,7 @@ c
 c
         subroutine legeexps(itype,n,x,u,v,whts)
         implicit double precision (a-h,o-z)
-        dimension x(1),whts(1),u(n,n),v(n,n)
+        dimension x(*),whts(*),u(n,n),v(n,n)
 c
 c         this subroutine constructs the gaussiaqn nodes 
 c         on the interval [-1,1], and the weights for the 
@@ -194,7 +194,7 @@ c
 c
         subroutine legewhts_old(n,ts,whts,ifwhts)
         implicit double precision (a-h,o-z)
-        dimension ts(1),whts(1)
+        dimension ts(*),whts(*)
 c
 c        this subroutine constructs the nodes and the
 c        weights of the n-point gaussian quadrature on 
@@ -429,7 +429,7 @@ c
 c
         subroutine prodend(x,xs,n,i,f)
         implicit double precision (a-h,o-z)
-        dimension xs(1)
+        dimension xs(*)
 c
 c      evaluate the product
 c
@@ -621,7 +621,7 @@ c
         subroutine legeinmt(n,ainte,adiff,x,whts,endinter,
      1      itype,w)
         implicit double precision (a-h,o-z)
-        dimension ainte(1),w(1),x(1),whts(1),adiff(1),endinter(1)
+        dimension ainte(*),w(*),x(*),whts(*),adiff(*),endinter(*)
 c
 c
 c        for the user-specified n, this subroutine constructs
@@ -695,7 +695,7 @@ c
      1      x,whts,u,v,w,itype,endinter)
         implicit double precision (a-h,o-z)
         dimension ainte(n,n),u(n,n),v(n,n),w(n,n),
-     1      endinter(1),x(n),whts(n),polin(n),polout(n),
+     1      endinter(*),x(n),whts(n),polin(n),polout(n),
      2      adiff(n,n)
 c
 c        for the user-specified n, this subroutine constructs
@@ -880,7 +880,7 @@ c
 c
         subroutine legediff(polin,n,polout)
         implicit double precision (a-h,o-z)
-        dimension polin(1),polout(1)
+        dimension polin(*),polout(*)
 c
 c       this subroutine differentiates the legendre 
 c       expansion polin getting the expansion polout
@@ -1177,7 +1177,7 @@ c
 c
         subroutine lematrin(n,m,xs,amatrint,ts,w)
         implicit double precision (a-h,o-z)
-        dimension amatrint(m,n),xs(1),w(1),ts(1)
+        dimension amatrint(m,n),xs(*),w(*),ts(*)
 c
 c
 c        This subroutine constructs the matrix interpolating
@@ -1233,7 +1233,7 @@ c
 c
         subroutine levecin(n,x,ts,u,v,coefs,ifinit)
         implicit double precision (a-h,o-z)
-        dimension u(n,n),v(n,n),ts(1),coefs(1)
+        dimension u(n,n),v(n,n),ts(*),coefs(*)
 c
 c        This subroutine constructs the coefficients of the 
 c        standard interpolation formula connecting the values of a 
@@ -1348,8 +1348,8 @@ c
         subroutine legeodev(x,nn,coefs,val,ninit,
      1      coepnm1,coepnp1,coexpnp1)
         implicit double precision (a-h,o-z)
-        dimension coepnm1(1),coepnp1(1),
-     1            coexpnp1(1),coefs(*)
+        dimension coepnm1(*),coepnp1(*),
+     1            coexpnp1(*),coefs(*)
 c
 c
 c       This subroutine evaluates at the point x a Legendre expansion
@@ -1443,8 +1443,8 @@ c
         subroutine legeevev(x,nn,coefs,val,ninit,
      1      coepnm1,coepnp1,coexpnp1)
         implicit double precision (a-h,o-z)
-        dimension coepnm1(1),coepnp1(1),
-     1            coexpnp1(1),coefs(*)
+        dimension coepnm1(*),coepnp1(*),
+     1            coexpnp1(*),coefs(*)
 c
 c
 c       This subroutine evaluates at the point x a Legendre expansion
@@ -1629,8 +1629,8 @@ c
         subroutine legepodd(x,nn,pols,ninit,
      1      coepnm1,coepnp1,coexpnp1)
         implicit double precision (a-h,o-z)
-        dimension pols(*),coepnm1(1),coepnp1(1),
-     1            coexpnp1(1)
+        dimension pols(*),coepnm1(*),coepnp1(*),
+     1            coexpnp1(*)
 c
 c       This subroutine evaluates odd-numbered Legendre polynomials 
 c       of the argument x, up to order nn+1

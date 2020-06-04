@@ -111,6 +111,7 @@ c
        integer *8 ipointer(32)
        integer, allocatable :: itree(:)
        double precision, allocatable :: treecenters(:,:),boxsize(:)
+       double precision b0,b0inv,b0inv2,b0inv3
 
 c
 cc       temporary sorted arrays
@@ -238,6 +239,11 @@ c       Call tree code
      2               mnlist1,mnlist2,mnlist3,mnlist4,nlevels,
      2               nboxes,treecenters,boxsize,itree,ltree,ipointer)
 
+      b0 = boxsize(0)
+      b0inv = 1.0d0/b0
+      b0inv2 = b0inv**2
+      b0inv3 = b0inv2*b0inv
+
 c     Allocate sorted source and targ arrays      
 
       allocate(sourcesort(3,nsource))
@@ -275,12 +281,6 @@ c     Allocate sorted source and targ arrays
       endif
 
 
-c     scaling factor for multipole and local expansions at all levels
-c
-      allocate(scales(0:nlevels),nterms(0:nlevels))
-      do ilev = 0,nlevels
-        scales(ilev) = boxsize(ilev)
-      enddo
 c
 cc      initialize potential and gradient at source
 c       locations
@@ -377,6 +377,8 @@ C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)
 C$OMP END PARALLEL DO
       endif
 
+      allocate(nterms(0:nlevels))
+
 c     Compute length of expansions at each level      
       nmax = 0
       do i=0,nlevels
@@ -401,18 +403,38 @@ c
 cc     reorder sources 
 c
       call dreorderf(3,nsource,source,sourcesort,itree(ipointer(5)))
-      if(ifcharge.eq.1) call dreorderf(nd,nsource,charge,chargesort,
+
+c
+c       rescale sources to be contained in unit box
+c
+      call drescale(3*nsource,sourcesort,b0inv)
+
+      if(ifcharge.eq.1) then
+        call dreorderf(nd,nsource,charge,chargesort,
      1                     itree(ipointer(5)))
+        call drescale(nd*nsource,chargesort,b0inv)
+      endif
+
 
       if(ifdipole.eq.1) then
          call dreorderf(3*nd,nsource,dipvec,dipvecsort,
      1       itree(ipointer(5)))
+         call drescale(3*nd*nsource,dipvecsort,b0inv2)
       endif
 
 c
-cc      reorder targs
+cc      reorder and rescale targs
 c
       call dreorderf(3,ntarg,targ,targsort,itree(ipointer(6)))
+      call drescale(3*ntarg,targsort,b0inv)
+
+
+c
+c        update tree centers and boxsize
+c
+      call drescale(3*nboxes,treecenters,b0inv)
+      call drescale(nlevels+1,boxsize,b0inv)
+
 c
 c     allocate memory need by multipole, local expansions at all
 c     levels
@@ -430,6 +452,13 @@ c
       endif
 
 c     Memory allocation is complete. 
+c     scaling factor for multipole and local expansions at all levels
+c
+      allocate(scales(0:nlevels))
+      do ilev = 0,nlevels
+        scales(ilev) = boxsize(ilev)
+      enddo
+
 c     Call main fmm routine
 
       call cpu_time(time1)
@@ -454,46 +483,38 @@ C$        time2=omp_get_wtime()
 
 
 
-      if(ifpgh.eq.1) then
+      if(ifpgh.ge.1) then
         call dreorderi(nd,nsource,potsort,pot,
      1                 itree(ipointer(5)))
       endif
-      if(ifpgh.eq.2) then 
-        call dreorderi(nd,nsource,potsort,pot,
-     1                 itree(ipointer(5)))
+      if(ifpgh.ge.2) then 
         call dreorderi(3*nd,nsource,gradsort,grad,
      1                 itree(ipointer(5)))
+        call drescale(nd*3*nsource,grad,b0inv)
       endif
 
-      if(ifpgh.eq.3) then 
-        call dreorderi(nd,nsource,potsort,pot,
-     1                 itree(ipointer(5)))
-        call dreorderi(3*nd,nsource,gradsort,grad,
-     1                 itree(ipointer(5)))
+      if(ifpgh.ge.3) then 
         call dreorderi(6*nd,nsource,hesssort,hess,
      1                 itree(ipointer(5)))
+        call drescale(nd*6*nsource,hess,b0inv2)
       endif
 
 
-      if(ifpghtarg.eq.1) then
+      if(ifpghtarg.ge.1) then
         call dreorderi(nd,ntarg,pottargsort,pottarg,
      1     itree(ipointer(6)))
       endif
 
-      if(ifpghtarg.eq.2) then
-        call dreorderi(nd,ntarg,pottargsort,pottarg,
-     1     itree(ipointer(6)))
+      if(ifpghtarg.ge.2) then
         call dreorderi(3*nd,ntarg,gradtargsort,gradtarg,
      1     itree(ipointer(6)))
+        call drescale(nd*3*ntarg,gradtarg,b0inv)
       endif
 
-      if(ifpghtarg.eq.3) then
-        call dreorderi(nd,ntarg,pottargsort,pottarg,
-     1     itree(ipointer(6)))
-        call dreorderi(3*nd,ntarg,gradtargsort,gradtarg,
-     1     itree(ipointer(6)))
+      if(ifpghtarg.ge.3) then
         call dreorderi(6*nd,ntarg,hesstargsort,hesstarg,
      1     itree(ipointer(6)))
+        call drescale(nd*6*ntarg,hesstarg,b0inv2)
       endif
 
       return
@@ -663,7 +684,7 @@ c     end of list 4 variables
 
       pi = 4.0d0*atan(1.0d0)
 
-      thresh = 2.0d0**(-52)*boxsize(0)
+      thresh = 2.0d0**(-51)*boxsize(0)
 
 c     ifprint is an internal information printing flag. 
 c     Suppressed if ifprint=0.
@@ -898,7 +919,8 @@ C$    time1=omp_get_wtime()
       allocate(pgboxwexp(nd,nexptotp,cntlist4,6))
       allocate(gboxmexp(nd*(nterms(ilev)+1)*
      1                   (2*nterms(ilev)+1),8,cntlist4))
-cccccc  bad code, note gboxmexp is an array not scalar
+
+c   note gboxmexp is an array not scalar
       pgboxwexp=0d0
       gboxmexp=0d0
 c     form mexp for all list4 type box at first ghost box center

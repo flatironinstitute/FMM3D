@@ -1,6 +1,7 @@
 #
-# this config tested under Intel Parallel Studio XE Composer Edition
-# for macOS Version 2020 Initial Release
+# This config tested under Intel Parallel Studio XE Composer Edition
+# for macOS Version 2020 Update 1, released April 2020
+# This release is only tested with Xcode 13.1.1
 #
 
 CC=icc
@@ -13,9 +14,12 @@ CLIBS = -lm -ldl
 
 ifeq ($(FAST_KER),ON)
   CXXFLAGS = $(FFLAGS)
-  CXXFLAGS += -std=c++11 -DSCTL_HAVE_SVML -DSCTL_PROFILE=-1 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
+  CXXFLAGS += -std=c++11 -DSCTL_HAVE_SVML -DSCTL_PROFILE=-1
   LIBS += -cxxlib
 endif
+
+# used to be needed on the CXXFLAGS for weird intel compiler problems
+#  -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
 
 OMPFLAGS = -qopenmp
 OMPLIBS = 
