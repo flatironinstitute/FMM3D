@@ -56,12 +56,16 @@ c        expansions.
 c
 c-----------------------------------------------------------------------
 c
-c      l3dmpevalp: computes potential due to a multipole expansion
+c      l3dmpevalp: computes potentials due to a multipole expansion
 c                    at a collection of targets (done,tested)
 c
-c      l3dmpevalg: computes potential and gradients 
+c      l3dmpevalg: computes potentials and gradients 
 c                  due to a multipole expansion
-c                    at a collection of targets (done,tested)
+c                  at a collection of targets (done,tested)
+c
+c      l3dmpevalh: computes potentials, gradients, and hessians 
+c                  due to a multipole expansion
+c                  at a collection of targets (done,tested)
 c
 c      l3dformmpc: creates multipole expansion (outgoing) due to 
 c                 a collection of charges (done,tested)
@@ -72,11 +76,16 @@ c
 c      l3dformmpcd: creates multipole expansion (outgoing) due to 
 c                 a collection of charges and dipoles (done,tested)
 c
-c      l3dtaevalp: computes potential 
+c      l3dtaevalp: computes potentials 
 c                  due to local expansion at a collection of targets
 c
-c      l3dtaevalg: computes potential and gradients
+c      l3dtaevalg: computes potentials and gradients
 c                  due to local expansion at a collection of targets
+c
+c      l3dtaevalh: computes potentials, gradients, and hessians
+c                  due to local expansion at a collection of targets
+c
+c      l3dtaevalhessdini: initialization routine for l3dtaevalh
 c
 c      l3dformtac: creates local expansion due to 
 c                 a collection of charges.
@@ -2075,31 +2084,32 @@ c
 c     pot comes from 0,0 mode
 c
          do idim=1,nd
-            pot(idim,itarg) = local2(idim,1)/rscale
+            pot(idim,itarg) = pot(idim,itarg)+local2(idim,1)/rscale
 c
 c     fld comes from l=1 modes
 c
             rfac = 1.0d0/(rscale*rscale*sqrt(2.0d0))
-            grad(idim,1,itarg)= dreal(
+            grad(idim,1,itarg)= grad(idim,1,itarg)+dreal(
      1              -rfac*(local2(idim,4)+local2(idim,2)))
-            grad(idim,2,itarg)= dreal(
+            grad(idim,2,itarg)= grad(idim,2,itarg)+dreal(
      1              -rfac*ima*(local2(idim,4)-local2(idim,2)))
-            grad(idim,3,itarg)=dreal(local2(idim,3))/(rscale*rscale)
+            grad(idim,3,itarg)=grad(idim,3,itarg)+
+     1         dreal(local2(idim,3))/(rscale*rscale)
 c
 c     hess comes from l=2 modes
 c
             rfac = sqrt(3.0d0)/(sqrt(2.0d0)*rscale*rscale*rscale)
             z0 = local2(idim,7)/(rscale*rscale*rscale)
-            hess(idim,1,itarg)=dreal(
+            hess(idim,1,itarg)=hess(idim,1,itarg)+dreal(
      1                  rfac*(local2(idim,9)+local2(idim,5))-z0)
-            hess(idim,2,itarg)=dreal(
+            hess(idim,2,itarg)=hess(idim,2,itarg)+dreal(
      1                  -rfac*(local2(idim,9)+local2(idim,5))-z0)
-            hess(idim,3,itarg)=dreal(2*z0)
-            hess(idim,4,itarg)=dreal(
+            hess(idim,3,itarg)=hess(idim,3,itarg)+dreal(2*z0)
+            hess(idim,4,itarg)=hess(idim,4,itarg)+dreal(
      1                 rfac*ima*(local2(idim,9)-local2(idim,5)))
-            hess(idim,5,itarg)=dreal(
+            hess(idim,5,itarg)=hess(idim,5,itarg)+dreal(
      1                 -rfac*(local2(idim,8)+local2(idim,6)))
-            hess(idim,6,itarg)=dreal(
+            hess(idim,6,itarg)=hess(idim,6,itarg)+dreal(
      1                -rfac*ima*(local2(idim,8)-local2(idim,6)))
          enddo  
 1000  continue
@@ -2380,16 +2390,16 @@ c
 c     pot comes from 0,0 mode
 c
          do idim=1,nd
-            pot(idim,itarg) = local2(idim,1)
+            pot(idim,itarg) = pot(idim,itarg)+local2(idim,1)
 c
 c     fld comes from l=1 modes
 c
             rfac = 1.0d0/(sqrt(2.0d0)*rscale)
-            grad(idim,3,itarg)= dreal(
+            grad(idim,3,itarg)= grad(idim,3,itarg)+dreal(
      1                local2(idim,3)/rscale)
-            grad(idim,1,itarg)= dreal(
+            grad(idim,1,itarg)= grad(idim,1,itarg)+dreal(
      1                -rfac*(local2(idim,4) + local2(idim,2)))
-            grad(idim,2,itarg)= dreal(
+            grad(idim,2,itarg)= grad(idim,2,itarg)+dreal(
      1                -rfac*ima*(local2(idim,4) - local2(idim,2)))
 c
 c     hess comes from l=2 modes
@@ -2397,16 +2407,16 @@ c
 ccc         rfac = rscale*rscale*sqrt(3.0d0)/sqrt(2.0d0)
             rfac = rfac*sqrt(3.0d0)/rscale
             z0 = local2(idim,7)/(rscale*rscale)
-            hess(idim,1,itarg)=dreal(
+            hess(idim,1,itarg)=hess(idim,1,itarg)+dreal(
      1                  rfac*(local2(idim,9)+local2(idim,5))-z0)
-            hess(idim,2,itarg)=dreal(
+            hess(idim,2,itarg)=hess(idim,2,itarg)+dreal(
      1                  -rfac*(local2(idim,9)+local2(idim,5))-z0)
-            hess(idim,3,itarg)=dreal(2*z0)
-            hess(idim,4,itarg)=dreal(
+            hess(idim,3,itarg)=hess(idim,3,itarg)+dreal(2*z0)
+            hess(idim,4,itarg)=hess(idim,4,itarg)+dreal(
      1                 rfac*ima*(local2(idim,9)-local2(idim,5)))
-            hess(idim,5,itarg)=dreal(
+            hess(idim,5,itarg)=hess(idim,5,itarg)+dreal(
      1                 -rfac*(local2(idim,8)+local2(idim,6)))
-            hess(idim,6,itarg)=dreal(
+            hess(idim,6,itarg)=hess(idim,6,itarg)+dreal(
      1                -rfac*ima*(local2(idim,8)-local2(idim,6)))
          enddo
 1000  continue
