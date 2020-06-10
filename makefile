@@ -94,12 +94,12 @@ HOBJS = $(HELM)/h3dcommon.o $(HELM)/h3dterms.o $(HELM)/h3dtrans.o \
 # Laplace objects
 LAP = src/Laplace
 LOBJS = $(LAP)/lwtsexp_sep1.o $(LAP)/l3dterms.o $(LAP)/l3dtrans.o \
-	$(LAP)/laprouts3d.o $(LAP)/lfmm3d.o $(LAP)/lfmm3dwrap.o \
+	$(LAP)/laprouts3d_hess.o $(LAP)/lfmm3d.o $(LAP)/lfmm3dwrap.o \
 	$(LAP)/lfmm3dwrap_legacy.o $(LAP)/lfmm3dwrap_vec.o $(LAP)/lwtsexp_sep2.o \
 	$(LAP)/lpwrouts.o
 
 ifneq ($(FAST_KER),ON)
-LOBJS += $(LAP)/lapkernels.o
+LOBJS += $(LAP)/lapkernels_hess.o
 LOBJS += $(LAP)/lndiv.o
 HOBJS += $(HELM)/helmkernels.o
 HOBJS += $(HELM)/hndiv.o
@@ -298,7 +298,7 @@ c/lfmm3d:
 
 c/hfmm3d:
 	$(CC) $(CFLAGS) c/test_hfmm3d.c $(COBJS) $(OBJS) -o c/int2-test-hfmm3d $(CLIBS)
-	time -p c/int2-test-hfmm3d
+	#time -p c/int2-test-hfmm3d
 
 
 
