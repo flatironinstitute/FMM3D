@@ -8,7 +8,7 @@ def main():
     test_lfmm()
 
 def test_lfmm():
-    ntests = 36
+    ntests = 54
     testres = np.zeros(ntests)
     #
     #  This is a testing code for making sure all the 
@@ -116,6 +116,54 @@ def test_lfmm():
         print("Failed sources to sources, charges and dipoles, pot and grad")
     
 
+    itest = itest + 1
+    out=fmm.lfmm3d(eps=eps,sources=sources,charges=charges,pg=3)
+    out2 = fmm.l3ddir(sources=sources,targets=stmp,charges=charges, \
+        pgt=3)
+    out2.pot = out2.pottarg
+    out2.grad = out2.gradtarg
+    out2.hess = out2.hesstarg
+    err = fmm.comperr(ntest=ntest,out=out,outex=out2,pg=3)
+
+
+    if(err<eps):
+        testres[itest] = 1
+    else:
+        print("Failed sources to sources, charges, pot, grad, and hess")
+        
+
+    itest = itest+1
+
+    out=fmm.lfmm3d(eps=eps,sources=sources,dipvec=dipvec,pg=3)
+    out2 = fmm.l3ddir(sources=sources,targets=stmp,dipvec=dipvec, \
+        pgt=3)
+    out2.pot = out2.pottarg
+    out2.grad = out2.gradtarg
+    out2.hess = out2.hesstarg
+    err = fmm.comperr(ntest=ntest,out=out,outex=out2,pg=3)
+
+    if(err<eps):
+        testres[itest] = 1
+    else:
+        print("Failed sources to sources, dipoles, pot, grad, and hess")
+
+    itest = itest + 1
+    out=fmm.lfmm3d(eps=eps,sources=sources,charges=charges, \
+        dipvec=dipvec,pg=3)
+    out2 = fmm.l3ddir(sources=sources,targets=stmp,charges=charges,
+       dipvec=dipvec,pgt=3)
+    out2.pot = out2.pottarg
+    out2.grad = out2.gradtarg
+    out2.hess = out2.hesstarg
+    err = fmm.comperr(ntest=ntest,out=out,outex=out2,pg=3)
+
+
+    if(err<eps):
+        testres[itest] = 1
+    else:
+        print("Failed sources to sources, charges and dipoles, pot and grad")
+    
+
     itest=itest+1
     out=fmm.lfmm3d(eps=eps,sources=sources,targets=targ,charges=charges,pgt=1)
     out2=fmm.l3ddir(sources=sources,targets=ttmp,charges=charges,pgt=1)
@@ -190,6 +238,44 @@ def test_lfmm():
         testres[itest] = 1
     else:
         print("Failed sources to targets, charges and dipoles, pot and grad")
+
+
+    itest = itest + 1
+    out=fmm.lfmm3d(eps=eps,sources=sources,targets=targ,charges=charges,pgt=3)
+    out2=fmm.l3ddir(sources=sources,targets=ttmp,charges=charges,pgt=3)
+    err = fmm.comperr(ntest=ntest,out=out,outex=out2,pgt=3)
+
+    if(err<eps):
+        testres[itest] = 1
+    else:
+        print("Failed sources to targets, charges, pot, grad, and hess")
+
+    itest = itest+1
+
+    out=fmm.lfmm3d(eps=eps,sources=sources,targets=targ,\
+    dipvec=dipvec,pgt=3)
+    out2=fmm.l3ddir(sources=sources,targets=ttmp,\
+    dipvec=dipvec,pgt=3)
+    err = fmm.comperr(ntest=ntest,out=out,outex=out2,pgt=3)
+
+    if(err<eps):
+        testres[itest] = 1
+    else:
+        print("Failed sources to targets, dipoles, pot, grad, and hess")
+
+    itest = itest + 1
+    out=fmm.lfmm3d(eps=eps,sources=sources,targets=targ,charges=charges,\
+        dipvec=dipvec,pgt=3)
+    out2 =fmm.l3ddir(sources=sources,targets=ttmp,charges=charges,\
+        dipvec=dipvec,pgt=3)
+    err = fmm.comperr(ntest=ntest,out=out,outex=out2,pgt=3)
+
+
+    if(err<eps):
+        testres[itest] = 1
+    else:
+        print("Failed sources to targets, charges and dipoles, pot, grad, and hess")
+
 
     itest = itest+1
     out=fmm.lfmm3d(eps=eps,sources=sources,targets=targ,charges=charges,pgt=1,pg=1)
@@ -297,6 +383,66 @@ def test_lfmm():
         print("Failed sources to sources and targets, charges and dipoles, pot and grad")
 
 
+    itest = itest + 1
+    out=fmm.lfmm3d(eps=eps,sources=sources,targets=targ,charges=charges,pgt=3,pg=3)
+    out2=fmm.l3ddir(sources=sources,targets=stmp,charges=charges, \
+        pgt=3)
+    outex.pot = out2.pottarg
+    outex.grad = out2.gradtarg
+    outex.hess = out2.hesstarg
+    out2=fmm.l3ddir(sources=sources,targets=ttmp,charges=charges, \
+          pgt=3)
+    outex.pottarg = out2.pottarg
+    outex.gradtarg = out2.gradtarg
+    outex.hesstarg = out2.hesstarg
+    err = fmm.comperr(ntest=ntest,out=out,outex=outex,pg=3,pgt=3)
+
+    if(err<eps):
+        testres[itest] = 1
+    else:
+        print("Failed sources to sources and targets, charges, pot, grad, hess")
+    itest = itest+1
+
+    out=fmm.lfmm3d(eps=eps,sources=sources,targets=targ,\
+    dipvec=dipvec,pgt=3,pg=3)
+    out2=fmm.l3ddir(sources=sources,targets=stmp, \
+        dipvec=dipvec,pgt=3)
+    outex.pot = out2.pottarg
+    outex.grad = out2.gradtarg
+    outex.hess = out2.hesstarg
+    out2=fmm.l3ddir(sources=sources,targets=ttmp,dipvec=dipvec, \
+          pgt=3)
+    outex.pottarg = out2.pottarg
+    outex.gradtarg = out2.gradtarg
+    outex.hesstarg = out2.hesstarg
+    err = fmm.comperr(ntest=ntest,out=out,outex=outex,pg=3,pgt=3)
+
+    if(err<eps):
+        testres[itest] = 1
+    else:
+        print("Failed sources to sources and targets, dipoles, pot, grad, hess")
+
+    itest = itest + 1
+    out=fmm.lfmm3d(eps=eps,sources=sources,targets=targ,charges=charges,\
+        dipvec=dipvec,pgt=3,pg=3)
+    out2=fmm.l3ddir(sources=sources,targets=stmp,charges=charges, \
+        dipvec=dipvec,pgt=3)
+    outex.pot = out2.pottarg
+    outex.grad = out2.gradtarg
+    outex.hess = out2.hesstarg
+    out2=fmm.l3ddir(sources=sources,targets=ttmp,charges=charges, \
+          dipvec=dipvec,pgt=3)
+    outex.pottarg = out2.pottarg
+    outex.gradtarg = out2.gradtarg
+    outex.hesstarg = out2.hesstarg
+    err = fmm.comperr(ntest=ntest,out=out,outex=outex,pg=3,pgt=3)
+
+    if(err<eps):
+        testres[itest] = 1
+    else:
+        print("Failed sources to sources and targets, charges and dipoles, pot and grad")
+
+
 
     nd = 2
     charges = np.random.uniform(0,1,(nd,n))
@@ -386,6 +532,54 @@ def test_lfmm():
         print("Failed sources to sources, charges and dipoles, pot and grad, vectorized")
     
 
+    itest = itest + 1
+    out=fmm.lfmm3d(eps=eps,sources=sources,charges=charges,pg=3,nd=nd)
+    out2 = fmm.l3ddir(sources=sources,targets=stmp,charges=charges, \
+        pgt=3,nd=nd)
+    out2.pot = out2.pottarg
+    out2.grad = out2.gradtarg
+    out2.hess = out2.hesstarg
+    err = fmm.comperr(ntest=ntest,out=out,outex=out2,pg=3,nd=nd)
+
+
+    if(err<eps):
+        testres[itest] = 1
+    else:
+        print("Failed sources to sources, charges, pot, grad, hess vectorized")
+        
+
+    itest = itest+1
+
+    out=fmm.lfmm3d(eps=eps,sources=sources,dipvec=dipvec,pg=3,nd=nd)
+    out2 = fmm.l3ddir(sources=sources,targets=stmp,dipvec=dipvec, \
+        pgt=3,nd=nd)
+    out2.pot = out2.pottarg
+    out2.grad = out2.gradtarg
+    out2.hess = out2.hesstarg
+    err = fmm.comperr(ntest=ntest,out=out,outex=out2,pg=3,nd=nd)
+
+    if(err<eps):
+        testres[itest] = 1
+    else:
+        print("Failed sources to sources, dipoles, pot, grad, hess vectorized")
+
+    itest = itest + 1
+    out=fmm.lfmm3d(eps=eps,sources=sources,charges=charges, \
+        dipvec=dipvec,pg=3,nd=nd)
+    out2 = fmm.l3ddir(sources=sources,targets=stmp,charges=charges,
+       dipvec=dipvec,pgt=3,nd=nd)
+    out2.pot = out2.pottarg
+    out2.grad = out2.gradtarg
+    out2.hess = out2.hesstarg
+    err = fmm.comperr(ntest=ntest,out=out,outex=out2,pg=3,nd=nd)
+
+
+    if(err<eps):
+        testres[itest] = 1
+    else:
+        print("Failed sources to sources, charges and dipoles, pot, grad, hess vectorized")
+    
+
     itest=itest+1
     out=fmm.lfmm3d(eps=eps,sources=sources,targets=targ,charges=charges,pgt=1,nd=nd)
     out2=fmm.l3ddir(sources=sources,targets=ttmp,charges=charges,pgt=1,nd=nd)
@@ -459,6 +653,42 @@ def test_lfmm():
         testres[itest] = 1
     else:
         print("Failed sources to targets, charges and dipoles, pot and grad, vectorized")
+
+
+    itest = itest + 1
+    out=fmm.lfmm3d(eps=eps,sources=sources,targets=targ,charges=charges,pgt=3,nd=nd)
+    out2=fmm.l3ddir(sources=sources,targets=ttmp,charges=charges,pgt=3,nd=nd)
+    err = fmm.comperr(ntest=ntest,out=out,outex=out2,pgt=3,nd=nd)
+
+    if(err<eps):
+        testres[itest] = 1
+    else:
+        print("Failed sources to targets, charges, pot, grad, hess, vectorized")
+
+    itest = itest+1
+
+    out=fmm.lfmm3d(eps=eps,sources=sources,targets=targ,\
+    dipvec=dipvec,pgt=3,nd=nd)
+    out2=fmm.l3ddir(sources=sources,targets=ttmp,\
+    dipvec=dipvec,pgt=3,nd=nd)
+    err = fmm.comperr(ntest=ntest,out=out,outex=out2,pgt=3,nd=nd)
+
+    if(err<eps):
+        testres[itest] = 1
+    else:
+        print("Failed sources to targets, dipoles, pot, grad, hess vectorized")
+
+    itest = itest + 1
+    out=fmm.lfmm3d(eps=eps,sources=sources,targets=targ,charges=charges,\
+        dipvec=dipvec,pgt=3,nd=nd)
+    out2 =fmm.l3ddir(sources=sources,targets=ttmp,charges=charges,\
+        dipvec=dipvec,pgt=3,nd=nd)
+    err = fmm.comperr(ntest=ntest,out=out,outex=out2,pgt=3,nd=nd)
+
+    if(err<eps):
+        testres[itest] = 1
+    else:
+        print("Failed sources to targets, charges and dipoles, pot, grad, hess vectorized")
 
     itest = itest+1
     out=fmm.lfmm3d(eps=eps,sources=sources,targets=targ,charges=charges,pgt=1,pg=1,nd=nd)
@@ -559,6 +789,66 @@ def test_lfmm():
     outex.pottarg = out2.pottarg
     outex.gradtarg = out2.gradtarg
     err = fmm.comperr(ntest=ntest,out=out,outex=outex,pg=2,pgt=2,nd=nd)
+
+    if(err<eps):
+        testres[itest] = 1
+    else:
+        print("Failed sources to sources and targets, charges and dipoles, pot and grad, vectorized")
+
+
+    itest = itest + 1
+    out=fmm.lfmm3d(eps=eps,sources=sources,targets=targ,charges=charges,pgt=3,pg=3,nd=nd)
+    out2=fmm.l3ddir(sources=sources,targets=stmp,charges=charges, \
+        pgt=3,nd=nd)
+    outex.pot = out2.pottarg
+    outex.grad = out2.gradtarg
+    outex.hess = out2.hesstarg
+    out2=fmm.l3ddir(sources=sources,targets=ttmp,charges=charges, \
+          pgt=3,nd=nd)
+    outex.pottarg = out2.pottarg
+    outex.gradtarg = out2.gradtarg
+    outex.hesstarg = out2.hesstarg
+    err = fmm.comperr(ntest=ntest,out=out,outex=outex,pg=3,pgt=3,nd=nd)
+
+    if(err<eps):
+        testres[itest] = 1
+    else:
+        print("Failed sources to sources and targets, charges, pot and grad, vectorized")
+    itest = itest+1
+
+    out=fmm.lfmm3d(eps=eps,sources=sources,targets=targ,\
+    dipvec=dipvec,pgt=3,pg=3,nd=nd)
+    out2=fmm.l3ddir(sources=sources,targets=stmp, \
+        dipvec=dipvec,pgt=3,nd=nd)
+    outex.pot = out2.pottarg
+    outex.grad = out2.gradtarg
+    outex.hess = out2.hesstarg
+    out2=fmm.l3ddir(sources=sources,targets=ttmp,dipvec=dipvec, \
+          pgt=3,nd=nd)
+    outex.pottarg = out2.pottarg
+    outex.gradtarg = out2.gradtarg
+    outex.hesstarg = out2.hesstarg
+    err = fmm.comperr(ntest=ntest,out=out,outex=outex,pg=3,pgt=3,nd=nd)
+
+    if(err<eps):
+        testres[itest] = 1
+    else:
+        print("Failed sources to sources and targets, dipoles, pot and grad, vectorized")
+
+    itest = itest + 1
+    out=fmm.lfmm3d(eps=eps,sources=sources,targets=targ,charges=charges,\
+        dipvec=dipvec,pgt=3,pg=3,nd=nd)
+    out2=fmm.l3ddir(sources=sources,targets=stmp,charges=charges, \
+        dipvec=dipvec,pgt=3,nd=nd)
+    outex.pot = out2.pottarg
+    outex.grad = out2.gradtarg
+    outex.hess = out2.hesstarg
+    out2=fmm.l3ddir(sources=sources,targets=ttmp,charges=charges, \
+          dipvec=dipvec,pgt=3,nd=nd)
+    outex.pottarg = out2.pottarg
+    outex.gradtarg = out2.gradtarg
+    outex.hesstarg = out2.hesstarg
+    err = fmm.comperr(ntest=ntest,out=out,outex=outex,pg=3,pgt=3,nd=nd)
 
     if(err<eps):
         testres[itest] = 1
