@@ -969,7 +969,7 @@ c
 
       subroutine lfmm3d_t_c_h(eps,nsource,source,
      1    charge,ntarg,targ,pottarg,
-     2    gradtarg)
+     2    gradtarg,hesstarg)
 cf2py  intent(in) eps
 cf2py  intent(in) nsource,source,charge
 cf2py  intent(in) ntarg,targ
