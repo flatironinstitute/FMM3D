@@ -8,7 +8,8 @@ HOST=macosx
 
 ifeq ($(HOST),macosx)
 FC = gfortran
-FFLAGS = -O3 -c -w -march=native  
+FFLAGS = -O3 -c -w -march=native 
+#FFLAGS = -O3 -c -w -march=native 
 FLINK = gfortran -w -o $(EXEC)
 FEND =  
 endif
@@ -44,7 +45,7 @@ vpath %.f = .:../../src:../../src/Laplace:../../src/Common
 
 .PHONY: all clean list
 
-SOURCES =  test_lfmm3d_vec.f \
+SOURCES =  test_lfmm3d_vec2.f \
   tree_lr_3d.f \
   dlaran.f \
   hkrand.f \
@@ -53,9 +54,11 @@ SOURCES =  test_lfmm3d_vec.f \
   legeexps.f \
   rotviarecur.f \
   yrecursion.f \
+  lapkernels_hess.f \
+  lndiv.f \
   l3dterms.f \
   l3dtrans.f \
-  laprouts3d.f \
+  laprouts3d_hess.f \
   lfmm3d.f \
   lfmm3dwrap_vec.f \
   lpwrouts.f \
