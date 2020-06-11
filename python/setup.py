@@ -11,7 +11,7 @@ pkg_name = "fmm3dpy"
 ## TODO: fix problem with relative location for executable
 
 list_helm=['hfmm3dwrap.f','hfmm3dwrap_vec.f','helmkernels.f']
-list_lap=['lfmm3dwrap.f','lfmm3dwrap_vec.f','lapkernels_hess.f']
+list_lap=['lfmm3dwrap.f','lfmm3dwrap_vec.f','lapkernels.f']
 list_common=[]
 
 FLIBS = os.getenv('FLIBS')

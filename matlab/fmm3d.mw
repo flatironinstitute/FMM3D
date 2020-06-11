@@ -364,19 +364,23 @@ end
 %        | source eval flag
 %        | potential at sources evaluated if pg = 1
 %        | potenial and gradient at sources evaluated if pg=2
+%        | potential, gradient and hessian at sources evaluated if pg=3
 %  -  targ: double(3,nt)
 %        target locations, $t_{i}$ (optional)
 %  -  pgt: integer
 %        | target eval flag (optional)
 %        | potential at targets evaluated if pgt = 1
-%        | potenial and gradient at targets evaluated if pgt=2  
+%        | potenial and gradient at targets evaluated if pgt=2 
+%        | potential, gradient and hessian at targets evaluated if pgt=3
 %  
 %  Returns:
 %  
 %  -  U.pot: potential at source locations, if requested, $u(x_{j})$
 %  -  U.grad: gradient at source locations, if requested, $\nabla u(x_{j})$
+%  -  U.hess: hessian at source locations, if requested, $\nabla^2 u(x_{j})$
 %  -  U.pottarg: potential at target locations, if requested, $u(t_{i})$
 %  -  U.gradtarg: gradient at target locations, if requested, $\nabla u(t_{i})$
+%  -  U.hesstarg: hessian at target locations, if requested, $\nabla^2 u(t_{i})$
 
   sources = srcinfo.sources;
   [m,ns] = size(sources);
@@ -390,13 +394,16 @@ end
 
   pot = zeros(nd,1); 
   grad = zeros(nd*3,1);
+  hess = zeros(nd*6,1);
   
 
   if(pg>=1), pot = zeros(nd,ns); end;
-  if(pg == 2), grad = zeros(nd*3,ns); end;
+  if(pg >= 2), grad = zeros(nd*3,ns); end;
+  if(pg >= 3), hess = zeros(nd*6,ns); end;
 
   pottarg = zeros(nd,1);
   gradtarg = zeros(nd*3,1);
+  hesstarg = zeros(nd*6,1);
   if( nargin == 3 )
     nt = 0;
     iftarg = 0;
@@ -407,7 +414,8 @@ end
     iftarg = 1;
     assert(m==3,'First dimension of targets must be 3');
     if(pgt >=1), pottarg = zeros(nd,nt); end;
-    if(pgt == 2), gradtarg = zeros(nd*3,nt); end;
+    if(pgt >= 2), gradtarg = zeros(nd*3,nt); end;
+    if(pgt >= 3), hesstarg = zeros(nd*6,nt); end;
   end
 
   if(pg ==0 && pgt ==0), disp('Nothing to compute, set eigher pg or pgt to 1 or 2'); return; end;
@@ -434,6 +442,7 @@ end
   end
 
   nd3 = 3*nd;
+  nd6 = 6*nd;
 
 
   if(iftarg == 0 || (pgt ~=1 && pgt ~=2)) 
@@ -462,6 +471,20 @@ end
       U.pot = pot;
       U.grad = squeeze(reshape(grad,[nd,3,ns]));
     end
+    if(pg == 3)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN lfmm3d_s_c_h_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot, inout double[nd3,ns] grad, inout double[nd6,ns] hess); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN lfmm3d_s_d_h_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double[nd3,ns] grad, inout double[nd6,ns] hess); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN lfmm3d_s_cd_h_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double [nd3,ns] grad, inout double[nd6,ns] hess); 
+      end
+      U.pot = pot;
+      U.grad = squeeze(reshape(grad,[nd,3,ns]));
+      U.hess = squeeze(reshape(hess,[nd,6,ns]));
+    end
   end
   if(iftarg == 1 && pg ~=1 && pg ~=2) 
     if(pgt == 1)
@@ -488,6 +511,20 @@ end
       end
       U.pottarg = pottarg;
       U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
+    end
+    if(pgt == 3)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN lfmm3d_t_c_h_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg, inout double[nd6,nt] hesstarg); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN lfmm3d_t_d_h_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg, inout double[nd6,nt] hesstarg); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN lfmm3d_t_cd_h_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double [nd3,nt] gradtarg, inout double[nd6,nt] hesstarg); 
+      end
+      U.pottarg = pottarg;
+      U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
+      U.hesstarg = squeeze(reshape(hesstarg,[nd,6,nt]));
     end
   end
   if(iftarg == 1 && (pg ==1 || pg ==2))
@@ -519,6 +556,23 @@ end
       U.grad = squeeze(reshape(grad,[nd,3,ns]));
       U.pottarg = pottarg;
       U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
+    end
+    if(pgt == 3)
+      if(ifcharge==1 && ifdipole == 0)
+        # FORTRAN lfmm3d_st_c_h_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot, inout double[nd3,ns] grad, inout double[nd6,ns] hess, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg, inout double[nd6,nt] hesstarg); 
+      end
+      if(ifcharge==0 && ifdipole == 1)
+        # FORTRAN lfmm3d_st_d_h_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double[nd3,ns] grad, inout double[nd6,ns] hess, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg, inout double[nd6,nt] hesstarg); 
+      end
+      if(ifcharge==1 && ifdipole == 1)
+        # FORTRAN lfmm3d_st_cd_h_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double[nd3,ns] grad, inout double[nd6,ns] hess, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double [nd3,nt] gradtarg, inout double[nd6,nt] hesstarg); 
+      end
+      U.pot = pot;
+      U.grad = squeeze(reshape(grad,[nd,3,ns]));
+      U.hess = squeeze(reshape(hess,[nd,6,ns]));
+      U.pottarg = pottarg;
+      U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
+      U.hesstarg = squeeze(reshape(hesstarg,[nd,6,nt]));
     end
   end
 end
@@ -564,11 +618,13 @@ end
 %  -  pgt: integer
 %        | target eval flag (optional)
 %        | potential at targets evaluated if pgt = 1
-%        | potenial and gradient at targets evaluated if pgt=2  
+%        | potenial and gradient at targets evaluated if pgt=2 
+%        | potential, gradient and hessian at targets evaluated if pgt=3
 %  
 %  Returns:
 %  -  U.pottarg: potential at target locations, if requested, $u(t_{i})$
 %  -  U.gradtarg: gradient at target locations, if requested, $\nabla u(t_{i})$
+%  -  U.hesstarg: hessian at target locations, if requested, $\nabla^2 u(t_{i})$
 
   sources = srcinfo.sources;
   [m,ns] = size(sources);
@@ -584,10 +640,12 @@ end
 
   pottarg = zeros(nd,1);
   gradtarg = zeros(nd*3,1);
+  hesstarg = zeros(nd*6,1);
   [m,nt] = size(targ);
   assert(m==3,'First dimension of targets must be 3');
   if(pgt >=1), pottarg = zeros(nd,nt); end;
-  if(pgt == 2), gradtarg = zeros(nd*3,nt); end;
+  if(pgt >= 2), gradtarg = zeros(nd*3,nt); end;
+  if(pgt >= 3), hesstarg = zeros(nd*6,nt); end;
 
   if(pgt ==0), disp('Nothing to compute, set eigher pgt to 1 or 2'); return; end;
 
@@ -613,6 +671,7 @@ end
   end
 
   nd3 = 3*nd;
+  nd6 = 6*nd;
 
   if(pgt == 1)
     if(ifcharge==1 && ifdipole == 0)
@@ -638,5 +697,19 @@ end
     end
     U.pottarg = pottarg;
     U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
+  end
+  if(pgt == 3)
+    if(ifcharge==1 && ifdipole == 0)
+      # FORTRAN l3ddirectch(int[1] nd,  double[3,ns] sources,double[nd,ns] charges, int[1] ns, double[3,nt] targ, int[1] nt, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg, inout double[nd6,nt] hesstarg, double[1] thresh); 
+    end
+    if(ifcharge==0 && ifdipole == 1)
+      # FORTRAN l3ddirectdh(int[1] nd,  double[3,ns] sources, double[nd3,ns] dipoles, int[1] ns, double[3,nt] targ, int[1] nt, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg, inout double[nd6,nt] hesstarg, double[1] thresh); 
+    end
+    if(ifcharge==1 && ifdipole == 1)
+      # FORTRAN l3ddirectcdh(int[1] nd,  double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] ns, double[3,nt] targ, int[1] nt, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg, inout double[nd6,nt] hesstarg, double[1] thresh); 
+    end
+    U.pottarg = pottarg;
+    U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
+    U.hesstarg = squeeze(reshape(hesstarg,[nd,6,nt]));
   end
 end

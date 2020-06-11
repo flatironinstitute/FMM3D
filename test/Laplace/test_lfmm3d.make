@@ -54,11 +54,11 @@ SOURCES =  test_lfmm3d.f \
   legeexps.f \
   rotviarecur.f \
   yrecursion.f \
-  lapkernels_hess.f \
+  lapkernels.f \
   lndiv.f \
   l3dterms.f \
   l3dtrans.f \
-  laprouts3d_hess.f \
+  laprouts3d.f \
   lfmm3d.f \
   lfmm3dwrap.f \
   lpwrouts.f \

@@ -94,19 +94,19 @@ HOBJS = $(HELM)/h3dcommon.o $(HELM)/h3dterms.o $(HELM)/h3dtrans.o \
 # Laplace objects
 LAP = src/Laplace
 LOBJS = $(LAP)/lwtsexp_sep1.o $(LAP)/l3dterms.o $(LAP)/l3dtrans.o \
-	$(LAP)/laprouts3d_hess.o $(LAP)/lfmm3d.o $(LAP)/lfmm3dwrap.o \
+	$(LAP)/laprouts3d.o $(LAP)/lfmm3d.o $(LAP)/lfmm3dwrap.o \
 	$(LAP)/lfmm3dwrap_legacy.o $(LAP)/lfmm3dwrap_vec.o $(LAP)/lwtsexp_sep2.o \
 	$(LAP)/lpwrouts.o
 
 ifneq ($(FAST_KER),ON)
-LOBJS += $(LAP)/lapkernels_hess.o
+LOBJS += $(LAP)/lapkernels.o
 LOBJS += $(LAP)/lndiv.o
 HOBJS += $(HELM)/helmkernels.o
 HOBJS += $(HELM)/hndiv.o
 endif
 
 ifeq ($(FAST_KER),ON)
-LOBJS += $(LAP)/lapkernels_fast.o
+LOBJS += $(LAP)/lapkernels.o
 LOBJS += $(LAP)/lndiv_fast.o
 HOBJS += $(HELM)/helmkernels_fast.o
 HOBJS += $(HELM)/hndiv_fast.o
@@ -183,17 +183,17 @@ GATEWAY = $(MWRAPFILE)
 GATEWAY2 = $(MWRAPFILE2)
 
 matlab:	$(STATICLIB) matlab/$(GATEWAY).c matlab/$(GATEWAY2).c
-	$(MEX) matlab/$(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d $(MEXLIBS)
-	$(MEX) matlab/$(GATEWAY2).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d_legacy $(MEXLIBS)
+	$(MEX) matlab/$(GATEWAY).c lib-static/$(STATICLIB) $(MFLAGS) -output matlab/fmm3d $(MEXLIBS)
+	$(MEX) matlab/$(GATEWAY2).c lib-static/$(STATICLIB) $(MFLAGS) -output matlab/fmm3d_legacy $(MEXLIBS)
 
 
 mex:  $(STATICLIB)
 	cd matlab; $(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY) -mb $(MWRAPFILE).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY) -c $(GATEWAY).c $(MWRAPFILE).mw;\
-	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE) $(MEXLIBS); \
+	$(MEX) $(GATEWAY).c ../lib-static/$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE) $(MEXLIBS); \
 	$(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY2) -mb $(MWRAPFILE2).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY2) -c $(GATEWAY2).c $(MWRAPFILE2).mw;\
-	$(MEX) $(GATEWAY2).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE2) $(MEXLIBS);
+	$(MEX) $(GATEWAY2).c ../lib-static/$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE2) $(MEXLIBS);
 
 #python
 python: $(STATICLIB)
@@ -298,7 +298,7 @@ c/lfmm3d:
 
 c/hfmm3d:
 	$(CC) $(CFLAGS) c/test_hfmm3d.c $(COBJS) $(OBJS) -o c/int2-test-hfmm3d $(CLIBS)
-	#time -p c/int2-test-hfmm3d
+	time -p c/int2-test-hfmm3d
 
 
 

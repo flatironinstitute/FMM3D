@@ -7,7 +7,13 @@
 CC=gcc-9
 CXX=g++-9
 FC=gfortran-9
-FFLAGS= -fPIC -O3 -march=native -funroll-loops 
+FFLAGS= -fPIC -O3 -march=native -funroll-loops
+
+ifeq ($(FAST_KER),ON)
+
+  FFLAGS += -lstdc++
+
+endif
 
 
 CFLAGS += -I src 
