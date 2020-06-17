@@ -9,3 +9,6 @@ FFLAGS= -fPIC -O3 -funroll-loops
 DYNAMICLIB = $(LIBNAME).dll 
 
 DYLIBS +=  -Wl,--out-implib,$(LIMPLIB) 
+
+MINGW_LPATH=C:/mingw-w64/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0
+MEXLIBS = -lmex -lmat -lmx -lgfortran -lquadmath -L${MINGW_LPATH}
