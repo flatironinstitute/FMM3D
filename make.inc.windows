@@ -1,0 +1,11 @@
+# makefile overrides
+# OS:       windows
+# Compiler: mingw
+# OpenMP:   default enabled unless specified
+#
+
+FFLAGS= -fPIC -O3 -funroll-loops 
+
+DYNAMICLIB = $(LIBNAME).dll 
+
+DYLIBS +=  -Wl,--out-implib,$(LIMPLIB) 
