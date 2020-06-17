@@ -6,22 +6,22 @@
 # the file make.inc, which overrides the defaults below (which are 
 # for ubunutu linux/gcc system). 
 
+
 # compiler, and linking from C, fortran
 CC=gcc
 CXX=g++
 FC=gfortran
-FFLAGS= -fPIC -O3 -march=native -funroll-loops 
 
 
-
+# set compiler flags for c and fortran
+FFLAGS= -fPIC -O3 -march=native -funroll-loops -std=legacy 
 CFLAGS= -std=c99 
 CFLAGS+= $(FFLAGS) 
 CXXFLAGS= -std=c++11 -DSCTL_PROFILE=-1
 CXXFLAGS+=$(FFLAGS)
 
+# set linking libraries
 CLIBS = -lgfortran -lm -ldl 
-
-
 LIBS = -lm 
 
 # extra flags for multithreaded: C/Fortran, MATLAB
@@ -43,31 +43,46 @@ MEX=mex
 MWRAP=../../mwrap/mwrap
 MEXLIBS=-lm -lstdc++ -ldl -lgfortran
 
-ifeq ($(FAST_KER),ON)
-  LIBS += -lstdc++
-  CLIBS += -lstdc++
-  OMP = ON
+FMM_INSTALL_DIR=$(PREFIX)
+ifeq ($(PREFIX),)
+	FMM_INSTALL_DIR = ${HOME}/lib
 endif
 
+DYLIBS = $(LIBS)
+
+LIBNAME=libfmm3d
+DYNAMICLIB = $(LIBNAME).so
+STATICLIB = $(LIBNAME).a
+LIMPLIB = $(LIBNAME)_dll.lib
 
 
 
 # For your OS, override the above by placing make variables in make.inc
 -include make.inc
 
+# additional compile flags for FAST_KER
+ifeq ($(FAST_KER),ON)
+  LIBS += -lstdc++
+  DYLIBS += -lstdc++
+  CLIBS += -lstdc++
+  FFLAGS += -lstdc++
+  CFLAGS += -lstdc++
+  OMP = ON
+endif
+
+
 # multi-threaded libs & flags needed
-ifeq ($(OMP),ON)
+ifneq ($(OMP),OFF)
+
 CFLAGS += $(OMPFLAGS)
 FFLAGS += $(OMPFLAGS)
 MFLAGS += $(MOMPFLAGS)
 LIBS += $(OMPLIBS)
+DYLIBS += $(OMPLIBS)
 MEXLIBS += $(OMPLIBS)
+
 endif
 
-
-LIBNAME=libfmm3d
-DYNAMICLIB = $(LIBNAME).so
-STATICLIB = $(LIBNAME).a
 
 # vectorized kernel directory
 SRCDIR = ./vec-kernels/src
@@ -123,11 +138,9 @@ CHEADERS = c/cprini.h c/utils.h c/hfmm3d_c.h c/lfmm3d_c.h
 
 OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
-.PHONY: usage lib examples test test-ext python all c c-examples matlab python3 big-test pw-test debug 
+.PHONY: usage install lib examples test test-ext python all c c-examples matlab big-test pw-test debug 
 
 default: usage
-
-##all: cxxkernel lib examples test python python3 c c-examples matlab
 
 cxxkernel: $(CXXOBJ)
 
@@ -136,18 +149,18 @@ $(SRCDIR)/libkernels.o: $(SRCDIR)/libkernels.cpp
 
 usage:
 	@echo "Makefile for FMM3D. Specify what to make:"
+	@echo "  make install - compile and install the main library"
 	@echo "  make lib - compile the main library (in lib/ and lib-static/)"
 	@echo "  make examples - compile and run fortran examples in examples/"
 	@echo "  make c-examples - compile and run c examples in c/"
-	@echo "  make test - compile and run validation tests (will take around 30 secs)"
+	@echo "  make test - compile and run validation tests (will take a couple of mins)"
 	@echo "  make matlab - compile matlab interfaces"
 	@echo "  make mex - generate matlab interfaces (for expert users only, requires mwrap)"
 	@echo "  make python - compile and test python interfaces"
-	@echo "  make python3 - compile and test python interfaces using python3"
 	@echo "  make objclean - removal all object files, preserving lib & MEX"
 	@echo "  make clean - also remove lib, MEX, py, and demo executables"
 	@echo "For faster (multicore) making, append the flag -j"
-	@echo "  'make [task] OMP=ON' for multi-threaded"
+	@echo "  'make [task] OMP=OFF' for single-threaded"
 	@echo "  'make [task] FAST_KER=ON' for using vectorized kernel evaluation and multi-threaded (needs c++)"
 
 
@@ -163,17 +176,25 @@ usage:
 
 # build the library...
 lib: $(STATICLIB) $(DYNAMICLIB)
-ifeq ($(OMP),ON)
+ifneq ($(OMP),OFF)
 	@echo "$(STATICLIB) and $(DYNAMICLIB) built, multithread versions"
 else
 	@echo "$(STATICLIB) and $(DYNAMICLIB) built, single-threaded versions"
 endif
+
+
+install: $(STATICLIB) $(DYNAMICLIB)
+	echo $(FMM_INSTALL_DIR)
+	mkdir -p $(FMM_INSTALL_DIR)
+	cp -f lib/$(DYNAMICLIB) $(FMM_INSTALL_DIR)/
+
 $(STATICLIB): $(OBJS) 
 	ar rcs $(STATICLIB) $(OBJS)
 	mv $(STATICLIB) lib-static/
 $(DYNAMICLIB): $(OBJS) 
-	$(FC) -shared -fPIC $(OMPFLAGS) $(OBJS) -o $(DYNAMICLIB) $(LIBS) 
+	$(FC) -shared -fPIC $(OBJS) -o $(DYNAMICLIB) $(DYLIBS) 
 	mv $(DYNAMICLIB) lib/
+	[ ! -f $(LIMPLIB) ] || mv $(LIMPLIB) lib/
 
 
 # matlab..
@@ -183,25 +204,27 @@ GATEWAY = $(MWRAPFILE)
 GATEWAY2 = $(MWRAPFILE2)
 
 matlab:	$(STATICLIB) matlab/$(GATEWAY).c matlab/$(GATEWAY2).c
-	$(MEX) matlab/$(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d $(MEXLIBS)
-	$(MEX) matlab/$(GATEWAY2).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d_legacy $(MEXLIBS)
+	$(MEX) matlab/$(GATEWAY).c lib-static/$(STATICLIB) $(MFLAGS) \
+	-output matlab/fmm3d $(MEXLIBS) 
+	$(MEX) matlab/$(GATEWAY2).c lib-static/$(STATICLIB) $(MFLAGS) \
+	-output matlab/fmm3d_legacy $(MEXLIBS) 
 
 
 mex:  $(STATICLIB)
 	cd matlab; $(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY) -mb $(MWRAPFILE).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY) -c $(GATEWAY).c $(MWRAPFILE).mw;\
-	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE) $(MEXLIBS); \
-	$(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY2) -mb $(MWRAPFILE2).mw;\
+	$(MEX) $(GATEWAY).c ../lib-static/$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE) \
+	$(MEXLIBS); \
+	$(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY2) -mb \
+	$(MWRAPFILE2).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY2) -c $(GATEWAY2).c $(MWRAPFILE2).mw;\
-	$(MEX) $(GATEWAY2).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE2) $(MEXLIBS);
+	$(MEX) $(GATEWAY2).c ../lib-static/$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE2) \
+	$(MEXLIBS);
 
 #python
 python: $(STATICLIB)
-	cd python && export FLIBS='$(LIBS)' && pip install -e . && cd test && pytest -s
-
-#python
-python3: $(STATICLIB)
-	cd python && export FLIBS='$(LIBS)' && pip3 install -e . && cd test && python3 -m pytest -s
+	cd python && export FLIBS='$(LIBS)' && pip install -e . \
+	&& cd test && pytest -s
 
 # testing routines
 #
@@ -323,7 +346,7 @@ c/ex2_helm:
 	$(CC) $(CFLAGS) c/hfmm3d_vec_example.c $(COBJS) $(OBJS) -o c/int2-hfmm3d-vec-example $(CLIBS)
 
 clean: objclean
-	rm -f lib-static/*.a lib/*.so
+	rm -f lib-static/*.a lib/*.so lib/*.dll lib/*.lib
 	rm -f python/*.so
 	rm -rf python/build
 	rm -rf python/fmm3dpy.egg-info
@@ -343,8 +366,6 @@ big-test: $(STATICLIB) $(TOBJS) test/test_lap_big test/test_helm_big
 pw-test: $(STATICLIB) $(TOBJS) test/test_helm_pw
 	./test/Helmholtz/test_hfmm3d_pw
 
-
-
 test/test_helm_big:
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_big.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_big $(LIBS)
 
@@ -356,7 +377,6 @@ test/test_helm_pw:
 
 debug: $(STATICLIB) $(TOBJS) examples/hfmm3d_deb 
 	time -p examples/hfmm3d_debug
-
 
 examples/hfmm3d_deb:
 	$(FC) $(FFLAGS) examples/hfmm3d_debug1.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_debug $(LIBS)

@@ -12,6 +12,10 @@ LIBS=
 #CLIBS = -lm -ldl -lifcore
 CLIBS = -lm -ldl
 
+ifeq ($(PREFIX),)
+    FMM_INSTALL_DIR=/usr/local/lib
+endif
+
 ifeq ($(FAST_KER),ON)
   CXXFLAGS = $(FFLAGS)
   CXXFLAGS += -std=c++11 -DSCTL_HAVE_SVML -DSCTL_PROFILE=-1

@@ -7,7 +7,11 @@
 CC=gcc-9
 CXX=g++-9
 FC=gfortran-9
-FFLAGS= -fPIC -O3 -march=native -funroll-loops 
+FFLAGS= -fPIC -O3 -march=native -funroll-loops
+
+ifeq ($(PREFIX),)
+    FMM_INSTALL_DIR=/usr/local/lib
+endif
 
 
 CFLAGS += -I src 
