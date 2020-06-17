@@ -26,53 +26,63 @@ Optional:
 Quick install instructions
 *********************************************
 
-Make sure you have dependencies downloaded, and `cd` into your FMM3D
+Make sure you have dependencies installed, and `cd` into your FMM3D
 directory. 
 
--  For linux, run ``make test``.
--  For Mac OSX, run ``cp make.inc.macosx_gcc make.inc`` followed by ``make test``.
--  For Windows, run ``copy makefile.windows makefile`` followed by ``mingw32-make test``
+-  For linux, run ``make install``.
+-  For Mac OSX, run ``cp make.inc.macos.gnu make.inc`` followed by ``make install``.
+-  For Windows, run ``cp make.inc.windows.mingw make.inc`` followed by ``make install`` 
 
 This should compile the static library
-in ``lib-static/`` and some fortran test drivers in ``test/``, after which it
+in ``lib-static/``, the dynamic library in ``lib/`` and copy the dynamic 
+library to ``$(HOME)/lib`` on Linux and Windows, and to
+``/usr/local/lib`` on Mac OSX.
+The location of the default installation directory can be changed by
+running::
+
+    make install PREFIX=(INSTALL_DIR)
+
+
+In order to link against the dynamic library, you will have to update
+the ``PATH`` environment variable on Windows, ``LD_LIBRARY_PATH`` environment
+variable on Linux and ``DYLD_LIBRARY_PATH`` environment variable on Mac OSX
+to the installation directory.
+You may then link to the FMM library using the ``-lfmm3d`` option.
+
+.. note :: 
+   On MacOSX, /usr/local/lib is included by default in the
+   DYLD_LIBRARY_PATH.
+
+
+To verify successful installation of the program, run ``make test``
+which compiles some fortran test drivers in ``test/`` linked against
+the static library, after which it
 runs the test programs. The last 14 lines of the terminal output should be::
 
-   (cat/type) print_testreshelm.txt
+   cat print_testreshelm.txt
    Successfully completed 5 out of 5 tests in helmrouts3d testing suite
    Successfully completed 18 out of 18 tests in hfmm3d testing suite
    Successfully completed 6 out of 6 tests in hfmm3d scale testing suite
    Successfully completed 18 out of 18 tests in hfmm3d vec testing suite
    Successfully completed 1 out of 1 tests in helm3d_mps testing suite
-   (cat/type) print_testreslap.txt
+   cat print_testreslap.txt
    Successfully completed 5 out of 5 tests in laprouts3d testing suite
    Successfully completed 18 out of 18 tests in lfmm3d testing suite
    Successfully completed 2 out of 2 tests in lfmm3d scale testing suite
    Successfully completed 18 out of 18 tests in lfmm3d vec testing suite
-   (rm/del) print_testreshelm.txt
-   (rm/del) print_testreslap.txt
-
-The text in brackets is OS dependent. For Unix and OSX, the output is
-``cat`` and ``rm``, while for windows it is ``type`` and ``del``.
+   rm print_testreshelm.txt
+   rm print_testreslap.txt
 
 
 .. note ::
-   By default, ``make test`` creates the easy-to-install version of the library. To
+   By default, ``make install`` creates the easy-to-install version of the library. To
    compile the library in its high-performance mode, append
-   ``FAST_KER=ON`` to the make task. For instance ``make test`` should be replaced by 
-   ``make test FAST_KER=ON``. See :ref:`custom-install` for
+   ``FAST_KER=ON`` to the make task. For instance ``make install`` should be replaced by 
+   ``make install FAST_KER=ON``. See :ref:`custom-install` for
    other options.
    
 
-If ``make test`` fails, see more detailed instructions below. If it succeeds, run
-``make lib`` (``mingw32-make lib`` on windows), 
-which creates the dynamic library (``libfmm3d.so`` or ``libfmm3d.dll``). 
-You may then link to the FMM library using the ``-lfmm3d`` (``-lfmm3d_dll`` on windows) 
-option.
-
-.. note :: 
-   On MacOSX, in order to link with the dynamic libraries, you will
-   need to copy libfmm3d.so to ``usr/local/lib``. See any of the
-   makefiles in the ``examples/`` directory for prototypes.
+If ``make test`` fails, see more detailed instructions below. 
 
 Type ``make`` to see a list of other build options (language
 interfaces, etc). Please see `Fortran and C interfaces <fortran-c.html>`__ and look in
@@ -87,10 +97,9 @@ Custom library compilation options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In the (default) easy-to-install version,
-the library is compiled  without using the optimized direct evaluation kernels
-or multi-threading.
+the library is compiled  without using the optimized direct evaluation kernels.
 
-In order to enable multi-threading, append ``OMP=ON`` to the make task.
+In order to disable multi-threading, append ``OMP=OFF`` to the make task.
 
 In order to use the optimized direct evaluation kernels (this
 automatically turns on multithreading as well), append ``FAST_KER=ON`` to
@@ -139,11 +148,11 @@ Analogous C sample drivers can be found in ``c/``.
 Building Python wrappers
 ****************************
 
-First make sure you have python3 and pip3 installed. 
+First make sure you have python (version 3 or higher) and pip installed. 
 
-You may then execute ``make python3`` (after copying over the
+You may then execute ``make python`` (after copying over the
 operating system specific make.inc.* file to make.inc) which calls
-pip3 for the install and then runs some tests.
+pip for the install and then runs some tests.
 
 To rerun the tests, you may run ``pytest`` in ``python/`` 
 or alternatively run ``python python/test_hfmm.py`` and 
@@ -151,6 +160,20 @@ or alternatively run ``python python/test_hfmm.py`` and
 
 See ``python/hfmmexample.py`` and ``python/lfmmexample.py`` to see
 usage examples for the Python wrappers.
+
+.. note::
+   On windows, you will need to update ``distutils.cfg`` located in 
+   ``(PYTHON_INSTALL_DIR)\Lib\distutils`` and set it to::
+
+       [build]
+       compiler=mingw32
+
+       [build_ext]
+       compiler=mingw32
+
+   which forces python to use the mingw compiler for building its
+   modules. In case you wish to revert to using VC/C++ for building python
+   modules, make sure to update distutils.cfg appropriately.
 
 
 A few words about Python environments
@@ -171,12 +194,7 @@ Building the MATLAB wrappers
 
 First make sure you have MATLAB installed. 
 
-The library comes with precompiled interfaces of the easy-to-install version
-of the library and can be directly
-called from MATLAB. However, we **strongly** recommend compiling 
-the mex interfaces on your machine. 
-
-This can be done using ``make matlab`` (after copying over the operating
+Then run ``make matlab`` (after copying over the operating
 system specific make.inc.* file to make.inc) which links the .m files to
 the .c file in the matlab folder.
 
@@ -228,17 +246,20 @@ Then do::
 On Windows
 ~~~~~~~~~~~~~~~
 
-Download 64 bit mingw from http://mingw-w64.org/doku.php. Follow the
-install instructions and append to the environment variable ``PATH`` the
+Download 64 bit mingw (available `here <http://mingw-w64.org/doku.php>`_). 
+Follow the install instructions and append to the environment variable ``PATH`` the
 location of the bin directory of your mingw installation.
 
-In all the instructions above, ``make`` should be replaced with
-``mingw32-make``.
+Download  and install ``make`` for windows 
+(Available `here <http://gnuwin32.sourceforge.net/packages/make.htm>`_).
+
+Download and install ``git`` for windows
+(Available `here <https://git-scm.com/download/win>`_).
 
 Tips for installing optional dependencies
 ******************************************
 
-Installing python3 and pip3
+Installing python and pip
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 On Ubuntu linux
@@ -258,8 +279,27 @@ Make sure you have homebrew installed. See `Tips for installing dependencies -> 
   
   brew install python3
 
-Then use `make python3` instead of `make python`. You will only need to
-do this in case the default version of `python` and `pip` is not >=3.0 
+
+On Windows
+###########
+
+Download and install python3.7 from python.org.
+
+Configuring MATLAB
+~~~~~~~~~~~~~~~~~~~
+
+On Windows
+############
+
+Update ``MINGW_LPATH`` in ``make.inc.windows.mingw`` to point to the
+appropriate installation directory (it should be the one within the
+``gcc`` folder).
+
+To setup mingw as the C compiler on MATLAB run ``configuremingw.p``
+(which can be downloaded from 
+`here <https://www.mathworks.com/matlabcentral/answers/uploaded_files/88639/configuremingw.p>`_)
+and choose the mingw directory. To verify successful setup run ``mex
+-setup`` from matlab and it should be configured to compile with mingw.
 
 
 Installing MWrap

@@ -150,15 +150,16 @@ $(SRCDIR)/libkernels.o: $(SRCDIR)/libkernels.cpp
 usage:
 	@echo "Makefile for FMM3D. Specify what to make:"
 	@echo "  make install - compile and install the main library"
+	@echo "  make install PREFIX=(INSTALL_DIR) - compile and install the main library at custom location given by PREFIX"
 	@echo "  make lib - compile the main library (in lib/ and lib-static/)"
-	@echo "  make examples - compile and run fortran examples in examples/"
-	@echo "  make c-examples - compile and run c examples in c/"
 	@echo "  make test - compile and run validation tests (will take a couple of mins)"
 	@echo "  make matlab - compile matlab interfaces"
-	@echo "  make mex - generate matlab interfaces (for expert users only, requires mwrap)"
 	@echo "  make python - compile and test python interfaces"
+	@echo "  make examples - compile and run fortran examples in examples/"
+	@echo "  make c-examples - compile and run c examples in c/"
 	@echo "  make objclean - removal all object files, preserving lib & MEX"
 	@echo "  make clean - also remove lib, MEX, py, and demo executables"
+	@echo "  make mex - generate matlab interfaces (for expert users only, requires mwrap)"
 	@echo "For faster (multicore) making, append the flag -j"
 	@echo "  'make [task] OMP=OFF' for single-threaded"
 	@echo "  'make [task] FAST_KER=ON' for using vectorized kernel evaluation and multi-threaded (needs c++)"
@@ -187,6 +188,13 @@ install: $(STATICLIB) $(DYNAMICLIB)
 	echo $(FMM_INSTALL_DIR)
 	mkdir -p $(FMM_INSTALL_DIR)
 	cp -f lib/$(DYNAMICLIB) $(FMM_INSTALL_DIR)/
+	@echo "Make sure to include " $(FMM_INSTALL_DIR) " in the appropriate path variable"
+	@echo "    LD_LIBRARY_PATH on Linux"
+	@echo "    PATH on windows"
+	@echo "    DYLD_LIBRARY_PATH on Mac OSX (not needed if default installation directory is used"
+	@echo " "
+	@echo "In order to link against the dynamic library, use -L"$(FMM_INSTALL_DIR) " -lfmm3d"
+
 
 $(STATICLIB): $(OBJS) 
 	ar rcs $(STATICLIB) $(OBJS)
