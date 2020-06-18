@@ -106,7 +106,7 @@ HOBJS += $(HELM)/hndiv.o
 endif
 
 ifeq ($(FAST_KER),ON)
-LOBJS += $(LAP)/lapkernels.o
+LOBJS += $(LAP)/lapkernels_fast.o
 LOBJS += $(LAP)/lndiv_fast.o
 HOBJS += $(HELM)/helmkernels_fast.o
 HOBJS += $(HELM)/hndiv_fast.o
@@ -251,7 +251,7 @@ test/lfmm3d_vec:
 
 test_hfmm3d_mps: $(STATICLIB) $(TOBJS)
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_mps.f90 \
-  $(TOBJS) $(COMOBJS) $(HOBJS) \
+  $(TOBJS) $(COMOBJS) $(HOBJS) $(LIBS)\
   -o test/Helmholtz/int2-test-hfmm3d-mps
 
 
