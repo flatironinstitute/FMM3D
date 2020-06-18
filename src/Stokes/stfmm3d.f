@@ -146,7 +146,7 @@ c
 c     TODO: implement other stresslet options
 c------------------------------------------------------------------
       implicit none
-      integer nd, ifstoklet, ifstrslet
+      integer nd, ifstoklet, ifstrslet, ntarg
       double precision eps
       integer nsource, ifppreg, ifppregtarg
       double precision source(3, *), targ(3, *)
@@ -161,9 +161,13 @@ c     local
       double precision, allocatable :: potl(:,:,:), gradl(:,:,:,:),
      1     hessl(:,:,:,:), pottargl(:,:,:), gradtargl(:,:,:,:),
      2     hesstargl(:,:,:,:)
+      double precision :: pt(3), pl, gl(3), hl(6), vel(3), velgrad(3,3)
+      double precision :: press, pjl, pjv
 
       integer ndl, ifchargel, ifdipolel, ifpghl, ifpghtargl
-      integer ndper, nsourcec, nsourced, nsp, ntp, nsg, ntg, nsh, nth
+      integer ndper
+
+      integer i, j, ii, ifppreg1, l, npt, ier
       
 
       ndper = 0
@@ -178,12 +182,11 @@ c     local
       if (ifstoklet .eq. 1) ifchargel = 1
       if (ifstrslet .eq. 1) ifdipolel = 1
       
-      if (ifstrslet .eq. 1 .or. ifstrslet .eq. 0
       ndper = 4
       ndl = ndper*nd
 
       ifpghl = 2
-      ifpghltarg = ifpghl
+      ifpghtargl = ifpghl
 
 c     allocate necessary arrays
       
