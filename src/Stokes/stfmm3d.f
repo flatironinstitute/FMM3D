@@ -161,8 +161,8 @@ c     local
       double precision, allocatable :: potl(:,:,:), gradl(:,:,:,:),
      1     hessl(:,:,:,:), pottargl(:,:,:), gradtargl(:,:,:,:),
      2     hesstargl(:,:,:,:)
-      double precision :: pt(3), pl, gl(3), hl(6), vel(3), velgrad(3,3)
-      double precision :: press, pjl, pjv
+      double precision :: pt(3), gl(3), hl(6), vel(3), velgrad(3,3)
+      double precision :: press, pl, pv, dmu(3), dnu(3), sigma(3)
 
       integer ndl, ifchargel, ifdipolel, ifpghl, ifpghtargl
       integer ndper
@@ -186,14 +186,14 @@ c     local
       ndl = ndper*nd
 
       ifpghl = 2
-      ifpghtargl = ifpghl
+      ifpghtargl = 2
 
 c     allocate necessary arrays
       
-      allocate(charge(nd,ndper,nsource),dipvec(nd,ndper,3,nsource),
-     1     potl(nd,ndper,nsource),pottargl(nd,ndper,ntarg),
-     2     gradl(nd,ndper,3,nsource),gradtargl(nd,ndper,3,ntarg),
-     3     hessl(nd,ndper,6,nsource),hesstargl(nd,ndper,6,ntarg),
+      allocate(charge(ndper,nd,nsource),dipvec(ndper,nd,3,nsource),
+     1     potl(ndper,nd,nsource),pottargl(ndper,nd,ntarg),
+     2     gradl(ndper,nd,3,nsource),gradtargl(ndper,nd,3,ntarg),
+     3     hessl(ndper,nd,6,nsource),hesstargl(ndper,nd,6,ntarg),
      4     stat=ier)
       if(ier .ne. 0) then
          print *, "In stfmm3d: cannot allocate Laplace call storage"
@@ -207,65 +207,69 @@ c     allocate necessary arrays
 c     set-up appropriate vector charge and dipole arrays
 
       do i = 1,nsource
-         
-         do l = 1,ndper
-            do j = 1,nd
-               charge(j,l,i) = 0
-               dipvec(j,l,1,i) = 0
-               dipvec(j,l,2,i) = 0
-               dipvec(j,l,3,i) = 0
+
+         do j = 1,nd
+            do l = 1,ndper
+               charge(l,j,i) = 0
+               dipvec(l,j,1,i) = 0
+               dipvec(l,j,2,i) = 0
+               dipvec(l,j,3,i) = 0
             enddo
          enddo
-
-         do l = 1,3
-            do j = 1,nd
-
-               if (ifstoklet .eq. 1) then
-                  charge(j,l,i) = charge(j,l,i) + stoklet(j,l,i)/2
-               endif
-               if (ifstrslet .eq. 1) then
-                  dipvec(j,l,1,i) = dipvec(j,l,1,i) +
-     1                 (strslet(j,l,i)*strsvec(j,1,i) +
-     2                 strsvec(j,l,i)*strslet(j,1,i))/2
-                  dipvec(j,l,2,i) = dipvec(j,l,2,i) +
-     1                 (strslet(j,l,i)*strsvec(j,2,i) +
-     2                 strsvec(j,l,i)*strslet(j,2,i))/2
-                  dipvec(j,l,3,i) = dipvec(j,l,3,i) +
-     1                 (strslet(j,l,i)*strsvec(j,3,i) +
-     2                 strsvec(j,l,i)*strslet(j,3,i))/2
-               endif
-            enddo
-         enddo
-
-         l = 4
 
          do j = 1,nd
             if (ifstoklet .eq. 1) then
+               sigma(1) = stoklet(j,1,i)
+               sigma(2) = stoklet(j,2,i)
+               sigma(3) = stoklet(j,3,i)
+            endif
+            if (ifstrslet .ge. 1) then
+               dmu(1) = strslet(j,1,i)
+               dmu(2) = strslet(j,2,i)
+               dmu(3) = strslet(j,3,i)
+               dnu(1) = strsvec(j,1,i)
+               dnu(2) = strsvec(j,2,i)
+               dnu(3) = strsvec(j,3,i)
+            endif
+
+            do l = 1,3
                
-               pjl = (stoklet(j,1,i)*source(1,i) +
-     1              stoklet(j,2,i)*source(2,i) +
-     2              stoklet(j,3,i)*source(3,i))/2
-               
-               charge(j,l,i) = charge(j,l,i) + pjl
+               if (ifstoklet .eq. 1) then
+                  charge(l,j,i) = charge(l,j,i) + sigma(l)/2
+               endif
+               if (ifstrslet .eq. 1) then
+                  dipvec(l,j,1,i) = dipvec(l,j,1,i) - (dmu(l)*dnu(1) + 
+     1                 dmu(1)*dnu(l))/2
+                  dipvec(l,j,2,i) = dipvec(l,j,2,i) - (dmu(l)*dnu(2) + 
+     1                 dmu(2)*dnu(l))/2
+                  dipvec(l,j,3,i) = dipvec(l,j,3,i) - (dmu(l)*dnu(3) + 
+     1                 dmu(3)*dnu(l))/2
+               endif
+            enddo
+            
+            l = 4
+            
+            if (ifstoklet .eq. 1) then
+               pl = sigma(1)*source(1,i) + sigma(2)*source(2,i) +
+     1              sigma(3)*source(3,i)
+               charge(l,j,i) = charge(l,j,i) + pl/2
             endif
             if (ifstrslet .eq. 1) then
+               pl = dmu(1)*source(1,i) + dmu(2)*source(2,i) +
+     1              dmu(3)*source(3,i)
+               pv = dnu(1)*source(1,i) + dnu(2)*source(2,i) +
+     1              dnu(3)*source(3,i)
                
-               pjv = (strsvec(j,1,i)*source(1,i) +
-     1              strsvec(j,2,i)*source(2,i) +
-     2              strsvec(j,3,i)*source(3,i))/2
-               pjl = (strslet(j,1,i)*source(1,i) +
-     1              strslet(j,2,i)*source(2,i) +
-     2              strslet(j,3,i)*source(3,i))/2
-               
-               dipvec(j,l,1,i) = dipvec(j,l,1,i) +
-     1              strslet(j,1,i)*pjv + strsvec(j,1,i)*pjl
-               dipvec(j,l,2,i) = dipvec(j,l,2,i) +
-     1              strslet(j,2,i)*pjv + strsvec(j,2,i)*pjl
-               dipvec(j,l,3,i) = dipvec(j,l,3,i) +
-     1              strslet(j,3,i)*pjv + strsvec(j,3,i)*pjl
+               dipvec(l,j,1,i) = dipvec(l,j,1,i) -
+     1              (dmu(1)*pv + dnu(1)*pl)/2
+               dipvec(l,j,2,i) = dipvec(l,j,2,i) -
+     1              (dmu(2)*pv + dnu(2)*pl)/2
+               dipvec(l,j,3,i) = dipvec(l,j,3,i) -
+     1              (dmu(3)*pv + dnu(3)*pl)/2
             endif
+            
          enddo
-                  
+         
       enddo
 
 
@@ -306,35 +310,35 @@ c     unpack stacked Laplace FMM calls
                   pt(1) = source(1,ii)
                   pt(2) = source(2,ii)
                   pt(3) = source(3,ii)
-                  pl = potl(j,l,ii)
-                  gl(1) = gradl(j,l,1,ii)
-                  gl(2) = gradl(j,l,2,ii)
-                  gl(3) = gradl(j,l,3,ii)
-                  hl(1) = hessl(j,l,1,ii)
-                  hl(2) = hessl(j,l,2,ii)
-                  hl(3) = hessl(j,l,3,ii)
-                  hl(4) = hessl(j,l,4,ii)
-                  hl(5) = hessl(j,l,5,ii)
-                  hl(6) = hessl(j,l,6,ii)            
+                  pl = potl(l,j,ii)
+                  gl(1) = gradl(l,j,1,ii)
+                  gl(2) = gradl(l,j,2,ii)
+                  gl(3) = gradl(l,j,3,ii)
+                  hl(1) = hessl(l,j,1,ii)
+                  hl(2) = hessl(l,j,2,ii)
+                  hl(3) = hessl(l,j,3,ii)
+                  hl(4) = hessl(l,j,4,ii)
+                  hl(5) = hessl(l,j,5,ii)
+                  hl(6) = hessl(l,j,6,ii)            
                else
                   ifppreg1 = ifppregtarg                  
                   ii = i
                   pt(1) = targ(1,ii)
                   pt(2) = targ(2,ii)
                   pt(3) = targ(3,ii)
-                  pl = pottargl(j,l,ii)
-                  gl(1) = gradtargl(j,l,1,ii)
-                  gl(2) = gradtargl(j,l,2,ii)
-                  gl(3) = gradtargl(j,l,3,ii)
-                  hl(1) = hesstargl(j,l,1,ii)
-                  hl(2) = hesstargl(j,l,2,ii)
-                  hl(3) = hesstargl(j,l,3,ii)
-                  hl(4) = hesstargl(j,l,4,ii)
-                  hl(5) = hesstargl(j,l,5,ii)
-                  hl(6) = hesstargl(j,l,6,ii)            
+                  pl = pottargl(l,j,ii)
+                  gl(1) = gradtargl(l,j,1,ii)
+                  gl(2) = gradtargl(l,j,2,ii)
+                  gl(3) = gradtargl(l,j,3,ii)
+                  hl(1) = hesstargl(l,j,1,ii)
+                  hl(2) = hesstargl(l,j,2,ii)
+                  hl(3) = hesstargl(l,j,3,ii)
+                  hl(4) = hesstargl(l,j,4,ii)
+                  hl(5) = hesstargl(l,j,5,ii)
+                  hl(6) = hesstargl(l,j,6,ii)            
                endif
 
-
+               
                if (l .ge. 1 .and. l .le. 3) then
                   
                   vel(l) = vel(l) + pl

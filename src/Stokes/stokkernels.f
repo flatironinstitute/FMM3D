@@ -359,7 +359,7 @@ c     type I stresslet
 
                dmunu = dmu(1)*dnu(1) + dmu(2)*dnu(2) + dmu(3)*dnu(3)
                
-               pre(idim,i) = pre(idim,i) - 2.0d0*dmunu + 6.0d0*pl*pv/r5
+               pre(idim,i) = pre(idim,i) - 2.0d0*dmunu/r3+6.0d0*pl*pv/r5
             enddo
             
  20         continue

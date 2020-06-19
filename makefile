@@ -252,10 +252,11 @@ test/lfmm3d_scale:
 test/lfmm3d_vec:
 	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_vec.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/int2-test-lfmm3d-vec $(LIBS) 
 
-test/stfmm3d:
+test/stfmm3d: 
 	$(FC) $(FFLAGS) test/Stokes/test_stfmm3d.f $(TOBJS) $(COMOBJS) $(LOBJS) $(STOBJS) -o test/Stokes/int2-test-stfmm3d $(LIBS) 
+	cd test/Stokes; ./int2-test-stfmm3d
 
-test/stokkernels: $(STATICLIB) $(TOBJS) $(LOBJS) $(STOBJS) $(COMOBJS)
+test/stokkernels: 
 	$(FC) $(FFLAGS) test/Stokes/test_stokkernels.f $(TOBJS) $(COMOBJS) $(LOBJS) $(STOBJS) -o test/Stokes/int2-test-stokkernels $(LIBS)
 	cd test/Stokes; ./int2-test-stokkernels
 
