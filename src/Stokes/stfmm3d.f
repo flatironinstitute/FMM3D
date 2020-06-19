@@ -99,7 +99,8 @@ c               flag for evaluating potential, gradient, and pressure
 c               at the sources
 c               ifppreg = 1, only potential
 c               ifppreg = 2, potential and pressure
-c               ifppreg = 3, potential, pressure, and gradient
+c         GRADIENT NOT IMPLEMENTED
+c               ifppreg = 3, potential, pressure, and gradient 
 c      
 c   ntarg   in: integer  
 c              number of targs 
@@ -113,6 +114,7 @@ c                flag for evaluating potential, gradient, and pressure
 c                at the targets
 c                ifppregtarg = 1, only potential
 c                ifppregtarg = 2, potential and pressure
+c         GRADIENT NOT IMPLEMENTED
 c                ifppregtarg = 3, potential, pressure, and gradient
 c
 c-----------------------------------------------------------------------
@@ -125,6 +127,7 @@ c
 c   pre   out: double precision(nd,nsource)
 c           pressure at the source locations
 c      
+c         GRADIENT NOT IMPLEMENTED
 c   grad   out: double precision(nd,3,3,nsource) 
 c              gradient of velocity at the source locations
 c              grad(l,i,j,k) is the ith component of the
@@ -137,13 +140,14 @@ c
 c   pretarg   out: double precision(nd,ntarg)
 c               pressure at the targets
 c      
+c         GRADIENT NOT IMPLEMENTED
 c   gradtarg   out: double precision(nd,3,3,ntarg) 
 c               gradient of velocity at the targets
 c               gradtarg(l,i,j,k) is the ith component of the
 c               gradient of the jth component of the velocity
 c               for the lth density at the kth target
 c
-c     TODO: implement other stresslet options
+c     TODO: implement other stresslet options and gradient
 c------------------------------------------------------------------
       implicit none
       integer nd, ifstoklet, ifstrslet, ntarg
