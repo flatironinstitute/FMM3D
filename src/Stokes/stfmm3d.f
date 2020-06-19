@@ -210,6 +210,8 @@ c     allocate necessary arrays
 
 c     set-up appropriate vector charge and dipole arrays
 
+c$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j,l,sigma,dmu,dnu)
+c$OMP$ PRIVATE(pl,pv)      
       do i = 1,nsource
 
          do j = 1,nd
@@ -275,6 +277,7 @@ c     set-up appropriate vector charge and dipole arrays
          enddo
          
       enddo
+c$OMP END PARALLEL DO      
 
 
 c     call Laplace FMM
@@ -287,7 +290,9 @@ c     call Laplace FMM
       npt = ntarg + nsource
 
 c     unpack stacked Laplace FMM calls
-      
+
+c$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j,l,ifppreg1,ii)
+c$OMP$ PRIVATE(pt,pl,gl,hl,vel,velgrad,press)      
       do i = 1,npt
 
          do j = 1,nd
@@ -435,6 +440,7 @@ c     confirm hessian ordering convention...
             endif               
          enddo
       enddo
+c$OMP END PARALLEL DO
       
       return
       end

@@ -2,6 +2,8 @@ c
 c      TESTING SUITE FOR STOKES FMM:  June 18th, 2020
 c
 c
+
+c$    use omp_lib
       implicit real *8 (a-h,o-z)
       
       real *8, allocatable :: pot(:,:), pre(:), grad(:,:,:)
@@ -68,11 +70,18 @@ c
       ifstrslet = 1
       ifppreg = 2
       ifppregtarg = 2
+
+      call cpu_time(t1)
+c$    t1 = omp_get_wtime()      
       call stfmm3d(nd,eps,ns,source,ifstoklet,stoklet,
      1     ifstrslet,strslet,strsvec,ifppreg,pot,pre,grad,
      2     nt,targ,ifppregtarg,pottarg,pretarg,gradtarg)
+      call cpu_time(t2)
+c$    t2 = omp_get_wtime()      
 
 
+      call prin2('fmm time *',t2-t1,1)
+      
       allocate(pot2(3,ns),pre2(ns),grad2(3,3,ns))
       allocate(pottarg2(3,nt),pretarg2(nt),gradtarg2(3,3,nt))
 
