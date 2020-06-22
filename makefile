@@ -193,6 +193,7 @@ install: $(STATICLIB) $(DYNAMICLIB)
 	echo $(FMM_INSTALL_DIR)
 	mkdir -p $(FMM_INSTALL_DIR)
 	cp -f lib/$(DYNAMICLIB) $(FMM_INSTALL_DIR)/
+	[ ! -f lib/$(LIMPLIB) ] || cp lib/$(LIMPLIB) $(FMM_INSTALL_DIR)/
 	@echo "Make sure to include " $(FMM_INSTALL_DIR) " in the appropriate path variable"
 	@echo "    LD_LIBRARY_PATH on Linux"
 	@echo "    PATH on windows"

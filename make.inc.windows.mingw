@@ -9,9 +9,14 @@ FFLAGS= -fPIC -O3 -funroll-loops
 DYNAMICLIB = $(LIBNAME).dll
 LIMPLIB = $(LIBNAME)_dll.lib
 
-LLINKLIB = -lfmm3d_dll
+LLINKLIB = -llibfmm3d_dll
 
 DYLIBS +=  -Wl,--out-implib,$(LIMPLIB) 
+
+ifeq ($(PREFIX),)
+    FMM_INSTALL_DIR=C:\lib
+endif
+
 
 MINGW_LPATH=C:/mingw-w64/mingw64/lib/gcc/x86_64-w64-mingw32/8.1.0
 MEXLIBS = -lmex -lmat -lmx -lgfortran -lquadmath -L${MINGW_LPATH}
