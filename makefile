@@ -53,7 +53,9 @@ DYLIBS = $(LIBS)
 LIBNAME=libfmm3d
 DYNAMICLIB = $(LIBNAME).so
 STATICLIB = $(LIBNAME).a
-LIMPLIB = $(LIBNAME)_dll.lib
+LIMPLIB = $(DYNAMICLIB)
+
+LLINKLIB = -lfmm3d
 
 
 
@@ -138,7 +140,7 @@ CHEADERS = c/cprini.h c/utils.h c/hfmm3d_c.h c/lfmm3d_c.h
 
 OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
 
-.PHONY: usage install lib examples test test-ext python all c c-examples matlab big-test pw-test debug 
+.PHONY: usage install lib examples test test-ext python all c c-examples matlab big-test pw-test debug test-dyn matlab-dyn python-dyn 
 
 default: usage
 
@@ -155,6 +157,9 @@ usage:
 	@echo "  make test - compile and run validation tests (will take a couple of mins)"
 	@echo "  make matlab - compile matlab interfaces"
 	@echo "  make python - compile and test python interfaces"
+	@echo "  make test-dyn - test successful installation by validation tests linked to dynamic library (will take a couple of mins)"
+	@echo "  make matlab-dyn - compile matlab interfaces with dynamic library linking"
+	@echo "  make python-dyn - compile and test python interfaces with dynamic library linking"
 	@echo "  make examples - compile and run fortran examples in examples/"
 	@echo "  make c-examples - compile and run c examples in c/"
 	@echo "  make objclean - removal all object files, preserving lib & MEX"
@@ -217,6 +222,11 @@ matlab:	$(STATICLIB) matlab/$(GATEWAY).c matlab/$(GATEWAY2).c
 	$(MEX) matlab/$(GATEWAY2).c lib-static/$(STATICLIB) $(MFLAGS) \
 	-output matlab/fmm3d_legacy $(MEXLIBS) 
 
+matlab-dyn:	$(DYNAMICLIB) matlab/$(GATEWAY).c matlab/$(GATEWAY2).c
+	$(MEX) matlab/$(GATEWAY).c $(MFLAGS) \
+	-output matlab/fmm3d $(MEXLIBS) -L$(FMM_INSTALL_DIR) $(LLINKLIB) 
+	$(MEX) matlab/$(GATEWAY2).c $(MFLAGS) \
+	-output matlab/fmm3d_legacy $(MEXLIBS) -L$(FMM_INSTALL_DIR) $(LLINKLIB)
 
 mex:  $(STATICLIB)
 	cd matlab; $(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY) -mb $(MWRAPFILE).mw;\
@@ -244,6 +254,15 @@ test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm
 	rm print_testreshelm.txt
 	rm print_testreslap.txt
 
+test-dyn: $(DYNAMICLIB) $(TOBJS) test/helmrouts-dyn test/hfmm3d-dyn test/hfmm3d_vec-dyn test/hfmm3d_scale-dyn test/laprouts-dyn test/lfmm3d-dyn test/lfmm3d_vec-dyn test_hfmm3d_mps-dyn test/lfmm3d_scale-dyn
+	(cd test/Helmholtz; ./run_helmtest.sh)
+	(cd test/Laplace; ./run_laptest.sh)
+	cat print_testreshelm.txt
+	cat print_testreslap.txt
+	rm print_testreshelm.txt
+	rm print_testreslap.txt
+
+test-ext: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_zkbig test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale
 test-ext: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_zkbig test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale
 	(cd test/Helmholtz; ./run_helmtest_ext.sh)
 	(cd test/Laplace; ./run_laptest.sh)
@@ -284,6 +303,40 @@ test_hfmm3d_mps: $(STATICLIB) $(TOBJS)
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_mps.f90 \
   $(TOBJS) $(COMOBJS) $(HOBJS) \
   -o test/Helmholtz/int2-test-hfmm3d-mps
+
+
+## Linking against dynamic libraries
+#
+#
+test/helmrouts-dyn: 
+	$(FC) $(FFLAGS) test/Helmholtz/test_helmrouts3d.f $(TOBJS) -o test/Helmholtz/int2-test-helmrouts3d -L$(FMM_INSTALL_DIR) $(LLINKLIB) 
+
+test/hfmm3d-dyn:
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d.f $(TOBJS) -o test/Helmholtz/int2-test-hfmm3d -L$(FMM_INSTALL_DIR) $(LLINKLIB)  
+
+test/hfmm3d_scale-dyn:
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_scale.f $(TOBJS) -o test/Helmholtz/int2-test-hfmm3d-scale -L$(FMM_INSTALL_DIR) $(LLINKLIB) 
+
+test/hfmm3d_vec-dyn:
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_vec.f $(TOBJS) -o test/Helmholtz/int2-test-hfmm3d-vec -L$(FMM_INSTALL_DIR) $(LLINKLIB) 
+
+test/laprouts-dyn:
+	$(FC) $(FFLAGS) test/Laplace/test_laprouts3d.f $(TOBJS) -o test/Laplace/int2-test-laprouts3d -L$(FMM_INSTALL_DIR) $(LLINKLIB) 
+
+test/lfmm3d-dyn:
+	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d.f $(TOBJS) -o test/Laplace/int2-test-lfmm3d -L$(FMM_INSTALL_DIR) $(LLINKLIB) 
+
+test/lfmm3d_scale-dyn:
+	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_scale.f $(TOBJS) -o test/Laplace/int2-test-lfmm3d-scale -L$(FMM_INSTALL_DIR) $(LLINKLIB)
+	 
+test/lfmm3d_vec-dyn:
+	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_vec.f $(TOBJS) -o test/Laplace/int2-test-lfmm3d-vec -L$(FMM_INSTALL_DIR) $(LLINKLIB) 
+
+
+test_hfmm3d_mps-dyn: $(DYNAMICLIB) $(TOBJS)
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_mps.f90 \
+  $(TOBJS) \
+  -o test/Helmholtz/int2-test-hfmm3d-mps -L$(FMM_INSTALL_DIR) $(LLINKLIB)
 
 
 #
