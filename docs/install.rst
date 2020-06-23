@@ -35,8 +35,8 @@ directory.
 
 This should compile the static library
 in ``lib-static/``, the dynamic library in ``lib/`` and copy the dynamic 
-library to ``$(HOME)/lib`` on Linux and Windows, and to
-``/usr/local/lib`` on Mac OSX.
+library to ``$(HOME)/lib`` on Linux,  to
+``/usr/local/lib`` on Mac OSX, and to ``C:\lib`` on Windows.
 The location of the default installation directory can be changed by
 running::
 
@@ -54,7 +54,7 @@ You may then link to the FMM library using the ``-lfmm3d`` option.
    DYLD_LIBRARY_PATH.
 
 
-To verify successful installation of the program, run ``make test``
+To verify successful compilation of the program, run ``make test``
 which compiles some fortran test drivers in ``test/`` linked against
 the static library, after which it
 runs the test programs. The last 14 lines of the terminal output should be::
@@ -74,6 +74,12 @@ runs the test programs. The last 14 lines of the terminal output should be::
    rm print_testreslap.txt
 
 
+To verify successful installation of the program, and the correct
+setting for environment variables, run ``make test-dyn`` which compiles
+some fortran test drivers in ``test/`` linked against the dynamic
+library, after which it runs teh test prgram. The output ofshould be the
+same as above.
+
 .. note ::
    By default, ``make install`` creates the easy-to-install version of the library. To
    compile the library in its high-performance mode, append
@@ -82,7 +88,12 @@ runs the test programs. The last 14 lines of the terminal output should be::
    other options.
    
 
-If ``make test`` fails, see more detailed instructions below. 
+If ``make test`` fails, see more detailed instructions below.
+
+If ``make test-dyn`` fails with an error about not finding
+``-llibfmm3d_dll`` or ``-lfmm3d`` or ``libfmm3d`` make sure that the
+appropriate environment variables have been set. If it fails with other
+issues, see more detailed instructions below.
 
 Type ``make`` to see a list of other build options (language
 interfaces, etc). Please see `Fortran and C interfaces <fortran-c.html>`__ and look in
