@@ -437,11 +437,16 @@ test/test_lap_big:
 test/test_helm_pw:
 	$(FC) $(FFLAGS) test/Helmholtz/test_pwrep_hfmm3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_pw
 
-debug: $(STATICLIB) $(TOBJS) examples/hfmm3d_deb 
-	time -p examples/hfmm3d_debug
+debug: $(STATICLIB) $(TOBJS) examples/lfmm3d_deb 
+	time -p examples/lfmm3d_debug
 
 examples/hfmm3d_deb:
 	$(FC) $(FFLAGS) examples/hfmm3d_debug1.f $(TOBJS) $(COMOBJS) $(HOBJS) -o examples/hfmm3d_debug $(LIBS)
+
+examples/lfmm3d_deb:
+	$(FC) $(FFLAGS) examples/lfmm3d_debug1.f $(TOBJS) $(COMOBJS) $(LOBJS) -o examples/lfmm3d_debug $(LIBS)
+
+
 
 objclean: 
 	rm -f $(OBJS) $(COBJS) $(TOBJS)
