@@ -84,7 +84,7 @@ c
       call lfmm3d_t_c_g(eps,ns,source,charge,
      1      nt,targ,pot,grad)
       call prin2("pot at sources=*",pot,12)
-      call prin2("grad at sources=*",grad,3*nt)
+cc      call prin2("grad at sources=*",grad,3*nt)
 
 c
 c      test accuracy
@@ -95,9 +95,14 @@ c
       thresh = 1.0d-16
       do i=1,ntest
         potex(i) = 0
+        gradex(1,i) = 0
+        gradex(2,i) = 0
+        gradex(3,i) = 0
       enddo
       call l3ddirectcg(1,source,charge,ns,targ,ntest,
      1       potex,gradex,thresh)
+
+
       erra = 0
       ra = 0
       errg = 0
