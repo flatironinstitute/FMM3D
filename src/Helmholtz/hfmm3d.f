@@ -652,7 +652,7 @@ c     temp variables
       double complex zmul
 
       integer nlege, lw7, lused7, itype
-      double precision wlege(40000)
+      double precision, allocatable :: wlege(:)
 
       double precision thresh
 
@@ -823,8 +823,9 @@ C$OMP END PARALLEL DO
 
 
 c    initialize legendre function evaluation routines
-      nlege = 100
-      lw7 = 40000
+      nlege = nmax + 10
+      lw7 = (nlege+1)**2*4
+      allocate(wlege(lw7))
       call ylgndrfwini(nlege,wlege,lw7,lused7)
 
       allocate(list4(nboxes))

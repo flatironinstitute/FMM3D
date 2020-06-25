@@ -1167,6 +1167,7 @@ c
       real *8 rtmp1,rtmp2,rtmp3,rtmp4,rtmp5,rtmp6
       complex *16 ephi1
       real *8 ur(nd),utheta(nd),uphi(nd)
+      real *8 rscaleinv
 c
       complex *16 eye
       complex *16 ztmp1,ztmp2,ztmp3,ztmpsum,z
@@ -1229,15 +1230,17 @@ c     multiplies phix and phiy) that are scaled by
 c     1/sin(theta).
 c
 c
+        rscaleinv = 1.0d0/rscale
         rx = stheta*cphi
-        thetax = ctheta*cphi
-        phix = -sphi
+        thetax = ctheta*cphi*rscaleinv
+        phix = -sphi*rscaleinv
         ry = stheta*sphi
-        thetay = ctheta*sphi
-        phiy = cphi
+        thetay = ctheta*sphi*rscaleinv
+        phiy = cphi*rscaleinv
         rz = ctheta
-        thetaz = -stheta
+        thetaz = -stheta*rscaleinv
         phiz = 0.0d0
+
 
         do idim=1,nd
           ur(idim) = real(mpole(idim,0,0))*frder(0)
