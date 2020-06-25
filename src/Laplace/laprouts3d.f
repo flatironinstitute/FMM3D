@@ -1229,17 +1229,14 @@ c     multiplies phix and phiy) that are scaled by
 c     1/sin(theta).
 c
 c
-c     NOTE: sphereical derivative needs to be fixed for r=0
-c
-c
         rx = stheta*cphi
-        thetax = ctheta*cphi/r
-        phix = -sphi/r
+        thetax = ctheta*cphi
+        phix = -sphi
         ry = stheta*sphi
-        thetay = ctheta*sphi/r
-        phiy = cphi/r
+        thetay = ctheta*sphi
+        phiy = cphi
         rz = ctheta
-        thetaz = -stheta/r
+        thetaz = -stheta
         phiz = 0.0d0
 
         do idim=1,nd
@@ -1252,7 +1249,7 @@ c
         do n=1,nterms
           rtmp1 = fr(n)*ynm(n,0)
           rtmp2 = frder(n)*ynm(n,0)
-          rtmp3 = -fr(n)*ynmd(n,0)*stheta
+          rtmp3 = -fr(n-1)*ynmd(n,0)*stheta
           do idim=1,nd
             pot(idim,itarg)=pot(idim,itarg)+real(mpole(idim,n,0))*rtmp1
             ur(idim)=ur(idim)+real(mpole(idim,n,0))*rtmp2
@@ -1262,8 +1259,8 @@ c
 	      do m=1,n
             rtmp1 = fr(n)*ynm(n,m)*stheta
             rtmp4 = frder(n)*ynm(n,m)*stheta
-            rtmp5 = -fr(n)*ynmd(n,m)
-            rtmp6 = -m*fr(n)*ynm(n,m)
+            rtmp5 = -fr(n-1)*ynmd(n,m)
+            rtmp6 = -m*fr(n-1)*ynm(n,m)
 
             do idim=1,nd
               rtmp2 = 2*real(mpole(idim,n,m)*ephi(m)) 
