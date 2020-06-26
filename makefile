@@ -242,7 +242,7 @@ mex:  $(STATICLIB)
 
 #python
 python: $(STATICLIB)
-	cd python && export FLIBS='$(LIBS)' && pip install -e . \
+	cd python && export FMM_FLIBS='$(LIBS)' && pip install -e . \
 	&& cd test && pytest -s
 
 # testing routines
