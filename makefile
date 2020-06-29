@@ -193,6 +193,7 @@ install: $(STATICLIB) $(DYNAMICLIB)
 	echo $(FMM_INSTALL_DIR)
 	mkdir -p $(FMM_INSTALL_DIR)
 	cp -f lib/$(DYNAMICLIB) $(FMM_INSTALL_DIR)/
+	cp -f lib-static/$(STATICLIB) $(FMM_INSTALL_DIR)/
 	[ ! -f lib/$(LIMPLIB) ] || cp lib/$(LIMPLIB) $(FMM_INSTALL_DIR)/
 	@echo "Make sure to include " $(FMM_INSTALL_DIR) " in the appropriate path variable"
 	@echo "    LD_LIBRARY_PATH on Linux"
@@ -263,7 +264,6 @@ test-dyn: $(DYNAMICLIB) $(TOBJS) test/helmrouts-dyn test/hfmm3d-dyn test/hfmm3d_
 	rm print_testreshelm.txt
 	rm print_testreslap.txt
 
-test-ext: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_zkbig test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale
 test-ext: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_zkbig test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale
 	(cd test/Helmholtz; ./run_helmtest_ext.sh)
 	(cd test/Laplace; ./run_laptest.sh)
