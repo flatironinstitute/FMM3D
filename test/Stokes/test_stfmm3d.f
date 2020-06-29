@@ -68,8 +68,8 @@ c
       eps = 1d-9
       ifstoklet = 1
       ifstrslet = 1
-      ifppreg = 2
-      ifppregtarg = 2
+      ifppreg = 3
+      ifppregtarg = 3
 
       call cpu_time(t1)
 c$    t1 = omp_get_wtime()      
@@ -122,6 +122,8 @@ c      call prin2('pottarg2 *',pottarg2,3*nt)
 
       derr = 0
       drel = 0
+      derrg = 0
+      drelg = 0
       do i = 1,ns
          derr = derr + (pot(1,i)-pot2(1,i))**2
          drel = drel + pot2(1,i)**2
@@ -129,13 +131,23 @@ c      call prin2('pottarg2 *',pottarg2,3*nt)
          drel = drel + pot2(2,i)**2
          derr = derr + (pot(3,i)-pot2(3,i))**2
          drel = drel + pot2(3,i)**2
+
+         do j = 1,3
+            do k = 1,3
+               derrg = derrg + (grad(k,j,i)-grad2(k,j,i))**2
+               drelg = drelg + grad2(k,j,i)**2
+            enddo
+         enddo
+         
       enddo
 
       relerr = sqrt(derr/(ns*drel))
+      relerrg = sqrt(derrg/(ns*drelg))
       if (relerr .lt. 1d-9) ipass(1) = 1
       
 
       call prin2('rel err pot srcs *',relerr,1)
+      call prin2('rel err grad srcs *',relerrg,1)
 
 c      call prin2('pre *',pre,ns)
 c      call prin2('pre2 *',pre2,ns)      
@@ -154,6 +166,10 @@ c      call prin2('pre2 *',pre2,ns)
 
       derr = 0
       drel = 0
+
+      derrg = 0
+      drelg = 0
+      
       do i = 1,nt
          derr = derr + (pottarg(1,i)-pottarg2(1,i))**2
          drel = drel + pottarg2(1,i)**2
@@ -161,12 +177,21 @@ c      call prin2('pre2 *',pre2,ns)
          drel = drel + pottarg2(2,i)**2
          derr = derr + (pottarg(3,i)-pottarg2(3,i))**2
          drel = drel + pottarg2(3,i)**2
-      enddo
 
+         do j = 1,3
+            do k = 1,3
+               derrg = derrg + (gradtarg(k,j,i)-gradtarg2(k,j,i))**2
+               drelg = drelg + gradtarg2(k,j,i)**2
+            enddo
+         enddo
+      enddo
+      
       relerr = sqrt(derr/(nt*drel))
+      relerrg = sqrt(derrg/(nt*drelg))
       if (relerr .lt. 1d-9) ipass(3) = 1
 
       call prin2('rel err pot targs *',relerr,1)
+      call prin2('rel err grad targs *',relerrg,1)
 
       derr = 0
       drel = 0
@@ -186,6 +211,8 @@ c      call prin2('pre2 *',pre2,ns)
       enddo
 
       write(*,'(a,i1,a,i1,a)') 'Successfully completed ',isum,
+     1   ' out of ',ntest,' tests in stfmm3d testing suite'
+      write(33,'(a,i1,a,i1,a)') 'Successfully completed ',isum,
      1   ' out of ',ntest,' tests in stfmm3d testing suite'
       close(33)
       

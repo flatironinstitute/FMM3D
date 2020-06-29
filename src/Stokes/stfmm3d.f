@@ -366,14 +366,14 @@ c$OMP$ PRIVATE(pt,pl,gl,hl,vel,velgrad,press)
 
 c     confirm hessian ordering convention...
                      velgrad(1,1) = velgrad(1,1) - pt(l)*hl(1)
-                     velgrad(2,1) = velgrad(2,1) - pt(l)*hl(2)
-                     velgrad(3,1) = velgrad(3,1) - pt(l)*hl(3)
-                     velgrad(1,2) = velgrad(1,2) - pt(l)*hl(2)
-                     velgrad(2,2) = velgrad(2,2) - pt(l)*hl(4)
-                     velgrad(3,2) = velgrad(3,2) - pt(l)*hl(5)
-                     velgrad(1,3) = velgrad(1,1) - pt(l)*hl(3)
-                     velgrad(2,3) = velgrad(2,1) - pt(l)*hl(5)
-                     velgrad(3,3) = velgrad(3,1) - pt(l)*hl(6)
+                     velgrad(2,1) = velgrad(2,1) - pt(l)*hl(4)
+                     velgrad(3,1) = velgrad(3,1) - pt(l)*hl(5)
+                     velgrad(1,2) = velgrad(1,2) - pt(l)*hl(4)
+                     velgrad(2,2) = velgrad(2,2) - pt(l)*hl(2)
+                     velgrad(3,2) = velgrad(3,2) - pt(l)*hl(6)
+                     velgrad(1,3) = velgrad(1,1) - pt(l)*hl(5)
+                     velgrad(2,3) = velgrad(2,1) - pt(l)*hl(6)
+                     velgrad(3,3) = velgrad(3,1) - pt(l)*hl(3)
                   endif
 
                else if (l .eq. 4) then
@@ -384,14 +384,14 @@ c     confirm hessian ordering convention...
                   if (ifppreg1 .eq. 3) then
 c     confirm hessian ordering convention...
                      velgrad(1,1) = velgrad(1,1) + hl(1)
-                     velgrad(2,1) = velgrad(2,1) + hl(2)
-                     velgrad(3,1) = velgrad(3,1) + hl(3)
-                     velgrad(1,2) = velgrad(1,2) + hl(2)
-                     velgrad(2,2) = velgrad(2,2) + hl(4)
-                     velgrad(3,2) = velgrad(3,2) + hl(5)
-                     velgrad(1,3) = velgrad(1,1) + hl(3)
-                     velgrad(2,3) = velgrad(2,1) + hl(5)
-                     velgrad(3,3) = velgrad(3,1) + hl(6)
+                     velgrad(2,1) = velgrad(2,1) + hl(4)
+                     velgrad(3,1) = velgrad(3,1) + hl(5)
+                     velgrad(1,2) = velgrad(1,2) + hl(4)
+                     velgrad(2,2) = velgrad(2,2) + hl(2)
+                     velgrad(3,2) = velgrad(3,2) + hl(6)
+                     velgrad(1,3) = velgrad(1,1) + hl(5)
+                     velgrad(2,3) = velgrad(2,1) + hl(6)
+                     velgrad(3,3) = velgrad(3,1) + hl(3)
                   endif
                   
                endif
