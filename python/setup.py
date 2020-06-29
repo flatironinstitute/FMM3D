@@ -22,8 +22,11 @@ FLIBS.append('../lib-static/libfmm3d.a')
 c_opts = ['_c','_d','_cd']
 c_opts2 = ['c','d','cd']
 st_opts = ['_s','_t','_st']
-p_opts = ['_p','_g']
-p_opts2 = ['p','g']
+p_optsh = ['_p','_g']
+p_optsh2 = ['p','g']
+
+p_optsl = ['_p','_g','_h']
+p_optsl2 = ['p','g','h']
 
 list_int_helm = []
 list_int_helm_vec = []
@@ -35,15 +38,17 @@ list_int_lap_dir = []
 
 for st in st_opts:
     for cd in c_opts:
-        for pg in p_opts:
+        for pg in p_optsh:
             list_int_helm.append('hfmm3d'+st+cd+pg)
             list_int_helm_vec.append('hfmm3d'+st+cd+pg+'_vec')
+        for pg in p_optsl:
             list_int_lap.append('lfmm3d'+st+cd+pg)
             list_int_lap_vec.append('lfmm3d'+st+cd+pg+'_vec')
 
 for cd in c_opts2:
-    for pg in p_opts2:
+    for pg in p_optsh2:
         list_int_helm_dir.append('h3ddirect'+cd+pg)
+    for pg in p_optsl2:
         list_int_lap_dir.append('l3ddirect'+cd+pg)
 
 ext_helm = Extension(

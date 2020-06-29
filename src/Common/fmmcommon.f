@@ -682,7 +682,7 @@ c-------------------------------------------------------
       character(len=13) str2
       character(len=14) str3
       character(len=19) str4
-      character(len=18) str5
+      character(len=30) str5
 
       str2 = "Failed src to"
       len1 = 13
@@ -722,6 +722,11 @@ c-------------------------------------------------------
       if(ifpgh.eq.2.or.ifpghtarg.eq.2) then
         str5=" pot and grad test"
         len1 = len1 + 18
+      endif
+
+      if(ipgh.eq.3.or.ifpghtarg.eq.3) then
+        str5=" pot, grad, and hess test"
+        len1 = len1+25
       endif
 
       str1 = str2//trim(str3)//trim(str4)//trim(str5)

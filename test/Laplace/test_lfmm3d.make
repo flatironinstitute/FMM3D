@@ -8,7 +8,7 @@ HOST=macosx
 
 ifeq ($(HOST),macosx)
 FC = gfortran
-FFLAGS = -O3 -c -w -march=native -finteger-4-integer-8 -fdefault-integer-8 
+FFLAGS = -O3 -c -w -march=native 
 #FFLAGS = -O3 -c -w -march=native 
 FLINK = gfortran -w -o $(EXEC)
 FEND =  
@@ -54,6 +54,8 @@ SOURCES =  test_lfmm3d.f \
   legeexps.f \
   rotviarecur.f \
   yrecursion.f \
+  lapkernels.f \
+  lndiv.f \
   l3dterms.f \
   l3dtrans.f \
   laprouts3d.f \

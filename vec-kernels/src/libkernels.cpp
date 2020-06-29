@@ -59,6 +59,10 @@ void l3ddirectcg_cpp_(const int32_t* nd, const double* sources, const double* ch
   l3ddirectcg_vec_cpp<double, VECDIM>(nd, sources, charge, ns, ztarg, nt, pot, grad, thresh);
 }
 
+void l3ddirectch_cpp_(const int32_t* nd, const double* sources, const double* charge, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, double* grad, double* hess, const double* thresh){
+  l3ddirectch_vec_cpp<double, VECDIM>(nd, sources, charge, ns, ztarg, nt, pot, grad, hess, thresh);
+}
+
 void l3ddirectdp_cpp_(const int32_t* nd, const double* sources, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, const double* thresh){
   l3ddirectdp_vec_cpp<double, VECDIM>(nd, sources, dipvec, ns, ztarg, nt, pot, thresh);
 }
@@ -67,12 +71,20 @@ void l3ddirectdg_cpp_(const int32_t* nd, const double* sources, const double* di
   l3ddirectdg_vec_cpp<double, VECDIM>(nd, sources, dipvec, ns, ztarg, nt, pot, grad, thresh);
 }
 
+void l3ddirectdh_cpp_(const int32_t* nd, const double* sources, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, double* grad, double* hess, const double* thresh){
+  l3ddirectdh_vec_cpp<double, VECDIM>(nd, sources, dipvec, ns, ztarg, nt, pot, grad, hess, thresh);
+}
+
 void l3ddirectcdp_cpp_(const int32_t* nd, const double* sources, const double* charge, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, const double* thresh){
   l3ddirectcdp_vec_cpp<double, VECDIM>(nd, sources, charge, dipvec, ns, ztarg, nt, pot, thresh);
 }
 
 void l3ddirectcdg_cpp_(const int32_t* nd, const double* sources, const double* charge, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, double* grad, const double* thresh){
   l3ddirectcdg_vec_cpp<double, VECDIM>(nd, sources, charge, dipvec, ns, ztarg, nt, pot, grad, thresh);
+}
+
+void l3ddirectcdh_cpp_(const int32_t* nd, const double* sources, const double* charge, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, double* grad, double* hess, const double* thresh){
+  l3ddirectcdh_vec_cpp<double, VECDIM>(nd, sources, charge, dipvec, ns, ztarg, nt, pot, grad, hess, thresh);
 }
 
 #ifdef __cplusplus
