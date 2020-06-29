@@ -189,8 +189,8 @@ c     local
       ndper = 4
       ndl = ndper*nd
 
-      ifpghl = 2
-      ifpghtargl = 2
+      ifpghl = 3
+      ifpghtargl = 3
 
 c     allocate necessary arrays
       
@@ -371,9 +371,9 @@ c     confirm hessian ordering convention...
                      velgrad(1,2) = velgrad(1,2) - pt(l)*hl(4)
                      velgrad(2,2) = velgrad(2,2) - pt(l)*hl(2)
                      velgrad(3,2) = velgrad(3,2) - pt(l)*hl(6)
-                     velgrad(1,3) = velgrad(1,1) - pt(l)*hl(5)
-                     velgrad(2,3) = velgrad(2,1) - pt(l)*hl(6)
-                     velgrad(3,3) = velgrad(3,1) - pt(l)*hl(3)
+                     velgrad(1,3) = velgrad(1,3) - pt(l)*hl(5)
+                     velgrad(2,3) = velgrad(2,3) - pt(l)*hl(6)
+                     velgrad(3,3) = velgrad(3,3) - pt(l)*hl(3)
                   endif
 
                else if (l .eq. 4) then
@@ -389,9 +389,9 @@ c     confirm hessian ordering convention...
                      velgrad(1,2) = velgrad(1,2) + hl(4)
                      velgrad(2,2) = velgrad(2,2) + hl(2)
                      velgrad(3,2) = velgrad(3,2) + hl(6)
-                     velgrad(1,3) = velgrad(1,1) + hl(5)
-                     velgrad(2,3) = velgrad(2,1) + hl(6)
-                     velgrad(3,3) = velgrad(3,1) + hl(3)
+                     velgrad(1,3) = velgrad(1,3) + hl(5)
+                     velgrad(2,3) = velgrad(2,3) + hl(6)
+                     velgrad(3,3) = velgrad(3,3) + hl(3)
                   endif
                   
                endif

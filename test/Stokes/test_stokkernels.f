@@ -461,6 +461,8 @@ c      call prin2('pot2 *',pot2,3*nt)
 
       write(*,'(a,i1,a,i1,a)') 'Successfully completed ',isum,
      1   ' out of ',ntest,' tests in stokkernels testing suite'
+      write(33,'(a,i1,a,i1,a)') 'Successfully completed ',isum,
+     1   ' out of ',ntest,' tests in stokkernels testing suite'
       close(33)
       
 

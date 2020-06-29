@@ -15,7 +15,7 @@ c$    use omp_lib
       real *8, allocatable :: stoklet(:,:), strslet(:,:)
       real *8, allocatable :: strsvec(:,:)
       
-      integer ipass(5)
+      integer ipass(10)
       complex *16 eye
 c
       data eye/(0.0d0,1.0d0)/
@@ -28,7 +28,7 @@ c
 
       open(unit=33,file='print_testres.txt',access='append')
 
-      ntest = 4
+      ntest = 6
       do i=1,ntest
         ipass(i) = 0 
       enddo
@@ -144,6 +144,7 @@ c      call prin2('pottarg2 *',pottarg2,3*nt)
       relerr = sqrt(derr/(ns*drel))
       relerrg = sqrt(derrg/(ns*drelg))
       if (relerr .lt. 1d-9) ipass(1) = 1
+      if (relerrg .lt. 1d-9) ipass(2) = 1
       
 
       call prin2('rel err pot srcs *',relerr,1)
@@ -160,7 +161,7 @@ c      call prin2('pre2 *',pre2,ns)
       enddo
 
       relerr = sqrt(derr/(ns*drel))
-      if (relerr .lt. 1d-9) ipass(2) = 1
+      if (relerr .lt. 1d-9) ipass(3) = 1
       
       call prin2('rel err pre srcs *',relerr,1)
 
@@ -188,7 +189,8 @@ c      call prin2('pre2 *',pre2,ns)
       
       relerr = sqrt(derr/(nt*drel))
       relerrg = sqrt(derrg/(nt*drelg))
-      if (relerr .lt. 1d-9) ipass(3) = 1
+      if (relerr .lt. 1d-9) ipass(4) = 1
+      if (relerrg .lt. 1d-9) ipass(5) = 1
 
       call prin2('rel err pot targs *',relerr,1)
       call prin2('rel err grad targs *',relerrg,1)
@@ -201,7 +203,7 @@ c      call prin2('pre2 *',pre2,ns)
       enddo
 
       relerr = sqrt(derr/(nt*drel))
-      if (relerr .lt. 1d-9) ipass(4) = 1
+      if (relerr .lt. 1d-9) ipass(6) = 1
 
       call prin2('rel err pre targs *',relerr,1)
       

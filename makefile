@@ -209,13 +209,16 @@ python3: $(STATICLIB)
 
 # testing routines
 #
-test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale
+test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale test/stfmm3d test/stokkernels
 	(cd test/Helmholtz; ./run_helmtest.sh)
 	(cd test/Laplace; ./run_laptest.sh)
+	(cd test/Stokes; ./run_stoktest.sh)
 	cat print_testreshelm.txt
 	cat print_testreslap.txt
+	cat print_testresstok.txt
 	rm print_testreshelm.txt
 	rm print_testreslap.txt
+	rm print_testresstok.txt
 
 test-ext: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_zkbig test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale
 	(cd test/Helmholtz; ./run_helmtest_ext.sh)
@@ -254,11 +257,9 @@ test/lfmm3d_vec:
 
 test/stfmm3d: 
 	$(FC) $(FFLAGS) test/Stokes/test_stfmm3d.f $(TOBJS) $(COMOBJS) $(LOBJS) $(STOBJS) -o test/Stokes/int2-test-stfmm3d $(LIBS) 
-	cd test/Stokes; ./int2-test-stfmm3d
 
 test/stokkernels: 
 	$(FC) $(FFLAGS) test/Stokes/test_stokkernels.f $(TOBJS) $(COMOBJS) $(LOBJS) $(STOBJS) -o test/Stokes/int2-test-stokkernels $(LIBS)
-	cd test/Stokes; ./int2-test-stokkernels
 
 
 test_hfmm3d_mps: $(STATICLIB) $(TOBJS)
