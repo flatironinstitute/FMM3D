@@ -15,5 +15,7 @@ void comp_err_helm(int n,int pg, int pgt, CPX *pot, CPX *potex, CPX *pottarg, CP
 
 void comp_err_lap(int n,int pg, int pgt, double *pot, double *potex, 
          double *pottarg, double *pottargex, double *grad, 
-         double *gradex, double *gradtarg, double *gradtargex, double *err);
+         double *gradex, double *gradtarg, double *gradtargex, 
+         double *hess, double *hessex, double *hesstarg, 
+         double *hesstargex, double *err);
 #endif

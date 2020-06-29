@@ -110,7 +110,7 @@ HOBJS += $(HELM)/hndiv.o
 endif
 
 ifeq ($(FAST_KER),ON)
-LOBJS += $(LAP)/lapkernels_fast.o
+LOBJS += $(LAP)/lapkernels.o
 LOBJS += $(LAP)/lndiv_fast.o
 HOBJS += $(HELM)/helmkernels_fast.o
 HOBJS += $(HELM)/hndiv_fast.o
@@ -187,17 +187,17 @@ GATEWAY = $(MWRAPFILE)
 GATEWAY2 = $(MWRAPFILE2)
 
 matlab:	$(STATICLIB) matlab/$(GATEWAY).c matlab/$(GATEWAY2).c
-	$(MEX) matlab/$(GATEWAY).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d $(MEXLIBS)
-	$(MEX) matlab/$(GATEWAY2).c $(STATICLIB) $(MFLAGS) -output matlab/fmm3d_legacy $(MEXLIBS)
+	$(MEX) matlab/$(GATEWAY).c lib-static/$(STATICLIB) $(MFLAGS) -output matlab/fmm3d $(MEXLIBS)
+	$(MEX) matlab/$(GATEWAY2).c lib-static/$(STATICLIB) $(MFLAGS) -output matlab/fmm3d_legacy $(MEXLIBS)
 
 
 mex:  $(STATICLIB)
 	cd matlab; $(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY) -mb $(MWRAPFILE).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY) -c $(GATEWAY).c $(MWRAPFILE).mw;\
-	$(MEX) $(GATEWAY).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE) $(MEXLIBS); \
+	$(MEX) $(GATEWAY).c ../lib-static/$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE) $(MEXLIBS); \
 	$(MWRAP) $(MWFLAGS) -list -mex $(GATEWAY2) -mb $(MWRAPFILE2).mw;\
 	$(MWRAP) $(MWFLAGS) -mex $(GATEWAY2) -c $(GATEWAY2).c $(MWRAPFILE2).mw;\
-	$(MEX) $(GATEWAY2).c ../$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE2) $(MEXLIBS);
+	$(MEX) $(GATEWAY2).c ../lib-static/$(STATICLIB) $(MFLAGS) -output $(MWRAPFILE2) $(MEXLIBS);
 
 #python
 python: $(STATICLIB)

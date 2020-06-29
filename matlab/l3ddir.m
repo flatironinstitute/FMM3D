@@ -38,11 +38,13 @@ function [U] = l3ddir(srcinfo,targ,pgt)
 %  -  pgt: integer
 %        | target eval flag (optional)
 %        | potential at targets evaluated if pgt = 1
-%        | potenial and gradient at targets evaluated if pgt=2  
+%        | potenial and gradient at targets evaluated if pgt=2 
+%        | potential, gradient and hessian at targets evaluated if pgt=3
 %  
 %  Returns:
 %  -  U.pottarg: potential at target locations, if requested, $u(t_{i})$
 %  -  U.gradtarg: gradient at target locations, if requested, $\nabla u(t_{i})$
+%  -  U.hesstarg: hessian at target locations, if requested, $\nabla^2 u(t_{i})$
 
   sources = srcinfo.sources;
   [m,ns] = size(sources);
@@ -58,10 +60,12 @@ function [U] = l3ddir(srcinfo,targ,pgt)
 
   pottarg = zeros(nd,1);
   gradtarg = zeros(nd*3,1);
+  hesstarg = zeros(nd*6,1);
   [m,nt] = size(targ);
   assert(m==3,'First dimension of targets must be 3');
   if(pgt >=1), pottarg = zeros(nd,nt); end;
-  if(pgt == 2), gradtarg = zeros(nd*3,nt); end;
+  if(pgt >= 2), gradtarg = zeros(nd*3,nt); end;
+  if(pgt >= 3), hesstarg = zeros(nd*6,nt); end;
 
   if(pgt ==0), disp('Nothing to compute, set eigher pgt to 1 or 2'); return; end;
 
@@ -87,6 +91,7 @@ function [U] = l3ddir(srcinfo,targ,pgt)
   end
 
   nd3 = 3*nd;
+  nd6 = 6*nd;
 
   if(pgt == 1)
     if(ifcharge==1 && ifdipole == 0)
@@ -118,5 +123,22 @@ function [U] = l3ddir(srcinfo,targ,pgt)
     end
     U.pottarg = pottarg;
     U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
+  end
+  if(pgt == 3)
+    if(ifcharge==1 && ifdipole == 0)
+      mex_id_ = 'l3ddirectch(i int[x], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], io double[xx], i double[x])';
+[pottarg, gradtarg, hesstarg] = fmm3d(mex_id_, nd, sources, charges, ns, targ, nt, pottarg, gradtarg, hesstarg, thresh, 1, 3, ns, nd, ns, 1, 3, nt, 1, nd, nt, nd3, nt, nd6, nt, 1);
+    end
+    if(ifcharge==0 && ifdipole == 1)
+      mex_id_ = 'l3ddirectdh(i int[x], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], io double[xx], i double[x])';
+[pottarg, gradtarg, hesstarg] = fmm3d(mex_id_, nd, sources, dipoles, ns, targ, nt, pottarg, gradtarg, hesstarg, thresh, 1, 3, ns, nd3, ns, 1, 3, nt, 1, nd, nt, nd3, nt, nd6, nt, 1);
+    end
+    if(ifcharge==1 && ifdipole == 1)
+      mex_id_ = 'l3ddirectcdh(i int[x], i double[xx], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], io double[xx], i double[x])';
+[pottarg, gradtarg, hesstarg] = fmm3d(mex_id_, nd, sources, charges, dipoles, ns, targ, nt, pottarg, gradtarg, hesstarg, thresh, 1, 3, ns, nd, ns, nd3, ns, 1, 3, nt, 1, nd, nt, nd3, nt, nd6, nt, 1);
+    end
+    U.pottarg = pottarg;
+    U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
+    U.hesstarg = squeeze(reshape(hesstarg,[nd,6,nt]));
   end
 end

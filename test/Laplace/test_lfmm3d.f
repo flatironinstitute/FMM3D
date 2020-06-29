@@ -5,14 +5,15 @@
       double precision, allocatable :: dipvec(:,:)
       double precision, allocatable :: pot(:),pottarg(:)
       double precision, allocatable :: grad(:,:),gradtarg(:,:)
+      double precision, allocatable :: hess(:,:),hesstarg(:,:)
 
       double precision eps
       double complex eye
       integer i,j,k,ntest
       integer ifcharge,ifdipole,ifpgh,ifpghtarg
       double precision err,hkrand
-      integer ipass(18),len1,ntests,isum
-      character(len=72) str1
+      integer ipass(27),len1,ntests,isum
+      character(len=100) str1
       
 
       data eye/(0.0d0,1.0d0)/
@@ -31,9 +32,11 @@ c
       allocate(charge(ns),dipvec(3,ns))
       allocate(pot(ns))
       allocate(grad(3,ns))
+      allocate(hess(6,ns))
 
       allocate(pottarg(nt))
       allocate(gradtarg(3,nt))
+      allocate(hesstarg(6,nt))
 
       eps = 0.5d-9
 
@@ -43,7 +46,7 @@ c
 
       open(unit=33,file='print_testres.txt',access='append')
 
-      ntests = 18
+      ntests = 27
       do i=1,ntests
         ipass(i) = 0
       enddo
@@ -55,9 +58,9 @@ cc      generate sources uniformly in the unit cube
 c
 c
       do i=1,ns
-        source(1,i) = hkrand(0)**3
-        source(2,i) = hkrand(0)**3
-        source(3,i) = hkrand(0)**3
+        source(1,i) = hkrand(0)**2
+        source(2,i) = hkrand(0)**2
+        source(3,i) = hkrand(0)**2
 
         charge(i) = hkrand(0) 
 
@@ -107,8 +110,8 @@ c
 
        
        call comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -141,8 +144,8 @@ c
 
        
        call comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -153,7 +156,7 @@ c
       if(err.ge.eps) write(33,*) str1(1:len1) 
       
 
-
+      
 c
 cc     now test source to source, dipole, 
 c      with potentials
@@ -174,8 +177,8 @@ c
 
        
        call comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -206,8 +209,8 @@ c
 
        
        call comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -237,8 +240,8 @@ c
 
        
        call comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -269,8 +272,8 @@ c
 
        
        call comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -302,8 +305,8 @@ c
 
        
        call comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -335,8 +338,8 @@ c
 
        
        call comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -368,8 +371,8 @@ c
 
        
        call comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -400,8 +403,8 @@ c
 
        
        call comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -431,8 +434,8 @@ c
 
        
        call comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -463,8 +466,8 @@ c
 
        
        call comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -494,8 +497,8 @@ c
 
        
        call comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -526,8 +529,8 @@ c
 
        
        call comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -559,8 +562,8 @@ c
 
        
        call comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -591,8 +594,8 @@ c
 
        
        call comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -622,8 +625,8 @@ c
 
        
        call comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -654,8 +657,8 @@ c
 
        
        call comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
        call prin2('l2 rel err=*',err,1)
        write(6,*)
@@ -665,6 +668,291 @@ c
       call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
       if(err.ge.eps) write(33,*) str1(1:len1) 
 
+
+c
+cc     now test source to source, charge, 
+c      with potentials, gradients, and hessians
+c
+       write(6,*) 'testing source to source'
+       write(6,*) 'interaction: charges'
+       write(6,*) 'output: potentials + gradients + hessians'
+       write(6,*) 
+       write(6,*) 
+
+       call lfmm3d_s_c_h(eps,ns,source,charge,
+     1      pot,grad,hess)
+
+       ifcharge = 1
+       ifdipole = 0
+       ifpgh = 3
+       ifpghtarg = 0
+
+       
+       call comperr(ns,source,ifcharge,charge,ifdipole,
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+      if(err.lt.eps) ipass(19) = 1
+      call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1)
+
+
+c
+cc     now test source to source, dipole, 
+c      with potentials, gradients, and hessians
+c
+       write(6,*) 'testing source to source'
+       write(6,*) 'interaction: dipoles'
+       write(6,*) 'output: potentials + gradients + hessians'
+       write(6,*) 
+       write(6,*) 
+
+       call lfmm3d_s_d_h(eps,ns,source,dipvec,
+     1      pot,grad,hess)
+
+       ifcharge = 0
+       ifdipole = 1
+       ifpgh = 3
+       ifpghtarg = 0
+
+       
+       call comperr(ns,source,ifcharge,charge,ifdipole,
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+      if(err.lt.eps) ipass(20) = 1
+      call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1)
+
+c
+cc     now test source to source, charge+dipole, 
+c      with potentials, gradients, and hessians
+c
+       write(6,*) 'testing source to source'
+       write(6,*) 'interaction: charges+dipoles'
+       write(6,*) 'output: potentials + gradients + hessians'
+       write(6,*) 
+       write(6,*) 
+
+       call lfmm3d_s_cd_h(eps,ns,source,charge,dipvec,
+     1      pot,grad,hess)
+
+       ifcharge = 1
+       ifdipole = 1
+       ifpgh = 3
+       ifpghtarg = 0
+
+       
+       call comperr(ns,source,ifcharge,charge,ifdipole,
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+      if(err.lt.eps) ipass(21) = 1
+      call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1)
+
+
+c
+cc     now test source to target, charge, 
+c      with potentials, gradients, and hessians
+c
+       write(6,*) 'testing source to target'
+       write(6,*) 'interaction: charges'
+       write(6,*) 'output: potentials + gradients + hessians'
+       write(6,*) 
+       write(6,*) 
+
+       call lfmm3d_t_c_h(eps,ns,source,charge,
+     1      nt,targ,pottarg,gradtarg,hesstarg)
+
+       ifcharge = 1
+       ifdipole = 0
+       ifpgh = 0
+       ifpghtarg = 3
+
+       
+       call comperr(ns,source,ifcharge,charge,ifdipole,
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+      if(err.lt.eps) ipass(22) = 1
+      call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1)
+
+
+c
+cc     now test source to target, dipole, 
+c      with potentials, gradients, and hessians
+c
+       write(6,*) 'testing source to target'
+       write(6,*) 'interaction: dipole'
+       write(6,*) 'output: potentials + gradients + hessians'
+       write(6,*) 
+       write(6,*) 
+
+       call lfmm3d_t_d_h(eps,ns,source,dipvec,
+     1      nt,targ,pottarg,gradtarg,hesstarg)
+
+       ifcharge = 0
+       ifdipole = 1
+       ifpgh = 0
+       ifpghtarg = 3
+
+       
+       call comperr(ns,source,ifcharge,charge,ifdipole,
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+      if(err.lt.eps) ipass(23) = 1
+      call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1)
+
+c
+cc     now test source to target, charge+dipole, 
+c      with potentials, gradients, and hessians
+c
+       write(6,*) 'testing source to target'
+       write(6,*) 'interaction: charges+dipoles'
+       write(6,*) 'output: potentials + gradients + hessians'
+       write(6,*) 
+       write(6,*) 
+
+       call lfmm3d_t_cd_h(eps,ns,source,charge,dipvec,
+     1      nt,targ,pottarg,gradtarg,hesstarg)
+
+
+       ifcharge = 1
+       ifdipole = 1
+       ifpgh = 0
+       ifpghtarg = 3
+
+       
+       call comperr(ns,source,ifcharge,charge,ifdipole,
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+      if(err.lt.eps) ipass(24) = 1
+      call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1)
+
+c
+cc     now test source to source+target, charge, 
+c      with potentials, gradients, and hessians
+c
+       write(6,*) 'testing source to source+target'
+       write(6,*) 'interaction: charges'
+       write(6,*) 'output: potentials + gradients + hessians'
+       write(6,*) 
+       write(6,*) 
+
+       call lfmm3d_st_c_h(eps,ns,source,charge,pot,grad,hess,
+     1      nt,targ,pottarg,gradtarg,hesstarg)
+
+       ifcharge = 1
+       ifdipole = 0
+       ifpgh = 3
+       ifpghtarg = 3
+
+       
+       call comperr(ns,source,ifcharge,charge,ifdipole,
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+      if(err.lt.eps) ipass(25) = 1
+      call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1)
+
+
+c
+cc     now test source to source+target, dipole, 
+c      with potentials, gradients, and hessians
+c
+       write(6,*) 'testing source to source+target'
+       write(6,*) 'interaction: dipole'
+       write(6,*) 'output: potentials + gradients + hessians'
+       write(6,*) 
+       write(6,*) 
+
+       call lfmm3d_st_d_h(eps,ns,source,dipvec,pot,grad,hess,
+     1      nt,targ,pottarg,gradtarg,hesstarg)
+
+       ifcharge = 0
+       ifdipole = 1
+       ifpgh = 3
+       ifpghtarg = 3
+
+       
+       call comperr(ns,source,ifcharge,charge,ifdipole,
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+      if(err.lt.eps) ipass(26) = 1
+      call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1)
+
+c
+cc     now test source to source+target, charge+dipole, 
+c      with potentials, gradients, and hessians
+c
+       write(6,*) 'testing source to source+target'
+       write(6,*) 'interaction: charges+dipoles'
+       write(6,*) 'output: potentials + gradients + hessians'
+       write(6,*) 
+       write(6,*) 
+
+       call lfmm3d_st_cd_h(eps,ns,source,charge,dipvec,pot,grad,hess,
+     1      nt,targ,pottarg,gradtarg,hesstarg)
+
+
+       ifcharge = 1
+       ifdipole = 1
+       ifpgh = 3
+       ifpghtarg = 3
+
+       
+       call comperr(ns,source,ifcharge,charge,ifdipole,
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
+
+       call prin2('l2 rel err=*',err,1)
+       write(6,*)
+       write(6,*)
+       write(6,*) '================'
+      if(err.lt.eps) ipass(27) = 1
+      call geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
+      if(err.ge.eps) write(33,*) str1(1:len1)
 
       isum = 0
       do i=1,ntests
@@ -688,8 +976,8 @@ c
 c
 c
       subroutine comperr(ns,source,ifcharge,charge,ifdipole,
-     1   dipvec,ifpgh,pot,grad,nt,targ,ifpghtarg,pottarg,gradtarg,
-     2   ntest,err)
+     1   dipvec,ifpgh,pot,grad,hess,nt,targ,ifpghtarg,pottarg,gradtarg,
+     2   hesstarg,ntest,err)
 
       implicit none
       double complex zk
@@ -700,13 +988,15 @@ c
       double precision charge(*)
 
       double precision pot(*),pottarg(*),grad(3,*),gradtarg(3,*)
+      double precision hess(6,*),hesstarg(6,*)
 
-      integer i,j,ntest,nd
+      integer i,j,ntest,nd,l
 
       double precision err,ra
       
       double precision potex(ntest),gradex(3,ntest),pottargex(ntest),
      1                  gradtargex(3,ntest)
+      double precision hessex(6,ntest),hesstargex(6,ntest)
 
       double precision thresh
 
@@ -723,6 +1013,11 @@ c
         gradtargex(1,i) = 0
         gradtargex(2,i) = 0
         gradtargex(3,i) = 0
+
+        do j=1,6
+          hessex(j,i) = 0
+          hesstargex(j,i) = 0
+        enddo
       enddo
 
       thresh = 1.0d-16
@@ -738,6 +1033,11 @@ c
      1       potex,gradex,thresh)
         endif
 
+        if(ifpgh.eq.3) then
+          call l3ddirectch(nd,source,charge,ns,source,ntest,
+     1       potex,gradex,hessex,thresh)
+        endif
+
         if(ifpghtarg.eq.1) then
           call l3ddirectcp(nd,source,charge,ns,targ,ntest,
      1       pottargex,thresh)
@@ -746,6 +1046,11 @@ c
         if(ifpghtarg.eq.2) then
           call l3ddirectcg(nd,source,charge,ns,targ,ntest,
      1       pottargex,gradtargex,thresh)
+        endif
+
+        if(ifpghtarg.eq.3) then
+          call l3ddirectch(nd,source,charge,ns,targ,ntest,
+     1       pottargex,gradtargex,hesstargex,thresh)
         endif
       endif
 
@@ -760,6 +1065,11 @@ c
      1       ns,source,ntest,potex,gradex,thresh)
         endif
 
+        if(ifpgh.eq.3) then
+          call l3ddirectdh(nd,source,dipvec,
+     1       ns,source,ntest,potex,gradex,hessex,thresh)
+        endif
+
         if(ifpghtarg.eq.1) then
           call l3ddirectdp(nd,source,dipvec,
      1       ns,targ,ntest,pottargex,thresh)
@@ -768,6 +1078,11 @@ c
         if(ifpghtarg.eq.2) then
           call l3ddirectdg(nd,source,dipvec,
      1       ns,targ,ntest,pottargex,gradtargex,thresh)
+        endif
+
+        if(ifpghtarg.eq.3) then
+          call l3ddirectdh(nd,source,dipvec,
+     1       ns,targ,ntest,pottargex,gradtargex,hesstargex,thresh)
         endif
       endif
 
@@ -782,6 +1097,11 @@ c
      1       ns,source,ntest,potex,gradex,thresh)
         endif
 
+        if(ifpgh.eq.3) then
+          call l3ddirectcdh(nd,source,charge,dipvec,
+     1       ns,source,ntest,potex,gradex,hessex,thresh)
+        endif
+
         if(ifpghtarg.eq.1) then
           call l3ddirectcdp(nd,source,charge,dipvec,
      1       ns,targ,ntest,pottargex,thresh)
@@ -790,6 +1110,11 @@ c
         if(ifpghtarg.eq.2) then
           call l3ddirectcdg(nd,source,charge,dipvec,
      1       ns,targ,ntest,pottargex,gradtargex,thresh)
+        endif
+
+        if(ifpghtarg.eq.3) then
+          call l3ddirectcdh(nd,source,charge,dipvec,
+     1       ns,targ,ntest,pottargex,gradtargex,hesstargex,thresh)
         endif
       endif
 
@@ -817,6 +1142,26 @@ c
         enddo
       endif
 
+      if(ifpgh.eq.3) then
+        do i=1,ntest
+          ra = ra + abs(potex(i))**2
+          ra = ra + abs(gradex(1,i))**2
+          ra = ra + abs(gradex(2,i))**2
+          ra = ra + abs(gradex(3,i))**2
+          do l=1,6
+            ra = ra + abs(hessex(l,i))**2
+          enddo
+
+          err = err + abs(pot(i)-potex(i))**2
+          err = err + abs(grad(1,i)-gradex(1,i))**2
+          err = err + abs(grad(2,i)-gradex(2,i))**2
+          err = err + abs(grad(3,i)-gradex(3,i))**2
+          do l=1,6
+            err = err + abs(hess(l,i)-hessex(l,i))**2
+          enddo
+        enddo
+      endif
+
 
       if(ifpghtarg.eq.1) then
         do i=1,ntest
@@ -836,6 +1181,27 @@ c
           err = err + abs(gradtarg(1,i)-gradtargex(1,i))**2
           err = err + abs(gradtarg(2,i)-gradtargex(2,i))**2
           err = err + abs(gradtarg(3,i)-gradtargex(3,i))**2
+        enddo
+      endif
+
+      if(ifpghtarg.eq.3) then
+        do i=1,ntest
+          ra = ra + abs(pottargex(i))**2
+          ra = ra + abs(gradtargex(1,i))**2
+          ra = ra + abs(gradtargex(2,i))**2
+          ra = ra + abs(gradtargex(3,i))**2
+
+          do l=1,6
+            ra = ra + abs(hesstargex(l,i))**2
+          enddo
+
+          err = err + abs(pottarg(i)-pottargex(i))**2
+          err = err + abs(gradtarg(1,i)-gradtargex(1,i))**2
+          err = err + abs(gradtarg(2,i)-gradtargex(2,i))**2
+          err = err + abs(gradtarg(3,i)-gradtargex(3,i))**2
+          do l=1,6
+            err = err + abs(hesstarg(l,i)-hesstargex(l,i))**2
+          enddo
         enddo
       endif
 
