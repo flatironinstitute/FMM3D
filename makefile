@@ -115,6 +115,10 @@ LOBJS = $(LAP)/lwtsexp_sep1.o $(LAP)/l3dterms.o $(LAP)/l3dtrans.o \
 	$(LAP)/lfmm3dwrap_legacy.o $(LAP)/lfmm3dwrap_vec.o $(LAP)/lwtsexp_sep2.o \
 	$(LAP)/lpwrouts.o
 
+# Stokes objects
+STOK = src/Stokes
+STOBJS = $(STOK)/stfmm3d.o $(STOK)/stokkernels.o
+
 ifneq ($(FAST_KER),ON)
 LOBJS += $(LAP)/lapkernels.o
 LOBJS += $(LAP)/lndiv.o
@@ -123,7 +127,7 @@ HOBJS += $(HELM)/hndiv.o
 endif
 
 ifeq ($(FAST_KER),ON)
-LOBJS += $(LAP)/lapkernels_fast.o
+LOBJS += $(LAP)/lapkernels.o
 LOBJS += $(LAP)/lndiv_fast.o
 HOBJS += $(HELM)/helmkernels_fast.o
 HOBJS += $(HELM)/hndiv_fast.o
@@ -138,7 +142,7 @@ COBJS = c/cprini.o c/utils.o
 CHEADERS = c/cprini.h c/utils.h c/hfmm3d_c.h c/lfmm3d_c.h
 
 
-OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
+OBJS = $(COMOBJS) $(HOBJS) $(LOBJS) $(STOBJS)
 
 .PHONY: usage install lib examples test test-ext python all c c-examples matlab big-test pw-test debug test-dyn matlab-dyn python-dyn 
 
@@ -248,13 +252,16 @@ python: $(STATICLIB)
 
 # testing routines
 #
-test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale
+test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale test/stfmm3d test/stokkernels
 	(cd test/Helmholtz; ./run_helmtest.sh)
 	(cd test/Laplace; ./run_laptest.sh)
+	(cd test/Stokes; ./run_stoktest.sh)
 	cat print_testreshelm.txt
 	cat print_testreslap.txt
+	cat print_testresstok.txt
 	rm print_testreshelm.txt
 	rm print_testreslap.txt
+	rm print_testresstok.txt
 
 test-dyn: $(DYNAMICLIB) $(TOBJS) test/helmrouts-dyn test/hfmm3d-dyn test/hfmm3d_vec-dyn test/hfmm3d_scale-dyn test/laprouts-dyn test/lfmm3d-dyn test/lfmm3d_vec-dyn test_hfmm3d_mps-dyn test/lfmm3d_scale-dyn
 	(cd test/Helmholtz; ./run_helmtest.sh)
@@ -298,6 +305,12 @@ test/lfmm3d_scale:
 
 test/lfmm3d_vec:
 	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_vec.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/int2-test-lfmm3d-vec $(LIBS) 
+
+test/stfmm3d: 
+	$(FC) $(FFLAGS) test/Stokes/test_stfmm3d.f $(TOBJS) $(COMOBJS) $(LOBJS) $(STOBJS) -o test/Stokes/int2-test-stfmm3d $(LIBS) 
+
+test/stokkernels: 
+	$(FC) $(FFLAGS) test/Stokes/test_stokkernels.f $(TOBJS) $(COMOBJS) $(LOBJS) $(STOBJS) -o test/Stokes/int2-test-stokkernels $(LIBS)
 
 
 test_hfmm3d_mps: $(STATICLIB) $(TOBJS)
