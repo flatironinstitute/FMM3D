@@ -14,7 +14,7 @@ list_helm=['hfmm3dwrap.f','hfmm3dwrap_vec.f','helmkernels.f']
 list_lap=['lfmm3dwrap.f','lfmm3dwrap_vec.f','lapkernels.f']
 list_common=[]
 
-FLIBS = os.getenv('FLIBS')
+FLIBS = os.getenv('FMM_FLIBS')
 FLIBS = FLIBS.rstrip().split(' ')
 FLIBS = list(filter(None, FLIBS))
 FLIBS.append('../lib-static/libfmm3d.a')
@@ -68,6 +68,7 @@ ext_lap = Extension(
 ## TODO: fill in the info below
 setup(
     name=pkg_name,
+    python_requires='>=3.0.0',
     version="1.0.0",
     author="Zydrunas Gimbutas, Leslie Greengard, Libin Lu, Jeremy Magland, Dhairya Malhotra, Michael O'Neil, Manas Rachh, and Vladimir Rokhlin",
     author_email="mrachh@flatironinstitute.org",

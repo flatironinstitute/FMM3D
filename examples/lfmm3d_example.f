@@ -4,10 +4,11 @@
       double precision, allocatable :: charge(:)
       double precision, allocatable :: pot(:)
       double precision, allocatable :: grad(:,:)
+      double precision, allocatable :: hess(:,:)
 
       double precision eps
-      integer i,j,k
-      double precision hkrand
+      integer i,j,k,l
+      double precision hkrand,omp_get_wtime,t1,t2
       
 
 
@@ -24,13 +25,12 @@ c
       write(*,*)
 
 
-      ns = 2000
-      
+      ns = 5000
 
       allocate(source(3,ns))
       allocate(charge(ns))
       allocate(pot(ns))
-      allocate(grad(3,ns))
+      allocate(grad(3,ns),hess(6,ns))
 
 
       eps = 0.5d-9
@@ -59,12 +59,22 @@ c
         pot(i) = 0
         grad(1,i) = 0
         grad(2,i) = 0
-        grad(3,i) = 0 
+        grad(3,i) = 0
+
+        do l=1,6
+          hess(l,i) = 0
+        enddo
       enddo
 
 
-      call lfmm3d_s_c_g(eps,ns,source,charge,
-     1      pot,grad)
+      call cpu_time(t1)
+C$       t1 = omp_get_wtime()      
+      call lfmm3d_s_c_h(eps,ns,source,charge,
+     1      pot,grad,hess)
+      call cpu_time(t2)
+C$      t2 = omp_get_wtime()     
+      
+      call prin2('time taken=*',t2-t1,1)
       call prin2("pot at sources=*",pot,12)
       call prin2("grad at sources=*",grad,12)
 

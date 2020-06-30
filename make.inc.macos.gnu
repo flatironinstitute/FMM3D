@@ -9,10 +9,8 @@ CXX=g++-9
 FC=gfortran-9
 FFLAGS= -fPIC -O3 -march=native -funroll-loops
 
-ifeq ($(FAST_KER),ON)
-
-  FFLAGS += -lstdc++
-
+ifeq ($(PREFIX),)
+    FMM_INSTALL_DIR=/usr/local/lib
 endif
 
 
