@@ -28,6 +28,7 @@ jobs:
         ls python/dist/*.whl | xargs -n1 auditwheel repair
 
     - name: Test python bindings
+      run: |
         .github/workflows/linux_test.sh /opt/python/cp35-cp35m/bin/python
         .github/workflows/linux_test.sh /opt/python/cp36-cp36m/bin/python
         .github/workflows/linux_test.sh /opt/python/cp37-cp37m/bin/python
