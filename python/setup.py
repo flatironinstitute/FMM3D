@@ -52,14 +52,14 @@ for cd in c_opts2:
         list_int_lap_dir.append('l3ddirect'+cd+pg)
 
 ext_helm = Extension(
-    name='hfmm3d_fortran',
+    name='fmm3dpy.hfmm3d_fortran',
     sources=['../src/Helmholtz/'+item for item in list_helm]+['../src/Common/'+item for item in list_common],
     f2py_options=['only:']+list_int_helm+list_int_helm_vec+list_int_helm_dir+[':'],
     extra_link_args=FLIBS
 )
 
 ext_lap = Extension(
-    name='lfmm3d_fortran',
+    name='fmm3dpy.lfmm3d_fortran',
     sources=['../src/Laplace/'+item for item in list_lap]+['../src/Common/'+item for item in list_common],
     f2py_options=['only:']+list_int_lap+list_int_lap_vec+list_int_lap_dir+[':'],
     extra_link_args=FLIBS
@@ -74,14 +74,14 @@ setup(
     author_email="mrachh@flatironinstitute.org",
     description="This pacakge contains basic routines for Laplace and Helmholtz fast multipole methods in three dimensions",
     url="",
-    packages=setuptools.find_packages(),
+    packages=['fmm3dpy'],
     install_requires=[
         "pytest"
     ],
     ext_modules=[ext_helm,ext_lap],
-    classifiers=(
+    classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: OS Independent",
-    )    
+    ]
 )

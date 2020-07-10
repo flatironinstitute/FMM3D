@@ -28,7 +28,8 @@ LIBS = -lm
 OMPFLAGS =-fopenmp
 OMPLIBS =-lgomp 
 
-
+# Python Exetucable
+PYTHON=python
 
 
 # flags for MATLAB MEX compilation..
@@ -144,7 +145,7 @@ CHEADERS = c/cprini.h c/utils.h c/hfmm3d_c.h c/lfmm3d_c.h
 
 OBJS = $(COMOBJS) $(HOBJS) $(LOBJS) $(STOBJS)
 
-.PHONY: usage install lib examples test test-ext python all c c-examples matlab big-test pw-test debug test-dyn matlab-dyn python-dyn 
+.PHONY: usage install lib examples test test-ext python all c c-examples matlab big-test pw-test debug test-dyn matlab-dyn python-dyn python-dist
 
 default: usage
 
@@ -164,6 +165,7 @@ usage:
 	@echo "  make test-dyn - test successful installation by validation tests linked to dynamic library (will take a couple of mins)"
 	@echo "  make matlab-dyn - compile matlab interfaces with dynamic library linking"
 	@echo "  make python-dyn - compile and test python interfaces with dynamic library linking"
+	@echo "  make python-dist - compile python interfaces for distribution"
 	@echo "  make examples - compile and run fortran examples in examples/"
 	@echo "  make c-examples - compile and run c examples in c/"
 	@echo "  make objclean - removal all object files, preserving lib & MEX"
@@ -247,8 +249,14 @@ mex:  $(STATICLIB)
 
 #python
 python: $(STATICLIB)
-	cd python && export FMM_FLIBS='$(LIBS)' && pip install -e . \
-	&& cd test && pytest -s
+	cd python && \
+	FMM_FLIBS='$(LIBS) $(OMPFLAGS)' $(PYTHON) -m pip install -e . && \
+	$(PYTHON) -m pytest test/ -s
+
+python-dist: $(STATICLIB)
+	cd python && \
+	FMM_FLIBS='$(LIBS) $(OMPFLAGS)' $(PYTHON) setup.py bdist_wheel
+
 
 # testing routines
 #
@@ -422,8 +430,9 @@ c/ex2_helm:
 
 clean: objclean
 	rm -f lib-static/*.a lib/*.so lib/*.dll lib/*.lib
-	rm -f python/*.so
+	rm -f python/fmm3dpy*.so
 	rm -rf python/build
+	rm -rf python/dist
 	rm -rf python/fmm3dpy.egg-info
 	rm -f examples/lfmm3d_example
 	rm -f examples/lfmm3d_vec_example
