@@ -83,7 +83,7 @@ jobs:
         .github/workflows/python_build.sh /Library/Frameworks/Python.framework/Versions/3.8/bin/python3
         PYTHON_BIN=/Library/Frameworks/Python.framework/Versions/3.7/bin/
         $PYTHON_BIN/python3 -m pip install delocate
-        ls python/dist/*.whl | $PYTHON_BIN/delocate-wheel -w wheelhouse/
+        ls python/dist/*.whl | xargs -n1 $PYTHON_BIN/delocate-wheel -w wheelhouse/
 
     - name: Test python bindings
       run: |
