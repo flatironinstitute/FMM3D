@@ -57,11 +57,6 @@ jobs:
     - name: Download and install Python
       run: |
         curl \
-          https://www.python.org/ftp/python/3.5.4/python-3.5.4-macosx10.6.pkg \
-          --output python_installer.pkg
-        sudo installer -pkg python_installer.pkg -target /
-
-        curl \
           https://www.python.org/ftp/python/3.6.8/python-3.6.8-macosx10.9.pkg \
           --output python_installer.pkg
         sudo installer -pkg python_installer.pkg -target /
@@ -83,7 +78,6 @@ jobs:
 
     - name: Compile python bindings
       run: |
-        .github/workflows/python_build.sh /Library/Frameworks/Python.framework/Versions/3.5/bin/python3
         .github/workflows/python_build.sh /Library/Frameworks/Python.framework/Versions/3.6/bin/python3
         .github/workflows/python_build.sh /Library/Frameworks/Python.framework/Versions/3.7/bin/python3
         .github/workflows/python_build.sh /Library/Frameworks/Python.framework/Versions/3.8/bin/python3
@@ -93,7 +87,6 @@ jobs:
 
     - name: Test python bindings
       run: |
-        .github/workflows/python_test.sh /Library/Frameworks/Python.framework/Versions/3.5/bin/python3
         .github/workflows/python_test.sh /Library/Frameworks/Python.framework/Versions/3.6/bin/python3
         .github/workflows/python_test.sh /Library/Frameworks/Python.framework/Versions/3.7/bin/python3
         .github/workflows/python_test.sh /Library/Frameworks/Python.framework/Versions/3.8/bin/python3
