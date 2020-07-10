@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: quay.io/pypa/manylinux2010_x86_64:latest
+    container: quay.io/pypa/manylinux2014_x86_64:latest
 
     steps:
     - uses: actions/checkout@v2
