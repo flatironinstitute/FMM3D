@@ -57,7 +57,7 @@ jobs:
     - name: Download and install Python
       run: |
         curl \
-          https://www.python.org/ftp/python/3.5.4/python-3.5.4-macosx10.6.pkg
+          https://www.python.org/ftp/python/3.5.4/python-3.5.4-macosx10.6.pkg \
           --output python_installer.pkg
         sudo installer -pkg python_installer.pkg -target /
 
