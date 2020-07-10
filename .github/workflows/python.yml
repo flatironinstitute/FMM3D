@@ -1,0 +1,105 @@
+name: Python Build
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - v*
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  Linux:
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64:latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Compile the Fortran library
+      run: make lib
+
+    - name: Compile python bindings
+      run: |
+        .github/workflows/python_build.sh /opt/python/cp35-cp35m/bin/python
+        .github/workflows/python_build.sh /opt/python/cp36-cp36m/bin/python
+        .github/workflows/python_build.sh /opt/python/cp37-cp37m/bin/python
+        .github/workflows/python_build.sh /opt/python/cp38-cp38/bin/python
+        ls python/dist/*.whl | xargs -n1 auditwheel repair
+
+    - name: Test python bindings
+      run: |
+        .github/workflows/python_test.sh /opt/python/cp35-cp35m/bin/python
+        .github/workflows/python_test.sh /opt/python/cp36-cp36m/bin/python
+        .github/workflows/python_test.sh /opt/python/cp37-cp37m/bin/python
+        .github/workflows/python_test.sh /opt/python/cp38-cp38/bin/python
+
+    - name: Upload wheels
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux-wheels
+        path: wheelhouse/*.whl
+
+  MacOS:
+    runs-on: macos-latest
+    env:
+      MACOSX_DEPLOYMENT_TARGET: 10.9
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    # Download and install Python instead of using the setup_python
+    # as the python interpreters in the Github machines
+    # were compiled in 10.14, which means that the wheels
+    # are incompatible with older MacOS versions
+    - name: Download and install Python
+      run: |
+        curl \
+          https://www.python.org/ftp/python/3.5.4/python-3.5.4-macosx10.6.pkg
+          --output python_installer.pkg
+        sudo installer -pkg python_installer.pkg -target /
+
+        curl \
+          https://www.python.org/ftp/python/3.6.8/python-3.6.8-macosx10.9.pkg \
+          --output python_installer.pkg
+        sudo installer -pkg python_installer.pkg -target /
+
+        curl \
+          https://www.python.org/ftp/python/3.7.7/python-3.7.7-macosx10.9.pkg \
+          --output python_installer.pkg
+        sudo installer -pkg python_installer.pkg -target /
+
+        curl \
+          https://www.python.org/ftp/python/3.8.3/python-3.8.3-macosx10.9.pkg \
+          --output python_installer.pkg
+        sudo installer -pkg python_installer.pkg -target /
+
+    - name: Compile the Fortran library
+      run: |
+        cp make.inc.macos.gnu make.inc 
+        make lib
+
+    - name: Compile python bindings
+      run: |
+        .github/workflows/python_build.sh /Library/Frameworks/Python.framework/Versions/3.5/bin/python3
+        .github/workflows/python_build.sh /Library/Frameworks/Python.framework/Versions/3.6/bin/python3
+        .github/workflows/python_build.sh /Library/Frameworks/Python.framework/Versions/3.7/bin/python3
+        .github/workflows/python_build.sh /Library/Frameworks/Python.framework/Versions/3.8/bin/python3
+        PYTHON_BIN=/Library/Frameworks/Python.framework/Versions/3.7/bin/
+        $PYTHON_BIN/python3 -m pip install delocate
+        ls python/dist/*.whl | $PYTHON_BIN/delocate-wheel -w wheelhouse/
+
+    - name: Test python bindings
+      run: |
+        .github/workflows/python_test.sh /Library/Frameworks/Python.framework/Versions/3.5/bin/python3
+        .github/workflows/python_test.sh /Library/Frameworks/Python.framework/Versions/3.6/bin/python3
+        .github/workflows/python_test.sh /Library/Frameworks/Python.framework/Versions/3.7/bin/python3
+        .github/workflows/python_test.sh /Library/Frameworks/Python.framework/Versions/3.8/bin/python3
+
+    - name: Upload wheels
+      uses: actions/upload-artifact@v2
+      with:
+        name: macos-wheels
+        path: wheelhouse/*.whl
