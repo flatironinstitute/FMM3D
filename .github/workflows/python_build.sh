@@ -2,5 +2,5 @@
 # This is an auxiliary script to build wheels
 PYTHON=$1
 echo "PYTHON=$PYTHON" >> make.inc 
-$PYTHON_PATH -m pip install --upgrade setuptools wheel numpy pip
+$PYTHON -m pip install --upgrade setuptools wheel numpy pip
 make python-dist
