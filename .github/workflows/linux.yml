@@ -1,0 +1,43 @@
+name: Linux Build
+
+on:
+  push:
+    branches: [ master ]
+    tags:
+      - v*
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2010_x86_64:latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Compile library
+      run: make lib
+
+    - name: Compile python bindings
+      run: |
+        .github/workflows/linux_build.sh /opt/python/cp35-cp35m/bin/python
+        .github/workflows/linux_build.sh /opt/python/cp36-cp36m/bin/python
+        .github/workflows/linux_build.sh /opt/python/cp37-cp37m/bin/python
+        .github/workflows/linux_build.sh /opt/python/cp38-cp38/bin/python
+        ls python/dist/*.whl | xargs -n1 auditwheel repair
+
+    - name: Test python bindings
+        .github/workflows/linux_test.sh /opt/python/cp35-cp35m/bin/python
+        .github/workflows/linux_test.sh /opt/python/cp36-cp36m/bin/python
+        .github/workflows/linux_test.sh /opt/python/cp37-cp37m/bin/python
+        .github/workflows/linux_test.sh /opt/python/cp38-cp38/bin/python
+
+    - name: Upload wheels
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux-wheels
+        path: wheelhouse/*.whl
+
+
+

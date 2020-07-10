@@ -76,6 +76,7 @@ setup(
     url="",
     packages=['fmm3dpy'],
     install_requires=[
+        "numpy",
         "pytest"
     ],
     ext_modules=[ext_helm,ext_lap],
