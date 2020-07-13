@@ -9,7 +9,7 @@ Add-Content -Path make.inc -Value "FFLAGS+= -fallow-argument-mismatch"
 
 # Setup the distutils.cfg file
 Set-Variable distutils_cfg -Value ([IO.Path]::Combine((Split-Path -Path $PYTHON), "Lib", 'distutils', 'distutils.cfg'))
-Add-Content -Path $distutils_cfg -Value "[build]`r`ncompiler=mingw32`r`n[build_ext]`r`ncompiler=mingw32"
+Set-Content -Path $distutils_cfg -Value "[build]`r`ncompiler=mingw32`r`n[build_ext]`r`ncompiler=mingw32"
 python -m pip install --upgrade setuptools wheel numpy pip
 if (-not $?) {throw "Failed pip install"}
 
@@ -27,6 +27,7 @@ Copy-Item -Path C:\msys64\mingw64\bin\libgomp-*.dll -Destination ([IO.Path]::Com
 Copy-Item -Path C:\msys64\mingw64\bin\libgfortran-*.dll -Destination ([IO.Path]::Combine($unpacked_wheel, 'fmm3dpy'))
 Copy-Item -Path C:\msys64\mingw64\bin\libwinpthread-*.dll -Destination ([IO.Path]::Combine($unpacked_wheel, 'fmm3dpy'))
 Copy-Item -Path C:\msys64\mingw64\bin\libquadmath-*.dll -Destination ([IO.Path]::Combine($unpacked_wheel, 'fmm3dpy'))
+New-Item -Path .\wheelhouse -ItemType Directory -Force
 wheel.exe pack $unpacked_wheel -d .\wheelhouse
 if (-not $?) {throw "Failed pack wheel"}
 
