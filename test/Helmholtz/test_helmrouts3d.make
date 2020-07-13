@@ -56,6 +56,7 @@ SOURCES =  test_helmrouts3d.f \
   h3dterms.f \
   h3dtrans.f \
   helmrouts3d.f \
+  helmkernels.f \
   besseljs3d.f \
   projections.f \
   rotproj.f \
