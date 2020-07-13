@@ -111,24 +111,24 @@ jobs:
         python-version: '3.6'
         architecture: 'x64'
     - run: |
-      .\.github\workflows\python_build_win.ps1
-      .\.github\workflows\python_test_win.ps1
+        .\.github\workflows\python_build_win.ps1
+        .\.github\workflows\python_test_win.ps1
 
     - uses: actions/setup-python@v2
       with:
         python-version: '3.7'
         architecture: 'x64'
     - run: |
-      .\.github\workflows\python_build_win.ps1
-      .\.github\workflows\python_test_win.ps1
+        .\.github\workflows\python_build_win.ps1
+        .\.github\workflows\python_test_win.ps1
 
     - uses: actions/setup-python@v2
       with:
         python-version: '3.8'
         architecture: 'x64'
     - run: |
-      .\.github\workflows\python_build_win.ps1
-      .\.github\workflows\python_test_win.ps1
+        .\.github\workflows\python_build_win.ps1
+        .\.github\workflows\python_test_win.ps1
 
     - name: Upload wheels
       uses: actions/upload-artifact@v2
