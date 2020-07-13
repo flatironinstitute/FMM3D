@@ -106,7 +106,8 @@ jobs:
     - name: Install GCC and make
       run: C:\msys64\usr\bin\bash.exe -lc "pacman -Sy --noconfirm make mingw-w64-x86_64-toolchain"
 
-    - uses: actions/setup-python@v2
+    - name: Build and Test Python 3.6
+      uses: actions/setup-python@v2
       with:
         python-version: '3.6'
         architecture: 'x64'
@@ -114,7 +115,8 @@ jobs:
         .\.github\workflows\python_build_win.ps1
         .\.github\workflows\python_test_win.ps1
 
-    - uses: actions/setup-python@v2
+    - name: Build and Test Python 3.7
+      uses: actions/setup-python@v2
       with:
         python-version: '3.7'
         architecture: 'x64'
@@ -122,7 +124,8 @@ jobs:
         .\.github\workflows\python_build_win.ps1
         .\.github\workflows\python_test_win.ps1
 
-    - uses: actions/setup-python@v2
+    - name: Build and Test Python 3.8
+      uses: actions/setup-python@v2
       with:
         python-version: '3.8'
         architecture: 'x64'
