@@ -24,10 +24,7 @@ jobs:
         yum install -y devtoolset-8-toolchain
         echo "FC=/opt/rh/devtoolset-8/root/bin/gfortran" >> make.inc
         echo "CC=/opt/rh/devtoolset-8/root/bin/gcc" >> make.inc
-        echo "CC=/opt/rh/devtoolset-8/root/bin/g++" >> make.inc
-
-    - name: Compile the Fortran library
-      run: make lib
+        echo "CXX=/opt/rh/devtoolset-8/root/bin/g++" >> make.inc
 
     - name: Compile python bindings
       run: |
@@ -57,6 +54,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Make sure gcc-9 is installed
+      run: |
+        brew install gcc@9
+        ln -s `which gfortran-9` /usr/local/bin/gfortran
+        cp make.inc.macos.gnu make.inc
+        echo "FC=gfortran-9" >> make.inc
+        echo "CC=gcc-9" >> make.inc
+        echo "CXX=g++-9" >> make.inc
+
     
     # Download and install Python instead of using the setup_python
     # as the python interpreters in the Github machines
@@ -78,11 +85,6 @@ jobs:
           https://www.python.org/ftp/python/3.8.3/python-3.8.3-macosx10.9.pkg \
           --output python_installer.pkg
         sudo installer -pkg python_installer.pkg -target /
-
-    - name: Compile the Fortran library
-      run: |
-        cp make.inc.macos.gnu make.inc 
-        make lib
 
     - name: Compile python bindings
       run: |
