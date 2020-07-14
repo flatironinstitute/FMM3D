@@ -17,6 +17,14 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    
+    # If I compile with gfortran-9, I guet numerical problems in other machines, not sure why
+    - name: install gfortran-8
+      run: |
+        yum install -y devtoolset-8-toolchain
+        echo "FC=/opt/rh/devtoolset-8/root/bin/gfortran" >> make.inc
+        echo "CC=/opt/rh/devtoolset-8/root/bin/gcc" >> make.inc
+        echo "CC=/opt/rh/devtoolset-8/root/bin/g++" >> make.inc
 
     - name: Compile the Fortran library
       run: make lib
@@ -52,7 +60,7 @@ jobs:
     
     # Download and install Python instead of using the setup_python
     # as the python interpreters in the Github machines
-    # were compiled in 10.14, which means that the wheels
+    # were compiled in 10.14, the wheels built with them
     # are incompatible with older MacOS versions
     - name: Download and install Python
       run: |
