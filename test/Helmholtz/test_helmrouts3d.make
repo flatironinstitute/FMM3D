@@ -16,7 +16,6 @@ ifeq ($(HOST),gcc-openmp)
     FFLAGS=-fPIC -O3 -funroll-loops -march=native -fopenmp -std=legacy
 endif
 
-
 # Test objects
 #
 COM = ../../src/Common
