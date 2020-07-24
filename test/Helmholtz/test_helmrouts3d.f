@@ -41,9 +41,10 @@ c
 c
       data eye/(0.0d0,1.0d0)/
 c
+      call prini(6,13)
       done=1
       pi=4.0*atan(done)
-      zk = 1.2d0
+      zk = 51.2d0
 
       write(*,*) "=========================================="
       write(*,*) "Testing suite for helmrouts3d"
@@ -58,6 +59,10 @@ c
       bsize = 1.0d0
       rscale1 = abs(zk)*bsize/4
       rscale2 = abs(zk)*bsize/2
+
+      if(rscale1.gt.1) rscale1 = 1
+      if(rscale2.gt.2) rscale2 = 1
+
 
 cc      rscale1 = 1
 cc      rscale2 = 1
@@ -133,6 +138,7 @@ c
       call h3dterms(bsize/2, zk, eps, nterms)
       call h3dterms(bsize, zk, eps, nterms2)
       call h3dterms(bsize/2, zk, eps, nterms3)
+
 
       nlege = 100
       lw7 = 100000
@@ -214,6 +220,7 @@ c
       call mpzero(nd,locexp2,nterms2)
       call h3dmploc(nd,zk,rscale2,c1,mpole2,nterms2,
      1      rscale2,c2,locexp2,nterms2,radius,xnodes,wts,nquad)
+
 
       pot = 0
       fld(1) = 0
