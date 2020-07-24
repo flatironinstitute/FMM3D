@@ -148,3 +148,23 @@ jobs:
       with:
         name: windows-wheels
         path: wheelhouse\*.whl
+
+
+  PyPI:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags') }}
+    needs: [Linux, MacOS, Windows]
+    
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        
+      - name: Upload to PyPI
+        run: |
+          python -m pip install twine
+          python -m twine upload **/*.whl -u __token__ -p "$PASSWORD" --repository testpypi
+        env:
+          PASSWORD: ${{ secrets.PYPI_TOKEN }}
