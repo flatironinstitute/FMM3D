@@ -58,7 +58,7 @@ jobs:
     - name: Install gcc-8
       run: |
         # Installing a version for an older MacOS
-        curl \
+        curl -L \
           "https://bintray.com/homebrew/bottles/download_file?file_path=gcc@8-8.3.0.sierra.bottle.tar.gz" \
           --output "gcc@8-8.3.0.sierra.bottle.tar.gz"
         brew install "gcc@8-8.3.0.sierra.bottle.tar.gz"
