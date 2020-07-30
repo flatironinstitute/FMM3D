@@ -57,12 +57,11 @@ jobs:
 
     - name: Install gcc-8
       run: |
-        # Installing a version for an older MacOS
-        brew uninstall gcc@8
-        curl -L \
-          "https://bintray.com/homebrew/bottles/download_file?file_path=gcc@8-8.3.0.sierra.bottle.tar.gz" \
-          --output "gcc@8-8.3.0.sierra.bottle.tar.gz"
-        brew install "gcc@8-8.3.0.sierra.bottle.tar.gz"
+        # Re-install GCC building from source
+        # This will guarantee that MACOSX_DEPLOYMENT_TARGET
+        # is fulfilled for all libraries in the wheel
+        # but takes a long time...
+        brew reinstall -s gcc@8
         ln -s `which gfortran-8` /usr/local/bin/gfortran
         cp make.inc.macos.gnu make.inc
         echo "FC=gfortran-8" >> make.inc
