@@ -57,6 +57,8 @@ jobs:
 
     - name: Make sure gcc-9 is installed
       run: |
+        # I need to re-install gcc to the right deployment target
+        brew uninstall gcc@9
         brew install gcc@9
         ln -s `which gfortran-9` /usr/local/bin/gfortran
         cp make.inc.macos.gnu make.inc
