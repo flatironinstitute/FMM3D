@@ -55,16 +55,18 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Make sure gcc-9 is installed
+    - name: Install gcc-8
       run: |
-        # I need to re-install gcc to the right deployment target
-        brew uninstall gcc@9
-        brew install gcc@9
-        ln -s `which gfortran-9` /usr/local/bin/gfortran
+        # Installing a version for an older MacOS
+        curl \
+          "https://bintray.com/homebrew/bottles/download_file?file_path=gcc@8-8.3.0.sierra.bottle.tar.gz" \
+          --output "gcc@8-8.3.0.sierra.bottle.tar.gz"
+        brew install "gcc@8-8.3.0.sierra.bottle.tar.gz"
+        ln -s `which gfortran-8` /usr/local/bin/gfortran
         cp make.inc.macos.gnu make.inc
-        echo "FC=gfortran-9" >> make.inc
-        echo "CC=gcc-9" >> make.inc
-        echo "CXX=g++-9" >> make.inc
+        echo "FC=gfortran-8" >> make.inc
+        echo "CC=gcc-8" >> make.inc
+        echo "CXX=g++-8" >> make.inc
 
     
     # Download and install Python instead of using the setup_python
