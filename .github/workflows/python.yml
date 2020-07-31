@@ -28,6 +28,7 @@ jobs:
 
     - name: Compile python bindings
       run: |
+        export PATH=/opt/rh/devtoolset-8/root/bin:$PATH
         .github/workflows/python_build_posix.sh /opt/python/cp35-cp35m/bin/python
         .github/workflows/python_build_posix.sh /opt/python/cp36-cp36m/bin/python
         .github/workflows/python_build_posix.sh /opt/python/cp37-cp37m/bin/python
