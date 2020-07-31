@@ -63,8 +63,11 @@ jobs:
         echo "FC=gfortran-8" >> make.inc
         echo "CC=gcc-8" >> make.inc
         echo "CXX=g++-8" >> make.inc
-        # hack to get libquadmath to be linked statically
-        sudo rm /usr/local/opt/gcc@9/lib/gcc/9/libquadmath.*dylib
+        # link statically to gcc, gfortran and libquadmath
+        # otherwise binaries are incompatible with older systems
+        echo "LIBS += -static-libgfortran -static-libgcc" >> make.inc
+        # hack to make libquadmath link statically
+        sudo rm /usr/local/opt/gcc@8/lib/gcc/8/libquadmath.*dylib
 
     
     # Download and install Python instead of using the setup_python
