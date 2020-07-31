@@ -22,7 +22,10 @@ CXXFLAGS+=$(FFLAGS)
 
 # set linking libraries
 CLIBS = -lgfortran -lm -ldl 
-LIBS = -lm 
+LIBS = -lm
+# Flags for static linkinking. Usefull for building binaries for
+# distribution
+SLINKFLAGS = -static-libgfortran -static-libgcc
 
 # extra flags for multithreaded: C/Fortran, MATLAB
 OMPFLAGS =-fopenmp
@@ -255,7 +258,7 @@ python: $(STATICLIB)
 
 python-dist: $(STATICLIB)
 	cd python && \
-	FMM_FLIBS='$(LIBS) $(OMPFLAGS)' $(PYTHON) setup.py bdist_wheel
+	FMM_FLIBS='$(LIBS) $(OMPFLAGS) $(SLINKFLAGS)' $(PYTHON) setup.py bdist_wheel
 
 
 # testing routines

@@ -57,16 +57,14 @@ jobs:
 
     - name: Install gcc-8
       run: |
-        # Re-install GCC building from source
-        # This will guarantee that MACOSX_DEPLOYMENT_TARGET
-        # is fulfilled for all libraries in the wheel
-        # but takes a long time...
-        brew reinstall -s gcc@8
+        brew install gcc@8
         ln -s `which gfortran-8` /usr/local/bin/gfortran
         cp make.inc.macos.gnu make.inc
         echo "FC=gfortran-8" >> make.inc
         echo "CC=gcc-8" >> make.inc
         echo "CXX=g++-8" >> make.inc
+        # hack to get libquadmath to be linked statically
+        sudo rm /usr/local/opt/gcc@9/lib/gcc/9/libquadmath.*dylib
 
     
     # Download and install Python instead of using the setup_python
