@@ -18,17 +18,14 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    # If I compile with gfortran-9, I guet numerical problems in other machines, not sure why
-    - name: install gfortran-8
+    # If I compile with gfortran-8 or 9, I guet numerical problems in other machines, not sure why
+    - name: install gfortran-7
       run: |
-        yum install -y devtoolset-8-toolchain
-        echo "FC=/opt/rh/devtoolset-8/root/bin/gfortran" >> make.inc
-        echo "CC=/opt/rh/devtoolset-8/root/bin/gcc" >> make.inc
-        echo "CXX=/opt/rh/devtoolset-8/root/bin/g++" >> make.inc
+        yum install -y devtoolset-7-toolchain
 
     - name: Compile python bindings
       run: |
-        export PATH=/opt/rh/devtoolset-8/root/bin:$PATH
+        scl enable devtoolset-7 bash
         .github/workflows/python_build_posix.sh /opt/python/cp35-cp35m/bin/python
         .github/workflows/python_build_posix.sh /opt/python/cp36-cp36m/bin/python
         .github/workflows/python_build_posix.sh /opt/python/cp37-cp37m/bin/python
