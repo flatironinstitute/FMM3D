@@ -1,5 +1,5 @@
-import hfmm3d_fortran as hfmm
-import lfmm3d_fortran as lfmm
+from . import hfmm3d_fortran as hfmm
+from . import lfmm3d_fortran as lfmm
 import numpy as np
 import numpy.linalg as la
 
