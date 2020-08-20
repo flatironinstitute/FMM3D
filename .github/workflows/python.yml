@@ -18,10 +18,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    # If I compile with gfortran-8 or 9, I guet numerical problems in other machines, not sure why
     - name: install gfortran-7
       run: |
         yum install -y devtoolset-7-toolchain
+        echo "FFLAGS += -march=x86-64" >> make.inc
+        echo "CFLAGS += -march=x86-64" >> make.inc
+        echo "CXXFLAGS += -march=x86-64" >> make.inc
 
     - name: Compile python bindings
       run: |
@@ -61,9 +63,12 @@ jobs:
         echo "FC=gfortran-8" >> make.inc
         echo "CC=gcc-8" >> make.inc
         echo "CXX=g++-8" >> make.inc
-        # link statically to gcc, gfortran and libquadmath
+        echo "FFLAGS += -march=x86-64" >> make.inc
+        echo "CFLAGS += -march=x86-64" >> make.inc
+        echo "CXXFLAGS += -march=x86-64" >> make.inc
+        # link statically to libgcc, libgfortran and libquadmath
         # otherwise binaries are incompatible with older systems
-        echo "LIBS += -static-libgfortran -static-libgcc" >> make.inc
+        echo "LIBS += -static-libgfortran -static-libgcc -static-libstdc++" >> make.inc
         # hack to make libquadmath link statically
         sudo rm /usr/local/opt/gcc@8/lib/gcc/8/libquadmath.*dylib
 
