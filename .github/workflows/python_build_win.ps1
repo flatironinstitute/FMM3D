@@ -5,7 +5,9 @@ Set-Variable -Name MSYSTEM -Value MINGW64
 # Setup the make.inc file
 Copy-Item -Path make.inc.windows.mingw -Destination make.inc
 Add-Content -Path make.inc -Value "PYTHON=""$PYTHON"""
-Add-Content -Path make.inc -Value "FFLAGS+= -fallow-argument-mismatch"
+Add-Content -Path make.inc -Value "FFLAGS+= -fallow-argument-mismatch -march=x86-64"
+Add-Content -Path make.inc -Value "CFLAGS+= -march=x86-64"
+Add-Content -Path make.inc -Value "CXXFLAGS+= -march=x86-64"
 
 # Setup the distutils.cfg file
 Set-Variable distutils_cfg -Value ([IO.Path]::Combine((Split-Path -Path $PYTHON), "Lib", 'distutils', 'distutils.cfg'))

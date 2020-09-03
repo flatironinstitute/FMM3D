@@ -546,7 +546,9 @@ c     Reset nlevels, nboxes
       nlmax = nlevels
       nlevels = 0
       nboxes = 1
-      do i = 1,nlmax
+
+
+      do i = 1,nlmax-1
          if (irefine.eq.1) then
             call subdivide_adap(ier,src,ns,radsrc,trg,nt,expc,nexpc,
      $                   radexp,idivflag,ndiv,
@@ -1804,7 +1806,7 @@ c
       if(isep.ne.1.and.isep.ne.2) then
          ier = 4
 cc         call prinf('Error tree not allocated, isep.ne.1,2*',ier,0)
-           print *, "Error tree not allocated, isep.ne.1,2"
+         print *, "Error tree not allocated, isep.ne.1,2"
          return
       endif
 
@@ -1954,7 +1956,8 @@ c
       if ((idivflag .eq.3).and.(nss+nt+nee.gt.ndiv)) irefine=1
 
 
-      do i = 1,nlmax
+
+      do i = 1,nlmax-1
          if (irefine.eq.1) then
 c
 c
@@ -1977,6 +1980,7 @@ c
             enddo
 
             nbtot = nboxes + 8*nnew
+
 c
 c            if current memory is not sufficient, 
 c            delete previous arrays and allocate more memory
@@ -2096,6 +2100,7 @@ C$OMP END PARALLEL DO
             exit
          endif
       enddo
+
 c
 c
 c        check with Leslie/Dhairya/Alex/Zydrunas if 16 is enough
@@ -2263,8 +2268,8 @@ c
 c      temporarily typecast nboxes to integer *8
 c
       nboxes8 = nboxes
-      ltree = (28+mhung+mnlist1+mnlist2+mnlist3+mnlist4+mnbors)*nboxes8+ 
-     1        2*(nlevels+1)+ns+nt+nexpc
+      ltree = (28+mhung+mnlist1+mnlist2+mnlist3+mnlist4+
+     1   mnbors)*nboxes8+2*(nlevels+1)+ns+nt+nexpc
 
       return
       end

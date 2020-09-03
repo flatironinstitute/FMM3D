@@ -3,4 +3,4 @@
 PYTHON=$1
 echo "PYTHON=$PYTHON" >> make.inc 
 $PYTHON -m pip install --upgrade setuptools wheel numpy pip
-make python-dist
+make python-dist FAST_KER=ON
