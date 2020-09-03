@@ -12,7 +12,7 @@ c     The Stokeslet, G_{ij}, and its associated pressure tensor, P_j,
 c     (without the 1/4pi scaling) are
 c
 c     G_{ij}(x,y) = (r_i r_j)/(2r^3) + delta_{ij}/(2r)
-c     P_j(x,y) = -r_j/r^3
+c     P_j(x,y) = r_j/r^3
 c
 c     The (Type I) stresslet, T_{ijk}, and its associated pressure
 c     tensor, PI_{jk}, (without the 1/4pi scaling) are
@@ -114,7 +114,6 @@ c                flag for evaluating potential, gradient, and pressure
 c                at the targets
 c                ifppregtarg = 1, only potential
 c                ifppregtarg = 2, potential and pressure
-c         GRADIENT NOT IMPLEMENTED
 c                ifppregtarg = 3, potential, pressure, and gradient
 c
 c-----------------------------------------------------------------------
@@ -140,7 +139,6 @@ c
 c   pretarg   out: double precision(nd,ntarg)
 c               pressure at the targets
 c      
-c         GRADIENT NOT IMPLEMENTED
 c   gradtarg   out: double precision(nd,3,3,ntarg) 
 c               gradient of velocity at the targets
 c               gradtarg(l,i,j,k) is the ith component of the
@@ -354,7 +352,7 @@ c$OMP$ PRIVATE(pt,pl,gl,hl,vel,velgrad,press)
                   vel(1) = vel(1) - pt(l)*gl(1)
                   vel(2) = vel(2) - pt(l)*gl(2)
                   vel(3) = vel(3) - pt(l)*gl(3)
-                  press = press + gl(l)*2
+                  press = press - gl(l)*2
                   if (ifppreg1 .eq. 3) then
                      velgrad(1,l) =  velgrad(1,l) + gl(1)
                      velgrad(2,l) =  velgrad(2,l) + gl(2)

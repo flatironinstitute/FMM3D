@@ -12,7 +12,7 @@ c     The Stokeslet, G_{ij}, and its associated pressure tensor, P_j,
 c     (without the 1/4pi scaling) are
 c
 c     G_{ij}(x,y) = (r_i r_j)/(2r^3) + delta_{ij}/(2r)
-c     P_j(x,y) = -r_j/r^3
+c     P_j(x,y) = r_j/r^3
 c
 c     The (Type I) stresslet, T_{ijk}, and its associated pressure
 c     tensor, PI_{jk}, (without the 1/4pi scaling) are
@@ -171,7 +171,7 @@ c     stokeslet contribution
                grad(idim,2,3,i) = grad(idim,2,3,i) + zdiff(2)*d3
                grad(idim,3,3,i) = grad(idim,3,3,i) + zdiff(3)*d3
 
-               pre(idim,i) = pre(idim,i) - pl*2
+               pre(idim,i) = pre(idim,i) + pl*2
 
                
             enddo
