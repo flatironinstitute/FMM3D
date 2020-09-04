@@ -160,7 +160,10 @@ c
 c     ifprint is an internal information printing flag. 
 c     Suppressed if ifprint=0.
 c     Prints timing breakdown and other things if ifprint=1.
-c       
+c      
+
+      call cpu_time(time1)
+C$     time1=omp_get_wtime()      
       ifprint=0
 
 c
@@ -461,6 +464,11 @@ c
         scales(ilev) = boxsize(ilev)
       enddo
 
+      call cpu_time(time2)
+C$     time2=omp_get_wtime()      
+
+      if(ifprint.ge.1) 
+     1   call prin2('time before fmm main=*',time2-time1,1)
 c     Call main fmm routine
 
       call cpu_time(time1)
@@ -1206,7 +1214,7 @@ C$OMP END PARALLEL DO
 
       call cpu_time(time2)
 C$    time2=omp_get_wtime()
-      timeinfo(2)=time2-time1
+      timeinfo(2)=timeinfo(2)+time2-time1
 
       if(ifprint.ge.1)
      $    call prinf('=== Step 3 (mp to loc+formta+mpeval) ===*',i,0)
