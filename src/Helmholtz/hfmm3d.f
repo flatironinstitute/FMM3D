@@ -191,7 +191,7 @@ c
 cc         set tree flags
 c
        isep = 1
-       nlmax = 200
+       nlmax = 51
        nlevels = 0
        nboxes = 0
        mhung = 0

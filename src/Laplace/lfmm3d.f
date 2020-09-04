@@ -185,7 +185,7 @@ c
 cc      set tree flags
 c 
        isep = 1
-       nlmax = 200
+       nlmax = 51
        nlevels = 0
        nboxes = 0
        mhung = 0
@@ -222,6 +222,9 @@ cc     memory management code for contructing level restricted tree
         if(ifprint.ge.1) print *, ltree/1.0d9
         if(ifprint.ge.1) print *, "mnlist3 = ",mnlist3
         if(ifprint.ge.1) print *, "mnlist4 = ",mnlist4
+        if(ifprint.ge.1) print *, "nboxes = ",nboxes
+        if(ifprint.ge.1) print *, "nlevels = ",nlevels
+
 
 
 
@@ -240,6 +243,8 @@ c       Call tree code
      1               nexpc,radexp,idivflag,ndiv,isep,mhung,mnbors,
      2               mnlist1,mnlist2,mnlist3,mnlist4,nlevels,
      2               nboxes,treecenters,boxsize,itree,ltree,ipointer)
+        if(ifprint.ge.1) print *, "nboxes = ",nboxes
+        if(ifprint.ge.1) print *, "nlevels = ",nlevels
 
       b0 = boxsize(0)
       b0inv = 1.0d0/b0
