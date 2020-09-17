@@ -39,7 +39,9 @@ OBJECTS = test_hfmm3d_mps.o \
     $(COM)/rotproj.o \
     $(COM)/dfft.o \
     $(COM)/fmmcommon.o \
-    $(COM)/tree_lr_3d.o \
+    $(COM)/tree_routs3d.o \
+    $(COM)/pts_tree3d.o \
+    $(COM)/cumsum.o \
     $(HELM)/h3dterms.o \
     $(HELM)/h3dtrans.o \
     $(HELM)/helmrouts3d.o \
