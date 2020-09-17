@@ -45,7 +45,9 @@ OBJECTS = test_lfmm3d.o \
     $(LAP)/lpwrouts.o \
     $(LAP)/lndiv.o \
     $(COM)/rotproj.o \
-    $(COM)/tree_lr_3d.o \
+    $(COM)/tree_routs3d.o \
+    $(COM)/pts_tree3d.o \
+    $(COM)/cumsum.o \
     $(COM)/dfft.o \
     $(COM)/fmmcommon.o \
 
