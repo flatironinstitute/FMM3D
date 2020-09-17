@@ -691,7 +691,7 @@ c     Suppressed if ifprint=0.
 c     Prints timing breakdown and other things if ifprint=1.
 c     Prints timing breakdown, list information, and other things if ifprint=2.
 c       
-        ifprint=1
+        ifprint=0
 c
 c   initialize various tree lists
 c
@@ -1099,7 +1099,6 @@ c      generate ilev+1 list4 type box plane wave expansion
      5       sourcesort,chargesort,dipvecsort,centers,fexp,
      6       mexpf1,mexpf2,tmp,tmp2,wlege,rlams,rsc,pgboxwexp,
      7       cntlist4)
-           print *, "done with h3dlist4pw"
 
 c
 cc         create multipole to plane wave expansion for
@@ -1182,7 +1181,7 @@ C$OMP$PRIVATE(nn1256,n1256,ns3478,s3478,ne1357,e1357,nw2468,w2468)
 C$OMP$PRIVATE(nn12,n12,nn56,n56,ns34,s34,ns78,s78,ne13,e13,ne57,e57)
 C$OMP$PRIVATE(nw24,w24,nw68,w68,ne1,e1,ne3,e3,ne5,e5,ne7,e7)
 C$OMP$PRIVATE(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
-C$OMP$PRIVATE(npts0,nlist3,ctmp,jstart,jend,i,iboxfl,iboxsubcenters)
+C$OMP$PRIVATE(npts0,ctmp,jstart,jend,i,iboxfl,iboxsubcenters)
 C$OMP$PRIVATE(iboxpot,iboxgrad,iboxlexp,iboxsrc,iboxsrcind)
           do ibox = laddr(1,ilev-1),laddr(2,ilev-1)
             npts = 0

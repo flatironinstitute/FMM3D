@@ -38,7 +38,7 @@ c
       allocate(gradtarg(3,nt))
       allocate(hesstarg(6,nt))
 
-      eps = 0.5d-9
+      eps = 0.51d-3
 
       write(*,*) "=========================================="
       write(*,*) "Testing suite for lfmm3d"
