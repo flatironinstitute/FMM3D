@@ -515,6 +515,10 @@ c
         itree(iptr(5)+i-1) = -1
       enddo
 
+      centers(1,1) = (xmin+xmax)/2
+      centers(2,1) = (ymin+ymax)/2
+      centers(3,1) = (zmin+zmax)/2
+
       isrcse(1,1) = 1
       isrcse(2,1) = ns
       itargse(1,1) = 1
@@ -581,7 +585,6 @@ C$OMP END PARALLEL DO
 c
 c     re sort points in refined boxes
 c
-
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,ibox)
           do i=1,nbloc
             ibox = ifirstbox+i-1

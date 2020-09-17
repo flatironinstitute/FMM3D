@@ -26,7 +26,7 @@ c
       ns = 5000 
       nt = 4999
 
-      ntest = 10
+      ntest = 20
 
       allocate(source(3,ns),targ(3,nt))
       allocate(charge(ns),dipvec(3,ns))

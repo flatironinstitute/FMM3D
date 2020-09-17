@@ -163,7 +163,7 @@ c     ifprint is an internal information printing flag.
 c     Suppressed if ifprint=0.
 c     Prints timing breakdown and other things if ifprint=1.
 c       
-      ifprint=1
+      ifprint=0
 
 c
 cc        figure out tree structure
@@ -212,9 +212,6 @@ cc     memory management code for contructing level restricted tree
       call pts_tree_mem(source,nsource,targ,ntarg,idivflag,ndiv,
      1  nlevels,nboxes,ltree)
       
-      call prin2('done with tree mem=*',i,0)
-      call prinf('nlevels=*',nlevels,1)
-      call prinf('nboxes=*',nboxes,1)
 
         if(ifprint.ge.1) print *, ltree/1.0d9
 
@@ -225,9 +222,6 @@ cc     memory management code for contructing level restricted tree
 c       Call tree code
       call pts_tree_build(source,nsource,targ,ntarg,idivflag,ndiv,
      1  nlevels,nboxes,ltree,itree,ipointer,treecenters,boxsize)
-      call prinf('done with tree build*',i,0)
-      
-      stop
       
 
       allocate(isrcse(2,nboxes),itargse(2,nboxes),iexpcse(2,nboxes))
@@ -701,7 +695,7 @@ c     Prints timing breakdown and other things if ifprint=1.
 c     Prints timing breakdown, list information, 
 c     and other things if ifprint=2.
 c       
-      ifprint=1
+      ifprint=0
       
 c
 c   initialize various tree lists
@@ -716,8 +710,8 @@ c
       
       call computemnlists(nlevels,nboxes,itree(ipointer(1)),boxsize,
      1  centers,itree(ipointer(3)),itree(ipointer(4)),
-     2  itree(ipointer(5)),isep,itree(ipointer(6)),itree(ipointer(7)),
-     3  mnlist1,mnlist2,mnlist3,mnlist4)
+     2  itree(ipointer(5)),isep,itree(ipointer(6)),mnbors,
+     2  itree(ipointer(7)),mnlist1,mnlist2,mnlist3,mnlist4)
       
       allocate(list1(mnlist1,nboxes),nlist1(nboxes))
       allocate(list2(mnlist2,nboxes),nlist2(nboxes))
@@ -726,8 +720,9 @@ c
 
       call computelists(nlevels,nboxes,itree(ipointer(1)),boxsize,
      1  centers,itree(ipointer(3)),itree(ipointer(4)),
-     2  itree(ipointer(5)),isep,itree(ipointer(6)),itree(ipointer(7)),
-     3  nlist1,mnlist1,list1,nlist2,mnlist2,list2,nlist3,mnlist3,list3,
+     2  itree(ipointer(5)),isep,itree(ipointer(6)),mnbors,
+     3  itree(ipointer(7)),nlist1,mnlist1,list1,nlist2,
+     4  mnlist2,list2,nlist3,mnlist3,list3,
      4  nlist4,mnlist4,list4)
       
 
@@ -1427,7 +1422,7 @@ C$OMP$PRIVATE(iboxpot,iboxgrad,iboxlexp,iboxsrc,iboxsrcind,iboxhess)
      9         mexppall(1,1,13),mexppall(1,1,14),mexppall(1,1,15),
      9         mexppall(1,1,16),rdminus,xshift,yshift,zshift,
      9         fexpback,rlsc,rscpow,
-     9         pgboxwexp,cntlist4,list4,nlist4,list4,mnlist4)
+     9         pgboxwexp,cntlist4,list4ct,nlist4,list4,mnlist4)
 
 
             endif

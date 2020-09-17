@@ -1,4 +1,4 @@
-#HOST = gcc
+HOST = gcc
 HOST = gcc-openmp
 
 PROJECT = int2-lfmm3d

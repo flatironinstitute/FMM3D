@@ -275,7 +275,7 @@ c     Calling sequence variables
       integer laddr(2,0:nlevels),nchild(nboxes),ichild(8,nboxes)
       integer nnbors(nboxes), nbors(27,nboxes)
       integer iflag(nboxes)
-      double precision centers(2,nboxes),boxsize(0:nlevels)
+      double precision centers(3,nboxes),boxsize(0:nlevels)
 
 c     Temporary variables
       integer i,j,k,l,ibox,jbox,kbox,lbox, ict
