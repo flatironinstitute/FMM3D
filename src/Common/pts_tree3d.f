@@ -62,7 +62,8 @@ c             length of tree
 
       implicit none
       integer nlevels,nboxes,idivflag
-      integer *8 ltree
+      integer *8 ltree,nboxes8
+      integer nbmax,nbtot
       integer ns,nt,ndiv
       double precision src(3,ns),targ(3,nt)
 
@@ -78,7 +79,7 @@ c             length of tree
      1    ichild2(:,:),isrcse2(:,:),itargse2(:,:)
       double precision, allocatable :: centers2(:,:)
 
-      integer nbmax,nlmax
+      integer nlmax
       integer i,itype,j
 
       double precision, allocatable :: centerstmp(:,:,:)
@@ -87,7 +88,7 @@ c             length of tree
 
       double precision rsc
       integer nbloc,nbctr,nbadd,irefine,ilev,ifirstbox,ilastbox
-      integer nbtot,iii
+      integer iii
       integer ibox,nn,nss,ntt
       double precision sizey,sizez
 
@@ -233,8 +234,8 @@ c         if current memory is not sufficient reallocate
 c
         if(nbtot.gt.nbmax) then
           print *, "Reallocating"
-          allocate(centers2(2,nbmax),ilevel2(nbmax),iparent2(nbmax))
-          allocate(nchild2(nbmax),ichild2(4,nbmax),isrcse2(2,nbmax))
+          allocate(centers2(3,nbmax),ilevel2(nbmax),iparent2(nbmax))
+          allocate(nchild2(nbmax),ichild2(8,nbmax),isrcse2(2,nbmax))
           allocate(itargse2(2,nbmax))
 
           call tree_copy(nbctr,centers,ilevel,iparent,nchild,
@@ -255,8 +256,8 @@ C$OMP END PARALLEL DO
      1        isrcse,itargse)
 
           nbmax = nbtot
-          allocate(centers(2,nbmax),ilevel(nbmax),iparent(nbmax))
-          allocate(nchild(nbmax),ichild(4,nbmax),isrcse(2,nbmax))
+          allocate(centers(3,nbmax),ilevel(nbmax),iparent(nbmax))
+          allocate(nchild(nbmax),ichild(8,nbmax),isrcse(2,nbmax))
           allocate(itargse(2,nbmax))
 
 
@@ -312,8 +313,8 @@ C$OMP END PARALLEL DO
 
         nbtot = 16*nboxes
         if(nbtot.gt.nbmax) then
-          allocate(centers2(2,nbmax),ilevel2(nbmax),iparent2(nbmax))
-          allocate(nchild2(nbmax),ichild2(4,nbmax),isrcse2(2,nbmax))
+          allocate(centers2(3,nbmax),ilevel2(nbmax),iparent2(nbmax))
+          allocate(nchild2(nbmax),ichild2(8,nbmax),isrcse2(2,nbmax))
           allocate(itargse2(2,nbmax))
           call tree_copy(nbctr,centers,ilevel,iparent,nchild,
      1            ichild,centers2,ilevel2,iparent2,
@@ -332,8 +333,8 @@ C$OMP END PARALLEL DO
      1        isrcse,itargse)
 
           nbmax = nbtot
-          allocate(centers(2,nbmax),ilevel(nbmax),iparent(nbmax))
-          allocate(nchild(nbmax),ichild(4,nbmax),isrcse(2,nbmax))
+          allocate(centers(3,nbmax),ilevel(nbmax),iparent(nbmax))
+          allocate(nchild(nbmax),ichild(8,nbmax),isrcse(2,nbmax))
           allocate(itargse(2,nbmax))
 
 
@@ -374,8 +375,8 @@ C$OMP END PARALLEL DO
         endif
 
       endif
-
-      ltree = 39*nboxes + 2*(nlevels+1) 
+      nboxes8 = nboxes
+      ltree = 39*nboxes8 + 2*(nlevels+1) 
 
 
       return
