@@ -61,7 +61,8 @@ c             length of tree
      
 
       implicit none
-      integer nlevels,nboxes,ltree,idivflag
+      integer nlevels,nboxes,idivflag
+      integer *8 ltree
       integer ns,nt,ndiv
       double precision src(3,ns),targ(3,nt)
 
@@ -410,8 +411,8 @@ c        nlevels - integer
 c          number of levels
 c        nboxes - integer
 c          number of boxes
-c        ltree - integer
-c          length of tree = 
+c        ltree - integer *8
+c          length of tree 
 c
 c      output:
 c        itree - integer(ltree)
@@ -432,8 +433,8 @@ c          size of box at each of the levels
 c
 
       implicit none
-      integer nlevels,nboxes,ltree,ns,nt,idivflag,ndiv
-      integer iptr(8)
+      integer nlevels,nboxes,ns,nt,idivflag,ndiv
+      integer *8 iptr(8),ltree
       integer itree(ltree),ier
       double precision centers(3,nboxes),src(3,ns),targ(3,nt)
       integer, allocatable :: irefinebox(:)
@@ -1306,7 +1307,8 @@ c
       subroutine pts_tree_sort(n,xys,itree,ltree,nboxes,nlevels,
      1   iptr,centers,ixy,ixyse)
       implicit double precision (a-h,o-z)
-      integer n,ltree,nboxes,nlevels,itree(ltree),iptr(8)
+      integer *8 iptr(8),ltree
+      integer n,nboxes,nlevels,itree(ltree)
       integer ixy(n),ixyse(2,nboxes)
       double precision xys(3,n),centers(3,nboxes)
 

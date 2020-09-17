@@ -111,10 +111,9 @@ c------------------------------------------------------------------
 
 c       Tree variables
       integer mhung,idivflag,ndiv,isep,nboxes,nbmax,nlevels
-      integer ltree
       integer nlmax
       integer mnbors
-      integer ipointer(8)
+      integer *8 ipointer(8),ltree
       integer, allocatable :: itree(:)
       integer, allocatable :: isrcse(:,:),itargse(:,:),isrc(:)
       integer, allocatable :: itarg(:)
@@ -555,10 +554,9 @@ c
 cc      tree variables
 c
       integer isep
-      integer ltree
       integer laddr(2,0:nlevels)
       integer nterms(0:nlevels)
-      integer ipointer(8)
+      integer *8 ipointer(8),ltree
       integer itree(ltree)
       integer nboxes
       double precision rscales(0:nlevels)
