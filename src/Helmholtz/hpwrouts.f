@@ -3062,8 +3062,8 @@ c
 c
 c----------------------------------------------------------------------
       subroutine h3dlist4pw(ilev,zk,nd,nexptotp,nexptot,nterms,nn,
-     1           nlams,nlege,nlevels,ifcharge,ifdipole,list4,itree,
-     2           laddr,ipointer,nfourier,nphysical,
+     1           nlams,nlege,nlevels,ifcharge,ifdipole,list4,isrcse,
+     2           laddr,nfourier,nphysical,
      3           rdminus,rdplus,rlsc,
      4           rscales,boxsize,xshift,yshift,zshift,
      5           sourcesort,chargesort,dipvecsort,centers,fexp,
@@ -3076,8 +3076,8 @@ cccccc input/output variables
       integer nexptotp,nexptot
       integer nterms,nn,nlams,nlege,nlevels,cntlist4
       integer ifcharge,ifdipole
-      integer list4(*),itree(*),laddr(2,0:nlevels)
-      integer *8 ipointer(32)
+      integer list4(*),laddr(2,0:nlevels)
+      integer isrcse(2,*)
       integer nfourier(*)
       integer nphysical(*)
       double precision rdminus(0:nn,0:nn,-nn:nn)
@@ -3125,8 +3125,8 @@ C$OMP$PRIVATE(gboxcgsort,gboxdpsort,gboxwexp,gboxmexp)
 C$OMP$PRIVATE(mexpf1,mexpf2,tmp,tmp2)
       do ibox=laddr(1,ilev),laddr(2,ilev)
         if(list4(ibox).gt.0) then
-          istart=itree(ipointer(10)+ibox-1)
-          iend=itree(ipointer(11)+ibox-1)
+          istart=isrcse(1,ibox)
+          iend=isrcse(2,ibox)
           npts = iend-istart+1
           if(npts.gt.0) then
             allocate(gboxind(npts))

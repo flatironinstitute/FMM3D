@@ -133,7 +133,6 @@ c
 c
 cc        temporary fmm arrays
 c
-       double precision epsfmm
        integer, allocatable :: nterms(:)
        integer *8, allocatable :: iaddr(:,:)
        double precision, allocatable :: scales(:)
@@ -194,21 +193,8 @@ c
        nboxes = 0
        ltree = 0
 
-
-
-
-       allocate(radsrc(nsource))
-C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)       
-       do i=1,nsource
-          radsrc(i) = 0
-       enddo
-C$OMP END PARALLEL DO  
-
-       radexp = 0
-
 c
 cc     memory management code for contructing level restricted tree
-        iert = 0
       call pts_tree_mem(source,nsource,targ,ntarg,idivflag,ndiv,
      1  nlevels,nboxes,ltree)
       
@@ -236,6 +222,13 @@ c       Call tree code
       call pts_tree_sort(nexpc,expc,itree,ltree,nboxes,nlevels,
      1   ipointer,treecenters,iexpc,iexpcse)
 
+c
+c   End of tree build
+c
+
+c
+c  Set rescaling parameters
+c
       b0 = boxsize(0)
       b0inv = 1.0d0/b0
       b0inv2 = b0inv**2
@@ -465,7 +458,7 @@ C$      time1=omp_get_wtime()
      $   ifcharge,chargesort,
      $   ifdipole,dipvecsort,
      $   ntarg,targsort,nexpc,expcsort,
-     $   epsfmm,iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp,
+     $   iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp,
      $   itree,ltree,ipointer,ndiv,nlevels,
      $   nboxes,boxsize,treecenters,isrcse,itargse,iexpcse,
      $   scales,itree(ipointer(1)),nterms,
@@ -519,7 +512,7 @@ c
      $     ifcharge,chargesort,
      $     ifdipole,dipvecsort,
      $     ntarg,targsort,nexpc,expcsort,
-     $     epsfmm,iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp,
+     $     iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp,
      $     itree,ltree,ipointer,ndiv,nlevels, 
      $     nboxes,boxsize,centers,isrcse,itargse,iexpcse,
      $     rscales,laddr,nterms,
@@ -535,7 +528,6 @@ c
 
       integer ifcharge,ifdipole
       integer ifpgh,ifpghtarg
-      double precision epsfmm
 
       double precision sourcesort(3,nsource)
 
