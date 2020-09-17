@@ -143,12 +143,12 @@ program test_hfmm3d_mp2loc
 
   impole(1) = 1
   do i = 1,nc-1
-    len = (nterms(i)+1)*(2*nterms(i)+1)
-    impole(i+1) = impole(i) + nd*len
+    ilen = (nterms(i)+1)*(2*nterms(i)+1)
+    impole(i+1) = impole(i) + nd*ilen
   end do
 
   
-  nlege = 4000
+  nlege = 400
   lw = 5*(nlege+1)**2
   allocate( wlege(lw) )
 

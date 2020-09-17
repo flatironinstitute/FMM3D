@@ -211,11 +211,6 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
   call pts_tree_sort(nmpole,cmpole,itree,ltree,nboxes,nlevels, &
     ipointer,treecenters,isrc,isrcse)
 
-  call pts_tree_sort(ntarg,targ,itree,ltree,nboxes,nlevels, &
-    ipointer,treecenters,itarg,itargse)
-      
-  call pts_tree_sort(nexpc,expc,itree,ltree,nboxes,nlevels, &
-     ipointer,treecenters,iexpc,iexpcse)
 
 !
 !   End of tree build
@@ -279,6 +274,7 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
   call dreorderf(1, nmpole, rmpole, rmpolesort, isrc)
   call ireorderf(1, nmpole, mterms, mtermssort, isrc)
 
+
   impolesort(1) = 1  
   do i = 1,nmpole
 
@@ -289,7 +285,7 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
     do j = 1,ilen
       do l = 1,nd
         mpolesort(impolesort(i)+ijk-1) = &
-            mpole(impole(isrc(i)+ijk-1))
+            mpole(impole(isrc(i))+ijk-1)
         ijk = ijk + 1
       end do
     end do
@@ -297,6 +293,7 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
     if (i .lt. nmpole) impolesort(i+1) = impolesort(i) + nd*ilen
    
   end do
+
 
   !
   ! allocate memory need by multipole, local expansions at all
@@ -347,7 +344,7 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
     ijk = 1
     do j = 1,ilen
       do l = 1,nd
-        local(isrc(i)+ijk-1) = &
+        local(impole(isrc(i))+ijk-1) = &
             localsort(impolesort(i)+ijk-1) 
         ijk = ijk + 1
       end do
@@ -474,7 +471,7 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
 
 
   integer cntlist4
-  integer, allocatable :: list4ct(:),ilist4(:)
+  integer, allocatable :: list4ct(:),ilist4(:),nlist4tmp(:)
   double complex pgboxwexp(100)
   integer *8 :: bigint
   double precision d,time1,time2,omp_get_wtime
@@ -524,12 +521,13 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
 
   cntlist4 = 0
   allocate(list4ct(nboxes))
-  allocate(ilist4(nboxes))
+  allocate(ilist4(nboxes),nlist4tmp(nboxes))
 
   !$omp parallel do default(shared) private(i)
   do i=1,nboxes
     list4ct(i) = 0
     ilist4(i) = 0
+    nlist4tmp(i) = 0
   enddo
   !$omp end parallel do
 
@@ -598,7 +596,8 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
   enddo
 
   ltot = 0
-  !$omp parallel do default(shared) private(l,mt)
+  !$omp parallel do default(shared) private(l,mt)  &
+  !$omp reduction(+:ltot)
   do l = 1,nmpole
     mt = mtermssort(l)
     ltot = ltot + (mt+1)*(2*mt+1)
@@ -606,7 +605,7 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
   !$omp end parallel do
 
   
-  !$omp parallel do default (shared) private(i,j,k,l)
+  !$omp parallel do default (shared) private(l)
   do l = 1,ltot*nd
       localsort(l) = 0
   end do
@@ -1014,7 +1013,7 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
                 mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1,1), &
                 mexppall(1,1,2),mexppall(1,1,3),mexppall(1,1,4), &
                 xshift,yshift,zshift,fexpback,rlsc,pgboxwexp,cntlist4, &
-                list4ct,nlist4,list4,mnlist4)
+                list4ct,nlist4tmp,list4,mnlist4)
 
 
             call hprocessnsexp(nd,zk2,ibox,ilev,nboxes,centers,&
@@ -1029,7 +1028,7 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
                 mexppall(1,1,5),mexppall(1,1,6),mexppall(1,1,7),&
                 mexppall(1,1,8),rdplus,xshift,yshift,zshift, &
                 fexpback,rlsc,pgboxwexp,cntlist4, list4ct, &
-                nlist4,list4,mnlist4)
+                nlist4tmp,list4,mnlist4)
 
             call hprocessewexp(nd,zk2,ibox,ilev,nboxes,centers,&
                 itree(ipointer(5)),rscales(ilev),boxsize(ilev),&
@@ -1048,7 +1047,7 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
                 mexppall(1,1,13),mexppall(1,1,14),mexppall(1,1,15),&
                 mexppall(1,1,16),rdminus,xshift,yshift,zshift,&
                 fexpback,rlsc,pgboxwexp,cntlist4,list4ct, &
-                nlist4,list4,mnlist4)
+                nlist4tmp,list4,mnlist4)
           endif
         enddo
         !$omp end parallel do        
