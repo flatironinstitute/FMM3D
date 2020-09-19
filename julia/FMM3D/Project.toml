@@ -1,0 +1,8 @@
+name = "FMM3D"
+uuid = "1e13804c-f9b7-11ea-0ef0-29f3b1745df8"
+authors = ["Travis Askham <askhamwhat@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+FMM3D_jll = "62c264cc-5bfb-59d7-84eb-c0e4dde7f66b"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
