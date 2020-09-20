@@ -1,10 +1,28 @@
+"""
+    module FMM3D
+
+Wrappers for the Flatiron Institute's FMM3D
+library. 
+
+# wrappers
+
+All N-body codes return output in an 
+`FMMVals` structure. See documentation
+of N-body codes for details.
+
+N-body interactions with the Helmholtz kernel
+- `hfmm3d`: ``O(N)`` fast mutlipole code
+- `h3ddir`: ``O(N^2)`` direct code
+
+N-body interactions with the Laplace kernel
+- `lfmm3d`: ``O(N)`` fast mutlipole code
+- `l3ddir`: ``O(N^2)`` direct code
+"""
 module FMM3D
 
 using FMM3D_jll
 
 export FMMVals, hfmm3d, lfmm3d, h3ddir, l3ddir
-
-
 
 # fortran input/return types
 
@@ -22,7 +40,7 @@ TCN = Union{Array{ComplexF64},Nothing}
     FMMVals()
 
 Return type for FMM and direct computation function
-calls. Fields are nothing on return unless requested.
+calls. Fields are `nothing` on return unless requested.
 See individual FMM/direct computation function 
 documentation for specifics.
 """
@@ -68,7 +86,9 @@ end
 
 This function computes the N-body Helmholtz interactions
 in three dimensions where the interaction kernel is given 
-by ``e^{ikr}/r`` and its gradients. 
+by ``e^{ikr}/r`` and its gradients. This is the 
+``O(N)`` fast multipole code which computes the interactions
+to the requested precision.
 
 ```math
  u(x) = \\sum_{j=1}^{N} c_{j} \\frac{e^{ik \\|x-x_{j}\\|}}{\\|x-x_{j}\\|} 
@@ -107,10 +127,13 @@ where ``c_{j}`` are the charge densities,
 * `vals.pottarg::Array{ComplexF64}` size (nd,nt) or (nt) potential at target locations if requested
 * `vals.gradtarg::Array{ComplexF64}` size (nd,3,nt) or (3,nt) gradient at target locations if requested
 """
-function hfmm3d(eps::Float64,zk::ComplexF64,sources::Array{Float64};
+function hfmm3d(eps::Float64,zk::Union{Float64,ComplexF64},
+                sources::Array{Float64};
                 charges::TCN=nothing,dipvecs::TCN=nothing,
                 targets::TFN=nothing,pg::Integer=0,pgt::Integer=0,
                 nd::Integer=1)
+
+    zk = complex(zk)
     
     # default values
 
@@ -247,7 +270,8 @@ end
 
 This function computes the N-body Helmholtz interactions
 in three dimensions where the interaction kernel is given 
-by ``e^{ikr}/r`` and its gradients. 
+by ``e^{ikr}/r`` and its gradients. This is the 
+``O(N^2)`` direct evaluation code.
 
 ```math
  u(x) = \\sum_{j=1}^{N} c_{j} \\frac{e^{ik \\|x-x_{j}\\|}}{\\|x-x_{j}\\|} 
@@ -281,11 +305,13 @@ where ``c_{j}`` are the charge densities,
 * `vals.pottarg::Array{ComplexF64}` size (nd,nt) or (nt) potential at target locations if requested
 * `vals.gradtarg::Array{ComplexF64}` size (nd,3,nt) or (3,nt) gradient at target locations if requested
 """
-function h3ddir(zk::ComplexF64,sources::Array{Float64},
+function h3ddir(zk::Union{ComplexF64,Float64},sources::Array{Float64},
                 targets::Array{Float64};
                 charges::TCN=nothing,dipvecs::TCN=nothing,
                 pgt::Integer=0,nd::Integer=1,
                 thresh::Float64=1e-16)
+
+    zk = complex(zk)
     
     # default values
 
@@ -463,15 +489,17 @@ end
                   targets=nothing,pg=0,pgt=0,nd=1)
 ```
 
-This function computes the N-body Helmholtz interactions
+This function computes the N-body Laplace interactions
 in three dimensions where the interaction kernel is given 
-by ``\$1/r\$`` and its gradients. 
+by ``\$1/r\$`` and its gradients.  This is the 
+``O(N)`` fast multipole code which computes the interactions
+to the requested precision.
 
 ```math
 u(x) = \\sum_{j=1}^{N} c_{j} / \\|x-x_{j}\\| + v_{j} 
 \\cdot \\nabla( 1/\\|x-x_{j}\\|)  \\, ,
-u(x) = \\sum_{j=1}^{N} c_{j} \\frac{e^{ik \\|x-x_{j}\\|}}{\\|x-x_{j}\\|} 
-- v_{j} \\cdot \\nabla \\left( \\frac{e^{ik \\|x-x_{j}\\|}}{\\|x-x_{j}\\|} 
+u(x) = \\sum_{j=1}^{N} c_{j} \\frac{1}{\\|x-x_{j}\\|} 
+- v_{j} \\cdot \\nabla \\left( \\frac{1}{\\|x-x_{j}\\|} 
 \\right)  \\, , 
 ```
  
@@ -674,7 +702,8 @@ end
 
 This function computes the N-body Laplace interactions
 in three dimensions where the interaction kernel is given 
-by ``1/r`` and its gradients. 
+by ``1/r`` and its gradients.  This is the 
+``O(N^2)`` direct evaluation code.
 
 ```math
  u(x) = \\sum_{j=1}^{N} c_{j} \\frac{1}{\\|x-x_{j}\\|} 
