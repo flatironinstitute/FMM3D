@@ -49,5 +49,5 @@ point. See existing wrappers for style.
 FMMs and direct evaluation codes) should be added to
 the list in the module documentation at the top of
 src/FMM3D.jl. All other wrappers may be added to the
-list in the documentation for the `lowerlevel_routs`
+list in the documentation for the `lower_level_routs`
 function in src/FMM3D.jl.

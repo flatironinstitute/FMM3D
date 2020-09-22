@@ -112,3 +112,21 @@ end
 
 end
 
+@testset "testing lower level routines" begin
+
+
+    # besseljs3d
+
+    nterms = 10
+    z = 1.1 + im*1.2
+    scale = 1.3
+    ifder = 1
+
+    fj10 = (-3.5183264829466616750769540*(1e-9) +
+        im*8.88237983492960538163695769*(1e-9))
+
+    fjs, fjder = besseljs3d(nterms,z,scale=scale,ifder=ifder)
+
+    @test (abs(fj10-fjs[11]*(scale^10))/abs(fj10) < 1e-10)
+
+end
