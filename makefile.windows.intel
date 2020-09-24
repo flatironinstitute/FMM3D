@@ -9,7 +9,7 @@
 # compiler, and linking from C, fortran
 CC=gcc
 FC=ifort
-FFLAGS= /O3 /QxHost /Qopenmp 
+FFLAGS= /O3  
 CFLAGS= /O3 /openmp /std:c99
 
 
@@ -25,7 +25,7 @@ LIBNAME=libfmm3d
 DYNAMICLIB = $(LIBNAME).dll
 LLIB = $(LIBNAME)_dll.lib
 STATICLIB = $(LIBNAME).lib
-
+EXPLIB = $(LIBNAME).exp
 
 
 # objects to compile
@@ -94,16 +94,15 @@ usage:
 
 
 # build the library...
-lib: $(STATICLIB) $(DYNAMICLIB) 
+lib: $(DYNAMICLIB) 
 	@echo "$(STATICLIB) and $(DYNAMICLIB) built, multithread versions"
-$(STATICLIB): $(OBJS) 
-	lib /out:$(STATICLIB) $(OBJS)
-	move $(STATICLIB) lib-static/$(STATICLIB)
 $(DYNAMICLIB): $(OBJS) 
-	$(FC) /Qopenmp /dll $(OBJS) /Fe$(DYNAMICLIB)
-	lib /out:$(STATICLIB) $(OBJS)
-	move $(STATICLIB) lib/$(STATICLIB)
+	$(FC) /Qopenmp /dll $(OBJS) ifort_matlab.def /Fe$(DYNAMICLIB) /link 
 	move $(DYNAMICLIB) lib/
+	move $(STATICLIB) lib/
+	move $(EXPLIB) lib/
+
+
 
 THDIR = test\Helmholtz
 test-dyn: $(DYNAMICLIB) $(TOBJS) test/helmrouts-dyn test/hfmm3d-dyn 
@@ -121,16 +120,21 @@ test/hfmm3d-dyn:
 MWRAPFILE = fmm3d
 MWRAPFILE2 = fmm3d_legacy
 GATEWAY = $(MWRAPFILE)
+
 GATEWAY2 = $(MWRAPFILE2)
 
-MFLAGS=-compatibleArrayDims -DMWF77_UNDERSCORE1 
+MINGW_LPATH=C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\lib\gcc\x86_64-w64-mingw32\6.3.0
+INTEL_PATH=C:\inteliomppath
+MFLAGS=-compatibleArrayDims -DMWF77_CAPS -D_OPENMP
+MEXLIBS=-liomp5md -lifcoremd -lifconsol -L$(MINGW_LPATH) -L$(INTEL_PATH) 
+
 MOMPFLAGS = -D_OPENMP
 
 matlab-dyn:	$(DYNAMICLIB) matlab/$(GATEWAY).c matlab/$(GATEWAY2).c
-	$(MEX) matlab/$(GATEWAY).c $(MFLAGS) \
-		-output matlab/fmm3d $(MEXLIBS) lib/$(STATICLIB) 
-	$(MEX) matlab/$(GATEWAY2).c $(MFLAGS) \
-	-output matlab/fmm3d_legacy $(MEXLIBS) -L\lib lib/$(DYNAMICLIB)
+	$(MEX) matlab\$(GATEWAY).c $(MFLAGS) \
+		-output matlab\fmm3d $(MEXLIBS) -L\lib lib\$(STATICLIB) 
+	$(MEX) matlab\$(GATEWAY2).c $(MFLAGS) \
+	-output matlab\fmm3d_legacy $(MEXLIBS) -L\lib lib\$(STATICLIB)
 
 clean: objclean
 

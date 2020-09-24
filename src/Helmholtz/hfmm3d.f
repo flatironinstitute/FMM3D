@@ -191,7 +191,7 @@ c
 cc         set tree flags
 c
        isep = 1
-       nlmax = 200
+       nlmax = 51
        nlevels = 0
        nboxes = 0
        mhung = 0
@@ -960,7 +960,7 @@ C$OMP END PARALLEL DO
 
       call cpu_time(time2)
 C$    time2=omp_get_wtime()
-      timeinfo(3)=time2-time1
+      timeinfo(2)=time2-time1
 
 
 

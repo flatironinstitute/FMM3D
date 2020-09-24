@@ -160,7 +160,10 @@ c
 c     ifprint is an internal information printing flag. 
 c     Suppressed if ifprint=0.
 c     Prints timing breakdown and other things if ifprint=1.
-c       
+c      
+
+      call cpu_time(time1)
+C$     time1=omp_get_wtime()      
       ifprint=0
 
 c
@@ -185,7 +188,7 @@ c
 cc      set tree flags
 c 
        isep = 1
-       nlmax = 200
+       nlmax = 51
        nlevels = 0
        nboxes = 0
        mhung = 0
@@ -222,6 +225,9 @@ cc     memory management code for contructing level restricted tree
         if(ifprint.ge.1) print *, ltree/1.0d9
         if(ifprint.ge.1) print *, "mnlist3 = ",mnlist3
         if(ifprint.ge.1) print *, "mnlist4 = ",mnlist4
+        if(ifprint.ge.1) print *, "nboxes = ",nboxes
+        if(ifprint.ge.1) print *, "nlevels = ",nlevels
+
 
 
 
@@ -240,6 +246,8 @@ c       Call tree code
      1               nexpc,radexp,idivflag,ndiv,isep,mhung,mnbors,
      2               mnlist1,mnlist2,mnlist3,mnlist4,nlevels,
      2               nboxes,treecenters,boxsize,itree,ltree,ipointer)
+        if(ifprint.ge.1) print *, "nboxes = ",nboxes
+        if(ifprint.ge.1) print *, "nlevels = ",nlevels
 
       b0 = boxsize(0)
       b0inv = 1.0d0/b0
@@ -461,6 +469,11 @@ c
         scales(ilev) = boxsize(ilev)
       enddo
 
+      call cpu_time(time2)
+C$     time2=omp_get_wtime()      
+
+      if(ifprint.ge.1) 
+     1   call prin2('time before fmm main=*',time2-time1,1)
 c     Call main fmm routine
 
       call cpu_time(time1)
@@ -1206,7 +1219,7 @@ C$OMP END PARALLEL DO
 
       call cpu_time(time2)
 C$    time2=omp_get_wtime()
-      timeinfo(2)=time2-time1
+      timeinfo(2)=timeinfo(2)+time2-time1
 
       if(ifprint.ge.1)
      $    call prinf('=== Step 3 (mp to loc+formta+mpeval) ===*',i,0)
