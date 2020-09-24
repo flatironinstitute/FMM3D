@@ -1,0 +1,178 @@
+name: Python Build
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - v*
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  Linux:
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64:latest
+
+    steps:
+    - uses: actions/checkout@v2
+    
+    - name: install gfortran-7
+      run: |
+        yum install -y devtoolset-7-toolchain
+        echo "FFLAGS += -march=x86-64" >> make.inc
+        echo "CFLAGS += -march=x86-64" >> make.inc
+        echo "CXXFLAGS += -march=x86-64" >> make.inc
+
+    - name: Compile python bindings
+      run: |
+        scl enable devtoolset-7 bash
+        .github/workflows/python_build_posix.sh /opt/python/cp35-cp35m/bin/python
+        .github/workflows/python_build_posix.sh /opt/python/cp36-cp36m/bin/python
+        .github/workflows/python_build_posix.sh /opt/python/cp37-cp37m/bin/python
+        .github/workflows/python_build_posix.sh /opt/python/cp38-cp38/bin/python
+        ls python/dist/*.whl | xargs -n1 auditwheel repair
+
+    - name: Test python bindings
+      run: |
+        .github/workflows/python_test_posix.sh /opt/python/cp35-cp35m/bin/python
+        .github/workflows/python_test_posix.sh /opt/python/cp36-cp36m/bin/python
+        .github/workflows/python_test_posix.sh /opt/python/cp37-cp37m/bin/python
+        .github/workflows/python_test_posix.sh /opt/python/cp38-cp38/bin/python
+
+    - name: Upload wheels
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux-wheels
+        path: wheelhouse/*.whl
+
+  MacOS:
+    runs-on: macos-latest
+    env:
+      MACOSX_DEPLOYMENT_TARGET: 10.9
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install gcc-8
+      run: |
+        brew install gcc@8
+        ln -s `which gfortran-8` /usr/local/bin/gfortran
+        cp make.inc.macos.gnu make.inc
+        echo "FC=gfortran-8" >> make.inc
+        echo "CC=gcc-8" >> make.inc
+        echo "CXX=g++-8" >> make.inc
+        echo "FFLAGS += -march=x86-64" >> make.inc
+        echo "CFLAGS += -march=x86-64" >> make.inc
+        echo "CXXFLAGS += -march=x86-64" >> make.inc
+        # link statically to libgcc, libgfortran and libquadmath
+        # otherwise binaries are incompatible with older systems
+        echo "LIBS += -static-libgfortran -static-libgcc -static-libstdc++" >> make.inc
+        # hack to make libquadmath link statically
+        sudo rm /usr/local/opt/gcc@8/lib/gcc/8/libquadmath.*dylib
+
+    
+    # Download and install Python instead of using the setup_python
+    # as the python interpreters in the Github machines
+    # were compiled in 10.14, the wheels built with them
+    # are incompatible with older MacOS versions
+    - name: Download and install Python
+      run: |
+        curl \
+          https://www.python.org/ftp/python/3.6.8/python-3.6.8-macosx10.9.pkg \
+          --output python_installer.pkg
+        sudo installer -pkg python_installer.pkg -target /
+
+        curl \
+          https://www.python.org/ftp/python/3.7.7/python-3.7.7-macosx10.9.pkg \
+          --output python_installer.pkg
+        sudo installer -pkg python_installer.pkg -target /
+
+        curl \
+          https://www.python.org/ftp/python/3.8.3/python-3.8.3-macosx10.9.pkg \
+          --output python_installer.pkg
+        sudo installer -pkg python_installer.pkg -target /
+
+    - name: Compile python bindings
+      run: |
+        .github/workflows/python_build_posix.sh /Library/Frameworks/Python.framework/Versions/3.6/bin/python3
+        .github/workflows/python_build_posix.sh /Library/Frameworks/Python.framework/Versions/3.7/bin/python3
+        .github/workflows/python_build_posix.sh /Library/Frameworks/Python.framework/Versions/3.8/bin/python3
+        PYTHON_BIN=/Library/Frameworks/Python.framework/Versions/3.7/bin/
+        $PYTHON_BIN/python3 -m pip install delocate
+        ls python/dist/*.whl | xargs -n1 $PYTHON_BIN/delocate-wheel -w wheelhouse/
+
+    - name: Test python bindings
+      run: |
+        .github/workflows/python_test_posix.sh /Library/Frameworks/Python.framework/Versions/3.6/bin/python3
+        .github/workflows/python_test_posix.sh /Library/Frameworks/Python.framework/Versions/3.7/bin/python3
+        .github/workflows/python_test_posix.sh /Library/Frameworks/Python.framework/Versions/3.8/bin/python3
+
+    - name: Upload wheels
+      uses: actions/upload-artifact@v2
+      with:
+        name: macos-wheels
+        path: wheelhouse/*.whl
+
+  Windows:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install GCC and make
+      run: C:\msys64\usr\bin\bash.exe -lc "pacman -Sy --noconfirm make mingw-w64-x86_64-toolchain"
+
+    - name: Build and Test Python 3.6
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.6'
+        architecture: 'x64'
+    - run: |
+        .\.github\workflows\python_build_win.ps1
+        .\.github\workflows\python_test_win.ps1
+
+    - name: Build and Test Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.7'
+        architecture: 'x64'
+    - run: |
+        .\.github\workflows\python_build_win.ps1
+        .\.github\workflows\python_test_win.ps1
+
+    - name: Build and Test Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+        architecture: 'x64'
+    - run: |
+        .\.github\workflows\python_build_win.ps1
+        .\.github\workflows\python_test_win.ps1
+
+    - name: Upload wheels
+      uses: actions/upload-artifact@v2
+      with:
+        name: windows-wheels
+        path: wheelhouse\*.whl
+
+
+  PyPI:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags') }}
+    needs: [Linux, MacOS, Windows]
+    
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        
+      - name: Download Artifacts
+        uses: actions/download-artifact@v2
+        
+      - name: Upload to PyPI
+        run: |
+          python -m pip install twine
+          python -m twine upload ./**/*.whl -u __token__ -p "$PASSWORD"
+        env:
+          PASSWORD: ${{ secrets.PYPI_TOKEN }}

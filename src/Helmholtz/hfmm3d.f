@@ -191,7 +191,7 @@ c
 cc         set tree flags
 c
        isep = 1
-       nlmax = 200
+       nlmax = 51
        nlevels = 0
        nboxes = 0
        mhung = 0
@@ -652,7 +652,7 @@ c     temp variables
       double complex zmul
 
       integer nlege, lw7, lused7, itype
-      double precision wlege(40000)
+      double precision, allocatable :: wlege(:)
 
       double precision thresh
 
@@ -823,8 +823,9 @@ C$OMP END PARALLEL DO
 
 
 c    initialize legendre function evaluation routines
-      nlege = 100
-      lw7 = 40000
+      nlege = nmax + 10
+      lw7 = (nlege+1)**2*4
+      allocate(wlege(lw7))
       call ylgndrfwini(nlege,wlege,lw7,lused7)
 
       allocate(list4(nboxes))
@@ -959,7 +960,7 @@ C$OMP END PARALLEL DO
 
       call cpu_time(time2)
 C$    time2=omp_get_wtime()
-      timeinfo(3)=time2-time1
+      timeinfo(2)=time2-time1
 
 
 

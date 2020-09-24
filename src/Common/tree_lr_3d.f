@@ -381,7 +381,8 @@ c
 
       if(isep.ne.1.and.isep.ne.2) then
          ier = 4
-         call prinf('Error tree not allocated, isep.ne.1,2*',ier,0)
+cc         call prinf('Error tree not allocated, isep.ne.1,2*',ier,0)
+           print *, "Error tree not allocated, isep.ne.1,2"
          return
       endif
 
@@ -545,6 +546,8 @@ c     Reset nlevels, nboxes
       nlmax = nlevels
       nlevels = 0
       nboxes = 1
+
+
       do i = 1,nlmax
          if (irefine.eq.1) then
             call subdivide_adap(ier,src,ns,radsrc,trg,nt,expc,nexpc,
@@ -585,6 +588,7 @@ c     Set up computation of list1 and list2
      5     ihelasttemp,iefirsttemp,ielasttemp,nhungsrc,nhungexp)
       if(ier.ne.0) return
       endif
+
  
       
 C$OMP PARALLEL DO DEFAULT(SHARED)
@@ -810,7 +814,7 @@ c     Temporary variables
       integer jj,irefinebox,ntt
       integer i56, i78, i1234, i5678
       integer ibox,ifirstbox,ilastbox,nbfirst
-      integer is,it,ie
+      integer iss,itt,ie
       integer nsc(8),ntc(8),nh(8),nexpcc(8),nhc(8)
 c
 c     for every box at level nlevels,
@@ -869,13 +873,13 @@ c           8     x>0,y>0,z>0
 
             i1234 = isfirst(ibox)-1
             i5678 = 0
-            do is = isfirst(ibox),islast(ibox)
-               if(src(3,isource(is)) - centers(3,ibox).lt.0) then
+            do iss = isfirst(ibox),islast(ibox)
+               if(src(3,isource(iss)) - centers(3,ibox).lt.0) then
                   i1234 = i1234+1
-                  isource(i1234) = isource(is)
+                  isource(i1234) = isource(iss)
                else
                   i5678 = i5678 + 1
-                  isrctmp(i5678) = isource(is)
+                  isrctmp(i5678) = isource(iss)
                endif
             enddo
 c           Note at the end of the loop, i1234 is where the particles
@@ -889,13 +893,13 @@ c           Reorder sources to include sources in 5678 in the array
 c           Sort i1234 into i12 and i34         
             i12 = isfirst(ibox)-1
             i34 = 0
-            do is = isfirst(ibox),i1234
-               if(src(2,isource(is))-centers(2,ibox).lt.0) then
+            do iss = isfirst(ibox),i1234
+               if(src(2,isource(iss))-centers(2,ibox).lt.0) then
                   i12 = i12 + 1
-                  isource(i12) = isource(is)
+                  isource(i12) = isource(iss)
                else
                   i34 = i34 + 1
-                  isrctmp(i34) = isource(is)
+                  isrctmp(i34) = isource(iss)
                endif
             enddo
 c           Note at the end of the loop, i12 is where the particles
@@ -909,13 +913,13 @@ c           Reorder sources to include 34 in the array
 c           sort i5678 into i56 and i78
             i56 = i1234
             i78 = 0
-            do is=i1234+1,islast(ibox)
-               if(src(2,isource(is))-centers(2,ibox).lt.0) then
+            do iss=i1234+1,islast(ibox)
+               if(src(2,isource(iss))-centers(2,ibox).lt.0) then
                   i56 = i56 + 1
-                  isource(i56) = isource(is)
+                  isource(i56) = isource(iss)
                else
                   i78 = i78 + 1
-                  isrctmp(i78) = isource(is)
+                  isrctmp(i78) = isource(iss)
                endif
             enddo
 
@@ -934,13 +938,13 @@ c           End of reordering i5678
             nsc(7) = 0
             nsc(8) = 0
 c           Sort into boxes 1 and 2
-            do is = isfirst(ibox),i12
-               if(src(1,isource(is))-centers(1,ibox).lt.0) then
-                  isource(isfirst(ibox)+nsc(1)) = isource(is)
+            do iss = isfirst(ibox),i12
+               if(src(1,isource(iss))-centers(1,ibox).lt.0) then
+                  isource(isfirst(ibox)+nsc(1)) = isource(iss)
                   nsc(1) = nsc(1) + 1
                else
                   nsc(2) = nsc(2) + 1
-                  isrctmp(nsc(2)) = isource(is)
+                  isrctmp(nsc(2)) = isource(iss)
                endif
             enddo
 c           Reorder sources so that sources in 2 are at the
@@ -950,13 +954,13 @@ c           end of this part of the array
             enddo
 
 c           Sort into boxes 3 and 4
-            do is = i12+1, i1234
-               if(src(1,isource(is))-centers(1,ibox).lt.0) then
-                  isource(i12+1+nsc(3)) = isource(is)
+            do iss = i12+1, i1234
+               if(src(1,isource(iss))-centers(1,ibox).lt.0) then
+                  isource(i12+1+nsc(3)) = isource(iss)
                   nsc(3) = nsc(3) + 1
                 else
                    nsc(4) = nsc(4)+1
-                   isrctmp(nsc(4)) = isource(is)
+                   isrctmp(nsc(4)) = isource(iss)
                 endif
             enddo
 c           Reorder sources so that sources in 4 are at the
@@ -966,13 +970,13 @@ c           end of this part of the array
             enddo
 
 c           Sort into boxes 5 and 6
-            do is = i1234+1,i56
-               if(src(1,isource(is))-centers(1,ibox).lt.0) then
-                  isource(i1234+1+nsc(5)) = isource(is)
+            do iss = i1234+1,i56
+               if(src(1,isource(iss))-centers(1,ibox).lt.0) then
+                  isource(i1234+1+nsc(5)) = isource(iss)
                   nsc(5) = nsc(5) + 1
                else
                   nsc(6) = nsc(6) + 1
-                  isrctmp(nsc(6)) = isource(is)
+                  isrctmp(nsc(6)) = isource(iss)
                endif
             enddo
 c           Reorder sources so that sources in 6 are at the
@@ -983,13 +987,13 @@ c           end of this part of the array
 c           End of sorting sources into boxes 5 and 6
 
 c           Sort into boxes 7 and 8
-            do is=i56+1,islast(ibox)
-               if(src(1,isource(is))-centers(1,ibox).lt.0) then
-                  isource(i56+1+nsc(7)) = isource(is)
+            do iss=i56+1,islast(ibox)
+               if(src(1,isource(iss))-centers(1,ibox).lt.0) then
+                  isource(i56+1+nsc(7)) = isource(iss)
                   nsc(7) = nsc(7) + 1
                else
                   nsc(8) = nsc(8) + 1
-                  isrctmp(nsc(8)) = isource(is)
+                  isrctmp(nsc(8)) = isource(iss)
                endif
             enddo
 c           Reorder sources so that sources in 8 are at the
@@ -1042,13 +1046,13 @@ c           8     x>0,y>0,z>0
 c
             i1234 = itfirst(ibox)-1
             i5678 = 0
-            do it = itfirst(ibox),itlast(ibox)
-               if(trg(3,itarget(it)) - centers(3,ibox).lt.0) then
+            do itt = itfirst(ibox),itlast(ibox)
+               if(trg(3,itarget(itt)) - centers(3,ibox).lt.0) then
                  i1234 = i1234+1
-                 itarget(i1234) = itarget(it)
+                 itarget(i1234) = itarget(itt)
                else
                   i5678 = i5678 + 1
-                  itargtmp(i5678) = itarget(it)
+                  itargtmp(i5678) = itarget(itt)
                endif
             enddo
 c           Reorder sources to include targets in 5678 in the array
@@ -1059,13 +1063,13 @@ c           Reorder sources to include targets in 5678 in the array
 c           Sort i1234 into i12 and i34         
             i12 = itfirst(ibox)-1
             i34 = 0
-            do it = itfirst(ibox),i1234
-               if(trg(2,itarget(it))-centers(2,ibox).lt.0) then
+            do itt = itfirst(ibox),i1234
+               if(trg(2,itarget(itt))-centers(2,ibox).lt.0) then
                   i12 = i12 + 1
-                  itarget(i12) = itarget(it)
+                  itarget(i12) = itarget(itt)
                else
                   i34 = i34 + 1
-                  itargtmp(i34) = itarget(it)
+                  itargtmp(i34) = itarget(itt)
                endif
             enddo
 c           Note at the end of the loop, i12 is where the particles
@@ -1079,13 +1083,13 @@ c           Reorder targets to include 34 in the array
 c           sort i5678 into i56 and i78
             i56 = i1234
             i78 = 0
-            do it=i1234+1,itlast(ibox)
-               if(trg(2,itarget(it))-centers(2,ibox).lt.0) then
+            do itt=i1234+1,itlast(ibox)
+               if(trg(2,itarget(itt))-centers(2,ibox).lt.0) then
                   i56 = i56 + 1
-                  itarget(i56) = itarget(it)
+                  itarget(i56) = itarget(itt)
                else
                   i78 = i78 + 1
-                  itargtmp(i78) = itarget(it)
+                  itargtmp(i78) = itarget(itt)
                endif
             enddo
 
@@ -1105,13 +1109,13 @@ c           End of reordering i5678
             ntc(8) = 0
 
 c           Sort into boxes 1 and 2
-            do it = itfirst(ibox),i12
-               if(trg(1,itarget(it))-centers(1,ibox).lt.0) then
-                  itarget(itfirst(ibox)+ntc(1)) = itarget(it)
+            do itt = itfirst(ibox),i12
+               if(trg(1,itarget(itt))-centers(1,ibox).lt.0) then
+                  itarget(itfirst(ibox)+ntc(1)) = itarget(itt)
                   ntc(1) = ntc(1) + 1
                else
                   ntc(2) = ntc(2) + 1
-                  itargtmp(ntc(2)) = itarget(it)
+                  itargtmp(ntc(2)) = itarget(itt)
                endif
             enddo
 c           Reorder targets so that sources in 2 are at the
@@ -1120,13 +1124,13 @@ c           end of this part of the array
                itarget(itfirst(ibox)+ntc(1)+i-1) = itargtmp(i)
             enddo
 c           Sort into boxes 3 and 4
-            do it = i12+1, i1234
-               if(trg(1,itarget(it))-centers(1,ibox).lt.0) then
-                  itarget(i12+1+ntc(3)) = itarget(it)
+            do itt = i12+1, i1234
+               if(trg(1,itarget(itt))-centers(1,ibox).lt.0) then
+                  itarget(i12+1+ntc(3)) = itarget(itt)
                   ntc(3) = ntc(3) + 1
                 else
                    ntc(4) = ntc(4)+1
-                   itargtmp(ntc(4)) = itarget(it)
+                   itargtmp(ntc(4)) = itarget(itt)
                 endif
             enddo
 c           Reorder targets so that sources in 4 are at the
@@ -1136,13 +1140,13 @@ c           end of this part of the array
             enddo
 
 c           Sort into boxes 5 and 6
-            do it = i1234+1,i56
-               if(trg(1,itarget(it))-centers(1,ibox).lt.0) then
-                  itarget(i1234+1+ntc(5)) = itarget(it)
+            do itt = i1234+1,i56
+               if(trg(1,itarget(itt))-centers(1,ibox).lt.0) then
+                  itarget(i1234+1+ntc(5)) = itarget(itt)
                   ntc(5) = ntc(5) + 1
                else
                   ntc(6) = ntc(6) + 1
-                  itargtmp(ntc(6)) = itarget(it)
+                  itargtmp(ntc(6)) = itarget(itt)
                endif
             enddo
 c           Reorder targets so that sources in 6 are at the
@@ -1153,13 +1157,13 @@ c           end of this part of the array
 c           End of sorting sources into boxes 5 and 6
 
 c           Sort into boxes 7 and 8
-            do it=i56+1,itlast(ibox)
-               if(trg(1,itarget(it))-centers(1,ibox).lt.0) then
-                  itarget(i56+1+ntc(7)) = itarget(it)
+            do itt=i56+1,itlast(ibox)
+               if(trg(1,itarget(itt))-centers(1,ibox).lt.0) then
+                  itarget(i56+1+ntc(7)) = itarget(itt)
                   ntc(7) = ntc(7) + 1
                else
                   ntc(8) = ntc(8) + 1
-                  itargtmp(ntc(8)) = itarget(it)
+                  itargtmp(ntc(8)) = itarget(itt)
                endif
             enddo
 c           Reorder targets so that sources in 8 are at the
@@ -1802,7 +1806,8 @@ c
 
       if(isep.ne.1.and.isep.ne.2) then
          ier = 4
-         call prinf('Error tree not allocated, isep.ne.1,2*',ier,0)
+cc         call prinf('Error tree not allocated, isep.ne.1,2*',ier,0)
+         print *, "Error tree not allocated, isep.ne.1,2"
          return
       endif
 
@@ -1952,6 +1957,7 @@ c
       if ((idivflag .eq.3).and.(nss+nt+nee.gt.ndiv)) irefine=1
 
 
+
       do i = 1,nlmax
          if (irefine.eq.1) then
 c
@@ -1975,6 +1981,7 @@ c
             enddo
 
             nbtot = nboxes + 8*nnew
+
 c
 c            if current memory is not sufficient, 
 c            delete previous arrays and allocate more memory
@@ -2094,6 +2101,8 @@ C$OMP END PARALLEL DO
             exit
          endif
       enddo
+
+
 c
 c
 c        check with Leslie/Dhairya/Alex/Zydrunas if 16 is enough
@@ -2256,12 +2265,13 @@ c     Compute mnlist1, mnlist2, mnlist3, mnlist4
 
       call computemhung(nlevels,nboxes,laddr,iparenttemp,ilevel,nnbors,
      1  mnbors,nbors,nlist1,mnlist1,list1,nhungsrc,nhunglistsrc,mhung)
+      
 c
 c      temporarily typecast nboxes to integer *8
 c
       nboxes8 = nboxes
-      ltree = (28+mhung+mnlist1+mnlist2+mnlist3+mnlist4+mnbors)*nboxes8+ 
-     1        2*(nlevels+1)+ns+nt+nexpc
+      ltree = (28+mhung+mnlist1+mnlist2+mnlist3+mnlist4+
+     1   mnbors)*nboxes8+2*(nlevels+1)+ns+nt+nexpc
 
       return
       end
@@ -4195,7 +4205,7 @@ c     using the mapping iboxtocurbox
 
       return
       end
-c--------------------------------------------------------------------      
+c-------------------------------------------------------------      
       subroutine updateflags(curlev,nboxes,nlevels,laddr,nchild,ichild,
      1                    mnbors,nnbors,nbors,centers,boxsize,iflag)
 
@@ -4850,10 +4860,6 @@ c-------------------------------------------------------------------
 
       return
       end
-c--------------------------------------------------------------------     
-c
-c
-c
 c--------------------------------------------------------------------      
 
       subroutine getlist3pwlistall(ibox,bs,nboxes,nlist3,list3,

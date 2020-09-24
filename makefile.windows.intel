@@ -1,0 +1,142 @@
+# Makefile for FMM3D
+# # This is the only makefile; there are no makefiles in subdirectories.
+# Users should not need to edit this makefile (doing so would make it
+# hard to stay up to date with repo version). Rather in order to
+# change OS\environment-specific compilers and flags, create 
+# the file make.inc, which overrides the defaults below (which are 
+# for ubunutu linux\gcc system). 
+
+# compiler, and linking from C, fortran
+CC=gcc
+FC=ifort
+FFLAGS= /O3  
+CFLAGS= /O3 /openmp /std:c99
+
+
+# flags for MATLAB MEX compilation..
+MFLAGS=-compatibleArrayDims -DMWF77_UNDERSCORE1 
+MWFLAGS=-c99complex 
+MOMPFLAGS = -D_OPENMP
+
+# location of MATLAB's mex compiler
+MEX=mex
+
+LIBNAME=libfmm3d
+DYNAMICLIB = $(LIBNAME).dll
+LLIB = $(LIBNAME)_dll.lib
+STATICLIB = $(LIBNAME).lib
+EXPLIB = $(LIBNAME).exp
+
+
+# objects to compile
+#
+# Common objects
+COM = src\Common
+COMOBJS = $(COM)\besseljs3d.obj $(COM)\cdjseval3d.obj $(COM)\dfft.obj \
+	$(COM)\fmmcommon.obj $(COM)\legeexps.obj $(COM)\prini.obj \
+	$(COM)\rotgen.obj $(COM)\rotproj.obj $(COM)\rotviarecur.obj \
+	$(COM)\tree_lr_3d.obj $(COM)\yrecursion.obj 
+
+# Helmholtz objects
+HELM = src\Helmholtz
+HOBJS = $(HELM)\h3dcommon.obj $(HELM)\h3dterms.obj $(HELM)\h3dtrans.obj \
+	$(HELM)\helmrouts3d.obj $(HELM)\hfmm3d.obj $(HELM)\hfmm3dwrap.obj \
+	$(HELM)\hfmm3dwrap_legacy.obj $(HELM)\hfmm3dwrap_vec.obj $(HELM)\hpwrouts.obj \
+	$(HELM)\hwts3e.obj $(HELM)\hnumphys.obj $(HELM)\hnumfour.obj $(HELM)\projections.obj \
+	$(HELM)\hfmm3d_mps.obj $(HELM)\helmkernels.obj $(HELM)\hndiv.obj
+
+# Laplace objects
+LAP = src\Laplace
+LOBJS = $(LAP)\lwtsexp_sep1.obj $(LAP)\l3dterms.obj $(LAP)\l3dtrans.obj \
+	$(LAP)\laprouts3d.obj $(LAP)\lfmm3d.obj $(LAP)\lfmm3dwrap.obj \
+	$(LAP)\lfmm3dwrap_legacy.obj $(LAP)\lfmm3dwrap_vec.obj $(LAP)\lwtsexp_sep2.obj \
+	$(LAP)\lpwrouts.obj $(LAP)\lapkernels.obj $(LAP)\lndiv.obj
+
+
+# Test objects
+TOBJS = $(COM)\hkrand.obj $(COM)\dlaran.obj
+
+# C Headers and objects
+COBJS = c\cprini.o c\utils.o
+CHEADERS = c\cprini.h c\utils.h c\hfmm3d_c.h c\lfmm3d_c.h
+
+
+OBJS = $(COMOBJS) $(HOBJS) $(LOBJS)
+
+.PHONY: usage lib examples test test-ext python all c c-examples matlab python3 big-test pw-test debug 
+
+default: usage
+
+usage:
+	@echo "Makefile for FMM3D. Specify what to make:"
+	@echo "  make lib - compile the main library (in lib\ and lib-static\)"
+	@echo "  make examples - compile and run fortran examples in examples\"
+	@echo "  make c-examples - compile and run c examples in c\"
+	@echo "  make test - compile and run validation tests (will take around 30 secs)"
+	@echo "  make matlab - compile matlab interfaces"
+	@echo "  make mex - generate matlab interfaces (for expert users only, requires mwrap)"
+	@echo "  make python - compile and test python interfaces"
+	@echo "  make python3 - compile and test python interfaces using python3"
+	@echo "  make objclean - removal all object files, preserving lib & MEX"
+	@echo "  make clean - also remove lib, MEX, py, and demo executables"
+	@echo "For faster (multicore) making, append the flag -j"
+	@echo "  'make [task] OMP=ON' for multi-threaded"
+	@echo "  'make [task] FAST_KER=ON' for using vectorized kernel evaluation and multi-threaded (needs c++)"
+
+
+# implicit rules for objects (note -o ensures writes to correct dir)
+.f.obj:
+	$(FC) $(FFLAGS) /c $< /o $@
+.f90.obj:
+	$(FC) $(FFLAGS) /c $< /o $@
+.c.obj:
+	$(CC) $(CFLAGS) /c $< /o $@
+
+
+# build the library...
+lib: $(DYNAMICLIB) 
+	@echo "$(STATICLIB) and $(DYNAMICLIB) built, multithread versions"
+$(DYNAMICLIB): $(OBJS) 
+	$(FC) /Qopenmp /dll $(OBJS) ifort_matlab.def /Fe$(DYNAMICLIB) /link 
+	move $(DYNAMICLIB) lib/
+	move $(STATICLIB) lib/
+	move $(EXPLIB) lib/
+
+
+
+THDIR = test\Helmholtz
+test-dyn: $(DYNAMICLIB) $(TOBJS) test/helmrouts-dyn test/hfmm3d-dyn 
+	del -f print_testres.txt
+	$(THDIR)\int2-test-helmrouts3d
+	$(THDIR)\int2-test-hfmm3d
+
+test/helmrouts-dyn: 
+	$(FC) $(FFLAGS) test\Helmholtz\test_helmrouts3d.f $(TOBJS) /o test\Helmholtz\int2-test-helmrouts3d lib\$(STATICLIB)
+
+
+test/hfmm3d-dyn: 
+	$(FC) $(FFLAGS) test\Helmholtz\test_hfmm3d.f $(TOBJS) /o test\Helmholtz\int2-test-hfmm3d lib\$(STATICLIB)
+
+MWRAPFILE = fmm3d
+MWRAPFILE2 = fmm3d_legacy
+GATEWAY = $(MWRAPFILE)
+
+GATEWAY2 = $(MWRAPFILE2)
+
+MINGW_LPATH=C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\lib\gcc\x86_64-w64-mingw32\6.3.0
+INTEL_PATH=C:\inteliomppath
+MFLAGS=-compatibleArrayDims -DMWF77_CAPS -D_OPENMP
+MEXLIBS=-liomp5md -lifcoremd -lifconsol -L$(MINGW_LPATH) -L$(INTEL_PATH) 
+
+MOMPFLAGS = -D_OPENMP
+
+matlab-dyn:	$(DYNAMICLIB) matlab/$(GATEWAY).c matlab/$(GATEWAY2).c
+	$(MEX) matlab\$(GATEWAY).c $(MFLAGS) \
+		-output matlab\fmm3d $(MEXLIBS) -L\lib lib\$(STATICLIB) 
+	$(MEX) matlab\$(GATEWAY2).c $(MFLAGS) \
+	-output matlab\fmm3d_legacy $(MEXLIBS) -L\lib lib\$(STATICLIB)
+
+clean: objclean
+
+objclean:
+	del -f $(OBJS) $(COBJS) $(TOBJS) 2>NUL

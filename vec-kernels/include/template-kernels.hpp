@@ -346,6 +346,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectch_vec_cpp(const 
   Vec zk_[2];
   zk_[0] = Vec::Load1(zk+0);
   zk_[1] = Vec::Load1(zk+1);
+
   Vec thresh2 = thresh[0] * thresh[0];
   // load charge and source
   sctl::Matrix<Real> Xs_(Nsrc, COORD_DIM, sctl::Ptr2Itr<Real>((Real*)sources, COORD_DIM*Nsrc), false);
@@ -369,6 +370,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectch_vec_cpp(const 
     }
     // load potential and gradient and hessian
     Vec Vtrg[nd_][KDIM1], Gtrg[nd_][COORD_DIM][KDIM1], Htrg[nd_][COORD_DIM*2][KDIM1];
+
     for (long i = 0; i < nd_; i++) {
       Vtrg[i][0] = Vec::LoadAligned(&Vt[i*KDIM1+0][t]);
       Vtrg[i][1] = Vec::LoadAligned(&Vt[i*KDIM1+1][t]);
@@ -382,6 +384,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectch_vec_cpp(const 
         Htrg[i][j][0] = Vec::LoadAligned(&Ht[(j*nd_+i)*KDIM1+0][t]);
         Htrg[i][j][1] = Vec::LoadAligned(&Ht[(j*nd_+i)*KDIM1+1][t]);
       }
+
     }
     for (sctl::Long s = 0; s < Nsrc; s++) {
       Vec dX[COORD_DIM], R2 = Vec::Zero();
@@ -418,6 +421,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectch_vec_cpp(const 
       Vec H1 = izkR[1]*G0 + (izkR[0] - (1.0))*G1;
       H0 = H0 * Rinv2;
       H1 = H1 * Rinv2;
+
       Vec tmp0 = zk_[1]*zk_[1] - zk_[0]*zk_[0];
       Vec tmp1 = zk_[0]*zk_[1]*(-2.0);
       tmp0 = (-3.0)*(Rinv*zk_[1]+Rinv2) - tmp0;
@@ -425,6 +429,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectch_vec_cpp(const 
       // exp(ikr)*(-(ik)^2-3/r^2+3ik/r)/r^3
       Vec J0 = (G0 * tmp0 - G1 * tmp1)*Rinv2;
       Vec J1 = (G1 * tmp0 + G0 * tmp1)*Rinv2;
+
       // (ikr-1)*exp(ikr)/r^3 * (xt - xs)
       Vec Ztmp[COORD_DIM][KDIM0];
       for (sctl::Integer dimi = 0; dimi < COORD_DIM; dimi++){
@@ -445,6 +450,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectch_vec_cpp(const 
       Hctmp[5][0] = -J0*dX[1]*dX[2];
       Hctmp[5][1] = -J1*dX[1]*dX[2];
 
+
       for (long i = 0; i < nd_; i++) {
         Vtrg[i][0] += G0 * Vsrc[s*nd_*KDIM0+i*KDIM0+0] - G1 * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
         Vtrg[i][1] += G1 * Vsrc[s*nd_*KDIM0+i*KDIM0+0] + G0 * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
@@ -457,6 +463,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectch_vec_cpp(const 
           Htrg[i][dimi][0] += Hctmp[dimi][0]*Vsrc[s*nd_*KDIM0+i*KDIM0+0] - Hctmp[dimi][1]*Vsrc[s*nd_*KDIM0+i*KDIM0+1];
           Htrg[i][dimi][1] += Hctmp[dimi][0]*Vsrc[s*nd_*KDIM0+i*KDIM0+1] + Hctmp[dimi][1]*Vsrc[s*nd_*KDIM0+i*KDIM0+0];
         }
+
       }
     }
     for (long i = 0; i < nd_; i++) {
@@ -472,6 +479,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectch_vec_cpp(const 
         Htrg[i][j][0].StoreAligned(&Ht[(j*nd_+i)*KDIM1+0][t]);
         Htrg[i][j][1].StoreAligned(&Ht[(j*nd_+i)*KDIM1+1][t]);
       }
+
     }
   }
 
@@ -802,6 +810,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdh_vec_cpp(const 
   sctl::Matrix<Real> Vt(nd_*KDIM1, Ntrg_);
   sctl::Matrix<Real> Gt(nd_*KDIM1*COORD_DIM, Ntrg_);
   sctl::Matrix<Real> Ht(nd_*KDIM1*COORD_DIM*2, Ntrg_);
+
   { // Set Xs, Vs, Xt, Vt
     auto transpose = [](sctl::Matrix<Real>& A, const sctl::Matrix<Real>& B) {
       sctl::Long d0 = std::min(A.Dim(0), B.Dim(1));
@@ -821,6 +830,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdh_vec_cpp(const 
     Vt = 0;
     Gt = 0;
     Ht = 0;
+
   }
 
   static constexpr sctl::Integer VecLen = MaxVecLen;
@@ -857,6 +867,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdh_vec_cpp(const 
     }
     // load potential and gradient and hessian
     Vec Vtrg[nd_][KDIM1], Gtrg[nd_][COORD_DIM][KDIM1], Htrg[nd_][COORD_DIM*2][KDIM1];
+
     for (long i = 0; i < nd_; i++) {
       Vtrg[i][0] = Vec::LoadAligned(&Vt[i*KDIM1+0][t]);
       Vtrg[i][1] = Vec::LoadAligned(&Vt[i*KDIM1+1][t]);
@@ -870,6 +881,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdh_vec_cpp(const 
         Htrg[i][j][0] = Vec::LoadAligned(&Ht[(j*nd_+i)*KDIM1+0][t]);
         Htrg[i][j][1] = Vec::LoadAligned(&Ht[(j*nd_+i)*KDIM1+1][t]);
       }
+
     }
     for (sctl::Long s = 0; s < Nsrc; s++) {
       Vec dX[COORD_DIM], R2 = Vec::Zero();
@@ -915,6 +927,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdh_vec_cpp(const 
       tmp0 = (-3.0)*(Rinv*zk[1]+Rinv2) - tmp0;
       tmp1 = (3.0)*Rinv*zk[0] - tmp1;
       // exp(ikr)*(-(ik)^2-3/r^2+3ik/r)/r^3
+
       Vec J0 = (G0 * tmp0 - G1 * tmp1)*Rinv2;
       Vec J1 = (G1 * tmp0 + G0 * tmp1)*Rinv2;
 
@@ -1007,6 +1020,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdh_vec_cpp(const 
           Htrg[i][3+dimi][0] += tmp3 + tmp0*tmp5;
           Htrg[i][3+dimi][1] += tmp4 + tmp1*tmp5;
         }
+
       }
     }
     // store
@@ -1023,6 +1037,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdh_vec_cpp(const 
         Htrg[i][j][0].StoreAligned(&Ht[(j*nd_+i)*KDIM1+0][t]);
         Htrg[i][j][1].StoreAligned(&Ht[(j*nd_+i)*KDIM1+1][t]);
       }
+
     }
   }
 
@@ -1036,6 +1051,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdh_vec_cpp(const 
     for (long j=0; j < nd_*KDIM1*COORD_DIM*2; j++) {
       hess[i*nd_*KDIM1*COORD_DIM*2+j] += Ht[j][i];
     }
+
   }
 }
 
@@ -1225,6 +1241,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdg_vec_cpp(const
   Vec zk_[2];
   zk_[0] = Vec::Load1(zk+0);
   zk_[1] = Vec::Load1(zk+1);
+
   Vec thresh2 = thresh[0] * thresh[0];
   // load source, charge and dipvec
   sctl::Matrix<Real> Xs_(Nsrc, COORD_DIM, sctl::Ptr2Itr<Real>((Real*)sources, COORD_DIM*Nsrc), false);
@@ -1388,6 +1405,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
   sctl::Matrix<Real> Vt(nd_*KDIM1, Ntrg_);
   sctl::Matrix<Real> Gt(nd_*KDIM1*COORD_DIM, Ntrg_);
   sctl::Matrix<Real> Ht(nd_*KDIM1*COORD_DIM*2, Ntrg_);
+
   { // Set Xs, Vs, Xt, Vt
     auto transpose = [](sctl::Matrix<Real>& A, const sctl::Matrix<Real>& B) {
       sctl::Long d0 = std::min(A.Dim(0), B.Dim(1));
@@ -1409,6 +1427,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
     Vt = 0;
     Gt = 0;
     Ht = 0;
+
   }
 
   static constexpr sctl::Integer VecLen = MaxVecLen;
@@ -1449,6 +1468,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
     }
     // load potential and gradient and hessian
     Vec Vtrg[nd_][KDIM1], Gtrg[nd_][COORD_DIM][KDIM1], Htrg[nd_][COORD_DIM*2][KDIM1];
+
     for (long i = 0; i < nd_; i++) {
       Vtrg[i][0] = Vec::LoadAligned(&Vt[i*KDIM1+0][t]);
       Vtrg[i][1] = Vec::LoadAligned(&Vt[i*KDIM1+1][t]);
@@ -1462,6 +1482,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
         Htrg[i][j][0] = Vec::LoadAligned(&Ht[(j*nd_+i)*KDIM1+0][t]);
         Htrg[i][j][1] = Vec::LoadAligned(&Ht[(j*nd_+i)*KDIM1+1][t]);
       }
+
     }
     for (sctl::Long s = 0; s < Nsrc; s++) {
       Vec dX[COORD_DIM], R2 = Vec::Zero();
@@ -1490,6 +1511,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
       Vec Rinv5 = Rinv4 * Rinv;
       Vec Rinv6 = Rinv4 * Rinv2;
       Vec izkR[2] = {-zk_[1]*R, zk_[0]*R};
+
       Vec sin_izkR, cos_izkR, exp_izkR;
       sctl::sincos_intrin<Vec>(sin_izkR, cos_izkR, izkR[1]);
       sctl::exp_intrin(exp_izkR, izkR[0]);
@@ -1507,6 +1529,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
       tmp0 = (-3.0)*(Rinv*zk_[1]+Rinv2) - tmp0;
       tmp1 = (3.0)*Rinv*zk_[0] - tmp1;
       // exp(ikr)*(-(ik)^2-3/r^2+3ik/r)/r^3
+
       Vec J0 = (G0 * tmp0 - G1 * tmp1)*Rinv2;
       Vec J1 = (G1 * tmp0 + G0 * tmp1)*Rinv2;
       // (ikr-1)*exp(ikr)/r^3 * (xt - xs)
@@ -1566,6 +1589,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
 
       Vec D0, D1;
       Vec crossval[3][2];
+
       long s_ind = s*nd_*COORD_DIM*KDIM0;
       for (long i = 0; i < nd_; i++) {
         long si_ind = s_ind + i*COORD_DIM*KDIM0;
@@ -1581,6 +1605,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
         crossval[1][1] = Gsrc[si_ind+1]*dX[2] + Gsrc[si_ind+5]*dX[0];
         crossval[2][0] = Gsrc[si_ind+4]*dX[1] + Gsrc[si_ind+2]*dX[2];
         crossval[2][1] = Gsrc[si_ind+5]*dX[1] + Gsrc[si_ind+3]*dX[2];
+
 
         // potential
         Vtrg[i][0] += G0 * Vsrc[s*nd_*KDIM0+i*KDIM0+0] - G1 * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
@@ -1599,7 +1624,6 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
           Gtrg[i][dimi][0] += H0*Gsrc[si_ind+dimi*KDIM0+0] - H1*Gsrc[si_ind+dimi*KDIM0+1];
           Gtrg[i][dimi][1] += H1*Gsrc[si_ind+dimi*KDIM0+0] + H0*Gsrc[si_ind+dimi*KDIM0+1];
         }
-
         // hessian
         // charge part
         for (sctl::Integer dimi = 0; dimi < COORD_DIM*2; dimi++){
@@ -1635,6 +1659,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
           Htrg[i][3+dimi][0] += tmp3 + tmp0*tmp5;
           Htrg[i][3+dimi][1] += tmp4 + tmp1*tmp5;
         }
+
       }
     }
     // store
@@ -1653,6 +1678,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
         Htrg[i][j][1].StoreAligned(&Ht[(j*nd_+i)*KDIM1+1][t]);
       }
 
+
     }
   }
 
@@ -1666,6 +1692,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
     for (long j=0; j < nd_*KDIM1*COORD_DIM*2; j++) {
       hess[i*nd_*KDIM1*COORD_DIM*2+j] += Ht[j][i];
     }
+
   }
 }
 

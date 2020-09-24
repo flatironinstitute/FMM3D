@@ -182,7 +182,7 @@ program test_hfmm3d_adjoint
   !call prin2('ratio1 = *', zrat1, 2)
   
   stop
-end program test_hfmm3d_adjoint
+end program 
 
 
 

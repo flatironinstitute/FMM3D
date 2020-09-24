@@ -1,88 +1,55 @@
+#HOST = gcc
+HOST = gcc-openmp
 
-EXEC = int2
+PROJECT = int2-laprouts3d
 
-HOST=macosx
-#HOST = linux-gfortran
-#HOST= linux-gfortran-openmp
-#HOST = linux-ifort
+# FC - fortran compiler
+# FFLAGS - fortran compiler flags
 
-ifeq ($(HOST),macosx)
-FC = gfortran
-FFLAGS = -O3 -c -w -march=native  
-FLINK = gfortran -w -o $(EXEC)
-FEND =  
+ifeq ($(HOST),gcc)
+    FC=gfortran 
+    FFLAGS=-fPIC -O3 -funroll-loops -march=native -std=legacy 
 endif
 
-ifeq ($(HOST),linux-gfortran-openmp)
-				
-FC = gfortran
-FFLAGS = -O3 -c -w --openmp 
-FLINK = gfortran -w -o $(EXEC) --openmp
-
+ifeq ($(HOST),gcc-openmp)
+    FC = gfortran 
+    FFLAGS=-fPIC -O3 -funroll-loops -march=native -fopenmp -std=legacy
 endif
 
-ifeq ($(HOST),linux-gfortran)
-				
-FC = gfortran
-FFLAGS = -O3 -c -w  -march=native -pg -ffast-math -ftree-vectorize -funroll-loops
-FLINK = gfortran -w -o $(EXEC) -pg 
-
-endif
-
-ifeq ($(HOST),linux-ifort)
-				
-FC = ifort
-FFLAGS = -O3 -c -w  -xW -ip -xHost
-FLINK = ifort -w -o $(EXEC)
-
-endif
-
-
-OBJ_DIR = ../../build
-
-
-vpath %.f = .:../../src:../../src/Laplace:../../src/Common
-
-.PHONY: all clean list
-
-SOURCES =  test_laprouts3d.f \
-  dlaran.f \
-  hkrand.f \
-  prini.f \
-  rotgen.f \
-  legeexps.f \
-  rotviarecur.f \
-  yrecursion.f \
-  l3dterms.f \
-  l3dtrans.f \
-  laprouts3d.f \
-  lapkernels.f \
-  rotproj.f \
-  dfft.f \
-  fmmcommon.f \
-
-
-OBJECTS = $(patsubst %.f,$(OBJ_DIR)/%.o,$(SOURCES))
-
+# Test objects
 #
-# use only the file part of the filename, then manually specify
-# the build location
-#
+COM = ../../src/Common
+LAP = ../../src/Laplace
 
-$(OBJ_DIR)/%.o : %.f
-	$(FC) $(FFLAGS) $< -o $@
+.PHONY: all clean
 
-all: $(OBJECTS)
-	rm -f $(EXEC)
-	$(FLINK) $(OBJECTS) $(FEND)
-	./$(EXEC)
-
-clean:
-	rm -f $(OBJECTS)
-	rm -f $(EXEC)
-
-list: $(SOURCES)
-	$(warning Requires:  $^)
+default: all
 
 
+OBJECTS = test_laprouts3d.o \
+    $(COM)/hkrand.o \
+    $(COM)/dlaran.o \
+    $(COM)/prini.o \
+    $(COM)/rotgen.o \
+    $(COM)/legeexps.o \
+    $(COM)/rotviarecur.o \
+    $(COM)/yrecursion.o \
+    $(LAP)/l3dterms.o \
+    $(LAP)/l3dtrans.o \
+    $(LAP)/laprouts3d.o \
+    $(LAP)/lapkernels.o \
+    $(COM)/rotproj.o \
+    $(COM)/dfft.o \
+    $(COM)/fmmcommon.o \
 
+all: $(OBJECTS) 
+	$(FC) $(FFLAGS)  -o $(PROJECT) $(OBJECTS) 
+	./$(PROJECT)
+
+
+# implicit rules for objects (note -o ensures writes to correct dir)
+%.o: %.f %.h
+	$(FC) -c $(FFLAGS) $< -o $@
+
+clean: 
+	rm -f $(OBJECTS) $(PROJECT) fort.13

@@ -1,90 +1,58 @@
+#HOST = gcc
+HOST = gcc-openmp
 
-EXEC = int2
+PROJECT = int2-helmrouts3d
 
-#HOST=macosx
-#HOST = linux-gfortran
-HOST= linux-gfortran-openmp
-#HOST = linux-ifort
+# FC - fortran compiler
+# FFLAGS - fortran compiler flags
 
-ifeq ($(HOST),macosx)
-FC = gfortran
-FFLAGS = -O3 -c -w -march=native  
-FLINK = gfortran -w -o $(EXEC)
-FEND =  
+ifeq ($(HOST),gcc)
+    FC=gfortran 
+    FFLAGS=-fPIC -O3 -funroll-loops -march=native -std=legacy 
 endif
 
-ifeq ($(HOST),linux-gfortran-openmp)
-				
-FC = gfortran
-FFLAGS = -O3 -c -w -march=native -ffast-math -ftree-vectorize -funroll-loops -fopenmp 
-FLINK = gfortran -w -o $(EXEC) -fopenmp
-
+ifeq ($(HOST),gcc-openmp)
+    FC = gfortran 
+    FFLAGS=-fPIC -O3 -funroll-loops -march=native -fopenmp -std=legacy
 endif
 
-ifeq ($(HOST),linux-gfortran)
-				
-FC = gfortran
-FFLAGS = -O3 -c -w  -march=native -pg -ffast-math -ftree-vectorize -funroll-loops
-FLINK = gfortran -w -o $(EXEC) -pg 
-
-endif
-
-ifeq ($(HOST),linux-ifort)
-				
-FC = ifort
-FFLAGS = -O3 -c -w  -xW -ip -xHost
-FLINK = ifort -w -o $(EXEC)
-
-endif
-
-
-OBJ_DIR = ../../build
-
-
-vpath %.f = .:../../src:../../src/Helmholtz:../../src/Common
-
-.PHONY: all clean list
-
-SOURCES =  test_helmrouts3d.f \
-  dlaran.f \
-  hkrand.f \
-  prini.f \
-  rotgen.f \
-  legeexps.f \
-  rotviarecur.f \
-  yrecursion.f \
-  h3dterms.f \
-  h3dtrans.f \
-  helmrouts3d.f \
-  besseljs3d.f \
-  projections.f \
-  rotproj.f \
-  dfft.f \
-  h3dcommon.f \
-  fmmcommon.f \
-
-
-OBJECTS = $(patsubst %.f,$(OBJ_DIR)/%.o,$(SOURCES))
-
+# Test objects
 #
-# use only the file part of the filename, then manually specify
-# the build location
-#
+COM = ../../src/Common
+HELM = ../../src/Helmholtz
 
-$(OBJ_DIR)/%.o : %.f
-	$(FC) $(FFLAGS) $< -o $@
+.PHONY: all clean
 
-all: $(OBJECTS)
-	rm -f $(EXEC)
-	$(FLINK) $(OBJECTS) $(FEND)
-	./$(EXEC)
-
-clean:
-	rm -f $(OBJECTS)
-	rm -f $(EXEC)
-
-list: $(SOURCES)
-	$(warning Requires:  $^)
+default: all
 
 
+OBJECTS = test_helmrouts3d.o \
+    $(COM)/hkrand.o \
+    $(COM)/dlaran.o \
+    $(COM)/prini.o \
+    $(COM)/rotgen.o \
+    $(COM)/legeexps.o \
+    $(COM)/rotviarecur.o \
+    $(COM)/yrecursion.o \
+    $(HELM)/h3dterms.o \
+    $(HELM)/h3dtrans.o \
+    $(HELM)/helmrouts3d.o \
+    $(HELM)/helmkernels.o \
+    $(COM)/besseljs3d.o \
+    $(HELM)/projections.o \
+    $(COM)/rotproj.o \
+    $(COM)/dfft.o \
+    $(HELM)/h3dcommon.o \
+    $(COM)/fmmcommon.o \
 
+all: $(OBJECTS) 
+	$(FC) $(FFLAGS)  -o $(PROJECT) $(OBJECTS) 
+	./$(PROJECT)
+
+
+# implicit rules for objects (note -o ensures writes to correct dir)
+%.o: %.f %.h
+	$(FC) -c $(FFLAGS) $< -o $@
+
+clean: 
+	rm -f $(OBJECTS) $(PROJECT) fort.13
