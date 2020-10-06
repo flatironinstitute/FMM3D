@@ -347,7 +347,7 @@ implicit none
 !
 !
 !    thresh - real *8
-!      threshold  selfo interaction term
+!      threshold for self interaction term
 !
 !
 !  output:

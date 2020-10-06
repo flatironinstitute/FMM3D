@@ -72,6 +72,7 @@ C$OMP END PARALLEL DO
       do i=1,ntests
         ipass(i) = 0
       enddo
+
 c
 cc  test b_vect 
 cc   with fields
@@ -112,6 +113,9 @@ c
       erra = sqrt(erra/ra)
       call prin2('rel error in field=*',erra,1)
       if(erra.lt.eps) ipass(1) = 1
+      write(6,*)
+      write(6,*)
+      write(6,*) "====================="
 c
 cc  test b_vect 
 cc   with fields, divergence and curl
@@ -169,6 +173,9 @@ c
       call prin2('rel error in divergence=*',errd,1)
       call prin2('rel error in curl=*',errc,1)
       if(erra.lt.eps.and.errd.lt.eps.and.errc.lt.eps) ipass(2) = 1
+      write(6,*)
+      write(6,*)
+      write(6,*) "====================="
 
 c
 cc  test a_vect, lambda 
@@ -210,10 +217,14 @@ c
       erra = sqrt(erra/ra)
       call prin2('rel error in field=*',erra,1)
       if(erra.lt.eps) ipass(3) = 1
+      write(6,*)
+      write(6,*)
+      write(6,*) "====================="
 c
 cc  test a_vect, lambda 
 cc   with fields, divergence and curl
 c
+
       write(6,*) 'interaction: a,lambda'
       write(6,*) 'output: fields, divergence, and curl'
       write(6,*) 
@@ -267,6 +278,9 @@ c
       call prin2('rel error in divergence=*',errd,1)
       call prin2('rel error in curl=*',errc,1)
       if(erra.lt.eps.and.errd.lt.eps.and.errc.lt.eps) ipass(4) = 1
+      write(6,*)
+      write(6,*)
+      write(6,*) "====================="
 
 c
 cc  test b_vect,a_vect, lambda 
@@ -308,6 +322,9 @@ c
       erra = sqrt(erra/ra)
       call prin2('rel error in field=*',erra,1)
       if(erra.lt.eps) ipass(5) = 1
+      write(6,*)
+      write(6,*)
+      write(6,*) "====================="
 c
 cc  test b_vect,a_vect, lambda 
 cc   with fields, divergence and curl
@@ -365,6 +382,9 @@ c
       call prin2('rel error in divergence=*',errd,1)
       call prin2('rel error in curl=*',errc,1)
       if(erra.lt.eps.and.errd.lt.eps.and.errc.lt.eps) ipass(6) = 1
+      write(6,*)
+      write(6,*)
+      write(6,*) "====================="
 
       isum = 0
       do i=1,ntests
