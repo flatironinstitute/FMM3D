@@ -120,6 +120,10 @@ LOBJS = $(LAP)/lwtsexp_sep1.o $(LAP)/l3dterms.o $(LAP)/l3dtrans.o \
 STOK = src/Stokes
 STOBJS = $(STOK)/stfmm3d.o $(STOK)/stokkernels.o
 
+# Maxwell objects
+EM = src/Maxwell
+EMOBJS = $(EM)/emfmm3d.o
+
 ifneq ($(FAST_KER),ON)
 LOBJS += $(LAP)/lapkernels.o
 LOBJS += $(LAP)/lndiv.o
@@ -143,7 +147,7 @@ COBJS = c/cprini.o c/utils.o
 CHEADERS = c/cprini.h c/utils.h c/hfmm3d_c.h c/lfmm3d_c.h
 
 
-OBJS = $(COMOBJS) $(HOBJS) $(LOBJS) $(STOBJS)
+OBJS = $(COMOBJS) $(HOBJS) $(LOBJS) $(STOBJS) $(EMOBJS)
 
 .PHONY: usage install lib examples test test-ext python all c c-examples matlab big-test pw-test debug test-dyn matlab-dyn python-dyn python-dist
 
@@ -260,16 +264,19 @@ python-dist: $(STATICLIB)
 
 # testing routines
 #
-test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale test/stfmm3d test/stokkernels
+test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale test/stfmm3d test/stokkernels test/emfmm3d
 	(cd test/Helmholtz; ./run_helmtest.sh)
 	(cd test/Laplace; ./run_laptest.sh)
 	(cd test/Stokes; ./run_stoktest.sh)
+	(cd test/Maxwell; ./run_emtest.sh)
 	cat print_testreshelm.txt
 	cat print_testreslap.txt
 	cat print_testresstok.txt
+	cat print_testresem.txt
 	rm print_testreshelm.txt
 	rm print_testreslap.txt
 	rm print_testresstok.txt
+	rm print_testresem.txt
 
 test-dyn: $(DYNAMICLIB) $(TOBJS) test/helmrouts-dyn test/hfmm3d-dyn test/hfmm3d_vec-dyn test/hfmm3d_scale-dyn test/laprouts-dyn test/lfmm3d-dyn test/lfmm3d_vec-dyn test_hfmm3d_mps-dyn test/lfmm3d_scale-dyn
 	(cd test/Helmholtz; ./run_helmtest.sh)
@@ -319,6 +326,9 @@ test/stfmm3d:
 
 test/stokkernels: 
 	$(FC) $(FFLAGS) test/Stokes/test_stokkernels.f $(TOBJS) $(COMOBJS) $(LOBJS) $(STOBJS) -o test/Stokes/int2-test-stokkernels $(LIBS)
+
+test/emfmm3d: 
+	$(FC) $(FFLAGS) test/Maxwell/test_emfmm3d.f $(TOBJS) $(COMOBJS) $(HOBJS) $(EMOBJS) -o test/Maxwell/int2-test-emfmm3d $(LIBS) 
 
 
 test_hfmm3d_mps: $(STATICLIB) $(TOBJS)

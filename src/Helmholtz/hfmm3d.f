@@ -101,13 +101,13 @@ c------------------------------------------------------------------
       integer nsource,ntarg
 
       double precision source(3,nsource),targ(3,ntarg)
-      double complex charge(nd,nsource)
+      double complex charge(nd,*)
 
-      double complex dipvec(nd,3,nsource)
+      double complex dipvec(nd,3,*)
 
-      double complex pot(nd,nsource),grad(nd,3,nsource),
-     1     pottarg(nd,3,ntarg),
-     1     gradtarg(nd,3,ntarg),hess(nd,6,*),hesstarg(nd,6,*)
+      double complex pot(nd,*),grad(nd,3,*),
+     1     pottarg(nd,3,*),
+     1     gradtarg(nd,3,*),hess(nd,6,*),hesstarg(nd,6,*)
 
 c       Tree variables
       integer mhung,idivflag,ndiv,isep,nboxes,nbmax,nlevels
