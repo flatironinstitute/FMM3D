@@ -61,7 +61,7 @@ C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
       enddo
 C$OMP END PARALLEL DO      
 
-      eps = 1.0d-9
+      eps = 1.0d-3
       write(*,*) "=========================================="
       write(*,*) "Testing suite for hfmm3d"
       write(*,'(a,e11.4)') "Requested precision = ",eps
@@ -163,6 +163,7 @@ c
 
       erra = sqrt(erra/ra)
       errd = sqrt(errd/rd)
+      errc = sqrt(errc/rc)
 
       call prin2('rel error in field=*',erra,1)
       call prin2('rel error in divergence=*',errd,1)
@@ -260,6 +261,7 @@ c
 
       erra = sqrt(erra/ra)
       errd = sqrt(errd/rd)
+      errc = sqrt(errc/rc)
 
       call prin2('rel error in field=*',erra,1)
       call prin2('rel error in divergence=*',errd,1)
@@ -357,6 +359,7 @@ c
 
       erra = sqrt(erra/ra)
       errd = sqrt(errd/rd)
+      errc = sqrt(errc/rc)
 
       call prin2('rel error in field=*',erra,1)
       call prin2('rel error in divergence=*',errd,1)
