@@ -27,6 +27,13 @@ implicit none
 !  The subroutine also computes divE, curlE 
 !  with appropriate flags
 !
+!  Remark: the subroutine uses a stabilized representation
+!    for computing the divergence by using integration by parts 
+!    wherever possible. If the divergence is not requested, then the
+!    helmholtz fmm is called with 3*nd densities, while if the divergence
+!    is requested, then the helmholtz fmm is calld with 4*nd densities
+!    
+!
 !  input:
 !    nd - integer
 !      number of densities (a_vect,b_vect,lambda)
@@ -120,27 +127,31 @@ implicit none
 
   double complex, allocatable :: pot(:),grad(:,:),hess(:,:)
   double complex, allocatable :: hesstarg(:,:)
+  integer ndens
 
 
   integer i,j,nd0,l,m
   integer ifcharge,ifdipole,ifpgh,ifpghtarg
 
+  ndens = 3
+  if(ifdivE.eq.1) ndens = 4
+
   !!Initialize sources
-  allocate(sigma_vect(nd,3,ns))
-  allocate(dipvect_vect(nd,3,3,ns))
-  allocate(Etmp(nd,3,nt))
-  allocate(gradE_vect(nd,3,3,nt))
+  allocate(sigma_vect(nd,ndens,ns))
+  allocate(dipvect_vect(nd,ndens,3,ns))
+  allocate(Etmp(nd,ndens,nt))
+  allocate(gradE_vect(nd,ndens,3,nt))
 
 !$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,l,j,m)
   do i=1,nt
-    do l=1,3
+    do l=1,ndens
       do j=1,nd
         Etmp(j,l,i)=0.0d0
       enddo
     enddo
 
     do l=1,3
-      do m=1,3
+      do m=1,ndens
         do j=1,nd
           gradE_vect(j,m,l,i)=0.0d0
         enddo
@@ -151,14 +162,14 @@ implicit none
 
 !$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,l,j,m)
   do i=1,ns
-    do l=1,3
+    do l=1,ndens
       do j=1,nd
         sigma_vect(j,l,i)=0.0d0
       enddo
     enddo
 
     do l=1,3
-      do m=1,3
+      do m=1,ndens
         do j=1,nd
           dipvect_vect(j,m,l,i)=0.0d0
         enddo
@@ -178,6 +189,18 @@ implicit none
       enddo
     enddo
 !$OMP END PARALLEL DO    
+
+    if(ifdivE.eq.1) then
+!$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,l,j)  
+      do i=1,ns
+        do l=1,3
+          do j=1,nd
+            dipvect_vect(j,4,l,i) = dipvect_vect(j,4,l,i) - b_vect(j,l,i)
+          enddo
+        enddo
+      enddo
+!$OMP END PARALLEL DO    
+    endif   
   endif
 
   if (iflambda.eq.1) then
@@ -189,7 +212,22 @@ implicit none
         dipvect_vect(j,3,3,i)=dipvect_vect(j,3,3,i)-lambda(j,i)
       enddo
     enddo
-!$OMP END PARALLEL DO    
+!$OMP END PARALLEL DO  
+
+!
+!  Add in the contribution corresponding to the divergence
+!  Here we use the identity that
+!  \nabla \cdot \nabla S_{k} [\lambda] = k^2 S_{k} [\lambda]
+!
+    if(ifdivE.eq.1) then
+!$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j)   
+      do i=1,ns
+        do j=1,nd
+          sigma_vect(j,4,i) = sigma_vect(j,4,i) - zk**2*lambda(j,i)
+        enddo
+      enddo
+!$OMP END PARALLEL DO      
+    endif
   endif
 
   if (ifa_vect.eq.1) then
@@ -213,17 +251,30 @@ implicit none
   ifdipole=1
   ifpgh = 0
   ifpghtarg=2
-  if ((ifcurlE.eq.0).and.(ifdivE.eq.0)) then
+
+  ifcharge=1
+  ifdipole=1
+  ifpgh = 0
+  ifpghtarg=2
+
+  if ((ifcurlE.ne.1).and.(ifdivE.ne.1)) then
     ifpghtarg=1
   endif
-  if ((ifa_vect.eq.0).and.(iflambda.eq.0)) then
-    ifdipole=0
-  endif
-  if (ifb_vect.eq.0) then
-    ifcharge=0
+
+  if(ifdivE.ne.1) then
+    if ((ifa_vect.ne.1).and.(iflambda.ne.1)) then
+      ifdipole=0
+    endif
+    if (ifb_vect.ne.1) then
+      ifcharge=0
+    endif
+  else
+    if (ifb_vect.ne.1.and.iflambda.ne.1) then
+      ifcharge = 0
+    endif
   endif
 
-  nd0 = 3*nd
+  nd0 = ndens*nd
 
   allocate(pot(nd0),grad(nd0,3),hess(nd0,6),hesstarg(nd0,6))
 
@@ -248,8 +299,7 @@ implicit none
 !$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j)  
     do i=1,nt
       do j=1,nd
-        divE(j,i)=gradE_vect(j,1,1,i)+gradE_vect(j,2,2,i)+&
-          gradE_vect(j,3,3,i)
+        divE(j,i)=Etmp(j,4,i)
       enddo
     enddo
 !$OMP END PARALLEL DO    
@@ -389,24 +439,28 @@ implicit none
   double complex, allocatable :: Etmp(:,:,:)
   integer i,j,nd0,l,m
   integer ifcharge,ifdipole,ifpot,ifgrad,ifpghtarg
+  integer ndens
 
   !!Initialize sources
   
-  allocate(sigma_vect(nd,3,ns))
-  allocate(dipvect_vect(nd,3,3,ns))
-  allocate(Etmp(nd,3,nt))
-  allocate(gradE_vect(nd,3,3,nt))
+  ndens = 3
+  if(ifdivE.eq.1) ndens = 4
+
+  allocate(sigma_vect(nd,ndens,ns))
+  allocate(dipvect_vect(nd,ndens,3,ns))
+  allocate(Etmp(nd,ndens,nt))
+  allocate(gradE_vect(nd,ndens,3,nt))
 
 !$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j,l,m)
   do i=1,nt
-    do l=1,3
+    do l=1,ndens
       do j=1,nd
         Etmp(j,l,i)=0.0d0
       enddo
     enddo
 
     do l=1,3
-      do m=1,3
+      do m=1,ndens
         do j=1,nd
           gradE_vect(j,m,l,i) = 0.0d0
         enddo
@@ -417,14 +471,14 @@ implicit none
 
 !$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j,l,m)
   do i=1,ns
-    do l=1,3
+    do l=1,ndens
       do j=1,nd
         sigma_vect(j,l,i)=0.0d0
       enddo
     enddo
 
     do l=1,3
-      do m=1,3
+      do m=1,ndens
         do j=1,nd
           dipvect_vect(j,m,l,i)=0.0d0
         enddo
@@ -442,7 +496,20 @@ implicit none
         enddo
       enddo
     enddo
-!$OMP END PARALLEL DO    
+!$OMP END PARALLEL DO   
+
+
+    if(ifdivE.eq.1) then
+!$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j,l)  
+      do i=1,ns
+        do l=1,3
+          do j=1,nd
+            dipvect_vect(j,4,l,i) = dipvect_vect(j,4,l,i) - b_vect(j,l,i)
+          enddo
+        enddo
+      enddo
+!$OMP END PARALLEL DO   
+    endif
   endif
 
   if (iflambda.eq.1) then
@@ -455,6 +522,21 @@ implicit none
       enddo
     enddo
 !$OMP END PARALLEL DO    
+
+!
+!  Add in the contribution corresponding to the divergence
+!  Here we use the identity that
+!  \nabla \cdot \nabla S_{k} [\lambda] = k^2 S_{k} [\lambda]
+!
+    if(ifdivE.eq.1) then
+!$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j)   
+      do i=1,ns
+        do j=1,nd
+          sigma_vect(j,4,i) = sigma_vect(j,4,i) - zk**2*lambda(j,i)
+        enddo
+      enddo
+!$OMP END PARALLEL DO      
+    endif
   endif
 
   if (ifa_vect.eq.1) then
@@ -474,20 +556,29 @@ implicit none
 !$OMP END PARALLEL DO    
   endif
 
+
   ifcharge=1
   ifdipole=1
   ifpghtarg=2
-  if ((ifcurlE.eq.0).and.(ifdivE.eq.0)) then
+
+  if ((ifcurlE.ne.1).and.(ifdivE.ne.1)) then
     ifpghtarg=1
   endif
-  if ((ifa_vect.eq.0).and.(iflambda.eq.0)) then
-    ifdipole=0
-  endif
-  if (ifb_vect.eq.0) then
-    ifcharge=0
+
+  if(ifdivE.ne.1) then
+    if ((ifa_vect.ne.1).and.(iflambda.ne.1)) then
+      ifdipole=0
+    endif
+    if (ifb_vect.ne.1) then
+      ifcharge=0
+    endif
+  else
+    if (ifb_vect.ne.1.and.iflambda.ne.1) then
+      ifcharge = 0
+    endif
   endif
 
-  nd0=3*nd
+  nd0=ndens*nd
   if(ifpghtarg.eq.1) then
     if(ifcharge.eq.1.and.ifdipole.eq.0) then
       call h3ddirectcp(nd0,zk,source,sigma_vect,ns, &
@@ -522,7 +613,7 @@ implicit none
     do i=1,nt
       do l=1,3
         do j=1,nd
-          E(j,l,i) = Etmp(j,l,i)
+          E(j,l,i) = E(j,l,i) + Etmp(j,l,i)
         enddo
       enddo
     enddo
@@ -534,8 +625,7 @@ implicit none
 !$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j)  
     do i=1,nt
       do j=1,nd
-        divE(j,i)=gradE_vect(j,1,1,i)+gradE_vect(j,2,2,i)+&
-         gradE_vect(j,3,3,i)
+        divE(j,i)=divE(j,i) + Etmp(j,4,i)
        enddo
     enddo
 !$OMP END PARALLEL DO     
@@ -545,9 +635,9 @@ implicit none
 !$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j)  
     do i=1,nt
       do j=1,nd
-        curlE(j,1,i)=gradE_vect(j,3,2,i)-gradE_vect(j,2,3,i)
-        curlE(j,2,i)=gradE_vect(j,1,3,i)-gradE_vect(j,3,1,i)
-        curlE(j,3,i)=gradE_vect(j,2,1,i)-gradE_vect(j,1,2,i)
+        curlE(j,1,i)=curlE(j,1,i)+gradE_vect(j,3,2,i)-gradE_vect(j,2,3,i)
+        curlE(j,2,i)=curlE(j,2,i)+gradE_vect(j,1,3,i)-gradE_vect(j,3,1,i)
+        curlE(j,3,i)=curlE(j,3,i)+gradE_vect(j,2,1,i)-gradE_vect(j,1,2,i)
       enddo
     enddo
 !$OMP END PARALLEL DO    
