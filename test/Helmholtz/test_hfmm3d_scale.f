@@ -57,7 +57,7 @@
 
       double precision eps,rsc
       double complex eye,zk
-      integer i,j,k,ntest
+      integer i,j,k,ntest,ier
       double precision hkrand,thresh,erra,ra
       integer isuccess
       
@@ -119,7 +119,7 @@ c
 
 
       call hfmm3d_s_cd_g(eps,zk,ns,source,charge,dipvec,
-     1      pot,grad)
+     1      pot,grad,ier)
       ntest = 10
       allocate(potex(ntest),gradex(3,ntest))
 

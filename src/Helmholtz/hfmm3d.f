@@ -10,8 +10,8 @@ c
 c   
 c-----------------------------------------------------------
         subroutine hfmm3d(nd,eps,zk,nsource,source,ifcharge,
-     $    charge,ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,
-     $    targ,ifpghtarg,pottarg,gradtarg,hesstarg)
+     $    charge,ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,
+     $    targ,ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 c-----------------------------------------------------------------------
 c   INPUT PARAMETERS:
 c
@@ -46,7 +46,8 @@ c                                     otherwise do not
 c
 c   dipvec   in: double precision (nd,3,nsource) 
 c              dipole orientation vectors
-c
+c   iper    in: integer
+c             flag for periodic implmentations. Currently unused
 c   ifpgh   in: integer
 c              flag for evaluating potential/gradient at the sources
 c              ifpgh = 1, only potential is evaluated
@@ -85,12 +86,22 @@ c               gradient at the targ locations
 c
 c   hesstarg    out: double complex(nd,6,ntarg)
 c                hessian at the target locations
-     
+c
+c   ier         out: integer
+c                error flag
+c                ier = 0, for successful execution
+c                ier = 4, if failed to allocate workspace
+c                      for multipole and local expansions
+c                ier = 8, if failed to allocate workspace
+c                      for plane wave expansions
+c     
 c------------------------------------------------------------------
 
       implicit none
 
       integer nd
+      integer iper
+      integer ier
 
       double complex zk
       double precision eps
@@ -113,6 +124,7 @@ c       Tree variables
       integer mhung,idivflag,ndiv,isep,nboxes,nbmax,nlevels
       integer nlmax
       integer mnbors
+      integer ifunif,nlmin
       integer *8 ipointer(8),ltree
       integer, allocatable :: itree(:)
       integer, allocatable :: isrcse(:,:),itargse(:,:),isrc(:)
@@ -159,7 +171,7 @@ c
 c
 cc        other temporary variables
 c
-      integer i,iert,ifprint,ilev,idim,ier
+      integer i,iert,ifprint,ilev,idim
       double precision time1,time2,omp_get_wtime,second
 
        
@@ -188,15 +200,18 @@ c
 c
 cc      set tree flags
 c 
-       nlmax = 51
-       nlevels = 0
-       nboxes = 0
-       ltree = 0
+      nlmax = 51
+      nlevels = 0
+      nboxes = 0
+      ltree = 0
+      nlmin = 0
+      iper = 0
+      ifunif = 0
 
 c
 cc     memory management code for contructing level restricted tree
-      call pts_tree_mem(source,nsource,targ,ntarg,idivflag,ndiv,
-     1  nlevels,nboxes,ltree)
+      call pts_tree_mem(source,nsource,targ,ntarg,idivflag,ndiv,nlmin,
+     1  nlmax,iper,ifunif,nlevels,nboxes,ltree)
       
 
         if(ifprint.ge.1) print *, ltree/1.0d9
@@ -207,7 +222,8 @@ cc     memory management code for contructing level restricted tree
 
 c       Call tree code
       call pts_tree_build(source,nsource,targ,ntarg,idivflag,ndiv,
-     1  nlevels,nboxes,ltree,itree,ipointer,treecenters,boxsize)
+     1  nlmin,nlmax,iper,ifunif,nlevels,nboxes,ltree,itree,ipointer,
+     2  treecenters,boxsize)
       
 
       allocate(isrcse(2,nboxes),itargse(2,nboxes),iexpcse(2,nboxes))
@@ -437,11 +453,13 @@ c
       call mpalloc(nd,itree(ipointer(1)),iaddr,nlevels,lmptot,nterms)
       if(ifprint.ge. 1) print *, "lmptot =",lmptot/1.0d9
 
+      ier = 0
       allocate(rmlexp(lmptot),stat=iert)
       if(iert.ne.0) then
          print *, "Cannot allocate mpole expansion workspace"
          print *, "lmptot=", lmptot
-         stop
+         ier = 4
+         return
       endif
 
 
@@ -457,10 +475,13 @@ C$    time1=omp_get_wtime()
      $   ntarg,targsort,nexpc,expcsort,radssort,
      $   iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp,
      $   itree,ltree,ipointer,ndiv,nlevels,
-     $   nboxes,boxsize,treecenters,isrcse,itargse,iexpcse,
+     $   nboxes,iper,boxsize,treecenters,isrcse,itargse,iexpcse,
      $   scales,itree(ipointer(1)),nterms,
      $   ifpgh,potsort,gradsort,hesssort,ifpghtarg,pottargsort,
-     $   gradtargsort,hesstargsort,ntj,texpssort,scjsort,ifnear)
+     $   gradtargsort,hesstargsort,ntj,texpssort,scjsort,ifnear,ier)
+
+      if(ier.ne.0) return
+
 
       call cpu_time(time2)
 C$    time2=omp_get_wtime()
@@ -508,15 +529,16 @@ c
      $     ntarg,targsort,nexpc,expcsort,radssort,
      $     iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp,
      $     itree,ltree,ipointer,ndiv,nlevels, 
-     $     nboxes,boxsize,centers,isrcse,itargse,iexpcse,
+     $     nboxes,iper,boxsize,centers,isrcse,itargse,iexpcse,
      $     rscales,laddr,nterms,ifpgh,pot,grad,hess,
      $     ifpghtarg,pottarg,gradtarg,hesstarg,
-     $     ntj,jsort,scjsort,ifnear)
+     $     ntj,jsort,scjsort,ifnear,ier)
 
 
       implicit none
 
       integer nd
+      integer ier
       double precision eps
       integer nsource,ntarg, nexpc
       integer ndiv,nlevels
@@ -553,7 +575,7 @@ c
 c
 cc      tree variables
 c
-      integer isep
+      integer isep,iper
       integer laddr(2,0:nlevels)
       integer nterms(0:nlevels)
       integer *8 ipointer(8),ltree
@@ -676,7 +698,7 @@ c     end of list 4 variables
       integer iert
       data ima/(0.0d0,1.0d0)/
 
-      integer nlfbox,ier
+      integer nlfbox
 
 
       ntmax = 1000
@@ -704,7 +726,7 @@ c
       call computemnlists(nlevels,nboxes,itree(ipointer(1)),boxsize,
      1  centers,itree(ipointer(3)),itree(ipointer(4)),
      2  itree(ipointer(5)),isep,itree(ipointer(6)),mnbors,
-     2  itree(ipointer(7)),mnlist1,mnlist2,mnlist3,mnlist4)
+     2  itree(ipointer(7)),iper,mnlist1,mnlist2,mnlist3,mnlist4)
       
       allocate(list1(mnlist1,nboxes),nlist1(nboxes))
       allocate(list2(mnlist2,nboxes),nlist2(nboxes))
@@ -714,7 +736,7 @@ c
       call computelists(nlevels,nboxes,itree(ipointer(1)),boxsize,
      1  centers,itree(ipointer(3)),itree(ipointer(4)),
      2  itree(ipointer(5)),isep,itree(ipointer(6)),mnbors,
-     3  itree(ipointer(7)),nlist1,mnlist1,list1,nlist2,
+     3  itree(ipointer(7)),iper,nlist1,mnlist1,list1,nlist2,
      4  mnlist2,list2,nlist3,mnlist3,list3,
      4  nlist4,mnlist4,list4)
       
@@ -1028,7 +1050,8 @@ c             get new pw quadrature
           if(iert.ne.0) then
             print *, "Cannot allocate pw expansion workspace"
             print *, "bigint=", bigint
-            stop
+            ier = 8
+            return
           endif
 
 

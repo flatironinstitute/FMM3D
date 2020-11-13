@@ -184,8 +184,8 @@ program test_hfmm3d_mp2loc
   ntarg = 0
   ifpghtarg = 0
   call hfmm3d(nd, eps, zk, ns, source, ifcharge, &
-      charge, ifdipole, dipvec, ifpgh, pot, grad, hess, ntarg, &
-      targ, ifpghtarg, pottarg, gradtarg, hesstarg)
+      charge, ifdipole, dipvec, iper, ifpgh, pot, grad, hess, ntarg, &
+      targ, ifpghtarg, pottarg, gradtarg, hesstarg, ier)
   
   call prin2('via fmm, potential = *', pot, 10)
 
@@ -207,7 +207,7 @@ program test_hfmm3d_mp2loc
 
 
   call hfmm3d_mps(nd, eps, zk, &
-      nc, centers, rscales, nterms, mpole, impole, local)
+      nc, centers, rscales, nterms, mpole, impole, local,ier)
 
   call zinitialize(nd*nc, pot2)
   npts = 1

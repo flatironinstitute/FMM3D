@@ -31,33 +31,51 @@ c
 c 
 
 
-      subroutine pts_tree_mem(src,ns,targ,nt,idivflag,ndiv,nlevels,
-     1    nboxes,ltree)
+      subroutine pts_tree_mem(src,ns,targ,nt,idivflag,ndiv,nlmin,nlmax,
+     1    ifunif,iper,nlevels,nboxes,ltree)
 c
 c
-c        get memory requirements for the tree
-c        input parameters:
-c          src - double precision (3,ns)
-c            source locations
-c          targ - double precision (3,nt) 
-c            target locations
-c          idivflag - integer
-c            subdivision criterion
-c            idivflag = 0 -> subdivide on sources only
-c            idivflag = 1 -> subdivide on targets only
-c            idivflag = 2 -> subdivide on max(sources+targets)
 c
-c          ndiv - integer
-c           subdivide if relevant number of particles
-c           per box is greater than ndiv
+c----------------------------------------
+c  get memory requirements for the tree
+c
+c
+c  input parameters:
+c    - src: real *8 (3,ns)
+c        source locations
+c    - targ: real *8 (3,nt) 
+c        target locations
+c    - idivflag: integer
+c        subdivision criterion
+c          * divflag = 0 -> subdivide on sources only
+c          * idivflag = 1 -> subdivide on targets only
+c          * idivflag = 2 -> subdivide on max(sources+targets)
+c    - ndiv: integer
+c        subdivide if relevant number of particles
+c        per box is greater than ndiv
+c    - nlmin: integer
+c        minimum number of levels of uniform refinement.
+c        Note that empty boxes are not pruned along the way
+c    - nlmax: integer
+c        max number of levels
+c    - ifunif: integer
+c        flag for creating uniform pruned tree
+c        Tree is uniform if ifunif=1 (Currently pruned part
+c        under construction)
+c    - iper: integer
+c        flag for periodic implementations. Currently unused.
+c        Feature under construction
+c
 c        
-c        output parameters
-c          nlevels - integer
-c             number of levels
-c          nboxes - integer
-c             number of boxes
-c          ltree - integer
-c             length of tree
+c  output parameters
+c    - nlevels: integer
+c        number of levels
+c    - nboxes: integer
+c        number of boxes
+c    - ltree: integer
+c        length of tree
+c----------------------------------
+c
      
 
       implicit none
@@ -65,6 +83,7 @@ c             length of tree
       integer *8 ltree,nboxes8
       integer nbmax,nbtot
       integer ns,nt,ndiv
+      integer nlmin,iper,ifunif
       double precision src(3,ns),targ(3,nt)
 
 
@@ -96,7 +115,6 @@ c             length of tree
       double precision dfac
 
       nbmax = 100000
-      nlmax = 200
 
       allocate(boxsize(0:nlmax))
 
@@ -199,21 +217,38 @@ c
 c          determine which boxes need to be refined
 c
 
-C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(ibox,nss,ntt,nn)
-        do i=1,nbloc
-          irefinebox(i) = 0
-          ibox = ifirstbox + i-1
-          nss = isrcse(2,ibox)-isrcse(1,ibox)+1
-          ntt = itargse(2,ibox)-itargse(1,ibox)+1
-          if(idivflag.eq.0) nn = nss
-          if(idivflag.eq.1) nn = ntt
-          if(idivflag.eq.2) nn = max(ntt,nss)
 
-          if(nn.gt.ndiv) irefinebox(i) = 1
-        enddo
+        if(ilev.ge.nlmin) then
+C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(ibox,nss,ntt,nn)
+          do i=1,nbloc
+            irefinebox(i) = 0
+            ibox = ifirstbox + i-1
+            nss = isrcse(2,ibox)-isrcse(1,ibox)+1
+            ntt = itargse(2,ibox)-itargse(1,ibox)+1
+            if(idivflag.eq.0) nn = nss
+            if(idivflag.eq.1) nn = ntt
+            if(idivflag.eq.2) nn = max(ntt,nss)
+
+            if(nn.gt.ndiv) irefinebox(i) = 1
+          enddo
 C$OMP END PARALLEL DO        
 
-        irefine = maxval(irefinebox(1:nbloc))
+          irefine = maxval(irefinebox(1:nbloc))
+          if(ifunif.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED)         
+            do i=1,nbloc
+              irefinebox(i) = irefine
+            enddo
+C$OMP END PARALLEL DO            
+          endif
+        else
+C$OMP PARALLEL DO DEFAULT(SHARED)        
+          do i=1,nbloc
+            irefinebox(i) = 1
+          enddo
+C$OMP END PARALLEL DO         
+          irefine = 1
+        endif
 
 c
 c
@@ -309,7 +344,7 @@ C$OMP END PARALLEL DO
       nboxes = nbctr
       nlevels = ilev
 
-      if(nlevels.ge.2) then
+      if(nlevels.ge.2.and.ifunif.ne.1) then
 
         nbtot = 16*nboxes
         if(nbtot.gt.nbmax) then
@@ -367,11 +402,11 @@ C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j)
 C$OMP END PARALLEL DO        
 
         call computecoll(nlevels,nboxes,laddr,boxsize,centers,
-     1        iparent,nchild,ichild,nnbors,nbors)
+     1        iparent,nchild,ichild,iper,nnbors,nbors)
 
-        if(nlevels.ge.2) then
+        if(nlevels.ge.2.and.ifunif.ne.1) then
           call pts_tree_fix_lr(centers,nlevels,nboxes,boxsize,nbmax,
-     1         nlmax,laddr,ilevel,iparent,nchild,ichild,nnbors,nbors)
+     1      nlmax,iper,laddr,ilevel,iparent,nchild,ichild,nnbors,nbors)
         endif
 
       endif
@@ -388,61 +423,75 @@ c
 c
 
       subroutine pts_tree_build(src,ns,targ,nt,idivflag,ndiv,
-     1  nlevels,nboxes,ltree,itree,iptr,centers,boxsize)
+     1  nlmin,nlmax,ifunif,iper,nlevels,nboxes,ltree,itree,iptr,centers,
+     2  boxsize)
 c
-c      compute the tree
 c
-c      input parameters:
-c          src - double precision (3,ns)
-c            source locations
-c          targ - double precision (3,nt) 
-c            target locations
-c          idivflag - integer
-c            subdivision criterion
-c            idivflag = 0 -> subdivide on sources only
-c            idivflag = 1 -> subdivide on targets only
-c            idivflag = 2 -> subdivide on max(sources+targets)
 c
-c          ndiv - integer
-c           subdivide if relevant number of particles
-c           per box is greater than ndiv
-c        
-c        output parameters
-c        nlevels - integer
-c          number of levels
-c        nboxes - integer
-c          number of boxes
-c        ltree - integer *8
-c          length of tree 
+c----------------------------------------
+c  build tree
 c
-c      output:
-c        itree - integer(ltree)
-c          tree info
-c        iptr - integer(8)
-c          iptr(1) - laddr
-c          iptr(2) - ilevel
-c          iptr(3) - iparent
-c          iptr(4) - nchild
-c          iptr(5) - ichild
-c          iptr(6) - ncoll
-c          iptr(7) - coll
-c          iptr(8) - ltree
-c        centers - double precision (3,nboxes)
-c          xyz coordinates of box centers in the oct tree
-c        boxsize - double precision (0:nlevels)
-c          size of box at each of the levels
+c
+c  input parameters:
+c    - src: real *8 (3,ns)
+c        source locations
+c    - targ: real *8 (3,nt) 
+c        target locations
+c    - idivflag: integer
+c        subdivision criterion
+c          * divflag = 0 -> subdivide on sources only
+c          * idivflag = 1 -> subdivide on targets only
+c          * idivflag = 2 -> subdivide on max(sources+targets)
+c    - ndiv: integer
+c        subdivide if relevant number of particles
+c        per box is greater than ndiv
+c    - nlmin: integer
+c        minimum number of levels of uniform refinement.
+c        Note that empty boxes are not pruned along the way
+c    - nlmax: integer
+c        max number of levels
+c    - ifunif: integer
+c        flag for creating uniform pruned tree
+c        Tree is uniform if ifunif=1 (Currently pruned part
+c        under construction)
+c    - iper: integer
+c        flag for periodic implementations. Currently unused.
+c        Feature under construction
+c    - nlevels: integer
+c        number of levels
+c    - nboxes: integer
+c        number of boxes
+c    - ltree: integer
+c
+c  output:
+c    - itree: integer(ltree)
+c        tree info
+c    - iptr: integer(8)
+c        * iptr(1) - laddr
+c        * iptr(2) - ilevel
+c        * iptr(3) - iparent
+c        * iptr(4) - nchild
+c        * iptr(5) - ichild
+c        * iptr(6) - ncoll
+c        * iptr(7) - coll
+c        * iptr(8) - ltree
+c    - centers: double precision (3,nboxes)
+c        xy coordinates of box centers in the oct tree
+c    - boxsize: double precision (0:nlevels)
+c        size of box at each of the levels
 c
 
       implicit none
       integer nlevels,nboxes,ns,nt,idivflag,ndiv
       integer *8 iptr(8),ltree
-      integer itree(ltree),ier
+      integer itree(ltree),iper
+      integer ifunif,nlmin,nlmax
       double precision centers(3,nboxes),src(3,ns),targ(3,nt)
       integer, allocatable :: irefinebox(:)
       double precision boxsize(0:nlevels)
       integer, allocatable :: isrc(:),itarg(:),isrcse(:,:),itargse(:,:)
 
-      integer i,ilev,irefine,itype,nbmax,nlmax,npbox,npc,ii
+      integer i,ilev,irefine,itype,nbmax,npbox,npc,ii
       integer ifirstbox,ilastbox,nbctr,nbloc
       double precision rsc
 
@@ -556,23 +605,39 @@ c
 c
 c          determine which boxes need to be refined
 c
+c       
+        if(ilev.ge.nlmin) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,ibox,nss,ntt,nn)
-        do i=1,nbloc
-          irefinebox(i) = 0
-          ibox = ifirstbox + i-1
-          nss = isrcse(2,ibox)-isrcse(1,ibox)+1
-          ntt = itargse(2,ibox)-itargse(1,ibox)+1
+          do i=1,nbloc
+            irefinebox(i) = 0
+            ibox = ifirstbox + i-1
+            nss = isrcse(2,ibox)-isrcse(1,ibox)+1
+            ntt = itargse(2,ibox)-itargse(1,ibox)+1
           
-          if(idivflag.eq.0) nn = nss
-          if(idivflag.eq.1) nn = ntt
-          if(idivflag.eq.2) nn = max(ntt,nss)
+            if(idivflag.eq.0) nn = nss
+            if(idivflag.eq.1) nn = ntt
+            if(idivflag.eq.2) nn = max(ntt,nss)
 
-          if(nn.gt.ndiv) irefinebox(i) = 1
-        enddo
+            if(nn.gt.ndiv) irefinebox(i) = 1
+          enddo
 C$OMP END PARALLEL DO        
+          irefine = maxval(irefinebox(1:nbloc))
 
-
-        irefine = maxval(irefinebox(1:nbloc))
+          if(ifunif.eq.1) then
+C$OMP PARALLEL DO DEFAULT(SHARED)
+            do i=1,nbloc
+              irefinebox(i) = irefine
+            enddo
+C$OMP END PARALLEL DO 
+          endif
+        else
+C$OMP PARALLEL DO DEFAULT(SHARED)
+          do i=1,nbloc
+            irefinebox(i) = 1
+          enddo
+C$OMP END PARALLEL DO 
+          irefine = 1
+        endif
         
 
         if(irefine.eq.1) then
@@ -623,12 +688,12 @@ C$OMP END PARALLEL DO
 
 
       call computecoll(nlevels,nboxes0,itree(iptr(1)),boxsize,centers,
-     1        itree(iptr(3)),itree(iptr(4)),itree(iptr(5)),
+     1        itree(iptr(3)),itree(iptr(4)),itree(iptr(5)),iper,
      2        itree(iptr(6)),itree(iptr(7)))
 
-      if(nlevels.ge.2) then
+      if(nlevels.ge.2.and.ifunif.ne.1) then
          call pts_tree_fix_lr(centers,nlevels,
-     1         nboxes0,boxsize,nboxes,nlevels,itree(iptr(1)),
+     1         nboxes0,boxsize,nboxes,nlevels,iper,itree(iptr(1)),
      2         itree(iptr(2)),itree(iptr(3)),itree(iptr(4)),
      3         itree(iptr(5)),itree(iptr(6)),itree(iptr(7)))
 
@@ -833,15 +898,15 @@ c
 c
 c-------------------------------------------------------------      
       subroutine pts_tree_fix_lr(centers,nlevels,nboxes,
-     1       boxsize,nbmax,nlmax,laddr,ilevel,iparent,nchild,ichild,
-     2       nnbors,nbors)
+     1       boxsize,nbmax,nlmax,iper,laddr,ilevel,iparent,nchild,
+     2       ichild,nnbors,nbors)
 c
 c
 c       convert an adaptive tree into a level restricted tree
 c
       implicit none
       integer nlevels,nboxes,nlmax
-      integer nbmax
+      integer nbmax,iper
       double precision centers(3,nbmax),boxsize(0:nlmax)
       integer laddr(2,0:nlmax),ilevel(nbmax),iparent(nbmax)
       integer nchild(nbmax),ichild(8,nbmax),nnbors(nbmax)
@@ -1023,7 +1088,7 @@ C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j)
 C$OMP END PARALLEL DO      
       call computecoll(nlevels,nboxes,laddr, boxsize,
      1                   centers,iparent,nchild,
-     2                   ichild,nnbors,nbors)
+     2                   ichild,iper,nnbors,nbors)
 
 c     Processing of flag and flag+ boxes is done
 c     Start processing flag++ boxes. We will use a similar
@@ -1138,7 +1203,7 @@ C$OMP END PARALLEL DO
 
       call computecoll(nlevels,nboxes,laddr, boxsize,
      1                   centers,iparent,nchild,
-     2                   ichild,nnbors,nbors)
+     2                   ichild,iper,nnbors,nbors)
       
 
       return

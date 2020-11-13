@@ -23,7 +23,7 @@
 !
 
 subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
-    mpole, impole, local)
+    mpole, impole, local, ier)
   !, &
   !  ntarg, targ)
   !-----------------------------------------------------------------------
@@ -72,6 +72,11 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
   !              local expansions at each center, due to all incoming
   !              multipole expansions (self is ignored). The orders
   !              are the same as for the incoming mpole.
+  !     ier:     out: integer
+  !              error flag
+  !              ier = 0, successful execution
+  !              ier = 4, failed to allocate multipole/local expansion
+  !              ier = 8, failed to allocate plane wave expansion
   !
   !------------------------------------------------------------------
   
@@ -91,7 +96,7 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
   ! Tree variables
   integer idivflag,ndiv,isep,nboxes,nbmax,nlevels
   integer *8 ltree
-  integer nlmax
+  integer nlmax,nlmin,iper,ifunif
   integer ntarg  
   integer *8 ipointer(8)
   integer, allocatable :: itree(:)
@@ -190,11 +195,14 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
   nlevels = 0
   nboxes = 0
   ltree = 0
+  nlmin = 0
+  ifunif = 0
+  iper = 0
 
 !
 !!     memory management code for contructing level restricted tree
   call pts_tree_mem(cmpole,nmpole,targ,ntarg,idivflag,ndiv, &
-     nlevels,nboxes,ltree)
+     nlmin,nlmax,iper,ifunif,nlevels,nboxes,ltree)
       
 
   allocate(itree(ltree))
@@ -202,7 +210,8 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
   allocate(treecenters(3,nboxes))
 
   call pts_tree_build(cmpole,nmpole,targ,ntarg,idivflag,ndiv, &
-     nlevels,nboxes,ltree,itree,ipointer,treecenters,boxsize)
+     nlmin,nlmax,iper,ifunif,nlevels,nboxes,ltree,itree,ipointer, &
+     treecenters,boxsize)
       
 
   allocate(isrcse(2,nboxes),itargse(2,nboxes),iexpcse(2,nboxes))
@@ -303,12 +312,13 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
   !
   call mpalloc(nd,itree(ipointer(1)),iaddr,nlevels,lmptot,nterms)
   if(ifprint.ge. 1) print *, "lmptot =",lmptot/1.0d9
-
+  ier = 0
   allocate(rmlexp(lmptot),stat=iert)
   if(iert.ne.0) then
     print *, "Cannot allocate mpole expansion workspace"
     print *, "lmptot=", lmptot
-    stop
+    ier = 4
+    return
   endif
 
   allocate( localsort(lmpole) )
@@ -325,8 +335,9 @@ subroutine hfmm3d_mps(nd, eps, zk, nmpole, cmpole, rmpole, mterms, &
       impolesort, localsort, &
       iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp, &
       itree,ltree,ipointer,ndiv,nlevels, &
-      nboxes,boxsize, treecenters, isrcse, &
-      scales,itree(ipointer(1)),nterms )
+      nboxes,iper,boxsize, treecenters, isrcse, &
+      scales,itree(ipointer(1)),nterms,ier )
+  if(ier.ne.0) return
 
   call cpu_time(time2)
   !$ time2=omp_get_wtime()
@@ -364,8 +375,8 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
     impolesort, localsort, &
     iaddr, rmlexp, lmptot, mptemp, mptemp2, lmptemp, &
     itree, ltree, ipointer, ndiv, nlevels, &
-    nboxes, boxsize, centers, isrcse, &
-    rscales, laddr, nterms )
+    nboxes, iper, boxsize, centers, isrcse, &
+    rscales, laddr, nterms, ier )
   implicit none
 
   !
@@ -389,7 +400,7 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
   double precision :: mptemp2(lmptemp)
 
   ! tree variables
-  integer :: isep
+  integer :: isep,iper
   integer *8 :: ltree
   integer :: laddr(2,0:nlevels)
   integer :: nterms(0:nlevels)
@@ -502,7 +513,7 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
   call computemnlists(nlevels,nboxes,itree(ipointer(1)),boxsize, &
     centers,itree(ipointer(3)),itree(ipointer(4)), &
     itree(ipointer(5)),isep,itree(ipointer(6)),mnbors, &
-    itree(ipointer(7)),mnlist1,mnlist2,mnlist3,mnlist4)
+    itree(ipointer(7)),iper,mnlist1,mnlist2,mnlist3,mnlist4)
       
   allocate(list1(mnlist1,nboxes),nlist1(nboxes))
   allocate(list2(mnlist2,nboxes),nlist2(nboxes))
@@ -512,7 +523,7 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
   call computelists(nlevels,nboxes,itree(ipointer(1)),boxsize, &
     centers,itree(ipointer(3)),itree(ipointer(4)), &
     itree(ipointer(5)),isep,itree(ipointer(6)),mnbors, &
-    itree(ipointer(7)),nlist1,mnlist1,list1,nlist2, &
+    itree(ipointer(7)),iper,nlist1,mnlist1,list1,nlist2, &
     mnlist2,list2,nlist3,mnlist3,list3,nlist4,mnlist4,list4)
       
   ntmax = 1000
@@ -857,7 +868,8 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
         if(iert.ne.0) then
           print *, "Cannot allocate pw expansion workspace"
           print *, "bigint=", bigint
-          stop
+          ier = 8
+          return
         endif
 
 

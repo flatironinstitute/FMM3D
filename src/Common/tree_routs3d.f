@@ -107,7 +107,7 @@ c
 
       subroutine computecoll(nlevels,nboxes,laddr,boxsize,
      1                       centers,iparent,nchild,ichild,
-     2                       nnbors,nbors)
+     2                       iper,nnbors,nbors)
 
 c     This subroutine computes the colleagues for an adaptive
 c     pruned tree. box j is a colleague of box i, if they share a
@@ -144,6 +144,10 @@ c     ichild      in: integer(8,nboxes)
 c                 ichild(j,i) is the box id of the jth child of
 c                 box i
 c
+c     iper        in: integer
+c                 flag for periodic implementations. 
+c                 Currently not used. Feature under construction.
+c
 c----------------------------------------------------------------
 c     OUTPUT
 c     nnbors      out: integer(nboxes)
@@ -155,7 +159,7 @@ c                 nbors(j,i) is the box id of the jth colleague
 c                 box of box i
 c---------------------------------------------------------------
       implicit none
-      integer nlevels,nboxes
+      integer nlevels,nboxes,iper
       integer laddr(2,0:nlevels)
       double precision boxsize(0:nlevels)
       double precision centers(3,nboxes)
@@ -406,11 +410,12 @@ c
 c
       subroutine computemnlists(nlevels,nboxes,laddr,boxsize,
      1                   centers,iparent,nchild,
-     2                   ichild,isep,nnbors,mnbors,nbors,mnlist1,
+     2                   ichild,isep,nnbors,mnbors,nbors,iper,mnlist1,
      3                   mnlist2,mnlist3,mnlist4)
 c     Compute max nuber of boxes in list1,list2,list3,list4
       implicit none
       integer nlevels,nboxes
+      integer iper
       integer laddr(2,0:nlevels)
       double precision boxsize(0:nlevels)
       double precision centers(3,nboxes)
@@ -555,12 +560,13 @@ C$OMP END PARALLEL DO
 c---------------------------------------------------------------      
       subroutine computelists(nlevels,nboxes,laddr,boxsize,
      1                   centers,iparent,nchild,
-     2                   ichild,isep,nnbors,mnbors,nbors,nlist1,
+     2                   ichild,isep,nnbors,mnbors,nbors,iper,nlist1,
      3                   mnlist1,list1,nlist2,mnlist2,list2,
      4                   nlist3,mnlist3,list3,nlist4,mnlist4,list4)
 c     Compute max nuber of boxes in list1,list2,list3,list4
       implicit none
       integer nlevels,nboxes
+      integer iper
       integer laddr(2,0:nlevels)
       double precision boxsize(0:nlevels)
       double precision centers(3,nboxes)

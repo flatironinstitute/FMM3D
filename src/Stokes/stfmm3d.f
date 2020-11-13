@@ -26,7 +26,7 @@ c
      $                 nsource, source,
      $                 ifstoklet, stoklet, ifstrslet, strslet, strsvec,
      $                 ifppreg, pot, pre, grad, ntarg, targ, 
-     $                 ifppregtarg, pottarg, pretarg, gradtarg)
+     $                 ifppregtarg, pottarg, pretarg, gradtarg,ier)
 c
 c     Stokes FMM in R^{3}: evaluate all pairwise particle
 c     interactions (ignoring self-interactions) and
@@ -146,6 +146,8 @@ c               gradient of velocity at the targets
 c               gradtarg(l,i,j,k) is the ith component of the
 c               gradient of the jth component of the velocity
 c               for the lth density at the kth target
+c     ier     out: integer
+c               error flag
 c
 c     TODO: implement other stresslet options and gradient
 c------------------------------------------------------------------
@@ -171,7 +173,7 @@ c     local
       integer ndl, ifchargel, ifdipolel, ifpghl, ifpghtargl
       integer ndper
 
-      integer i, j, ii, ifppreg1, l, npt, ier
+      integer i, j, ii, ifppreg1, l, npt, ier,iper
       
 
       ndper = 0
@@ -283,8 +285,8 @@ c$OMP END PARALLEL DO
 c     call Laplace FMM
 
       call lfmm3d(ndl,eps,nsource,source,ifchargel,charge,
-     1     ifdipolel,dipvec,ifpghl,potl,gradl,hessl,ntarg,
-     2     targ,ifpghtargl,pottargl,gradtargl,hesstargl)
+     1     ifdipolel,dipvec,iper,ifpghl,potl,gradl,hessl,ntarg,
+     2     targ,ifpghtargl,pottargl,gradtargl,hesstargl,ier)
 
 
       npt = ntarg + nsource

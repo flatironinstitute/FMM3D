@@ -187,7 +187,7 @@ c       pottarg: complex *16 (ntarget): potential at target locations
 c       fldtarg: complex *16 (3,ntarget): field (-gradient) at target locations 
 c
       integer ier,iprec,nsource
-      integer ifcharge,ifdipole
+      integer ifcharge,ifdipole,iper
       double precision source(3,nsource)
       
       double complex charge(*),dipstr(*)
@@ -289,9 +289,10 @@ C$OMP END PARALLEL DO
       endif
 
       nd = 2
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1  ifdipole,dipvec_in,ifpgh,pottmp,gradtmp,hess,ntarg,
-     2  targ,ifpghtarg,pottargtmp,gradtargtmp,hesstarg)
+     1  ifdipole,dipvec_in,iper,ifpgh,pottmp,gradtmp,hess,ntarg,
+     2  targ,ifpghtarg,pottargtmp,gradtargtmp,hesstarg,ier)
 
       if(ifpot.eq.1) then
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)      
