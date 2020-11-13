@@ -13,6 +13,7 @@ int main(int argc, char **argv)
   int ns=2000;
   int nt=1999;
   int nd=5;
+  int ier=0;
   double *source = (double *)malloc(3*ns*sizeof(double));
   double *targ = (double *)malloc(3*nt*sizeof(double));
 
@@ -51,7 +52,7 @@ int main(int argc, char **argv)
 
 // call the fmm routine
   lfmm3d_st_cd_p_vec_(&nd, &eps, &ns, source, charge, dipvec, 
-    pot, &nt, targ, pottarg);
+    pot, &nt, targ, pottarg, &ier);
 
 
   cprind("pot=",pot,12);

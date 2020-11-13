@@ -12,6 +12,7 @@ int main(int argc, char **argv)
 
 
   int ns=2000;
+  int ier=0;
   double *source = (double *)malloc(3*ns*sizeof(double));
 
   double *charge = (double *)malloc(ns*sizeof(double));
@@ -36,7 +37,7 @@ int main(int argc, char **argv)
   cprin_skipline(2);
 
 // call the fmm routine
-  lfmm3d_s_c_g_(&eps, &ns, source, charge, pot, grad);
+  lfmm3d_s_c_g_(&eps, &ns, source, charge, pot, grad, &ier);
 
 
   cprind("pot=",pot,12);
