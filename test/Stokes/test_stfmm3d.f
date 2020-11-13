@@ -10,7 +10,7 @@ c$    use omp_lib
       real *8, allocatable :: source(:,:), targ(:,:)
       real *8, allocatable :: pot2(:,:), pre2(:), grad2(:,:,:)      
       real *8, allocatable :: pottarg(:,:), pretarg(:), gradtarg(:,:,:)
-      real *8, allocatable :: pottarg2(:,:),pretarg2(:),gradtarg2(:,:,:)      
+      real *8, allocatable :: pottarg2(:,:),pretarg2(:),gradtarg2(:,:,:)
 
       real *8, allocatable :: stoklet(:,:), strslet(:,:)
       real *8, allocatable :: strsvec(:,:)
@@ -114,12 +114,6 @@ c$    t2 = omp_get_wtime()
      2     thresh)
 
 
-c      call prin2('pot *',pot,3*ns)
-c      call prin2('pot2 *',pot2,3*ns)      
-
-c      call prin2('pottarg *',pottarg,3*nt)
-c      call prin2('pottarg2 *',pottarg2,3*nt)      
-
       derr = 0
       drel = 0
       derrg = 0
@@ -143,15 +137,13 @@ c      call prin2('pottarg2 *',pottarg2,3*nt)
 
       relerr = sqrt(derr/(ns*drel))
       relerrg = sqrt(derrg/(ns*drelg))
-      if (relerr .lt. 1d-9) ipass(1) = 1
-      if (relerrg .lt. 1d-9) ipass(2) = 1
+      if (relerr .lt. eps) ipass(1) = 1
+      if (relerrg .lt. eps) ipass(2) = 1
       
 
       call prin2('rel err pot srcs *',relerr,1)
       call prin2('rel err grad srcs *',relerrg,1)
 
-c      call prin2('pre *',pre,ns)
-c      call prin2('pre2 *',pre2,ns)      
       
       derr = 0
       drel = 0
@@ -161,7 +153,7 @@ c      call prin2('pre2 *',pre2,ns)
       enddo
 
       relerr = sqrt(derr/(ns*drel))
-      if (relerr .lt. 1d-9) ipass(3) = 1
+      if (relerr .lt. eps) ipass(3) = 1
       
       call prin2('rel err pre srcs *',relerr,1)
 
@@ -189,8 +181,8 @@ c      call prin2('pre2 *',pre2,ns)
       
       relerr = sqrt(derr/(nt*drel))
       relerrg = sqrt(derrg/(nt*drelg))
-      if (relerr .lt. 1d-9) ipass(4) = 1
-      if (relerrg .lt. 1d-9) ipass(5) = 1
+      if (relerr .lt. eps) ipass(4) = 1
+      if (relerrg .lt. eps) ipass(5) = 1
 
       call prin2('rel err pot targs *',relerr,1)
       call prin2('rel err grad targs *',relerrg,1)
@@ -203,7 +195,7 @@ c      call prin2('pre2 *',pre2,ns)
       enddo
 
       relerr = sqrt(derr/(nt*drel))
-      if (relerr .lt. 1d-9) ipass(6) = 1
+      if (relerr .lt. eps) ipass(6) = 1
 
       call prin2('rel err pre targs *',relerr,1)
       

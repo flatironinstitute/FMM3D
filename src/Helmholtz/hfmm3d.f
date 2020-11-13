@@ -112,13 +112,13 @@ c------------------------------------------------------------------
       integer nsource,ntarg
 
       double precision source(3,nsource),targ(3,ntarg)
-      double complex charge(nd,nsource)
+      double complex charge(nd,*)
 
-      double complex dipvec(nd,3,nsource)
+      double complex dipvec(nd,3,*)
 
-      double complex pot(nd,nsource),grad(nd,3,nsource),
-     1     pottarg(nd,3,ntarg),
-     1     gradtarg(nd,3,ntarg),hess(nd,6,*),hesstarg(nd,6,*)
+      double complex pot(nd,*),grad(nd,3,*),
+     1     pottarg(nd,3,*),
+     1     gradtarg(nd,3,*),hess(nd,6,*),hesstarg(nd,6,*)
 
 c       Tree variables
       integer mhung,idivflag,ndiv,isep,nboxes,nbmax,nlevels
@@ -213,7 +213,6 @@ cc     memory management code for contructing level restricted tree
       call pts_tree_mem(source,nsource,targ,ntarg,idivflag,ndiv,nlmin,
      1  nlmax,iper,ifunif,nlevels,nboxes,ltree)
       
-
         if(ifprint.ge.1) print *, ltree/1.0d9
 
         allocate(itree(ltree))
@@ -991,7 +990,7 @@ C$OMP END PARALLEL DO
 
       call cpu_time(time2)
 C$    time2=omp_get_wtime()
-      timeinfo(3)=time2-time1
+      timeinfo(2)=time2-time1
 
 
 

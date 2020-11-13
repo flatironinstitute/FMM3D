@@ -548,7 +548,7 @@ c     Reset nlevels, nboxes
       nboxes = 1
 
 
-      do i = 1,nlmax-1
+      do i = 1,nlmax
          if (irefine.eq.1) then
             call subdivide_adap(ier,src,ns,radsrc,trg,nt,expc,nexpc,
      $                   radexp,idivflag,ndiv,
@@ -588,6 +588,7 @@ c     Set up computation of list1 and list2
      5     ihelasttemp,iefirsttemp,ielasttemp,nhungsrc,nhungexp)
       if(ier.ne.0) return
       endif
+
  
       
 C$OMP PARALLEL DO DEFAULT(SHARED)
@@ -1957,7 +1958,7 @@ c
 
 
 
-      do i = 1,nlmax-1
+      do i = 1,nlmax
          if (irefine.eq.1) then
 c
 c
@@ -2100,6 +2101,7 @@ C$OMP END PARALLEL DO
             exit
          endif
       enddo
+
 
 c
 c
