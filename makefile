@@ -17,8 +17,7 @@ FC=gfortran
 FFLAGS= -fPIC -O3 -march=native -funroll-loops -std=legacy 
 CFLAGS= -std=c99 
 CFLAGS+= $(FFLAGS) 
-CXXFLAGS= -std=c++11 -DSCTL_PROFILE=-1
-CXXFLAGS+=$(FFLAGS)
+CXXFLAGS= -std=c++11 -DSCTL_PROFILE=-1 -fPIC -O3 -march=native -funroll-loops
 
 # set linking libraries
 CLIBS = -lgfortran -lm -ldl 
@@ -264,7 +263,7 @@ python-dist: $(STATICLIB)
 
 # testing routines
 #
-test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale test/stfmm3d test/stokkernels test/emfmm3d
+test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale test/stfmm3d test/stokkernels test/emfmm3d 
 	(cd test/Helmholtz; ./run_helmtest.sh)
 	(cd test/Laplace; ./run_laptest.sh)
 	(cd test/Stokes; ./run_stoktest.sh)
@@ -329,7 +328,6 @@ test/stokkernels:
 
 test/emfmm3d: 
 	$(FC) $(FFLAGS) test/Maxwell/test_emfmm3d.f $(TOBJS) $(COMOBJS) $(HOBJS) $(EMOBJS) -o test/Maxwell/int2-test-emfmm3d $(LIBS) 
-
 
 test_hfmm3d_mps: $(STATICLIB) $(TOBJS)
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_mps.f90 \

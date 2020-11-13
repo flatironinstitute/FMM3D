@@ -9,11 +9,12 @@
       double complex, allocatable :: curlEex(:,:,:)
       double complex ima
       double precision thresh
+      double precision t1,t2,omp_get_wtime
       integer ipass(10)
       data ima/(0.0d0,1.0d0)/
 
-      ns = 2001
-      nt = 1998
+      ns = 4001
+      nt = 3998
 
       nd = 2
       zk = 1.1d0 + ima*0.1d0
@@ -89,11 +90,30 @@ c
       ifb_vect = 1
       iflambda = 0
 
+      call cpu_time(t1)
+C$      t1 = omp_get_wtime()      
+
       call emfmm3d(nd,eps,zk,ns,sources,ifa_vect,a_vect,ifb_vect,
      1  b_vect,iflambda,lambda,nt,targs,ifE,E,ifcurlE,curlE,
      2  ifdivE,divE)
 
+      call cpu_time(t2)
+C$      t2 = omp_get_wtime() 
+      
+      call prin2('time=*',t2-t1,1)
+      write(14,*) "time=",t2-t1
+      
       thresh = 1.0d-16
+
+      do i=1,nttest
+        do l=1,3
+          do j=1,nd
+            Eex(j,l,i) = 0
+          enddo
+        enddo
+      enddo
+
+
       
       call em3ddirect(nd,zk,ns,sources,ifa_vect,a_vect,ifb_vect,
      1 b_vect,iflambda,lambda,nttest,targs,ifE,Eex,ifcurlE,curlEex,
@@ -132,11 +152,32 @@ c
       ifb_vect = 1
       iflambda = 0
 
+      call cpu_time(t1)
+C$      t1 = omp_get_wtime()      
       call emfmm3d(nd,eps,zk,ns,sources,ifa_vect,a_vect,ifb_vect,
      1  b_vect,iflambda,lambda,nt,targs,ifE,E,ifcurlE,curlE,
      2  ifdivE,divE)
 
+      call cpu_time(t2)
+C$      t2 = omp_get_wtime() 
+      
+      call prin2('time=*',t2-t1,1)
+      write(14,*) "time=",t2-t1
       thresh = 1.0d-16
+
+      do i=1,nttest
+        do l=1,3
+          do j=1,nd
+            Eex(j,l,i) = 0
+            curlEex(j,l,i) = 0
+          enddo
+        enddo
+
+        do j=1,nd
+          divEex(j,i) = 0
+        enddo
+      enddo
+
       
       call em3ddirect(nd,zk,ns,sources,ifa_vect,a_vect,ifb_vect,
      1 b_vect,iflambda,lambda,nttest,targs,ifE,Eex,ifcurlE,curlEex,
@@ -193,12 +234,28 @@ c
       ifb_vect = 0
       iflambda = 1
 
+      call cpu_time(t1)
+C$     t1 = omp_get_wtime()      
       call emfmm3d(nd,eps,zk,ns,sources,ifa_vect,a_vect,ifb_vect,
      1  b_vect,iflambda,lambda,nt,targs,ifE,E,ifcurlE,curlE,
      2  ifdivE,divE)
+      call cpu_time(t2)
+C$      t2 = omp_get_wtime() 
+      
+      call prin2('time=*',t2-t1,1)
+      write(14,*) "time=",t2-t1
 
       thresh = 1.0d-16
       
+
+      do i=1,nttest
+        do l=1,3
+          do j=1,nd
+            Eex(j,l,i) = 0
+          enddo
+        enddo
+      enddo
+
       call em3ddirect(nd,zk,ns,sources,ifa_vect,a_vect,ifb_vect,
      1 b_vect,iflambda,lambda,nttest,targs,ifE,Eex,ifcurlE,curlEex,
      2 ifdivE,divEex,thresh)
@@ -237,12 +294,33 @@ c
       ifb_vect = 0
       iflambda = 1
 
+      call cpu_time(t1)
+C$     t1 = omp_get_wtime()      
       call emfmm3d(nd,eps,zk,ns,sources,ifa_vect,a_vect,ifb_vect,
      1  b_vect,iflambda,lambda,nt,targs,ifE,E,ifcurlE,curlE,
      2  ifdivE,divE)
 
+      call cpu_time(t2)
+C$      t2 = omp_get_wtime() 
+      
+      call prin2('time=*',t2-t1,1)
+      write(14,*) "time=",t2-t1
       thresh = 1.0d-16
       
+
+      do i=1,nttest
+        do l=1,3
+          do j=1,nd
+            Eex(j,l,i) = 0
+            curlEex(j,l,i) = 0
+          enddo
+        enddo
+
+        do j=1,nd
+          divEex(j,i) = 0
+        enddo
+      enddo
+
       call em3ddirect(nd,zk,ns,sources,ifa_vect,a_vect,ifb_vect,
      1 b_vect,iflambda,lambda,nttest,targs,ifE,Eex,ifcurlE,curlEex,
      2 ifdivE,divEex,thresh)
@@ -298,11 +376,26 @@ c
       ifb_vect = 1
       iflambda = 1
 
+      call cpu_time(t1)
+C$     t1 = omp_get_wtime()      
       call emfmm3d(nd,eps,zk,ns,sources,ifa_vect,a_vect,ifb_vect,
      1  b_vect,iflambda,lambda,nt,targs,ifE,E,ifcurlE,curlE,
      2  ifdivE,divE)
 
+      call cpu_time(t2)
+C$      t2 = omp_get_wtime() 
+      
+      call prin2('time=*',t2-t1,1)
+      write(14,*) "time=",t2-t1
       thresh = 1.0d-16
+
+      do i=1,nttest
+        do l=1,3
+          do j=1,nd
+            Eex(j,l,i) = 0
+          enddo
+        enddo
+      enddo
       
       call em3ddirect(nd,zk,ns,sources,ifa_vect,a_vect,ifb_vect,
      1 b_vect,iflambda,lambda,nttest,targs,ifE,Eex,ifcurlE,curlEex,
@@ -341,12 +434,33 @@ c
       ifb_vect = 1
       iflambda = 1
 
+      call cpu_time(t1)
+C$     t1 = omp_get_wtime()      
       call emfmm3d(nd,eps,zk,ns,sources,ifa_vect,a_vect,ifb_vect,
      1  b_vect,iflambda,lambda,nt,targs,ifE,E,ifcurlE,curlE,
      2  ifdivE,divE)
 
+      call cpu_time(t2)
+C$      t2 = omp_get_wtime() 
+      
+      call prin2('time=*',t2-t1,1)
+      write(14,*) "time=",t2-t1
       thresh = 1.0d-16
       
+
+      do i=1,nttest
+        do l=1,3
+          do j=1,nd
+            Eex(j,l,i) = 0
+            curlEex(j,l,i) = 0
+          enddo
+        enddo
+
+        do j=1,nd
+          divEex(j,i) = 0
+        enddo
+      enddo
+
       call em3ddirect(nd,zk,ns,sources,ifa_vect,a_vect,ifb_vect,
      1 b_vect,iflambda,lambda,nttest,targs,ifE,Eex,ifcurlE,curlEex,
      2 ifdivE,divEex,thresh)
