@@ -7,7 +7,7 @@
 
       double precision eps
       double complex eye,zk
-      integer i,j,k,idim
+      integer i,j,k,idim,ier
       double precision hkrand,pi,thet,phi
       
 
@@ -86,7 +86,7 @@ c
 
 
        call hfmm3d_st_cd_p_vec(nd,eps,zk,ns,source,charge,
-     1      dipvec,pot,nt,targ,pottarg)
+     1      dipvec,pot,nt,targ,pottarg,ier)
 
        call prin2("potential at sources=*",pot,12)
        call prin2("potential at targets=*",pottarg,12)

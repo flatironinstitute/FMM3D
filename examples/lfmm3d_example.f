@@ -7,7 +7,7 @@
       double precision, allocatable :: hess(:,:)
 
       double precision eps
-      integer i,j,k,l
+      integer i,j,k,l,ier
       double precision hkrand,omp_get_wtime,t1,t2
       
 
@@ -70,7 +70,7 @@ c
       call cpu_time(t1)
 C$       t1 = omp_get_wtime()      
       call lfmm3d_s_c_h(eps,ns,source,charge,
-     1      pot,grad,hess)
+     1      pot,grad,hess,ier)
       call cpu_time(t2)
 C$      t2 = omp_get_wtime()     
       
