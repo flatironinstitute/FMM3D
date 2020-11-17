@@ -28,10 +28,10 @@ c                       cxs actually stores \sqrt(\lambda^2 - k^2)
 c
 c         cws(nquad) - complex *16, lambda quadrature weights
 c
-c         nfour(nquad) - integer, number of fourier modes required
+c         nfour(nquad) - integer(8), number of fourier modes required
 c                        per lambda
 c
-c         nphys(nquad) - integer, number of physical modes required
+c         nphys(nquad) - integer(8), number of physical modes required
 c                        per lambda
 c
 c         ier - error code
@@ -43,7 +43,7 @@ c
         implicit real *8 (a-h,o-z)
         complex *16 cxs(*),cws(*),zk
         real *8 cx(100),cy(100),eps
-        integer nfour(*),nphys(*)
+        integer(8) nfour(*),nphys(*)
 
         done = 1
         pi = atan(done)*4
