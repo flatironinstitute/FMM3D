@@ -7,7 +7,7 @@
 
       double precision eps
       double complex eye,zk
-      integer i,j,k
+      integer i,j,k,ier
       double precision hkrand
       
 
@@ -69,7 +69,7 @@ c
 
 
       call hfmm3d_s_c_g(eps,zk,ns,source,charge,
-     1      pot,grad)
+     1      pot,grad,ier)
       call prin2("pot at sources=*",pot,12)
       call prin2("grad at sources=*",grad,12)
 

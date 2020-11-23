@@ -14,7 +14,7 @@
 
 subroutine emfmm3d(nd,eps,zk,ns,source,ifa_vect,a_vect,&
  ifb_vect,b_vect,iflambda,lambda,nt,targets,ifE,E,ifcurlE,curlE,&
- ifdivE,divE)
+ ifdivE,divE,ier)
 implicit none
 
 !jmc_edc
@@ -128,6 +128,7 @@ implicit none
   double complex, allocatable :: pot(:),grad(:,:),hess(:,:)
   double complex, allocatable :: hesstarg(:,:)
   integer ndens
+  integer ier,iper
 
 
   integer i,j,nd0,l,m
@@ -279,8 +280,8 @@ implicit none
   allocate(pot(nd0),grad(nd0,3),hess(nd0,6),hesstarg(nd0,6))
 
   call hfmm3d(nd0,eps,zk,ns,source,ifcharge,sigma_vect,ifdipole, &
-   dipvect_vect,ifpgh,pot,grad,hess,nt,targets,ifpghtarg,Etmp, &
-   gradE_vect,hesstarg)
+   dipvect_vect,iper,ifpgh,pot,grad,hess,nt,targets,ifpghtarg,Etmp, &
+   gradE_vect,hesstarg,ier)
 
   if (ifE.eq.1) then
 !$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j)

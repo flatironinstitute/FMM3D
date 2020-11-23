@@ -8,12 +8,12 @@ PROJECT = int2-hfmm3d-mps
 
 ifeq ($(HOST),gcc)
     FC=gfortran 
-    FFLAGS=-fPIC -O3 -funroll-loops -march=native -std=legacy 
+    FFLAGS=-fPIC -O3 -march=native -std=legacy 
 endif
 
 ifeq ($(HOST),gcc-openmp)
     FC = gfortran 
-    FFLAGS=-fPIC -O3 -funroll-loops -march=native -fopenmp -std=legacy
+    FFLAGS=-fPIC -O3 -march=native -fopenmp -std=legacy
 endif
 
 
@@ -39,7 +39,9 @@ OBJECTS = test_hfmm3d_mps.o \
     $(COM)/rotproj.o \
     $(COM)/dfft.o \
     $(COM)/fmmcommon.o \
-    $(COM)/tree_lr_3d.o \
+    $(COM)/tree_routs3d.o \
+    $(COM)/pts_tree3d.o \
+    $(COM)/cumsum.o \
     $(HELM)/h3dterms.o \
     $(HELM)/h3dtrans.o \
     $(HELM)/helmrouts3d.o \

@@ -127,11 +127,12 @@ c
 c
 
       subroutine lfmm3d_s_c_p_vec(nd,eps,nsource,source,
-     1    charge,pot)
+     1    charge,pot,ier)
       implicit none
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,charge
 cf2py  intent(out) pot
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential 
@@ -159,6 +160,10 @@ c  Output arguments:
 c
 c    -    pot: double precision(nd,nsource)
 c          Potential at source locations, $u_{\ell}(x_{j})$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -166,7 +171,7 @@ c
 
       double precision eps
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,1)
       double precision charge(nd,nsource)
@@ -188,10 +193,11 @@ c
       ifpghtarg = 0
 
       ntarg = 0
+      ier = 0
 
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -202,10 +208,11 @@ c
 c
 
       subroutine lfmm3d_s_c_g_vec(nd,eps,nsource,source,
-     1    charge,pot,grad)
+     1    charge,pot,grad,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,charge
 cf2py  intent(out) pot,grad
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
@@ -235,6 +242,10 @@ c    -    pot: double precision(nd,nsource)
 c          Potential at source locations, $u_{\ell}(x_{j})$
 c    -    grad: double precision(nd,3,nsource)
 c          Gradient at source locations, $\nabla u_{\ell}(x_{j})$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -243,7 +254,7 @@ c
       double precision eps
       
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,1)
       double precision charge(nd,nsource)
@@ -263,10 +274,11 @@ c
 
       ntarg = 0
 
+      ier = 0
 
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
 
       return
@@ -279,10 +291,11 @@ c
 c
 
       subroutine lfmm3d_s_c_h_vec(nd,eps,nsource,source,
-     1    charge,pot,grad,hess)
+     1    charge,pot,grad,hess,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,charge
 cf2py  intent(out) pot,grad,hess
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential, its gradient,
@@ -317,6 +330,10 @@ c    -    hess: double precision(nd,6,nsource)
 c          Hessian at source locations, $\nabla^2 u_{\ell}(x_{j})$
 c          Hessian is ordered as
 c          $u_{xx},u_{yy},u_{zz},u_{xy},u_{xz},u_{yz}$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -325,7 +342,7 @@ c
       double precision eps
       
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,1)
       double precision charge(nd,nsource)
@@ -346,10 +363,11 @@ c
 
       ntarg = 0
 
+      ier = 0
 
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
 
       return
@@ -362,10 +380,11 @@ c
 c
 
       subroutine lfmm3d_s_d_p_vec(nd,eps,nsource,source,
-     1    dipvec,pot)
+     1    dipvec,pot,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(out) pot
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential 
@@ -394,6 +413,10 @@ c  Output arguments:
 c
 c    -    pot: double precision(nd,nsource)
 c          Potential at source locations, $u_{\ell}(x_{j})$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -402,7 +425,7 @@ c
       double precision eps
       
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,1)
       double precision charge(nd,1)
@@ -424,9 +447,10 @@ c
       ntarg = 0
 
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -437,10 +461,11 @@ c
 c
 
       subroutine lfmm3d_s_d_g_vec(nd,eps,nsource,source,
-     1    dipvec,pot,grad)
+     1    dipvec,pot,grad,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(out) pot,grad
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
@@ -471,6 +496,10 @@ c    -    pot: double precision(nd,nsource)
 c          Potential at source locations, $u_{\ell}(x_{j})$
 c    -    grad: double precision(nd,3,nsource)
 c          Gradient at source locations, $\nabla u_{\ell}(x_{j})$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -479,7 +508,7 @@ c
       double precision eps
 
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,1)
       double precision charge(nd,1)
@@ -499,9 +528,10 @@ c
 
       ntarg = 0
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
 
       return
@@ -513,10 +543,11 @@ c
 c
 
       subroutine lfmm3d_s_d_h_vec(nd,eps,nsource,source,
-     1    dipvec,pot,grad,hess)
+     1    dipvec,pot,grad,hess,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(out) pot,grad,hess
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential, its gradient, and
@@ -552,13 +583,17 @@ c    -    hess: double precision(nd,6,nsource)
 c          Hessian at source locations, $\nabla^2 u_{\ell}(x_{j})$
 c          Hessian is ordered as
 c          $u_{xx},u_{yy},u_{zz},u_{xy},u_{xz},u_{yz}$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c--------------------------------
 c
       implicit none
       double precision eps
 
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,1)
       double precision charge(nd,1)
@@ -579,9 +614,10 @@ c
 
       ntarg = 0
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
 
       return
@@ -593,10 +629,11 @@ c
 c
 
       subroutine lfmm3d_s_cd_p_vec(nd,eps,nsource,source,
-     1    charge,dipvec,pot)
+     1    charge,dipvec,pot,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(out) pot
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential 
@@ -628,6 +665,10 @@ c  Output arguments:
 c
 c    -    pot: double precision(nd,nsource)
 c          Potential at source locations, $u_{\ell}(x_{j})$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -636,7 +677,7 @@ c
       double precision eps
 
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,1)
       double precision charge(nd,nsource)
@@ -657,9 +698,10 @@ c
 
       ntarg = 0
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -675,10 +717,11 @@ c
 c
 
       subroutine lfmm3d_s_cd_g_vec(nd,eps,nsource,source,
-     1    charge,dipvec,pot,grad)
+     1    charge,dipvec,pot,grad,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(out) pot,grad
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
@@ -712,6 +755,10 @@ c    -    pot: double precision(nd,nsource)
 c          Potential at source locations, $u_{\ell}(x_{j})$
 c    -    grad: double precision(nd,3,nsource)
 c          Gradient at source locations, $\nabla u_{\ell}(x_{j})$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -720,7 +767,7 @@ c
       double precision eps
 
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,1)
       double precision charge(nd,nsource)
@@ -740,9 +787,10 @@ c
 
       ntarg = 0
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -755,10 +803,11 @@ c
 c
 
       subroutine lfmm3d_s_cd_h_vec(nd,eps,nsource,source,
-     1    charge,dipvec,pot,grad,hess)
+     1    charge,dipvec,pot,grad,hess,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(out) pot,grad,hess
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential, its gradient, and 
@@ -797,13 +846,17 @@ c    -    hess: double precision(nd,6,nsource)
 c          Hessian at source locations, $\nabla^2 u_{\ell}(x_{j})$
 c          Hessian is ordered as
 c          $u_{xx},u_{yy},u_{zz},u_{xy},u_{xz},u_{yz}$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c--------------------------------
 c
       implicit none
       double precision eps
 
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,1)
       double precision charge(nd,nsource)
@@ -824,9 +877,10 @@ c
 
       ntarg = 0
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -838,11 +892,12 @@ c
 c
 
       subroutine lfmm3d_t_c_p_vec(nd,eps,nsource,source,
-     1    charge,ntarg,targ,pottarg)
+     1    charge,ntarg,targ,pottarg,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential 
@@ -874,6 +929,10 @@ c  Output arguments:
 c
 c    -    pottarg: double precision(nd,ntarg)
 c          Potential at target locations, $u_{\ell}(t_{i})$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -882,7 +941,7 @@ c
       double precision eps
       
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,ntarg)
       double precision charge(nd,nsource)
@@ -901,9 +960,10 @@ c
       ifpgh = 0
       ifpghtarg = 1
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -916,11 +976,12 @@ c
 
       subroutine lfmm3d_t_c_g_vec(nd,eps,nsource,source,
      1    charge,ntarg,targ,pottarg,
-     2    gradtarg)
+     2    gradtarg,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg,gradtarg
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
@@ -954,6 +1015,10 @@ c    -    pottarg: double precision(nd,ntarg)
 c          Potential at target locations, $u_{\ell}(t_{i})$
 c    -    gradtarg: double precision(nd,3,ntarg)
 c          Gradient at target locations, $\nabla u_{\ell}(t_{i})$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -962,7 +1027,7 @@ c
       double precision eps
       
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,ntarg)
       double precision charge(nd,nsource)
@@ -980,9 +1045,10 @@ c
       ifpgh = 0
       ifpghtarg = 2
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -995,11 +1061,12 @@ c
 
       subroutine lfmm3d_t_c_h_vec(nd,eps,nsource,source,
      1    charge,ntarg,targ,pottarg,
-     2    gradtarg,hesstarg)
+     2    gradtarg,hesstarg,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg,gradtarg,hesstarg
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential, its gradient, and
@@ -1038,6 +1105,10 @@ c    -    hesstarg: double precision(nd,6,ntarg)
 c          Hessian at target locations, $\nabla^2 u_{\ell}(t_{i})$
 c          Hessian is ordered as
 c          $u_{xx},u_{yy},u_{zz},u_{xy},u_{xz},u_{yz}$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c--------------------------------
 c
@@ -1045,7 +1116,7 @@ c
       double precision eps
       
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,ntarg)
       double precision charge(nd,nsource)
@@ -1064,9 +1135,10 @@ c
       ifpgh = 0
       ifpghtarg = 3
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -1077,11 +1149,12 @@ c
 c
 
       subroutine lfmm3d_t_d_p_vec(nd,eps,nsource,source,
-     1    dipvec,ntarg,targ,pottarg)
+     1    dipvec,ntarg,targ,pottarg,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential 
@@ -1114,6 +1187,10 @@ c  Output arguments:
 c
 c    -    pottarg: double precision(nd,ntarg)
 c          Potential at target locations, $u_{\ell}(t_{i})$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -1122,7 +1199,7 @@ c
       double precision eps
       
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,ntarg)
       double precision charge(nd,1)
@@ -1142,9 +1219,10 @@ c
       ifpgh = 0
       ifpghtarg = 1
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -1156,11 +1234,12 @@ c
 
       subroutine lfmm3d_t_d_g_vec(nd,eps,nsource,source,
      1    dipvec,ntarg,targ,pottarg,
-     2    gradtarg)
+     2    gradtarg,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg,gradtarg
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
@@ -1195,6 +1274,10 @@ c    -    pottarg: double precision(nd,ntarg)
 c          Potential at target locations, $u_{\ell}(t_{i})$
 c    -    gradtarg: double precision(nd,3,ntarg)
 c          Gradient at target locations, $\nabla u_{\ell}(t_{i})$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -1203,7 +1286,7 @@ c
       double precision eps
 
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,ntarg)
       double precision charge(nd,1)
@@ -1222,9 +1305,10 @@ c
       ifpgh = 0
       ifpghtarg = 2
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -1237,11 +1321,12 @@ c
 
       subroutine lfmm3d_t_d_h_vec(nd,eps,nsource,source,
      1    dipvec,ntarg,targ,pottarg,
-     2    gradtarg,hesstarg)
+     2    gradtarg,hesstarg,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg,gradtarg,hesstarg
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential, its gradient,
@@ -1281,13 +1366,17 @@ c    -    hesstarg: double precision(nd,6,ntarg)
 c          Hessian at target locations, $\nabla^2 u_{\ell}(t_{i})$
 c          Hessian is ordered as
 c          $u_{xx},u_{yy},u_{zz},u_{xy},u_{xz},u_{yz}$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c--------------------------------
 c
       implicit none
       double precision eps
 
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,ntarg)
       double precision charge(nd,1)
@@ -1307,9 +1396,10 @@ c
       ifpgh = 0
       ifpghtarg = 3
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -1320,11 +1410,12 @@ c
 c
 
       subroutine lfmm3d_t_cd_p_vec(nd,eps,nsource,source,
-     1    charge,dipvec,ntarg,targ,pottarg)
+     1    charge,dipvec,ntarg,targ,pottarg,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential 
@@ -1360,6 +1451,10 @@ c  Output arguments:
 c
 c    -    pottarg: double precision(nd,ntarg)
 c          Potential at target locations, $u_{\ell}(t_{i})$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -1368,7 +1463,7 @@ c
       double precision eps
 
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,ntarg)
       double precision charge(nd,nsource)
@@ -1387,9 +1482,10 @@ c
       ifpgh = 0
       ifpghtarg = 1
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -1402,11 +1498,12 @@ c
 
       subroutine lfmm3d_t_cd_g_vec(nd,eps,nsource,source,
      1    charge,dipvec,ntarg,targ,pottarg,
-     2    gradtarg)
+     2    gradtarg,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg,gradtarg
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
@@ -1444,6 +1541,10 @@ c    -    pottarg: double precision(nd,ntarg)
 c          Potential at target locations, $u_{\ell}(t_{i})$
 c    -    gradtarg: double precision(nd,3,ntarg)
 c          Gradient at target locations, $\nabla u_{\ell}(t_{i})$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -1452,7 +1553,7 @@ c
       double precision eps
 
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,ntarg)
       double precision charge(nd,nsource)
@@ -1470,9 +1571,10 @@ c
       ifpgh = 0
       ifpghtarg = 2
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -1485,11 +1587,12 @@ c
 
       subroutine lfmm3d_t_cd_h_vec(nd,eps,nsource,source,
      1    charge,dipvec,ntarg,targ,pottarg,
-     2    gradtarg,hesstarg)
+     2    gradtarg,hesstarg,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pottarg,gradtarg,hesstarg
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential, its gradient,
@@ -1532,13 +1635,17 @@ c    -    hesstarg: double precision(nd,6,ntarg)
 c          Hessian at target locations, $\nabla^2 u_{\ell}(t_{i})$
 c          Hessian is ordered as
 c          $u_{xx},u_{yy},u_{zz},u_{xy},u_{xz},u_{yz}$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c--------------------------------
 c
       implicit none
       double precision eps
 
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,ntarg)
       double precision charge(nd,nsource)
@@ -1557,9 +1664,10 @@ c
       ifpgh = 0
       ifpghtarg = 3
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -1569,12 +1677,13 @@ c
 c
 
       subroutine lfmm3d_st_c_p_vec(nd,eps,nsource,source,
-     1    charge,pot,ntarg,targ,pottarg)
+     1    charge,pot,ntarg,targ,pottarg,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot
 cf2py  intent(out) pottarg
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential 
@@ -1608,6 +1717,10 @@ c    -    pot: double precision(nd,nsource)
 c          Potential at source locations, $u_{\ell}(x_{j})$
 cc    -    pottarg: double precision(nd,ntarg)
 c          Potential at target locations, $u_{\ell}(t_{i})$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -1616,7 +1729,7 @@ c
       double precision eps
 
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,ntarg)
       double precision charge(nd,nsource)
@@ -1635,9 +1748,10 @@ c
       ifpgh = 1
       ifpghtarg = 1
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -1649,12 +1763,13 @@ c
 
       subroutine lfmm3d_st_c_g_vec(nd,eps,nsource,source,
      1    charge,pot,grad,ntarg,targ,pottarg,
-     2    gradtarg)
+     2    gradtarg,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot,grad
 cf2py  intent(out) pottarg,gradtarg
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
@@ -1692,6 +1807,10 @@ cc    -    pottarg: double precision(nd,ntarg)
 c          Potential at target locations, $u_{\ell}(t_{i})$
 c    -    gradtarg: double precision(nd,3,ntarg)
 c          Gradient at target locations, $\nabla u_{\ell}(t_{i})$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -1700,7 +1819,7 @@ c
       double precision eps
       
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,ntarg)
       double precision charge(nd,nsource)
@@ -1718,9 +1837,10 @@ c
       ifpgh = 2
       ifpghtarg = 2
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -1734,12 +1854,13 @@ c
 
       subroutine lfmm3d_st_c_h_vec(nd,eps,nsource,source,
      1    charge,pot,grad,hess,ntarg,targ,pottarg,
-     2    gradtarg,hesstarg)
+     2    gradtarg,hesstarg,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot,grad,hess
 cf2py  intent(out) pottarg,gradtarg,hesstarg
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential, its gradient,
@@ -1786,6 +1907,10 @@ c    -    hesstarg: double precision(nd,6,ntarg)
 c          Hessian at target locations, $\nabla^2 u_{\ell}(t_{i})$
 c          Hessian is ordered as
 c          $u_{xx},u_{yy},u_{zz},u_{xy},u_{xz},u_{yz}$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c--------------------------------
 c
@@ -1793,7 +1918,7 @@ c
       double precision eps
       
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,ntarg)
       double precision charge(nd,nsource)
@@ -1811,9 +1936,10 @@ c
       ifpgh = 3
       ifpghtarg = 3
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -1825,12 +1951,13 @@ c
 c
 
       subroutine lfmm3d_st_d_p_vec(nd,eps,nsource,source,
-     1    dipvec,pot,ntarg,targ,pottarg)
+     1    dipvec,pot,ntarg,targ,pottarg,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot
 cf2py  intent(out) pottarg
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential 
@@ -1865,6 +1992,10 @@ c    -    pot: double precision(nd,nsource)
 c          Potential at source locations, $u_{\ell}(x_{j})$
 cc    -    pottarg: double precision(nd,ntarg)
 c          Potential at target locations, $u_{\ell}(t_{i})$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -1873,7 +2004,7 @@ c
       double precision eps
 
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,ntarg)
       double precision charge(nd,1)
@@ -1893,9 +2024,10 @@ c
       ifpgh = 1
       ifpghtarg = 1
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -1907,12 +2039,13 @@ c
 
       subroutine lfmm3d_st_d_g_vec(nd,eps,nsource,source,
      1    dipvec,pot,grad,ntarg,targ,pottarg,
-     2    gradtarg)
+     2    gradtarg,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot,grad
 cf2py  intent(out) pottarg,gradtarg
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
@@ -1951,6 +2084,10 @@ cc    -    pottarg: double precision(nd,ntarg)
 c          Potential at target locations, $u_{\ell}(t_{i})$
 c    -    gradtarg: double precision(nd,3,ntarg)
 c          Gradient at target locations, $\nabla u_{\ell}(t_{i})$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -1959,7 +2096,7 @@ c
       double precision eps
       
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,ntarg)
       double precision charge(nd,1)
@@ -1978,9 +2115,10 @@ c
       ifpgh = 2
       ifpghtarg = 2
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -1993,12 +2131,13 @@ c
 
       subroutine lfmm3d_st_d_h_vec(nd,eps,nsource,source,
      1    dipvec,pot,grad,hess,ntarg,targ,pottarg,
-     2    gradtarg,hesstarg)
+     2    gradtarg,hesstarg,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot,grad,hess
 cf2py  intent(out) pottarg,gradtarg,hesstarg
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
@@ -2045,13 +2184,17 @@ c    -    hesstarg: double precision(nd,6,ntarg)
 c          Hessian at target locations, $\nabla^2 u_{\ell}(t_{i})$
 c          Hessian is ordered as
 c          $u_{xx},u_{yy},u_{zz},u_{xy},u_{xz},u_{yz}$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c--------------------------------
 c
       implicit none
       double precision eps
       
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,ntarg)
       double precision charge(nd,1)
@@ -2070,9 +2213,10 @@ c
       ifpgh = 3
       ifpghtarg = 3
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -2083,12 +2227,13 @@ c
 c
 
       subroutine lfmm3d_st_cd_p_vec(nd,eps,nsource,source,
-     1    charge,dipvec,pot,ntarg,targ,pottarg)
+     1    charge,dipvec,pot,ntarg,targ,pottarg,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot
 cf2py  intent(out) pottarg
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential 
@@ -2126,6 +2271,10 @@ c    -    pot: double precision(nd,nsource)
 c          Potential at source locations, $u_{\ell}(x_{j})$
 cc    -    pottarg: double precision(nd,ntarg)
 c          Potential at target locations, $u_{\ell}(t_{i})$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -2134,7 +2283,7 @@ c
       double precision eps
 
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,ntarg)
       double precision charge(nd,nsource)
@@ -2153,9 +2302,10 @@ c
       ifpgh = 1
       ifpghtarg = 1
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -2167,12 +2317,13 @@ c
 
       subroutine lfmm3d_st_cd_g_vec(nd,eps,nsource,source,
      1    charge,dipvec,pot,grad,ntarg,targ,pottarg,
-     2    gradtarg)
+     2    gradtarg,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot,grad
 cf2py  intent(out) pottarg,gradtarg
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
@@ -2214,6 +2365,10 @@ cc    -    pottarg: double precision(nd,ntarg)
 c          Potential at target locations, $u_{\ell}(t_{i})$
 c    -    gradtarg: double precision(nd,3,ntarg)
 c          Gradient at target locations, $\nabla u_{\ell}(t_{i})$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c
 c
 c--------------------------------
@@ -2222,7 +2377,7 @@ c
       double precision eps
 
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,ntarg)
       double precision charge(nd,nsource)
@@ -2240,9 +2395,10 @@ c
       ifpgh = 2
       ifpghtarg = 2
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end
@@ -2255,12 +2411,13 @@ c
 
       subroutine lfmm3d_st_cd_h_vec(nd,eps,nsource,source,
      1    charge,dipvec,pot,grad,hess,ntarg,targ,pottarg,
-     2    gradtarg,hesstarg)
+     2    gradtarg,hesstarg,ier)
 cf2py  intent(in) nd,eps
 cf2py  intent(in) nsource,source,dipvec,charge
 cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot,grad,hess
 cf2py  intent(out) pottarg,gradtarg,hesstarg
+cf2py  intent(out) ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential, its gradient,
@@ -2312,13 +2469,17 @@ c    -    hesstarg: double precision(nd,6,ntarg)
 c          Hessian at target locations, $\nabla^2 u_{\ell}(t_{i})$
 c          Hessian is ordered as
 c          $u_{xx},u_{yy},u_{zz},u_{xy},u_{xz},u_{yz}$
+c    -    ier: integer
+c          error flag
+c           * ier = 0, for normal execution
+c           * ier = 4/8, failed to allocate memory in fmm routine
 c--------------------------------
 c
       implicit none
       double precision eps
 
       integer nsource,ntarg,ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer nd
+      integer nd,iper,ier
       
       double precision source(3,nsource),targ(3,ntarg)
       double precision charge(nd,nsource)
@@ -2336,9 +2497,10 @@ c
       ifpgh = 3
       ifpghtarg = 3
 
+      ier = 0
       call lfmm3d(nd,eps,nsource,source,ifcharge,charge,
-     1      ifdipole,dipvec,ifpgh,pot,grad,hess,ntarg,targ,
-     2      ifpghtarg,pottarg,gradtarg,hesstarg)
+     1      ifdipole,dipvec,iper,ifpgh,pot,grad,hess,ntarg,targ,
+     2      ifpghtarg,pottarg,gradtarg,hesstarg,ier)
 
       return
       end

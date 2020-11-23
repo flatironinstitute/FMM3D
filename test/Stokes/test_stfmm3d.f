@@ -75,7 +75,7 @@ c
 c$    t1 = omp_get_wtime()      
       call stfmm3d(nd,eps,ns,source,ifstoklet,stoklet,
      1     ifstrslet,strslet,strsvec,ifppreg,pot,pre,grad,
-     2     nt,targ,ifppregtarg,pottarg,pretarg,gradtarg)
+     2     nt,targ,ifppregtarg,pottarg,pretarg,gradtarg,ier)
       call cpu_time(t2)
 c$    t2 = omp_get_wtime()      
 

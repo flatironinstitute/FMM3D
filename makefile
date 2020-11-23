@@ -98,7 +98,8 @@ COM = src/Common
 COMOBJS = $(COM)/besseljs3d.o $(COM)/cdjseval3d.o $(COM)/dfft.o \
 	$(COM)/fmmcommon.o $(COM)/legeexps.o $(COM)/prini.o \
 	$(COM)/rotgen.o $(COM)/rotproj.o $(COM)/rotviarecur.o \
-	$(COM)/tree_lr_3d.o $(COM)/yrecursion.o 
+	$(COM)/tree_routs3d.o $(COM)/pts_tree3d.o $(COM)/yrecursion.o \
+	$(COM)/cumsum.o
 
 # Helmholtz objects
 HELM = src/Helmholtz

@@ -50,6 +50,7 @@ c
 cc      generate sources uniformly in the unit cube 
 c
 c
+c$omp parallel do default(shared) private(i)
       do i=1,ns
         source(1,i) = hkrand(0)**2
         source(2,i) = hkrand(0)**2
@@ -59,6 +60,7 @@ c
 
         pot(i) = 0
       enddo
+c$omp end parallel do      
 
 
       call lfmm3d_s_c_p(eps,ns,source,charge,pot)

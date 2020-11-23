@@ -95,7 +95,7 @@ C$      t1 = omp_get_wtime()
 
       call emfmm3d(nd,eps,zk,ns,sources,ifa_vect,a_vect,ifb_vect,
      1  b_vect,iflambda,lambda,nt,targs,ifE,E,ifcurlE,curlE,
-     2  ifdivE,divE)
+     2  ifdivE,divE,ier)
 
       call cpu_time(t2)
 C$      t2 = omp_get_wtime() 
@@ -156,7 +156,7 @@ c
 C$      t1 = omp_get_wtime()      
       call emfmm3d(nd,eps,zk,ns,sources,ifa_vect,a_vect,ifb_vect,
      1  b_vect,iflambda,lambda,nt,targs,ifE,E,ifcurlE,curlE,
-     2  ifdivE,divE)
+     2  ifdivE,divE,ier)
 
       call cpu_time(t2)
 C$      t2 = omp_get_wtime() 
@@ -238,7 +238,7 @@ c
 C$     t1 = omp_get_wtime()      
       call emfmm3d(nd,eps,zk,ns,sources,ifa_vect,a_vect,ifb_vect,
      1  b_vect,iflambda,lambda,nt,targs,ifE,E,ifcurlE,curlE,
-     2  ifdivE,divE)
+     2  ifdivE,divE,ier)
       call cpu_time(t2)
 C$      t2 = omp_get_wtime() 
       
@@ -298,7 +298,7 @@ c
 C$     t1 = omp_get_wtime()      
       call emfmm3d(nd,eps,zk,ns,sources,ifa_vect,a_vect,ifb_vect,
      1  b_vect,iflambda,lambda,nt,targs,ifE,E,ifcurlE,curlE,
-     2  ifdivE,divE)
+     2  ifdivE,divE,ier)
 
       call cpu_time(t2)
 C$      t2 = omp_get_wtime() 
@@ -380,7 +380,7 @@ c
 C$     t1 = omp_get_wtime()      
       call emfmm3d(nd,eps,zk,ns,sources,ifa_vect,a_vect,ifb_vect,
      1  b_vect,iflambda,lambda,nt,targs,ifE,E,ifcurlE,curlE,
-     2  ifdivE,divE)
+     2  ifdivE,divE,ier)
 
       call cpu_time(t2)
 C$      t2 = omp_get_wtime() 
@@ -438,7 +438,7 @@ c
 C$     t1 = omp_get_wtime()      
       call emfmm3d(nd,eps,zk,ns,sources,ifa_vect,a_vect,ifb_vect,
      1  b_vect,iflambda,lambda,nt,targs,ifE,E,ifcurlE,curlE,
-     2  ifdivE,divE)
+     2  ifdivE,divE,ier)
 
       call cpu_time(t2)
 C$      t2 = omp_get_wtime() 

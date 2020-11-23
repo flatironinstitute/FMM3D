@@ -12,6 +12,7 @@ int main(int argc, char **argv)
 
 
   int ns=2000;
+  int ier=0;
   double *source = (double *)malloc(3*ns*sizeof(double));
 
   CPX *charge = (CPX *)malloc(ns*sizeof(CPX));
@@ -37,7 +38,8 @@ int main(int argc, char **argv)
   cprin_skipline(2);
 
 // call the fmm routine
-  hfmm3d_s_c_g_(&eps, &zk, &ns, source, charge, pot, grad);
+  hfmm3d_s_c_g_(&eps, &zk, &ns, source, charge, pot, grad, &ier);
+
 
 
   cprinz("pot=",pot,12);

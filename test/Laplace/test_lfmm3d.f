@@ -9,7 +9,7 @@
 
       double precision eps
       double complex eye
-      integer i,j,k,ntest
+      integer i,j,k,ntest,ier
       integer ifcharge,ifdipole,ifpgh,ifpghtarg
       double precision err,hkrand
       integer ipass(27),len1,ntests,isum
@@ -26,7 +26,7 @@ c
       ns = 5000 
       nt = 4999
 
-      ntest = 10
+      ntest = 20
 
       allocate(source(3,ns),targ(3,nt))
       allocate(charge(ns),dipvec(3,ns))
@@ -38,7 +38,7 @@ c
       allocate(gradtarg(3,nt))
       allocate(hesstarg(6,nt))
 
-      eps = 0.5d-9
+      eps = 0.51d-3
 
       write(*,*) "=========================================="
       write(*,*) "Testing suite for lfmm3d"
@@ -100,7 +100,7 @@ c
        write(6,*) 
        write(6,*) 
 
-       call lfmm3d_s_c_p(eps,ns,source,charge,pot)
+       call lfmm3d_s_c_p(eps,ns,source,charge,pot,ier)
 
 
        ifcharge = 1
@@ -135,7 +135,7 @@ c
        write(6,*) 
 
        call lfmm3d_s_c_g(eps,ns,source,charge,
-     1      pot,grad)
+     1      pot,grad,ier)
 
        ifcharge = 1
        ifdipole = 0
@@ -168,7 +168,7 @@ c
        write(6,*) 
 
        call lfmm3d_s_d_p(eps,ns,source,dipvec,
-     1      pot)
+     1      pot,ier)
 
        ifcharge = 0
        ifdipole = 1
@@ -200,7 +200,7 @@ c
        write(6,*) 
 
        call lfmm3d_s_d_g(eps,ns,source,dipvec,
-     1      pot,grad)
+     1      pot,grad,ier)
 
        ifcharge = 0
        ifdipole = 1
@@ -231,7 +231,7 @@ c
        write(6,*) 
 
        call lfmm3d_s_cd_p(eps,ns,source,charge,dipvec,
-     1      pot)
+     1      pot,ier)
 
        ifcharge = 1
        ifdipole = 1
@@ -263,7 +263,7 @@ c
        write(6,*) 
 
        call lfmm3d_s_cd_g(eps,ns,source,charge,dipvec,
-     1      pot,grad)
+     1      pot,grad,ier)
 
        ifcharge = 1
        ifdipole = 1
@@ -296,7 +296,7 @@ c
        write(6,*) 
 
        call lfmm3d_t_c_p(eps,ns,source,charge,
-     1      nt,targ,pottarg)
+     1      nt,targ,pottarg,ier)
 
        ifcharge = 1
        ifdipole = 0
@@ -329,7 +329,7 @@ c
        write(6,*) 
 
        call lfmm3d_t_c_g(eps,ns,source,charge,
-     1      nt,targ,pottarg,gradtarg)
+     1      nt,targ,pottarg,gradtarg,ier)
 
        ifcharge = 1
        ifdipole = 0
@@ -362,7 +362,7 @@ c
        write(6,*) 
 
        call lfmm3d_t_d_p(eps,ns,source,dipvec,
-     1      nt,targ,pottarg)
+     1      nt,targ,pottarg,ier)
 
        ifcharge = 0
        ifdipole = 1
@@ -394,7 +394,7 @@ c
        write(6,*) 
 
        call lfmm3d_t_d_g(eps,ns,source,dipvec,
-     1      nt,targ,pottarg,gradtarg)
+     1      nt,targ,pottarg,gradtarg,ier)
 
        ifcharge = 0
        ifdipole = 1
@@ -425,7 +425,7 @@ c
        write(6,*) 
 
        call lfmm3d_t_cd_p(eps,ns,source,charge,dipvec,
-     1      nt,targ,pottarg)
+     1      nt,targ,pottarg,ier)
 
        ifcharge = 1
        ifdipole = 1
@@ -457,7 +457,7 @@ c
        write(6,*) 
 
        call lfmm3d_t_cd_g(eps,ns,source,charge,dipvec,
-     1      nt,targ,pottarg,gradtarg)
+     1      nt,targ,pottarg,gradtarg,ier)
 
        ifcharge = 1
        ifdipole = 1
@@ -488,7 +488,7 @@ c
        write(6,*) 
 
        call lfmm3d_st_c_p(eps,ns,source,charge,
-     1      pot,nt,targ,pottarg)
+     1      pot,nt,targ,pottarg,ier)
 
        ifcharge = 1
        ifdipole = 0
@@ -520,7 +520,7 @@ c
        write(6,*) 
 
        call lfmm3d_st_c_g(eps,ns,source,charge,
-     1      pot,grad,nt,targ,pottarg,gradtarg)
+     1      pot,grad,nt,targ,pottarg,gradtarg,ier)
 
        ifcharge = 1
        ifdipole = 0
@@ -553,7 +553,7 @@ c
        write(6,*) 
 
        call lfmm3d_st_d_p(eps,ns,source,dipvec,
-     1      pot,nt,targ,pottarg)
+     1      pot,nt,targ,pottarg,ier)
 
        ifcharge = 0
        ifdipole = 1
@@ -585,7 +585,7 @@ c
        write(6,*) 
 
        call lfmm3d_st_d_g(eps,ns,source,dipvec,
-     1      pot,grad,nt,targ,pottarg,gradtarg)
+     1      pot,grad,nt,targ,pottarg,gradtarg,ier)
 
        ifcharge = 0
        ifdipole = 1
@@ -616,7 +616,7 @@ c
        write(6,*) 
 
        call lfmm3d_st_cd_p(eps,ns,source,charge,dipvec,
-     1      pot,nt,targ,pottarg)
+     1      pot,nt,targ,pottarg,ier)
 
        ifcharge = 1
        ifdipole = 1
@@ -648,7 +648,7 @@ c
        write(6,*) 
 
        call lfmm3d_st_cd_g(eps,ns,source,charge,dipvec,
-     1      pot,grad,nt,targ,pottarg,gradtarg)
+     1      pot,grad,nt,targ,pottarg,gradtarg,ier)
 
        ifcharge = 1
        ifdipole = 1
@@ -680,7 +680,7 @@ c
        write(6,*) 
 
        call lfmm3d_s_c_h(eps,ns,source,charge,
-     1      pot,grad,hess)
+     1      pot,grad,hess,ier)
 
        ifcharge = 1
        ifdipole = 0
@@ -712,7 +712,7 @@ c
        write(6,*) 
 
        call lfmm3d_s_d_h(eps,ns,source,dipvec,
-     1      pot,grad,hess)
+     1      pot,grad,hess,ier)
 
        ifcharge = 0
        ifdipole = 1
@@ -743,7 +743,7 @@ c
        write(6,*) 
 
        call lfmm3d_s_cd_h(eps,ns,source,charge,dipvec,
-     1      pot,grad,hess)
+     1      pot,grad,hess,ier)
 
        ifcharge = 1
        ifdipole = 1
@@ -775,7 +775,7 @@ c
        write(6,*) 
 
        call lfmm3d_t_c_h(eps,ns,source,charge,
-     1      nt,targ,pottarg,gradtarg,hesstarg)
+     1      nt,targ,pottarg,gradtarg,hesstarg,ier)
 
        ifcharge = 1
        ifdipole = 0
@@ -807,7 +807,7 @@ c
        write(6,*) 
 
        call lfmm3d_t_d_h(eps,ns,source,dipvec,
-     1      nt,targ,pottarg,gradtarg,hesstarg)
+     1      nt,targ,pottarg,gradtarg,hesstarg,ier)
 
        ifcharge = 0
        ifdipole = 1
@@ -838,7 +838,7 @@ c
        write(6,*) 
 
        call lfmm3d_t_cd_h(eps,ns,source,charge,dipvec,
-     1      nt,targ,pottarg,gradtarg,hesstarg)
+     1      nt,targ,pottarg,gradtarg,hesstarg,ier)
 
 
        ifcharge = 1
@@ -870,7 +870,7 @@ c
        write(6,*) 
 
        call lfmm3d_st_c_h(eps,ns,source,charge,pot,grad,hess,
-     1      nt,targ,pottarg,gradtarg,hesstarg)
+     1      nt,targ,pottarg,gradtarg,hesstarg,ier)
 
        ifcharge = 1
        ifdipole = 0
@@ -902,7 +902,7 @@ c
        write(6,*) 
 
        call lfmm3d_st_d_h(eps,ns,source,dipvec,pot,grad,hess,
-     1      nt,targ,pottarg,gradtarg,hesstarg)
+     1      nt,targ,pottarg,gradtarg,hesstarg,ier)
 
        ifcharge = 0
        ifdipole = 1
@@ -933,7 +933,7 @@ c
        write(6,*) 
 
        call lfmm3d_st_cd_h(eps,ns,source,charge,dipvec,pot,grad,hess,
-     1      nt,targ,pottarg,gradtarg,hesstarg)
+     1      nt,targ,pottarg,gradtarg,hesstarg,ier)
 
 
        ifcharge = 1
