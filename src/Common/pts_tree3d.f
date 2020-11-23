@@ -45,72 +45,70 @@ c    - src: real *8 (3,ns)
 c        source locations
 c    - targ: real *8 (3,nt) 
 c        target locations
-c    - idivflag: integer(8)
+c    - idivflag: integer
 c        subdivision criterion
 c          * divflag = 0 -> subdivide on sources only
 c          * idivflag = 1 -> subdivide on targets only
 c          * idivflag = 2 -> subdivide on max(sources+targets)
-c    - ndiv: integer(8)
+c    - ndiv: integer
 c        subdivide if relevant number of particles
 c        per box is greater than ndiv
-c    - nlmin: integer(8)
+c    - nlmin: integer
 c        minimum number of levels of uniform refinement.
 c        Note that empty boxes are not pruned along the way
-c    - nlmax: integer(8)
+c    - nlmax: integer
 c        max number of levels
-c    - ifunif: integer(8)
+c    - ifunif: integer
 c        flag for creating uniform pruned tree
 c        Tree is uniform if ifunif=1 (Currently pruned part
 c        under construction)
-c    - iper: integer(8)
+c    - iper: integer
 c        flag for periodic implementations. Currently unused.
 c        Feature under construction
 c
 c        
 c  output parameters
-c    - nlevels: integer(8)
+c    - nlevels: integer
 c        number of levels
-c    - nboxes: integer(8)
+c    - nboxes: integer
 c        number of boxes
-c    - ltree: integer(8)
+c    - ltree: integer
 c        length of tree
 c----------------------------------
 c
      
 
       implicit none
-      integer(8) nlevels,nboxes,idivflag
-      integer(8) ltree,nboxes8
-      integer(8) nbmax,nbtot
-      integer(8) ns,nt,ndiv
-      integer(8) nlmin,iper,ifunif
+      integer nlevels,nboxes,idivflag
+      integer *8 ltree,nboxes8
+      integer nbmax,nbtot
+      integer ns,nt,ndiv
+      integer nlmin,iper,ifunif
       double precision src(3,ns),targ(3,nt)
 
 
-      integer(8), allocatable :: laddr(:,:),ilevel(:),iparent(:)
-      integer(8), allocatable :: nchild(:)
-      integer(8), allocatable :: ichild(:,:),ncoll(:),icoll(:,:)
+      integer, allocatable :: laddr(:,:),ilevel(:),iparent(:),nchild(:)
+      integer, allocatable :: ichild(:,:),ncoll(:),icoll(:,:)
       double precision, allocatable :: centers(:,:)
-      integer(8), allocatable :: nbors(:,:),nnbors(:)
+      integer, allocatable :: nbors(:,:),nnbors(:)
 
-      integer(8), allocatable :: isrc(:),itarg(:),isrcse(:,:)
-      integer(8), allocatable :: itargse(:,:)
+      integer, allocatable :: isrc(:),itarg(:),isrcse(:,:),itargse(:,:)
 
-      integer(8), allocatable :: ilevel2(:),iparent2(:),nchild2(:),
+      integer, allocatable :: ilevel2(:),iparent2(:),nchild2(:),
      1    ichild2(:,:),isrcse2(:,:),itargse2(:,:)
       double precision, allocatable :: centers2(:,:)
 
-      integer(8) nlmax
-      integer(8) i,itype,j
+      integer nlmax
+      integer i,itype,j
 
       double precision, allocatable :: centerstmp(:,:,:)
       double precision, allocatable :: boxsize(:)
-      integer(8), allocatable :: irefinebox(:)
+      integer, allocatable :: irefinebox(:)
 
       double precision rsc
-      integer(8) nbloc,nbctr,nbadd,irefine,ilev,ifirstbox,ilastbox
-      integer(8) iii
-      integer(8) ibox,nn,nss,ntt
+      integer nbloc,nbctr,nbadd,irefine,ilev,ifirstbox,ilastbox
+      integer iii
+      integer ibox,nn,nss,ntt
       double precision sizey,sizez
 
       double precision xmin,xmax,ymin,ymax,zmin,zmax
@@ -439,36 +437,36 @@ c    - src: real *8 (3,ns)
 c        source locations
 c    - targ: real *8 (3,nt) 
 c        target locations
-c    - idivflag: integer(8)
+c    - idivflag: integer
 c        subdivision criterion
 c          * divflag = 0 -> subdivide on sources only
 c          * idivflag = 1 -> subdivide on targets only
 c          * idivflag = 2 -> subdivide on max(sources+targets)
-c    - ndiv: integer(8)
+c    - ndiv: integer
 c        subdivide if relevant number of particles
 c        per box is greater than ndiv
-c    - nlmin: integer(8)
+c    - nlmin: integer
 c        minimum number of levels of uniform refinement.
 c        Note that empty boxes are not pruned along the way
-c    - nlmax: integer(8)
+c    - nlmax: integer
 c        max number of levels
-c    - ifunif: integer(8)
+c    - ifunif: integer
 c        flag for creating uniform pruned tree
 c        Tree is uniform if ifunif=1 (Currently pruned part
 c        under construction)
-c    - iper: integer(8)
+c    - iper: integer
 c        flag for periodic implementations. Currently unused.
 c        Feature under construction
-c    - nlevels: integer(8)
+c    - nlevels: integer
 c        number of levels
-c    - nboxes: integer(8)
+c    - nboxes: integer
 c        number of boxes
-c    - ltree: integer(8)
+c    - ltree: integer
 c
 c  output:
-c    - itree: integer(8)(ltree)
+c    - itree: integer(ltree)
 c        tree info
-c    - iptr: integer(8)(8)
+c    - iptr: integer(8)
 c        * iptr(1) - laddr
 c        * iptr(2) - ilevel
 c        * iptr(3) - iparent
@@ -484,23 +482,22 @@ c        size of box at each of the levels
 c
 
       implicit none
-      integer(8) nlevels,nboxes,ns,nt,idivflag,ndiv
-      integer(8) iptr(8),ltree
-      integer(8) itree(ltree),iper
-      integer(8) ifunif,nlmin,nlmax
+      integer nlevels,nboxes,ns,nt,idivflag,ndiv
+      integer *8 iptr(8),ltree
+      integer itree(ltree),iper
+      integer ifunif,nlmin,nlmax
       double precision centers(3,nboxes),src(3,ns),targ(3,nt)
-      integer(8), allocatable :: irefinebox(:)
+      integer, allocatable :: irefinebox(:)
       double precision boxsize(0:nlevels)
-      integer(8), allocatable :: isrc(:),itarg(:),isrcse(:,:)
-      integer(8), allocatable :: itargse(:,:)
+      integer, allocatable :: isrc(:),itarg(:),isrcse(:,:),itargse(:,:)
 
-      integer(8) i,ilev,irefine,itype,nbmax,npbox,npc,ii
-      integer(8) ifirstbox,ilastbox,nbctr,nbloc
+      integer i,ilev,irefine,itype,nbmax,npbox,npc,ii
+      integer ifirstbox,ilastbox,nbctr,nbloc
       double precision rsc
 
       double precision ra
-      integer(8) j,nboxes0
-      integer(8) ibox,nn,nss,ntt
+      integer j,nboxes0
+      integer ibox,nn,nss,ntt
 
       double precision xmin,xmax,ymin,ymax,zmin,zmax,sizey,sizez
 
@@ -710,12 +707,12 @@ c
       subroutine sort_pts_to_children(ibox,nboxes,centers,
      1   ichild,src,ns,isrc,isrcse)
       implicit double precision (a-h,o-z)
-      integer(8) nboxes,ibox
-      integer(8) ns, isrc(ns),isrcse(2,nboxes)
+      integer nboxes
       double precision centers(3,nboxes),src(3,ns)
-      integer(8) ichild(8,nboxes)
-      integer(8) iss, nsc(8)
-      integer(8), allocatable :: isrctmp(:)
+      integer ns, isrc(ns),isrcse(2,nboxes)
+      integer ichild(8,nboxes)
+      integer iss, nsc(8)
+      integer, allocatable :: isrctmp(:)
 
 c           Allocate temporary array to figure out which child you
 c           belong to
@@ -908,17 +905,17 @@ c
 c       convert an adaptive tree into a level restricted tree
 c
       implicit none
-      integer(8) nlevels,nboxes,nlmax
-      integer(8) nbmax,iper
+      integer nlevels,nboxes,nlmax
+      integer nbmax,iper
       double precision centers(3,nbmax),boxsize(0:nlmax)
-      integer(8) laddr(2,0:nlmax),ilevel(nbmax),iparent(nbmax)
-      integer(8) nchild(nbmax),ichild(8,nbmax),nnbors(nbmax)
-      integer(8) nbors(27,nbmax)
-      integer(8) laddrtail(2,0:nlmax),isum
-      integer(8), allocatable :: iflag(:)
+      integer laddr(2,0:nlmax),ilevel(nbmax),iparent(nbmax)
+      integer nchild(nbmax),ichild(8,nbmax),nnbors(nbmax)
+      integer nbors(27,nbmax)
+      integer laddrtail(2,0:nlmax),isum
+      integer, allocatable :: iflag(:)
 
-      integer(8) i,j,k,l,ibox,jbox,kbox,ilev,idad,igranddad
-      integer(8) nbloc,ict
+      integer i,j,k,l,ibox,jbox,kbox,ilev,idad,igranddad
+      integer nbloc,ict
       double precision xdis,ydis,zdis,distest
 
       allocate(iflag(nbmax))
@@ -1229,64 +1226,64 @@ c    At the end of the sorting, the boxes on level i
 c    are arranged from laddr(1,i) to laddr(2,i)  
 c
 c    INPUT/OUTPUT arguments
-c    nboxes         in: integer(8)
+c    nboxes         in: integer
 c                   number of boxes
 c
 c    centers        in/out: double precision(3,nboxes)
 c                   x and y coordinates of the center of boxes
 c
-c    nlevels        in: integer(8)
+c    nlevels        in: integer
 c                   Number of levels in the tree
 c
-c    laddr          in/out: integer(8)(2,0:nlevels)
+c    laddr          in/out: integer(2,0:nlevels)
 c                   boxes at level i are numbered between
 c                   laddr(1,i) to laddr(2,i)
 c
-c    laddrtail      in: integer(8)(2,0:nlevels)
+c    laddrtail      in: integer(2,0:nlevels)
 c                   new boxes to be added to the tree
 c                   structure are numbered from
 c                   laddrtail(1,i) to laddrtail(2,i)
 c
-c    ilevel      in/out: integer(8)(nboxes)
+c    ilevel      in/out: integer(nboxes)
 c                ilevel(i) is the level of box i
 c
-c    iparent     in/out: integer(8)(nboxes)
+c    iparent     in/out: integer(nboxes)
 c                 iparent(i) is the parent of box i
 c
-c    nchild      in/out: integer(8)(nboxes)
+c    nchild      in/out: integer(nboxes)
 c                nchild(i) is the number of children 
 c                of box i
 c
-c    ichild       in/out: integer(8)(4,nboxes)
+c    ichild       in/out: integer(4,nboxes)
 c                 ichild(j,i) is the jth child of box i
 c
-c    iflag        in/out: integer(8)(nboxes)
+c    iflag        in/out: integer(nboxes)
 c                 iflag(i) is a flag for box i required to generate
 c                 level restricted tree from adaptive tree
 
       implicit none
 c     Calling sequence variables and temporary variables
-      integer(8) nboxes,nlevels
+      integer nboxes,nlevels
       double precision centers(3,nboxes)
-      integer(8) laddr(2,0:nlevels), tladdr(2,0:nlevels)
-      integer(8) laddrtail(2,0:nlevels)
-      integer(8) ilevel(nboxes)
-      integer(8) iparent(nboxes)
-      integer(8) nchild(nboxes)
-      integer(8) ichild(8,nboxes)
-      integer(8) iflag(nboxes)
+      integer laddr(2,0:nlevels), tladdr(2,0:nlevels)
+      integer laddrtail(2,0:nlevels)
+      integer ilevel(nboxes)
+      integer iparent(nboxes)
+      integer nchild(nboxes)
+      integer ichild(8,nboxes)
+      integer iflag(nboxes)
       
-      integer(8), allocatable :: tilevel(:),tiparent(:),tnchild(:)
-      integer(8), allocatable :: tichild(:,:),tiflag(:)
-      integer(8), allocatable :: iboxtocurbox(:),ilevptr(:),ilevptr2(:)
+      integer, allocatable :: tilevel(:),tiparent(:),tnchild(:)
+      integer, allocatable :: tichild(:,:),tiflag(:)
+      integer, allocatable :: iboxtocurbox(:),ilevptr(:),ilevptr2(:)
 
       double precision, allocatable :: tcenters(:,:)
 
 
 
 c     Temporary variables
-      integer(8) i,j,k,l
-      integer(8) ibox,ilev, curbox,idim,nblev
+      integer i,j,k,l
+      integer ibox,ilev, curbox,idim,nblev
 
       allocate(tilevel(nboxes),tiparent(nboxes),tnchild(nboxes))
       allocate(tichild(8,nboxes),tiflag(nboxes),iboxtocurbox(nboxes))
@@ -1376,9 +1373,9 @@ c
       subroutine pts_tree_sort(n,xys,itree,ltree,nboxes,nlevels,
      1   iptr,centers,ixy,ixyse)
       implicit double precision (a-h,o-z)
-      integer(8) iptr(8),ltree,ibox
-      integer(8) n,nboxes,nlevels,itree(ltree)
-      integer(8) ixy(n),ixyse(2,nboxes)
+      integer *8 iptr(8),ltree
+      integer n,nboxes,nlevels,itree(ltree)
+      integer ixy(n),ixyse(2,nboxes)
       double precision xys(3,n),centers(3,nboxes)
 
       do i=1,n
@@ -1411,13 +1408,13 @@ c
       double precision center(3)
       double precision subcenters(3,8)
       double precision boxsize
-      integer(8) npts
-      integer(8) isorted(*)
-      integer(8) iboxfl(2,8)
+      integer npts
+      integer isorted(*)
+      integer iboxfl(2,8)
       double precision centerstmp(3,9)
-      integer(8) iboxfltmp(2,9),ichild(8,9)
-      integer(8) nboxes
-      integer(8) i,ibox,ii,j,jj
+      integer iboxfltmp(2,9),ichild(8,9)
+      integer nboxes
+      integer i,ibox,ii,j,jj
 
       nboxes = 9
 
@@ -1482,18 +1479,18 @@ c
       double precision center(3)
       double precision subcenters(3,8)
       double precision boxsize
-      integer(8) npts
-      integer(8) isorted(*)
-      integer(8) iboxfl(2,8)
+      integer npts
+      integer isorted(*)
+      integer iboxfl(2,8)
 
 c     Temporary variables
-      integer(8) isortedtmp(npts)
-      integer(8) i,j,i12,i34,istart,jstart,kstart,ii,iii,nss,nee
-      integer(8) jj,irefinebox,ntt
-      integer(8) i56, i78, i1234, i5678
-      integer(8) ibox,ifirstbox,ilastbox,nbfirst
-      integer(8) is,it,ie
-      integer(8) nc(8)
+      integer isortedtmp(npts)
+      integer i,j,i12,i34,istart,jstart,kstart,ii,iii,nss,nee
+      integer jj,irefinebox,ntt
+      integer i56, i78, i1234, i5678
+      integer ibox,ifirstbox,ilastbox,nbfirst
+      integer is,it,ie
+      integer nc(8)
 
       i1234 = 0
       i5678 = 0

@@ -51,8 +51,8 @@ c
 c
 c
       implicit none
-      integer(8) idim,nd
-      integer(8) nquad,ier,m1,m2,nterms,lmp,lmpn, next235_cproj_vec
+      integer idim,nd
+      integer nquad,ier,m1,m2,nterms,lmp,lmpn, next235_cproj_vec
       double precision beta
       double complex mpole(nd,0:lmp,-lmp:lmp)
       double complex marray2(nd,0:lmpn,-lmpn:lmpn)
@@ -101,10 +101,10 @@ c
 c
       function next235_cproj_vec(base)
       implicit none
-      integer(8) next235_cproj_vec, numdiv
+      integer next235_cproj_vec, numdiv
       real*8 base
 c ----------------------------------------------------------------------
-c     integer(8) function next235_cproj returns a multiple of 2, 3, and 5
+c     integer function next235_cproj returns a multiple of 2, 3, and 5
 c
 c     next235_cproj = 2^p 3^q 5^r >= base  where p>=1, q>=0, r>=0
 ************************************************************************
@@ -157,7 +157,7 @@ C                    nquad equispaced nodes
 C
 C***********************************************************************
       implicit double precision (a-h,o-z)
-      integer(8) nquad
+      integer nquad
       double precision cthetas(nquad)
       double precision sthetas(nquad)
       double precision cphis(nquad)
@@ -227,8 +227,8 @@ C                 of multipole terms of order j at ith quad node.
 C
 C***********************************************************************
       implicit double precision (a-h,o-z)
-      integer(8) nd,idim,lmp,nterms
-      integer(8) ndeg,morder, nquad
+      integer nd,idim
+      integer ndeg,morder, nquad
       double precision cthetas(nquad),cphis(nquad)
       double precision sthetas(nquad),sphis(nquad)
       double precision ynm(0:nterms,0:nterms)
@@ -411,9 +411,8 @@ C
 C
 C***********************************************************************
       implicit double precision (a-h,o-z)
-      integer(8) nquad, norder,nterms,lmpn,m2
-      integer(8) nd,idim
-      integer nquad_4
+      integer nquad, norder
+      integer nd,idim
       double complex ephi,ephi1,uval(nd,nquad,0:1)
       double complex uder(nd,nquad,0:1)
       double complex utheta,uphi,ztmp1,ztmp2
@@ -432,16 +431,15 @@ c
       ctheta = 0.0d0
       stheta = 1.0d0
       h = 1.0d0/nquad
-      nquad_4 = nquad
       call ylgndru2sf(nterms,ctheta,ynm,ynmd,rat1,rat2)
-      call zffti(nquad_4,wsave)
+      call zffti(nquad,wsave)
       do norder=0,nterms
          d=sqrt(2*norder+1.0d0)
          do idim=1,nd
    	        do ii = 1,nquad
                avec(ii) = uval(idim,ii,norder)*d + uder(idim,ii,norder)
             enddo
-	        call zfftf(nquad_4,avec,wsave)
+	        call zfftf(nquad,avec,wsave)
             do m = -norder,norder
 	           if (m.ge.0)  alpha = avec(m+1)*h
 	           if (m.lt.0)  alpha = avec(nquad+m+1)*h

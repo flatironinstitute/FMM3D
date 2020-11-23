@@ -1,6 +1,5 @@
       implicit real *8 (a-h,o-z)
       complex *16 z1,z2,zk,ima
-      integer(8) i1,i2,i3,i4,i5,i6
       data ima/(0.0d0,1.0d0)/
 
       done = 1
@@ -50,7 +49,7 @@
       subroutine test_hfmm3d_scale(rsc,zk,isuccess)
       
       implicit none
-      integer(8) ns
+      integer ns
       double precision, allocatable :: source(:,:)
       double complex, allocatable :: charge(:),dipvec(:,:)
       double complex, allocatable :: pot(:),potex(:)
@@ -58,9 +57,9 @@
 
       double precision eps,rsc
       double complex eye,zk
-      integer(8) i,j,k,ntest,ier,ione
+      integer i,j,k,ntest,ier
       double precision hkrand,thresh,erra,ra
-      integer(8) isuccess
+      integer isuccess
       
 
       data eye/(0.0d0,1.0d0)/
@@ -76,7 +75,6 @@ c
       write(*,*)
 
 
-      ione = 1
 
       ns = 10000
       
@@ -134,7 +132,7 @@ c
         gradex(3,i) = 0
       enddo
 
-      call h3ddirectcdg(ione,zk,source,charge,dipvec,ns,source,
+      call h3ddirectcdg(1,zk,source,charge,dipvec,ns,source,
      1  ntest,potex,gradex,thresh)
 
       erra = 0

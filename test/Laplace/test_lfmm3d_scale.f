@@ -1,5 +1,4 @@
       implicit real *8 (a-h,o-z)
-      integer(8) i1,i2
 
       done = 1
       pi = atan(done)*4
@@ -26,17 +25,16 @@
       subroutine test_lfmm3d_scale(rsc,isuccess)
       
       implicit none
-      integer(8) ns
+      integer ns
       double precision, allocatable :: source(:,:)
       double precision, allocatable :: charge(:),dipvec(:,:)
       double precision, allocatable :: pot(:),potex(:)
       double precision, allocatable :: grad(:,:),gradex(:,:)
 
       double precision eps,rsc
-      integer(8) i,j,k,ntest,ier
+      integer i,j,k,ntest,ier
       double precision hkrand,thresh,erra,ra
-      integer(8) isuccess
-      integer(8) ione
+      integer isuccess
       
 
 c
@@ -52,7 +50,6 @@ c
 
 
       ns = 10000
-      ione = 1
       
 
       allocate(source(3,ns))
@@ -108,7 +105,7 @@ c
         gradex(3,i) = 0
       enddo
 
-      call l3ddirectcdg(ione,source,charge,dipvec,ns,source,
+      call l3ddirectcdg(1,source,charge,dipvec,ns,source,
      1  ntest,potex,gradex,thresh)
 
       erra = 0

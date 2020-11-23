@@ -168,7 +168,7 @@ c     add mpole to mpole2
 c
 c----------------------------------------------------------------------
       implicit real *8 (a-h,o-z)
-      integer(8) nd
+      integer nd
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
       complex *16 mpole2(nd,0:nterms,-nterms:nterms)
 c

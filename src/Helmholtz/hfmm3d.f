@@ -15,7 +15,7 @@ c-----------------------------------------------------------
 c-----------------------------------------------------------------------
 c   INPUT PARAMETERS:
 c
-c   nd:    in: integer(8)
+c   nd:    in: integer
 c             number of densities
 c   
 c   eps:   in: double precision
@@ -24,14 +24,14 @@ c
 c   zk:    in: double complex
 c               helmholtz parameter                
 c
-c   nsource in: integer(8)  
+c   nsource in: integer  
 c                number of sources
 c
 c   source  in: double precision (3,nsource)
 c                source(k,j) is the kth component of the jth
 c                source locations
 c
-c   ifcharge  in: integer(8)  
+c   ifcharge  in: integer  
 c             charge computation flag
 c              ifcharge = 1   =>  include charge contribution
 c                                     otherwise do not
@@ -39,29 +39,29 @@ c
 c   charge    in: double complex (nd,nsource) 
 c              charge strengths
 c
-c   ifdipole   in: integer(8)
+c   ifdipole   in: integer
 c              dipole computation flag
 c              ifdipole = 1   =>  include dipole contribution
 c                                     otherwise do not
 c
 c   dipvec   in: double precision (nd,3,nsource) 
 c              dipole orientation vectors
-c   iper    in: integer(8)
+c   iper    in: integer
 c             flag for periodic implmentations. Currently unused
-c   ifpgh   in: integer(8)
+c   ifpgh   in: integer
 c              flag for evaluating potential/gradient at the sources
 c              ifpgh = 1, only potential is evaluated
 c              ifpgh = 2, potential and gradients are evaluated
 c
 c
-c   ntarg  in: integer(8)  
+c   ntarg  in: integer  
 c                 number of targs 
 c
 c   targ  in: double precision (3,ntarg)
 c               targ(k,j) is the kth component of the jth
 c               targ location
 c
-c   ifpghtarg   in: integer(8)
+c   ifpghtarg   in: integer
 c              flag for evaluating potential/gradient at the targs
 c              ifpghtarg = 1, only potential is evaluated
 c              ifpghtarg = 2, potential and gradient are evaluated
@@ -87,7 +87,7 @@ c
 c   hesstarg    out: double complex(nd,6,ntarg)
 c                hessian at the target locations
 c
-c   ier         out: integer(8)
+c   ier         out: integer
 c                error flag
 c                ier = 0, for successful execution
 c                ier = 4, if failed to allocate workspace
@@ -99,17 +99,17 @@ c------------------------------------------------------------------
 
       implicit none
 
-      integer(8) nd,ndim
-      integer(8) iper
-      integer(8) ier
+      integer nd
+      integer iper
+      integer ier
 
       double complex zk
       double precision eps
 
-      integer(8) ifcharge,ifdipole
-      integer(8) ifpgh,ifpghtarg
+      integer ifcharge,ifdipole
+      integer ifpgh,ifpghtarg
 
-      integer(8) nsource,ntarg
+      integer nsource,ntarg
 
       double precision source(3,nsource),targ(3,ntarg)
       double complex charge(nd,*)
@@ -121,16 +121,16 @@ c------------------------------------------------------------------
      1     gradtarg(nd,3,*),hess(nd,6,*),hesstarg(nd,6,*)
 
 c       Tree variables
-      integer(8) mhung,idivflag,ndiv,isep,nboxes,nbmax,nlevels
-      integer(8) nlmax
-      integer(8) mnbors
-      integer(8) ifunif,nlmin
-      integer(8) ipointer(8),ltree
-      integer(8), allocatable :: itree(:)
-      integer(8), allocatable :: isrcse(:,:),itargse(:,:),isrc(:)
-      integer(8), allocatable :: itarg(:)
-      integer(8), allocatable :: iexpcse(:,:)
-      integer(8) iexpc
+      integer mhung,idivflag,ndiv,isep,nboxes,nbmax,nlevels
+      integer nlmax
+      integer mnbors
+      integer ifunif,nlmin
+      integer *8 ipointer(8),ltree
+      integer, allocatable :: itree(:)
+      integer, allocatable :: isrcse(:,:),itargse(:,:),isrc(:)
+      integer, allocatable :: itarg(:)
+      integer, allocatable :: iexpcse(:,:)
+      integer iexpc
       double precision, allocatable :: treecenters(:,:),boxsize(:)
       double precision b0,b0inv,b0inv2,b0inv3
       double complex zkfmm
@@ -151,13 +151,13 @@ c
 cc       temporary fmm arrays
 c
       double precision epsfmm
-      integer(8), allocatable :: nterms(:)
-      integer(8), allocatable :: iaddr(:,:)
+      integer, allocatable :: nterms(:)
+      integer *8, allocatable :: iaddr(:,:)
       double precision, allocatable :: scales(:)
       double precision, allocatable :: rmlexp(:)
 
-      integer(8) lmptemp,nmax
-      integer(8) lmptot
+      integer lmptemp,nmax
+      integer *8 lmptot
       double precision, allocatable :: mptemp(:),mptemp2(:)
 
 c
@@ -166,12 +166,12 @@ c
       double precision expc(3),scjsort(1),radexp
       double complex texpssort(100)
       double precision expcsort(3),radssort(1)
-      integer(8) ntj,nexpc,nadd,ifnear
+      integer ntj,nexpc,nadd,ifnear
 
 c
 cc        other temporary variables
 c
-      integer(8) i,iert,ifprint,ilev,idim
+      integer i,iert,ifprint,ilev,idim
       double precision time1,time2,omp_get_wtime,second
 
        
@@ -207,7 +207,6 @@ c
       nlmin = 0
       iper = 0
       ifunif = 0
-      ndim = 3
 
 c
 cc     memory management code for contructing level restricted tree
@@ -386,7 +385,7 @@ C$OMP END PARALLEL DO
 c
 cc       reorder sources
 c
-      call dreorderf(ndim,nsource,source,sourcesort,isrc)
+      call dreorderf(3,nsource,source,sourcesort,isrc)
       call drescale(3*nsource,sourcesort,b0inv)
       if(ifcharge.eq.1) then
         call dreorderf(2*nd,nsource,charge,chargesort,isrc)
@@ -401,7 +400,7 @@ c
 c
 cc      reorder targs
 c
-      call dreorderf(ndim,ntarg,targ,targsort,itarg)
+      call dreorderf(3,ntarg,targ,targsort,itarg)
       call drescale(3*ntarg,targsort,b0inv)
 c
 c  update tree centers and boxsize
@@ -537,14 +536,14 @@ c
 
       implicit none
 
-      integer(8) nd,ndim
-      integer(8) ier
+      integer nd
+      integer ier
       double precision eps
-      integer(8) nsource,ntarg, nexpc
-      integer(8) ndiv,nlevels
+      integer nsource,ntarg, nexpc
+      integer ndiv,nlevels
 
-      integer(8) ifcharge,ifdipole
-      integer(8) ifpgh,ifpghtarg
+      integer ifcharge,ifdipole
+      integer ifpgh,ifpghtarg
 
       double complex zk,zk2
 
@@ -558,14 +557,14 @@ c
       double complex pot(nd,*),grad(nd,3,*),hess(nd,6,*)
       double complex pottarg(nd,*),gradtarg(nd,3,*),hesstarg(nd,6,*)
 
-      integer(8) ntj
-      integer(8) ifnear
+      integer ntj
+      integer ifnear
       double precision expcsort(3,nexpc)
       double complex jsort(nd,0:ntj,-ntj:ntj,nexpc)
 
 
-      integer(8) lmptemp
-      integer(8) iaddr(2,nboxes), lmptot
+      integer lmptemp
+      integer *8 iaddr(2,nboxes), lmptot
       double precision rmlexp(lmptot)
       double precision mptemp(lmptemp)
       double precision mptemp2(lmptemp)
@@ -575,36 +574,35 @@ c
 c
 cc      tree variables
 c
-      integer(8) isep,iper
-      integer(8) laddr(2,0:nlevels)
-      integer(8) nterms(0:nlevels)
-      integer(8) ipointer(8),ltree
-      integer(8) itree(ltree)
-      integer(8) nboxes
+      integer isep,iper
+      integer laddr(2,0:nlevels)
+      integer nterms(0:nlevels)
+      integer *8 ipointer(8),ltree
+      integer itree(ltree)
+      integer nboxes
       double precision rscales(0:nlevels)
       double precision boxsize(0:nlevels)
-      integer(8) isrcse(2,nboxes),itargse(2,nboxes),iexpcse(2,nboxes)
-      integer(8), allocatable :: nlist1(:),list1(:,:)
-      integer(8), allocatable :: nlist2(:),list2(:,:)
-      integer(8), allocatable :: nlist3(:),list3(:,:)
-      integer(8), allocatable :: nlist4(:),list4(:,:)
+      integer isrcse(2,nboxes),itargse(2,nboxes),iexpcse(2,nboxes)
+      integer, allocatable :: nlist1(:),list1(:,:)
+      integer, allocatable :: nlist2(:),list2(:,:)
+      integer, allocatable :: nlist3(:),list3(:,:)
+      integer, allocatable :: nlist4(:),list4(:,:)
 
 c
 cc      pw stuff
 c
-      integer(8) nuall,ndall,nnall,nsall,neall,nwall
-      integer(8) nu1234,nd5678,nn1256,ns3478,ne1357,nw2468
-      integer(8) nn12,nn56,ns34,ns78,ne13,ne57,nw24,nw68
-      integer(8) ne1,ne3,ne5,ne7,nw2,nw4,nw6,nw8
+      integer nuall,ndall,nnall,nsall,neall,nwall
+      integer nu1234,nd5678,nn1256,ns3478,ne1357,nw2468
+      integer nn12,nn56,ns34,ns78,ne13,ne57,nw24,nw68
+      integer ne1,ne3,ne5,ne7,nw2,nw4,nw6,nw8
 
-      integer(8) uall(200),dall(200),nall(120),sall(120),eall(72)
-      integer(8) wall(72)
-      integer(8) u1234(36),d5678(36),n1256(24),s3478(24)
-      integer(8) e1357(16),w2468(16),n12(20),n56(20),s34(20),s78(20)
-      integer(8) e13(20),e57(20),w24(20),w68(20)
-      integer(8) e1(20),e3(5),e5(5),e7(5),w2(5),w4(5),w6(5),w8(5)
+      integer uall(200),dall(200),nall(120),sall(120),eall(72),wall(72)
+      integer u1234(36),d5678(36),n1256(24),s3478(24)
+      integer e1357(16),w2468(16),n12(20),n56(20),s34(20),s78(20)
+      integer e13(20),e57(20),w24(20),w68(20)
+      integer e1(20),e3(5),e5(5),e7(5),w2(5),w4(5),w6(5),w8(5)
 
-      integer(8) ntmax, nexpmax, nlams, nmax, nthmax, nphmax
+      integer ntmax, nexpmax, nlams, nmax, nthmax, nphmax
       double precision, allocatable :: carray(:,:), dc(:,:)
       double precision, allocatable :: rdplus(:,:,:)
       double precision, allocatable :: rdminus(:,:,:), rdsq3(:,:,:)
@@ -612,13 +610,13 @@ c
       double complex, allocatable :: rdminus2(:,:,:),zeyep(:)
       double complex, allocatable :: rdplus2(:,:,:)
       double precision, allocatable :: zmone(:)
-      integer(8) nn,nnn
+      integer nn,nnn
   
       double complex, allocatable :: rlams(:),whts(:)
 
       double complex, allocatable :: rlsc(:,:,:)
-      integer(8), allocatable :: nfourier(:), nphysical(:)
-      integer(8) nexptot, nexptotp
+      integer, allocatable :: nfourier(:), nphysical(:)
+      integer nexptot, nexptotp
       double complex, allocatable :: xshift(:,:),yshift(:,:),zshift(:,:)
 
       double complex, allocatable :: fexp(:),fexpback(:)
@@ -635,42 +633,42 @@ c
       double precision scjsort(nexpc),radssort(nexpc)
 
 c     temp variables
-      integer(8) i,j,k,l,ii,jj,kk,ll,idim
-      integer(8) ibox,jbox,ilev,npts,npts0
-      integer(8) nchild
+      integer i,j,k,l,ii,jj,kk,ll,idim
+      integer ibox,jbox,ilev,npts,npts0
+      integer nchild
 
-      integer(8) istart,iend,istartt,iendt,istarte,iende
-      integer(8) istarts,iends
-      integer(8) jstart,jend
+      integer istart,iend,istartt,iendt,istarte,iende
+      integer istarts,iends
+      integer jstart,jend
 
-      integer(8) ifprint,ifwrite
+      integer ifprint,ifwrite
 
-      integer(8) ifhesstarg
+      integer ifhesstarg
       double precision d,time1,time2,omp_get_wtime
 
       double precision sourcetmp(3)
       double complex chargetmp(nd)
 
-      integer(8) ix,iy,iz
+      integer ix,iy,iz
       double precision rtmp
       double complex zmul
 
-      integer(8) nlege, lw7, lused7, itype
+      integer nlege, lw7, lused7, itype
       double precision, allocatable :: wlege(:)
 
       double precision thresh
 
-      integer(8) mnbors,mnlist1, mnlist2,mnlist3,mnlist4
+      integer mnbors,mnlist1, mnlist2,mnlist3,mnlist4
       double complex eye, ztmp,zmult
       double precision alphaj
-      integer(8) ctr,ifinit2
+      integer ctr,ifinit2
       double precision, allocatable :: xnodes(:),wts(:)
       double precision radius
-      integer(8) nquad2
-      integer(8) maX_nodes
+      integer nquad2
+      integer maX_nodes
       double precision pi
       
-      integer(8) istart0,istart1,istartm1,nprin
+      integer istart0,istart1,istartm1,nprin
       double precision rtmp1,rtmp2,rtmp3,rtmp4
       double precision ctmp(3)
       double complex ima
@@ -681,25 +679,25 @@ c     list 3 variables
       double complex, allocatable :: iboxpot(:,:)
       double complex, allocatable :: iboxgrad(:,:,:)
       double precision, allocatable :: iboxsrc(:,:)
-      integer(8), allocatable :: iboxsrcind(:)
-      integer(8) iboxfl(2,8)
+      integer, allocatable :: iboxsrcind(:)
+      integer iboxfl(2,8)
 c     end of list 3 variables
 c     list 4 variables
-      integer(8) cntlist4
-      integer(8), allocatable :: list4ct(:),ilist4(:)
+      integer cntlist4
+      integer, allocatable :: list4ct(:),ilist4(:)
       double complex, allocatable :: pgboxwexp(:,:,:,:)
 
 
 c     end of list 4 variables
 
-      integer(8) bigint
+      integer *8 bigint
       double precision zkiupbound,zi,zkrupbound,rz
-      integer(8) ilevcutoff
+      integer ilevcutoff
 
-      integer(8) iert
+      integer iert
       data ima/(0.0d0,1.0d0)/
 
-      integer(8) nlfbox
+      integer nlfbox
 
 
       ntmax = 1000
@@ -723,7 +721,6 @@ c
       mnbors = 27
 
       isep = 1
-      ndim = 3
       
       call computemnlists(nlevels,nboxes,itree(ipointer(1)),boxsize,
      1  centers,itree(ipointer(3)),itree(ipointer(4)),
@@ -1339,7 +1336,7 @@ c
                   call subdividebox(sourcesort(1,istart),npts,
      1                    centers(1,ibox),boxsize(ilev),
      2                    iboxsrcind,iboxfl,iboxsubcenters)
-                  call dreorderf(ndim,npts,sourcesort(1,istart),
+                  call dreorderf(3,npts,sourcesort(1,istart),
      1                    iboxsrc,iboxsrcind)
                   call dreorderf(2*nd,npts,pot(1,istart),
      1                    iboxpot,iboxsrcind)
@@ -1375,7 +1372,7 @@ c
                   call subdividebox(sourcesort(1,istart),npts,
      1                  centers(1,ibox),boxsize(ilev),
      2                  iboxsrcind,iboxfl,iboxsubcenters)
-                  call dreorderf(ndim,npts,sourcesort(1,istart),
+                  call dreorderf(3,npts,sourcesort(1,istart),
      1                   iboxsrc,iboxsrcind)
                   call dreorderf(2*nd,npts,pot(1,istart),
      1                   iboxpot,iboxsrcind)
@@ -1415,7 +1412,7 @@ c
                   call subdividebox(targsort(1,istart),npts,
      1                   centers(1,ibox),boxsize(ilev),
      2                   iboxsrcind,iboxfl,iboxsubcenters)
-                  call dreorderf(ndim,npts,targsort(1,istart),
+                  call dreorderf(3,npts,targsort(1,istart),
      1                   iboxsrc,iboxsrcind)
                   call dreorderf(2*nd,npts,pottarg(1,istart),
      1                   iboxpot,iboxsrcind)
@@ -1451,7 +1448,7 @@ c
                   call subdividebox(targsort(1,istart),npts,
      1                  centers(1,ibox),boxsize(ilev),
      2                  iboxsrcind,iboxfl,iboxsubcenters)
-                  call dreorderf(ndim,npts,targsort(1,istart),
+                  call dreorderf(3,npts,targsort(1,istart),
      1                    iboxsrc,iboxsrcind)
                   call dreorderf(2*nd,npts,pottarg(1,istart),
      1                    iboxpot,iboxsrcind)
@@ -2284,7 +2281,7 @@ c     expansions
 c
 c     INPUT arguments
 c------------------------------------------------------------------
-c     nd           in: integer(8)
+c     nd           in: integer
 c                  number of charge densities
 c 
 c     zk           in: double complex
@@ -2338,7 +2335,7 @@ c     wlege       in: double precision(0:nlege,0:nlege)
 c                 precomputed array of recurrence relation
 c                 coeffs for Ynm calculation.
 c
-c    nlege        in: integer(8)
+c    nlege        in: integer
 c                 dimension parameter for wlege
 c------------------------------------------------------------
 c     OUTPUT
@@ -2348,9 +2345,9 @@ c   texps : coeffs for local expansions
 c-------------------------------------------------------               
         implicit none
 c
-        integer(8) istart,iend,jstart,jend,ns,j, nlege
-        integer(8) nd
-        integer(8) ifcharge,ifdipole,ier
+        integer istart,iend,jstart,jend,ns,j, nlege
+        integer nd
+        integer ifcharge,ifdipole,ier
         double complex zk
         double precision source(3,*)
         double precision wlege(0:nlege,0:nlege)
@@ -2358,7 +2355,7 @@ c
         double complex dipvec(nd,3,*)
         double precision targ(3,*),scj(*)
 
-        integer(8) nlevels,ntj
+        integer nlevels,ntj
 c
         double complex texps(nd,0:ntj,-ntj:ntj,*)
         
