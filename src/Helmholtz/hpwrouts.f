@@ -3105,9 +3105,9 @@ cccccc input/output variables
 cccccc scoped function variables
       integer ibox,jbox,i,idim,nlist3
       integer istart,iend,npts,jstart,jend,npts0
-      integer gboxfl(2,8)
+      integer, allocatable :: gboxfl(:,:)
       integer, allocatable :: gboxind(:)
-      double precision gboxsubcenters(3,8)
+      double precision, allocatable :: gboxsubcenters(:,:)
       double precision time1,time2,omp_get_wtime
       double precision, allocatable :: gboxsort(:,:)
       double complex, allocatable :: gboxmexp(:,:)
@@ -3129,6 +3129,8 @@ C$OMP$PRIVATE(mexpf1,mexpf2,tmp,tmp2)
           iend=isrcse(2,ibox)
           npts = iend-istart+1
           if(npts.gt.0) then
+            allocate(gboxfl(2,8))
+            allocate(gboxsubcenters(3,8))
             allocate(gboxind(npts))
             allocate(gboxsort(3,npts))
             allocate(gboxmexp(nd*(nterms+1)*(2*nterms+1),8))
@@ -3239,6 +3241,7 @@ cc                process east-west for current box
                 endif
               endif
             enddo
+            deallocate(gboxfl,gboxsubcenters)
             deallocate(gboxind,gboxsort)
             if(ifcharge.eq.1) then
               deallocate(gboxcgsort)

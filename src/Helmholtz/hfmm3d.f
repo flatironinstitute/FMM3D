@@ -596,11 +596,14 @@ c
       integer nn12,nn56,ns34,ns78,ne13,ne57,nw24,nw68
       integer ne1,ne3,ne5,ne7,nw2,nw4,nw6,nw8
 
-      integer uall(200),dall(200),nall(120),sall(120),eall(72),wall(72)
-      integer u1234(36),d5678(36),n1256(24),s3478(24)
-      integer e1357(16),w2468(16),n12(20),n56(20),s34(20),s78(20)
-      integer e13(20),e57(20),w24(20),w68(20)
-      integer e1(20),e3(5),e5(5),e7(5),w2(5),w4(5),w6(5),w8(5)
+      integer, allocatable :: uall(:),dall(:),nall(:)
+      integer, allocatable :: sall(:),eall(:),wall(:)
+      integer, allocatable :: u1234(:),d5678(:),n1256(:),s3478(:)
+      integer, allocatable :: e1357(:),w2468(:),n12(:)
+      integer, allocatable :: n56(:),s34(:),s78(:)
+      integer, allocatable :: e13(:),e57(:),w24(:),w68(:)
+      integer, allocatable :: e1(:),e3(:),e5(:),e7(:)
+      integer, allocatable :: w2(:),w4(:),w6(:),w8(:)
 
       integer ntmax, nexpmax, nlams, nmax, nthmax, nphmax
       double precision, allocatable :: carray(:,:), dc(:,:)
@@ -675,12 +678,12 @@ c     temp variables
 
 c     list 3 variables
       double complex, allocatable :: iboxlexp(:,:)
-      double precision iboxsubcenters(3,8)
+      double precision, allocatable :: iboxsubcenters(:,:)
       double complex, allocatable :: iboxpot(:,:)
       double complex, allocatable :: iboxgrad(:,:,:)
       double precision, allocatable :: iboxsrc(:,:)
       integer, allocatable :: iboxsrcind(:)
-      integer iboxfl(2,8)
+      integer, allocatable :: iboxfl(:,:)
 c     end of list 3 variables
 c     list 4 variables
       integer cntlist4
@@ -1204,6 +1207,15 @@ C$OMP$PRIVATE(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
 C$OMP$PRIVATE(npts0,ctmp,jstart,jend,i,iboxfl,iboxsubcenters)
 C$OMP$PRIVATE(iboxpot,iboxgrad,iboxlexp,iboxsrc,iboxsrcind)
           do ibox = laddr(1,ilev-1),laddr(2,ilev-1)
+            allocate(uall(200),dall(200),nall(120))
+            allocate(sall(120),eall(72),wall(72))
+            allocate(u1234(36),d5678(36),n1256(24),s3478(24))
+            allocate(e1357(16),w2468(16),n12(20))
+            allocate(n56(20),s34(20),s78(20))
+            allocate(e13(20),e57(20),w24(20),w68(20))
+            allocate(e1(20),e3(5),e5(5),e7(5),w2(5),w4(5),w6(5),w8(5))
+            allocate(iboxsubcenters(3,8))
+            allocate(iboxfl(2,8))
             npts = 0
             if(ifpghtarg.gt.0) then
               istart = itargse(1,ibox)
@@ -1478,6 +1490,12 @@ c
               endif
               deallocate(iboxlexp)
             endif
+            deallocate(uall,dall,nall,sall,eall,wall)
+            deallocate(u1234,d5678,n1256,s3478)
+            deallocate(e1357,w2468,n12,n56,s34,s78)
+            deallocate(e13,e57,w24,w68)
+            deallocate(e1,e3,e5,e7,w2,w4,w6,w8)
+            deallocate(iboxsubcenters,iboxfl)
           enddo
 C$OMP END PARALLEL DO        
 
