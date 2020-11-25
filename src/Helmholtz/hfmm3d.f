@@ -1501,7 +1501,7 @@ C$OMP END PARALLEL DO
 
           radius = boxsize(ilev)/2*sqrt(3.0d0)
 C$OMP PARALLEL DO DEFAULT(SHARED)
-C$OMP$PRIVATE(ibox,istart,iend,npts,nlist2,i,jbox)
+C$OMP$PRIVATE(ibox,istart,iend,npts,i,jbox)
           do ibox = laddr(1,ilev),laddr(2,ilev)
             npts = 0
             if(ifpghtarg.gt.0) then
