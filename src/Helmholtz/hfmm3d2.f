@@ -1049,13 +1049,13 @@ C$OMP END PARALLEL DO
       allocate(iboxgrad(nd,3,nmax,nthd))
       allocate(iboxsubcenters(3,8,nthd))
       allocate(iboxfl(2,8,nthd))
-      allocate(iboxlexp(nd*(nterms(ilev)+1)*
-     1           (2*nterms(ilev)+1),8,nthd))
 
 
 
 
       do ilev = 2,nlevels
+        allocate(iboxlexp(nd*(nterms(ilev)+1)*
+     1           (2*nterms(ilev)+1),8,nthd))
         zk2 = zk*boxsize(ilev)
         if(real(zk2).le.zkrupbound.and.imag(zk2).lt.zkiupbound.and.
      1        ilev.gt.ilevcutoff) then
@@ -1452,10 +1452,6 @@ c
                 endif
               endif
 
-c
-c  continue from here
-c
-
               if(ifpgh.eq.2) then
                 istart = isrcse(1,ibox)
                 iend = isrcse(2,ibox)
@@ -1715,6 +1711,7 @@ C$OMP$SCHEDULE(DYNAMIC)
 C$OMP END PARALLEL DO
           endif
         endif
+        deallocate(iboxlexp)
       enddo
 
 c
@@ -1830,7 +1827,6 @@ C$OMP END PARALLEL DO
       deallocate(uall,dall,nall,sall,eall,wall,u1234,d5678,n1256)
       deallocate(s3478,e1357,w2468,n12,n56,s34,s78)
       deallocate(e13,e57,w24,w68,e1,e3,e5,e7,w2,w4,w6,w8)
-      deallocate(iboxsubcenters,iboxfl,iboxlexp)
       call cpu_time(time2)
 C$    time2=omp_get_wtime()
       timeinfo(3) = time2-time1
