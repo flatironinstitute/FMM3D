@@ -282,6 +282,8 @@ c$OMP END PARALLEL DO
 
 c     call Laplace FMM
 
+      iper = 0
+      ier = 0
       call lfmm3d(ndl,eps,nsource,source,ifchargel,charge,
      1     ifdipolel,dipvec,iper,ifpghl,potl,gradl,hessl,ntarg,
      2     targ,ifpghtargl,pottargl,gradtargl,hesstargl,ier)
