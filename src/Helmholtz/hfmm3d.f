@@ -596,14 +596,15 @@ c
       integer nn12,nn56,ns34,ns78,ne13,ne57,nw24,nw68
       integer ne1,ne3,ne5,ne7,nw2,nw4,nw6,nw8
 
-      integer, allocatable :: uall(:),dall(:),nall(:)
-      integer, allocatable :: sall(:),eall(:),wall(:)
-      integer, allocatable :: u1234(:),d5678(:),n1256(:),s3478(:)
-      integer, allocatable :: e1357(:),w2468(:),n12(:)
-      integer, allocatable :: n56(:),s34(:),s78(:)
-      integer, allocatable :: e13(:),e57(:),w24(:),w68(:)
-      integer, allocatable :: e1(:),e3(:),e5(:),e7(:)
-      integer, allocatable :: w2(:),w4(:),w6(:),w8(:)
+      integer, allocatable :: uall(:,:),dall(:,:),nall(:,:)
+      integer, allocatable :: sall(:,:),eall(:,:),wall(:,:)
+      integer, allocatable :: u1234(:,:),d5678(:,:)
+      integer, allocatable :: n1256(:,:),s3478(:,:)
+      integer, allocatable :: e1357(:,:),w2468(:,:)
+      integer, allocatable :: n12(:,:),n56(:,:),s34(:,:),s78(:,:)
+      integer, allocatable :: e13(:,:),e57(:,:),w24(:,:),w68(:,:)
+      integer, allocatable :: e1(:,:),e3(:,:),e5(:,:),e7(:,:)
+      integer, allocatable :: w2(:,:),w4(:,:),w6(:,:),w8(:,:)
 
       integer ntmax, nexpmax, nlams, nmax, nthmax, nphmax
       double precision, allocatable :: carray(:,:), dc(:,:)
@@ -625,10 +626,10 @@ c
       double complex, allocatable :: fexp(:),fexpback(:)
 
       double complex, allocatable :: mexp(:,:,:,:)
-      double complex, allocatable :: tmp(:,:,:),tmp2(:,:,:)
-      double complex, allocatable :: mexpf1(:,:),mexpf2(:,:)
-      double complex, allocatable :: mexpp1(:,:),mexpp2(:,:),
-     1    mexppall(:,:,:)
+      double complex, allocatable :: tmp(:,:,:,:),tmp2(:,:,:,:)
+      double complex, allocatable :: mexpf1(:,:,:),mexpf2(:,:,:)
+      double complex, allocatable :: mexpp1(:,:,:),mexpp2(:,:,:),
+     1    mexppall(:,:,:,:)
 
       double precision, allocatable :: rsc(:)
       double precision r1
@@ -701,6 +702,10 @@ c     end of list 4 variables
       data ima/(0.0d0,1.0d0)/
 
       integer nlfbox
+      integer nthd,ithd
+      integer omp_get_max_threads,omp_get_thread_num
+      nthd = 1
+C$    nthd=omp_get_max_threads()
 
 
       ntmax = 1000
@@ -1004,6 +1009,16 @@ c       expansions and big to small far and small to far big
 
       call cpu_time(time1)
 C$    time1=omp_get_wtime()
+c     init uall,dall,...,etc arrays
+      allocate(uall(200,nthd),dall(200,nthd),nall(120,nthd))
+      allocate(sall(120,nthd),eall(72,nthd),wall(72,nthd))
+      allocate(u1234(36,nthd),d5678(36,nthd),n1256(24,nthd))
+      allocate(s3478(24,nthd))
+      allocate(e1357(16,nthd),w2468(16,nthd),n12(20,nthd))
+      allocate(n56(20,nthd),s34(20,nthd),s78(20,nthd))
+      allocate(e13(20,nthd),e57(20,nthd),w24(20,nthd),w68(20,nthd))
+      allocate(e1(20,nthd),e3(5,nthd),e5(5,nthd),e7(5,nthd),w2(5,nthd))
+      allocate(w4(5,nthd),w6(5,nthd),w8(5,nthd))
       do ilev = 2,nlevels
         zk2 = zk*boxsize(ilev)
         if(real(zk2).le.zkrupbound.and.imag(zk2).lt.zkiupbound.and.
@@ -1033,12 +1048,15 @@ c             get new pw quadrature
           allocate(yshift(-5:5,nexptotp))
           allocate(zshift(5,nexptotp))
           allocate(rlsc(0:nterms(ilev),0:nterms(ilev),nlams))
-          allocate(tmp(nd,0:nterms(ilev),-nterms(ilev):nterms(ilev)))
-          allocate(tmp2(nd,0:nterms(ilev),-nterms(ilev):nterms(ilev)))
+          allocate(tmp(nd,0:nterms(ilev),
+     1            -nterms(ilev):nterms(ilev),nthd))
+          allocate(tmp2(nd,0:nterms(ilev),
+     1            -nterms(ilev):nterms(ilev),nthd))
  
-          allocate(mexpf1(nd,nexptot),mexpf2(nd,nexptot),
-     1          mexpp1(nd,nexptotp))
-          allocate(mexpp2(nd,nexptotp),mexppall(nd,nexptotp,16))
+          allocate(mexpf1(nd,nexptot,nthd),mexpf2(nd,nexptot,nthd),
+     1          mexpp1(nd,nexptotp,nthd))
+          allocate(mexpp2(nd,nexptotp,nthd),
+     1          mexppall(nd,nexptotp,16,nthd))
 
           bigint = 0
           bigint = nboxes
@@ -1128,8 +1146,12 @@ cc         create multipole to plane wave expansion for
 c          all boxes at this level
 c
 C$OMP PARALLEL DO DEFAULT (SHARED)
-C$OMP$PRIVATE(ibox,istart,iend,npts,tmp,mexpf1,mexpf2,tmp2)
+C$OMP$PRIVATE(ibox,istart,iend,npts)
+C$OMP$PRIVATE(ithd)
           do ibox = laddr(1,ilev),laddr(2,ilev)
+            ithd = 0
+C$          ithd=omp_get_thread_num()
+            ithd = ithd + 1
             istart = isrcse(1,ibox)
             iend = isrcse(2,ibox)
             npts = iend - istart+1
@@ -1137,45 +1159,50 @@ C$OMP$PRIVATE(ibox,istart,iend,npts,tmp,mexpf1,mexpf2,tmp2)
 
 c           rescale multipole expansion
               call mpscale(nd,nterms(ilev),rmlexp(iaddr(1,ibox)),
-     1               rsc,tmp)
+     1               rsc,tmp(1,0,-nterms(ilev),ithd))
                 
-              call hmpoletoexp(nd,tmp,nterms(ilev),
-     1          nlams,nfourier,nexptot,mexpf1,mexpf2,rlsc) 
+              call hmpoletoexp(nd,tmp(1,0,-nterms(ilev),ithd),
+     1          nterms(ilev),nlams,nfourier,nexptot,mexpf1(1,1,ithd),
+     2          mexpf2(1,1,ithd),rlsc) 
 
-              call hftophys(nd,mexpf1,nlams,nfourier,nphysical,
-     1                 mexp(1,1,ibox,1),fexp)           
+              call hftophys(nd,mexpf1(1,1,ithd),nlams,nfourier,
+     1             nphysical,mexp(1,1,ibox,1),fexp)           
 
-              call hftophys(nd,mexpf2,nlams,nfourier,nphysical,
-     1                 mexp(1,1,ibox,2),fexp)
+              call hftophys(nd,mexpf2(1,1,ithd),nlams,nfourier,
+     1             nphysical,mexp(1,1,ibox,2),fexp)
 
 
 c          form mexpnorth, mexpsouth for current box
 
 c          Rotate mpole for computing mexpnorth and
 c          mexpsouth
-              call rotztoy(nd,nterms(ilev),tmp,
-     1                           tmp2,rdminus)
+              call rotztoy(nd,nterms(ilev),tmp(1,0,-nterms(ilev),ithd),
+     1                           tmp2(1,0,-nterms(ilev),ithd),rdminus)
 
-              call hmpoletoexp(nd,tmp2,nterms(ilev),nlams,
-     1                  nfourier,nexptot,mexpf1,mexpf2,rlsc)
+              call hmpoletoexp(nd,tmp2(1,0,-nterms(ilev),ithd),
+     1                  nterms(ilev),nlams,
+     2                  nfourier,nexptot,mexpf1(1,1,ithd),
+     3                  mexpf2(1,1,ithd),rlsc)
 
-              call hftophys(nd,mexpf1,nlams,nfourier,
+              call hftophys(nd,mexpf1(1,1,ithd),nlams,nfourier,
      1                 nphysical,mexp(1,1,ibox,3),fexp)           
 
-              call hftophys(nd,mexpf2,nlams,nfourier,
+              call hftophys(nd,mexpf2(1,1,ithd),nlams,nfourier,
      1                 nphysical,mexp(1,1,ibox,4),fexp)   
 
 
 c         Rotate mpole for computing mexpeast, mexpwest
-              call rotztox(nd,nterms(ilev),tmp,
-     1                              tmp2,rdplus)
-              call hmpoletoexp(nd,tmp2,nterms(ilev),nlams,
-     1                  nfourier,nexptot,mexpf1,mexpf2,rlsc)
+              call rotztox(nd,nterms(ilev),tmp(1,0,-nterms(ilev),ithd),
+     1                            tmp2(1,0,-nterms(ilev),ithd),rdplus)
+              call hmpoletoexp(nd,tmp2(1,0,-nterms(ilev),ithd),
+     1                  nterms(ilev),nlams,
+     2                  nfourier,nexptot,mexpf1(1,1,ithd),
+     3                  mexpf2(1,1,ithd),rlsc)
 
-              call hftophys(nd,mexpf1,nlams,nfourier,
+              call hftophys(nd,mexpf1(1,1,ithd),nlams,nfourier,
      1                 nphysical,mexp(1,1,ibox,5),fexp)
 
-              call hftophys(nd,mexpf2,nlams,nfourier,
+              call hftophys(nd,mexpf2(1,1,ithd),nlams,nfourier,
      1                 nphysical,mexp(1,1,ibox,6),fexp)           
 
             endif
@@ -1197,23 +1224,19 @@ c
 
 C$OMP PARALLEL DO DEFAULT (SHARED)
 C$OMP$PRIVATE(ibox,istart,iend,npts,nchild)
-C$OMP$PRIVATE(mexpf1,mexpf2,mexpp1,mexpp2,mexppall)
-C$OMP$PRIVATE(nuall,uall,ndall,dall,nnall,nall,nsall,sall)
-C$OMP$PRIVATE(neall,eall,nwall,wall,nu1234,u1234,nd5678,d5678)
-C$OMP$PRIVATE(nn1256,n1256,ns3478,s3478,ne1357,e1357,nw2468,w2468)
-C$OMP$PRIVATE(nn12,n12,nn56,n56,ns34,s34,ns78,s78,ne13,e13,ne57,e57)
-C$OMP$PRIVATE(nw24,w24,nw68,w68,ne1,e1,ne3,e3,ne5,e5,ne7,e7)
-C$OMP$PRIVATE(nw2,w2,nw4,w4,nw6,w6,nw8,w8)
+C$OMP$PRIVATE(nuall,ndall,nnall,nsall)
+C$OMP$PRIVATE(neall,nwall,nu1234,nd5678)
+C$OMP$PRIVATE(nn1256,ns3478,ne1357,nw2468)
+C$OMP$PRIVATE(nn12,nn56,ns34,ns78,ne13,ne57)
+C$OMP$PRIVATE(nw24,nw68,ne1,ne3,ne5,ne7)
+C$OMP$PRIVATE(nw2,nw4,nw6,nw8)
 C$OMP$PRIVATE(npts0,ctmp,jstart,jend,i,iboxfl,iboxsubcenters)
 C$OMP$PRIVATE(iboxpot,iboxgrad,iboxlexp,iboxsrc,iboxsrcind)
+C$OMP$PRIVATE(ithd)
           do ibox = laddr(1,ilev-1),laddr(2,ilev-1)
-            allocate(uall(200),dall(200),nall(120))
-            allocate(sall(120),eall(72),wall(72))
-            allocate(u1234(36),d5678(36),n1256(24),s3478(24))
-            allocate(e1357(16),w2468(16),n12(20))
-            allocate(n56(20),s34(20),s78(20))
-            allocate(e13(20),e57(20),w24(20),w68(20))
-            allocate(e1(20),e3(5),e5(5),e7(5),w2(5),w4(5),w6(5),w8(5))
+            ithd = 0
+C$          ithd=omp_get_thread_num()
+            ithd = ithd + 1
             allocate(iboxsubcenters(3,8))
             allocate(iboxfl(2,8))
             npts = 0
@@ -1240,23 +1263,33 @@ C$OMP$PRIVATE(iboxpot,iboxgrad,iboxlexp,iboxsrc,iboxsrcind)
               call getpwlistall(ibox,boxsize(ilev),nboxes,
      1           itree(ipointer(6)+ibox-1),itree(ipointer(7)+
      2           mnbors*(ibox-1)),nchild,itree(ipointer(5)),centers,
-     3           isep,nuall,uall,ndall,dall,nnall,nall,nsall,sall,
-     4           neall,eall,nwall,wall,nu1234,u1234,nd5678,d5678,
-     5           nn1256,n1256,ns3478,s3478,ne1357,e1357,nw2468,w2468,
-     6           nn12,n12,nn56,n56,ns34,s34,ns78,s78,ne13,e13,ne57,
-     7           e57,nw24,w24,nw68,w68,ne1,e1,ne3,e3,ne5,e5,ne7,e7,
-     8           nw2,w2,nw4,w4,nw6,w6,nw8,w8)
+     3           isep,nuall,uall(1,ithd),ndall,dall(1,ithd),
+     4           nnall,nall(1,ithd),nsall,sall(1,ithd),
+     5           neall,eall(1,ithd),nwall,wall(1,ithd),
+     6           nu1234,u1234(1,ithd),nd5678,d5678(1,ithd),
+     7           nn1256,n1256(1,ithd),ns3478,s3478(1,ithd),
+     8           ne1357,e1357(1,ithd),nw2468,w2468(1,ithd),
+     9           nn12,n12(1,ithd),nn56,n56(1,ithd),ns34,s34(1,ithd),
+     9           ns78,s78(1,ithd),ne13,e13(1,ithd),ne57,e57(1,ithd),
+     9           nw24,w24(1,ithd),nw68,w68(1,ithd),ne1,e1(1,ithd),
+     9           ne3,e3(1,ithd),ne5,e5(1,ithd),ne7,e7(1,ithd),
+     9           nw2,w2(1,ithd),nw4,w4(1,ithd),nw6,w6(1,ithd),
+     9           nw8,w8(1,ithd))
 
 
               call hprocessudexp(nd,zk2,ibox,ilev,nboxes,centers,
      1            itree(ipointer(5)),rscales(ilev),boxsize(ilev),
      2            nterms(ilev),iaddr,rmlexp,rlams,whts,
      3            nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,
-     4            nuall,uall,nu1234,u1234,ndall,dall,nd5678,d5678,
-     5            mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1,1),
-     6            mexppall(1,1,2),mexppall(1,1,3),mexppall(1,1,4),
-     7            xshift,yshift,zshift,fexpback,rlsc,
-     8            pgboxwexp,cntlist4,list4ct,
+     4            nuall,uall(1,ithd),nu1234,u1234(1,ithd),
+     5            ndall,dall(1,ithd),nd5678,d5678(1,ithd),
+     6            mexpf1(1,1,ithd),mexpf2(1,1,ithd),
+     7            mexpp1(1,1,ithd),mexpp2(1,1,ithd),
+     8            mexppall(1,1,1,ithd),
+     9            mexppall(1,1,2,ithd),mexppall(1,1,3,ithd),
+     9            mexppall(1,1,4,ithd),
+     9            xshift,yshift,zshift,fexpback,rlsc,
+     9            pgboxwexp,cntlist4,list4ct,
      9            nlist4,list4,mnlist4)
 
 
@@ -1264,12 +1297,18 @@ C$OMP$PRIVATE(iboxpot,iboxgrad,iboxlexp,iboxsrc,iboxsrcind)
      1            itree(ipointer(5)),rscales(ilev),boxsize(ilev),
      2            nterms(ilev),iaddr,rmlexp,rlams,whts,
      3            nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,
-     4            nnall,nall,nn1256,n1256,nn12,n12,nn56,n56,nsall,sall,
-     5            ns3478,s3478,ns34,s34,ns78,s78,
-     6            mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1,1),
-     7            mexppall(1,1,2),mexppall(1,1,3),mexppall(1,1,4),
-     8            mexppall(1,1,5),mexppall(1,1,6),mexppall(1,1,7),
-     9            mexppall(1,1,8),rdplus,xshift,yshift,zshift,
+     4            nnall,nall(1,ithd),nn1256,n1256(1,ithd),
+     5            nn12,n12(1,ithd),nn56,n56(1,ithd),nsall,sall(1,ithd),
+     5            ns3478,s3478(1,ithd),ns34,s34(1,ithd),
+     6            ns78,s78(1,ithd),
+     7            mexpf1(1,1,ithd),mexpf2(1,1,ithd),
+     8            mexpp1(1,1,ithd),mexpp2(1,1,ithd),
+     9            mexppall(1,1,1,ithd),
+     9            mexppall(1,1,2,ithd),mexppall(1,1,3,ithd),
+     9            mexppall(1,1,4,ithd),
+     9            mexppall(1,1,5,ithd),mexppall(1,1,6,ithd),
+     9            mexppall(1,1,7,ithd),
+     9            mexppall(1,1,8,ithd),rdplus,xshift,yshift,zshift,
      9            fexpback,rlsc,
      9            pgboxwexp,cntlist4,list4ct,
      9            nlist4,list4,mnlist4)
@@ -1278,17 +1317,27 @@ C$OMP$PRIVATE(iboxpot,iboxgrad,iboxlexp,iboxsrc,iboxsrcind)
      1            itree(ipointer(5)),rscales(ilev),boxsize(ilev),
      2            nterms(ilev),iaddr,rmlexp,rlams,whts,
      3            nlams,nfourier,nphysical,nthmax,nexptot,nexptotp,mexp,
-     4            neall,eall,ne1357,e1357,ne13,e13,ne57,e57,ne1,e1,
-     5            ne3,e3,ne5,e5,ne7,e7,nwall,wall,
-     5            nw2468,w2468,nw24,w24,nw68,w68,
-     5            nw2,w2,nw4,w4,nw6,w6,nw8,w8,
-     6            mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1,1),
-     7            mexppall(1,1,2),mexppall(1,1,3),mexppall(1,1,4),
-     8            mexppall(1,1,5),mexppall(1,1,6),
-     8            mexppall(1,1,7),mexppall(1,1,8),mexppall(1,1,9),
-     9            mexppall(1,1,10),mexppall(1,1,11),mexppall(1,1,12),
-     9            mexppall(1,1,13),mexppall(1,1,14),mexppall(1,1,15),
-     9            mexppall(1,1,16),rdminus,xshift,yshift,zshift,
+     4            neall,eall(1,ithd),ne1357,e1357(1,ithd),
+     5            ne13,e13(1,ithd),ne57,e57(1,ithd),ne1,e1(1,ithd),
+     5            ne3,e3(1,ithd),ne5,e5(1,ithd),
+     6            ne7,e7(1,ithd),nwall,wall(1,ithd),
+     7            nw2468,w2468(1,ithd),
+     8            nw24,w24(1,ithd),nw68,w68(1,ithd),
+     9            nw2,w2(1,ithd),nw4,w4(1,ithd),nw6,w6(1,ithd),
+     9            nw8,w8(1,ithd),
+     9            mexpf1(1,1,ithd),mexpf2(1,1,ithd),
+     9            mexpp1(1,1,ithd),mexpp2(1,1,ithd),
+     9            mexppall(1,1,1,ithd),
+     9            mexppall(1,1,2,ithd),mexppall(1,1,3,ithd),
+     9            mexppall(1,1,4,ithd),
+     9            mexppall(1,1,5,ithd),mexppall(1,1,6,ithd),
+     9            mexppall(1,1,7,ithd),mexppall(1,1,8,ithd),
+     9            mexppall(1,1,9,ithd),
+     9            mexppall(1,1,10,ithd),mexppall(1,1,11,ithd),
+     9            mexppall(1,1,12,ithd),
+     9            mexppall(1,1,13,ithd),mexppall(1,1,14,ithd),
+     9            mexppall(1,1,15,ithd),
+     9            mexppall(1,1,16,ithd),rdminus,xshift,yshift,zshift,
      9            fexpback,rlsc,pgboxwexp,cntlist4,list4ct,
      9            nlist4,list4,mnlist4)
             endif
@@ -1301,8 +1350,10 @@ c
             if(nlist3(ibox).gt.0.and.npts.gt.0) then
               call getlist3pwlistall(ibox,boxsize(ilev),nboxes,
      1              nlist3(ibox),list3(1,ibox),isep,
-     2              centers,nuall,uall,ndall,dall,nnall,nall,
-     3              nsall,sall,neall,eall,nwall,wall)
+     2              centers,nuall,uall(1,ithd),ndall,dall(1,ithd),
+     3              nnall,nall(1,ithd),
+     4              nsall,sall(1,ithd),neall,eall(1,ithd),
+     5              nwall,wall(1,ithd))
                  
 
               allocate(iboxlexp(nd*(nterms(ilev)+1)*
@@ -1316,26 +1367,30 @@ c
               call hprocesslist3udexplong(nd,zk2,ibox,nboxes,centers,
      1               boxsize(ilev),nterms(ilev),iboxlexp,rlams,whts,
      2               nlams,nfourier,nphysical,nthmax,nexptot,
-     3               nexptotp,mexp,nuall,uall,ndall,dall,
-     4               mexpf1,mexpf2,mexpp1,mexpp2,
-     5               mexppall(1,1,1),mexppall(1,1,2),
-     6               xshift,yshift,zshift,fexpback,rlsc)
+     3               nexptotp,mexp,nuall,uall(1,ithd),
+     4               ndall,dall(1,ithd),
+     5               mexpf1(1,1,ithd),mexpf2(1,1,ithd),mexpp1(1,1,ithd),
+     6               mexpp2(1,1,ithd),
+     7               mexppall(1,1,1,ithd),mexppall(1,1,2,ithd),
+     8               xshift,yshift,zshift,fexpback,rlsc)
 
               call hprocesslist3nsexplong(nd,zk2,ibox,nboxes,centers,
      1           boxsize(ilev),nterms(ilev),iboxlexp,rlams,whts,
      2           nlams,nfourier,nphysical,nthmax,nexptot,
-     3           nexptotp,mexp,nnall,nall,nsall,sall,
-     4           mexpf1,mexpf2,mexpp1,mexpp2,
-     5           mexppall(1,1,1),mexppall(1,1,2),rdplus,
-     6           xshift,yshift,zshift,fexpback,rlsc)
+     3           nexptotp,mexp,nnall,nall(1,ithd),nsall,sall(1,ithd),
+     4           mexpf1(1,1,ithd),mexpf2(1,1,ithd),mexpp1(1,1,ithd),
+     5           mexpp2(1,1,ithd),
+     6           mexppall(1,1,1,ithd),mexppall(1,1,2,ithd),rdplus,
+     7           xshift,yshift,zshift,fexpback,rlsc)
 
               call hprocesslist3ewexplong(nd,zk2,ibox,nboxes,centers,
      1              boxsize(ilev),nterms(ilev),iboxlexp,rlams,whts,
      2              nlams,nfourier,nphysical,nthmax,nexptot,
-     3              nexptotp,mexp,neall,eall,nwall,wall,
-     4              mexpf1,mexpf2,mexpp1,mexpp2,
-     5              mexppall(1,1,1),mexppall(1,1,2),rdminus,
-     6              xshift,yshift,zshift,fexpback,rlsc)
+     3              nexptotp,mexp,neall,eall(1,ithd),nwall,wall(1,ithd),
+     4              mexpf1(1,1,ithd),mexpf2(1,1,ithd),mexpp1(1,1,ithd),
+     6              mexpp2(1,1,ithd),
+     7              mexppall(1,1,1,ithd),mexppall(1,1,2,ithd),rdminus,
+     8              xshift,yshift,zshift,fexpback,rlsc)
 
               if(ifpgh.eq.1) then
                 istart = isrcse(1,ibox)
@@ -1490,11 +1545,6 @@ c
               endif
               deallocate(iboxlexp)
             endif
-            deallocate(uall,dall,nall,sall,eall,wall)
-            deallocate(u1234,d5678,n1256,s3478)
-            deallocate(e1357,w2468,n12,n56,s34,s78)
-            deallocate(e13,e57,w24,w68)
-            deallocate(e1,e3,e5,e7,w2,w4,w6,w8)
             deallocate(iboxsubcenters,iboxfl)
           enddo
 C$OMP END PARALLEL DO        
@@ -1764,7 +1814,9 @@ C$OMP END PARALLEL DO
         enddo
       endif
 
-
+      deallocate(uall,dall,nall,sall,eall,wall,u1234,d5678,n1256)
+      deallocate(s3478,e1357,w2468,n12,n56,s34,s78)
+      deallocate(e13,e57,w24,w68,e1,e3,e5,e7,w2,w4,w6,w8)
       call cpu_time(time2)
 C$    time2=omp_get_wtime()
       timeinfo(3) = time2-time1
@@ -2124,7 +2176,7 @@ C$OMP$PRIVATE(ibox,istarts,iends,npts0,i,jbox,jstart,jend,npts)
                 call h3ddirectcdg(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts),
-     2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)          
+     2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)
               enddo
             enddo
 C$OMP END PARALLEL DO     

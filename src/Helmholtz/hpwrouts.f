@@ -3096,10 +3096,10 @@ cccccc input/output variables
       double complex chargesort(nd,*)
       double complex dipvecsort(nd,3,*)
       double complex fexp(*)
-      double complex mexpf1(nd,nexptot)
-      double complex mexpf2(nd,nexptot)
-      double complex tmp(nd,0:nterms,-nterms:nterms)
-      double complex tmp2(nd,0:nterms,-nterms:nterms)
+      double complex mexpf1(nd,nexptot,*)
+      double complex mexpf2(nd,nexptot,*)
+      double complex tmp(nd,0:nterms,-nterms:nterms,*)
+      double complex tmp2(nd,0:nterms,-nterms:nterms,*)
       double complex rlams(*)
       double complex pgboxwexp(nd,nexptotp,cntlist4,6)
 cccccc scoped function variables
@@ -3114,6 +3114,10 @@ cccccc scoped function variables
       double complex, allocatable ::  gboxwexp(:,:,:,:)
       double complex, allocatable :: gboxcgsort(:,:)
       double complex, allocatable :: gboxdpsort(:,:,:)
+      integer nthd,ithd
+      integer omp_get_max_threads,omp_get_thread_num
+      nthd = 1
+C$    nthd=omp_get_max_threads()
       
       call cpu_time(time1)
 C$    time1=omp_get_wtime()
@@ -3122,8 +3126,11 @@ C$OMP PARALLEL DO DEFAULT(SHARED)
 C$OMP$PRIVATE(ibox,istart,iend,jbox,jstart,jend,npts,npts0,i)
 C$OMP$PRIVATE(gboxind,gboxsort,gboxfl,gboxsubcenters)
 C$OMP$PRIVATE(gboxcgsort,gboxdpsort,gboxwexp,gboxmexp)
-C$OMP$PRIVATE(mexpf1,mexpf2,tmp,tmp2)
+C$OMP$PRIVATE(ithd)
       do ibox=laddr(1,ilev),laddr(2,ilev)
+        ithd = 0
+C$      ithd=omp_get_thread_num()
+        ithd = ithd + 1
         if(list4(ibox).gt.0) then
           istart=isrcse(1,ibox)
           iend=isrcse(2,ibox)
@@ -3183,18 +3190,19 @@ cccccc bad code, note gboxmexp is an array not scalar
                   endif
 ccc    convert to plane wave
                   call mpscale(nd,nterms,gboxmexp(1,i),
-     1                 rsc,tmp)
+     1                 rsc,tmp(1,0,-nterms,ithd))
 c
 cc                process up down for current box
 c
-                  call hmpoletoexp(nd,tmp,nterms,nlams,nfourier,
-     1                 nexptot,mexpf1,mexpf2,rlsc)
+                  call hmpoletoexp(nd,tmp(1,0,-nterms,ithd),nterms,
+     1                 nlams,nfourier,
+     2                 nexptot,mexpf1(1,1,ithd),mexpf2(1,1,ithd),rlsc)
 
-                  call hftophys(nd,mexpf1,nlams,nfourier,nphysical,
-     1                 gboxwexp(1,1,1,i),fexp)
+                  call hftophys(nd,mexpf1(1,1,ithd),nlams,nfourier,
+     1                 nphysical,gboxwexp(1,1,1,i),fexp)
 
-                  call hftophys(nd,mexpf2,nlams,nfourier,nphysical,
-     1                 gboxwexp(1,1,2,i),fexp)
+                  call hftophys(nd,mexpf2(1,1,ithd),nlams,nfourier,
+     1                 nphysical,gboxwexp(1,1,2,i),fexp)
 
                   call hprocessgboxudexp(nd,gboxwexp(1,1,1,i),
      1                 gboxwexp(1,1,2,i),i,nexptotp,
@@ -3204,15 +3212,17 @@ c
 c
 cc                process north-south for current box
 c
-                  call rotztoy(nd,nterms,tmp,tmp2,rdminus)
-                  call hmpoletoexp(nd,tmp2,nterms,nlams,nfourier,
-     1                 nexptot,mexpf1,mexpf2,rlsc)
+                  call rotztoy(nd,nterms,tmp(1,0,-nterms,ithd),
+     1                 tmp2(1,0,-nterms,ithd),rdminus)
+                  call hmpoletoexp(nd,tmp2(1,0,-nterms,ithd),
+     1                 nterms,nlams,nfourier,
+     2                 nexptot,mexpf1(1,1,ithd),mexpf2(1,1,ithd),rlsc)
 
-                  call hftophys(nd,mexpf1,nlams,nfourier,nphysical,
-     1                 gboxwexp(1,1,3,i),fexp)
+                  call hftophys(nd,mexpf1(1,1,ithd),nlams,nfourier,
+     1                 nphysical,gboxwexp(1,1,3,i),fexp)
 
-                  call hftophys(nd,mexpf2,nlams,nfourier,nphysical,
-     1                 gboxwexp(1,1,4,i),fexp)
+                  call hftophys(nd,mexpf2(1,1,ithd),nlams,nfourier,
+     1                 nphysical,gboxwexp(1,1,4,i),fexp)
 
                   call hprocessgboxnsexp(nd,gboxwexp(1,1,3,i),
      1                 gboxwexp(1,1,4,i),i,nexptotp,
@@ -3223,15 +3233,17 @@ c
 c
 cc                process east-west for current box
 
-                  call rotztox(nd,nterms,tmp,tmp2,rdplus)
-                  call hmpoletoexp(nd,tmp2,nterms,nlams,nfourier,
-     1                 nexptot,mexpf1,mexpf2,rlsc)
+                  call rotztox(nd,nterms,tmp(1,0,-nterms,ithd),
+     1                 tmp2(1,0,-nterms,ithd),rdplus)
+                  call hmpoletoexp(nd,tmp2(1,0,-nterms,ithd),
+     1                 nterms,nlams,nfourier,
+     2                 nexptot,mexpf1(1,1,ithd),mexpf2(1,1,ithd),rlsc)
 
-                  call hftophys(nd,mexpf1,nlams,nfourier,nphysical,
-     1                 gboxwexp(1,1,5,i),fexp)
+                  call hftophys(nd,mexpf1(1,1,ithd),nlams,nfourier,
+     1                 nphysical,gboxwexp(1,1,5,i),fexp)
 
-                  call hftophys(nd,mexpf2,nlams,nfourier,nphysical,
-     1                 gboxwexp(1,1,6,i),fexp)
+                  call hftophys(nd,mexpf2(1,1,ithd),nlams,nfourier,
+     1                 nphysical,gboxwexp(1,1,6,i),fexp)
                 
                   call hprocessgboxewexp(nd,gboxwexp(1,1,5,i),
      1                 gboxwexp(1,1,6,i),i,nexptotp,
