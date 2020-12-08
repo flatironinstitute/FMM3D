@@ -40,7 +40,7 @@ c
       allocate(gradtarg(nd,3,nt))
       allocate(hesstarg(nd,6,nt))
 
-      eps = 0.5d-9
+      eps = 0.51d-3
 
       write(*,*) "=========================================="
       write(*,*) "Testing suite for lfmm3d_vec"

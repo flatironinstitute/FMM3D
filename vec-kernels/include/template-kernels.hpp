@@ -938,8 +938,8 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdh_vec_cpp(const 
       Vec zk2[2];
       zk2[0] = zk_[0]*zk_[0] - zk_[1]*zk_[1];
       zk2[1] = (2.0)*zk_[0]*zk_[1];
-      tmp0 = 3*zf1[0] - izkR2[0];
-      tmp1 = 3*zf1[1] - izkR2[1];
+      tmp0 = 3.0*zf1[0] - izkR2[0];
+      tmp1 = 3.0*zf1[1] - izkR2[1];
       cdc[0] = (G0*tmp0 - G1*tmp1)*Rinv4;
       cdc[1] = (G1*tmp0 + G0*tmp1)*Rinv4;
       Vec tmp2,tmp3,tmp4,tmp5;
@@ -1559,8 +1559,8 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
       Vec zk2[2];
       zk2[0] = zk_[0]*zk_[0] - zk_[1]*zk_[1];
       zk2[1] = (2.0)*zk_[0]*zk_[1];
-      tmp0 = 3*zf1[0] - izkR2[0];
-      tmp1 = 3*zf1[1] - izkR2[1];
+      tmp0 = 3.0*zf1[0] - izkR2[0];
+      tmp1 = 3.0*zf1[1] - izkR2[1];
       cdc[0] = (G0*tmp0 - G1*tmp1)*Rinv4;
       cdc[1] = (G1*tmp0 + G0*tmp1)*Rinv4;
       Vec tmp2,tmp3,tmp4,tmp5;

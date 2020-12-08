@@ -25,7 +25,7 @@ c
       write(*,*)
 
 
-      ns = 5000
+      ns = 50000
 
       allocate(source(3,ns))
       allocate(charge(ns))

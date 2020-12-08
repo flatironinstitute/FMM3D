@@ -8,8 +8,8 @@
 int main(int argc, char **argv)
 {
   cprin_init("stdout", "fort.13");
-  int ns=2000;
-  int nt=1999;
+  int ns=4000;
+  int nt=3999;
   double *source = (double *)malloc(3*ns*sizeof(double));
   double *targ = (double *)malloc(3*nt*sizeof(double));
 
@@ -76,7 +76,7 @@ int main(int argc, char **argv)
   }
 
 
-  double eps = 0.5e-6;
+  double eps = 0.51e-3;
 
 
   int itest = 0;
