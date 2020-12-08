@@ -26,8 +26,8 @@ c
 
       zk = 1.2d0 + eye*0.02d0
 
-      ns = 2000
-      nt = 1999
+      ns = 4000
+      nt = 3999
       
       ntest = 10
 
@@ -38,7 +38,8 @@ c
 
       allocate(pottarg(nd,nt))
       allocate(gradtarg(nd,3,nt))
-      eps = 0.5d-9
+      eps = 0.51d-3
+
 
       write(*,*) "=========================================="
       write(*,*) "Testing suite for hfmm3d_vec"

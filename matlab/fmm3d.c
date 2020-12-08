@@ -536,6 +536,7 @@ typedef _Complex float fcomplex;
 #define imag_fcomplex(z) cimagf(z)
 #define setz_fcomplex(z,r,i)  *z = r + i*_Complex_I
 
+
 /* Array copier definitions */
 mxWrapGetArrayDef(mxWrapGetArray_bool, bool)
 mxWrapCopyDef    (mxWrapCopy_bool,     bool)

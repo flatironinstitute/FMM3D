@@ -1,10 +1,10 @@
 clear srcinfo
 
-ns = 8000;
+ns = 4000;
 srcinfo.sources = rand(3,ns);
 srcinfo.charges = rand(1,ns)+1i*rand(1,ns);
 
-nt = 4999;
+nt = 3999;
 targ = rand(3,nt);
 
 eps = 1e-5;
