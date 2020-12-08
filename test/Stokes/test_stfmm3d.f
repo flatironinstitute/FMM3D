@@ -28,14 +28,14 @@ c
 
       open(unit=33,file='print_testres.txt',access='append')
 
-      ntest = 6
-      do i=1,ntest
+      ntests = 6
+      do i=1,ntests
         ipass(i) = 0 
       enddo
 
 
-      ns = 1000
-      nt = 1200
+      ns = 30000
+      nt = 12000
 
       allocate(source(3,ns),targ(3,nt))
       allocate(stoklet(3,ns),strslet(3,ns),strsvec(3,ns))
@@ -81,11 +81,13 @@ c$    t2 = omp_get_wtime()
 
 
       call prin2('fmm time *',t2-t1,1)
-      
-      allocate(pot2(3,ns),pre2(ns),grad2(3,3,ns))
-      allocate(pottarg2(3,nt),pretarg2(nt),gradtarg2(3,3,nt))
 
-      do i = 1,ns
+      ntest = 100
+      
+      allocate(pot2(3,ntest),pre2(ntest),grad2(3,3,ntest))
+      allocate(pottarg2(3,ntest),pretarg2(ntest),gradtarg2(3,3,ntest))
+
+      do i = 1,ntest
          do j = 1,3
             pot2(j,i) = 0
             do k = 1,3
@@ -95,7 +97,7 @@ c$    t2 = omp_get_wtime()
          pre2(i) = 0
       enddo
 
-      do i = 1,nt
+      do i = 1,ntest
          do j = 1,3
             pottarg2(j,i) = 0
             do k = 1,3
@@ -108,9 +110,9 @@ c$    t2 = omp_get_wtime()
       istress = 1
       thresh = 1d-15
       call st3ddirectstokstrsg(nd,source,stoklet,istress,
-     1     strslet,strsvec,ns,source,ns,pot2,pre2,grad2,thresh)
+     1     strslet,strsvec,ns,source,ntest,pot2,pre2,grad2,thresh)
       call st3ddirectstokstrsg(nd,source,stoklet,istress,
-     1     strslet,strsvec,ns,targ,nt,pottarg2,pretarg2,gradtarg2,
+     1     strslet,strsvec,ns,targ,ntest,pottarg2,pretarg2,gradtarg2,
      2     thresh)
 
 
@@ -118,7 +120,7 @@ c$    t2 = omp_get_wtime()
       drel = 0
       derrg = 0
       drelg = 0
-      do i = 1,ns
+      do i = 1,ntest
          derr = derr + (pot(1,i)-pot2(1,i))**2
          drel = drel + pot2(1,i)**2
          derr = derr + (pot(2,i)-pot2(2,i))**2
@@ -147,7 +149,7 @@ c$    t2 = omp_get_wtime()
       
       derr = 0
       drel = 0
-      do i = 1,ns
+      do i = 1,ntest
          derr = derr + (pre(i)-pre2(i))**2
          drel = drel + pre2(i)**2
       enddo
@@ -163,7 +165,7 @@ c$    t2 = omp_get_wtime()
       derrg = 0
       drelg = 0
       
-      do i = 1,nt
+      do i = 1,ntest
          derr = derr + (pottarg(1,i)-pottarg2(1,i))**2
          drel = drel + pottarg2(1,i)**2
          derr = derr + (pottarg(2,i)-pottarg2(2,i))**2
@@ -189,7 +191,7 @@ c$    t2 = omp_get_wtime()
 
       derr = 0
       drel = 0
-      do i = 1,nt
+      do i = 1,ntest
          derr = derr + (pretarg(i)-pretarg2(i))**2
          drel = drel + pretarg2(i)**2
       enddo
@@ -200,14 +202,14 @@ c$    t2 = omp_get_wtime()
       call prin2('rel err pre targs *',relerr,1)
       
       isum = 0
-      do i=1,ntest
+      do i=1,ntests
         isum = isum+ipass(i)
       enddo
 
       write(*,'(a,i1,a,i1,a)') 'Successfully completed ',isum,
-     1   ' out of ',ntest,' tests in stfmm3d testing suite'
+     1   ' out of ',ntests,' tests in stfmm3d testing suite'
       write(33,'(a,i1,a,i1,a)') 'Successfully completed ',isum,
-     1   ' out of ',ntest,' tests in stfmm3d testing suite'
+     1   ' out of ',ntests,' tests in stfmm3d testing suite'
       close(33)
       
 
