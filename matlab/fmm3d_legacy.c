@@ -526,7 +526,6 @@ mxArray* func(const T* q, mwSize m, mwSize n) \
 #endif
 #include <complex.h>
 
-#ifndef VCLWIN
 typedef _Complex double dcomplex;
 #define real_dcomplex(z) creal(z)
 #define imag_dcomplex(z) cimag(z)
@@ -536,18 +535,6 @@ typedef _Complex float fcomplex;
 #define real_fcomplex(z) crealf(z)
 #define imag_fcomplex(z) cimagf(z)
 #define setz_fcomplex(z,r,i)  *z = r + i*_Complex_I
-
-#else
-typedef _Dcomplex dcomplex;
-#define real_dcomplex(z) creal(z)
-#define imag_dcomplex(z) cimag(z)
-#define setz_dcomplex(z,r,i) z->_Val[0] = r; z->_Val[1] = i 
-
-typedef _Fcomplex fcomplex;
-#define real_fcomplex(z) crealf(z)
-#define imag_fcomplex(z) cimagf(z)
-#define setz_fcomplex(z,r,i) z->_Val[0] = r; z->_Val[1] = i 
-#endif
 
 /* Array copier definitions */
 mxWrapGetArrayDef(mxWrapGetArray_bool, bool)

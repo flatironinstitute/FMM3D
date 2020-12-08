@@ -9,14 +9,9 @@
 # compiler, and linking from C, fortran
 CC=gcc
 FC=ifort
-FFLAGS= /O3  
+FFLAGS= /O3 /Qopenmp  
 CFLAGS= /O3 /openmp /std:c99
 
-
-# flags for MATLAB MEX compilation..
-MFLAGS=-compatibleArrayDims -DMWF77_UNDERSCORE1 
-MWFLAGS=-c99complex 
-MOMPFLAGS = -D_OPENMP
 
 # location of MATLAB's mex compiler
 MEX=mex
@@ -35,7 +30,8 @@ COM = src\Common
 COMOBJS = $(COM)\besseljs3d.obj $(COM)\cdjseval3d.obj $(COM)\dfft.obj \
 	$(COM)\fmmcommon.obj $(COM)\legeexps.obj $(COM)\prini.obj \
 	$(COM)\rotgen.obj $(COM)\rotproj.obj $(COM)\rotviarecur.obj \
-	$(COM)\tree_lr_3d.obj $(COM)\yrecursion.obj 
+	$(COM)\tree_routs3d.obj $(COM)\pts_tree3d.obj $(COM)\yrecursion.obj \
+	$(COM)\cumsum.obj
 
 # Helmholtz objects
 HELM = src\Helmholtz
@@ -125,8 +121,8 @@ GATEWAY2 = $(MWRAPFILE2)
 
 MINGW_LPATH=C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\lib\gcc\x86_64-w64-mingw32\6.3.0
 INTEL_PATH=C:\inteliomppath
-MFLAGS=-compatibleArrayDims -DMWF77_CAPS -D_OPENMP
-MEXLIBS=-liomp5md -lifcoremd -lifconsol -L$(MINGW_LPATH) -L$(INTEL_PATH) 
+MFLAGS=-compatibleArrayDims -DMWF77_CAPS -D_OPENMP COMPFLAGS="$$COMPFLAGS /Qstd=c99 /Qopenmp"
+MEXLIBS=-liomp5md -lifcoremd -lifconsol -L$(INTEL_PATH) -Llib 
 
 MOMPFLAGS = -D_OPENMP
 
