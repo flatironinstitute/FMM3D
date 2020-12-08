@@ -15,8 +15,7 @@ FC=gfortran
 
 # set compiler flags for c and fortran
 FFLAGS= -fPIC -O3 -march=native -funroll-loops -std=legacy 
-CFLAGS= -std=c99 
-CFLAGS+= $(FFLAGS) 
+CFLAGS= -fPIC -O3 -march=native -funroll-loops -std=c99 
 CXXFLAGS= -std=c++11 -DSCTL_PROFILE=-1 -fPIC -O3 -march=native -funroll-loops
 
 # set linking libraries

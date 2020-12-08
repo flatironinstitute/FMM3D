@@ -12,7 +12,7 @@ disp("Example 1: source to source, charge, pot+grad");
 disp(" ");
 disp(" ");
 
-ns = 4000;
+ns = 40000;
 srcinfo.sources = rand(3,ns);
 srcinfo.charges = rand(1,ns);
 
