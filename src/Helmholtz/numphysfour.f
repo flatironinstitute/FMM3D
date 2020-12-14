@@ -5,7 +5,7 @@ c
 
         subroutine numphysfour(iprec,iquad,nl,np,nf)
         implicit none
-        integer iprec,iquad,nl,nf(nl),np(nl)
+        integer(8) iprec,iquad,nl,nf(nl),np(nl)
 
 
         if(iprec.eq.1) then

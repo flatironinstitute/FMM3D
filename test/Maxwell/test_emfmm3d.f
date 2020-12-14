@@ -1,5 +1,5 @@
       implicit real *8 (a-h,o-z)
-      integer ns,nt
+      integer(8) ns,nt,nd,nttest
       double complex zk
       double precision, allocatable :: sources(:,:),targs(:,:)
       double complex, allocatable :: a_vect(:,:,:),lambda(:,:)
@@ -10,8 +10,9 @@
       double complex ima
       double precision thresh
       double precision t1,t2,omp_get_wtime
-      integer ipass(10)
+      integer(8) ipass(10)
       data ima/(0.0d0,1.0d0)/
+      integer(8) ifE,ifdivE,ifcurlE,ifa_vect,ifb_vect,iflambda,ier
 
       ns = 4001
       nt = 3998

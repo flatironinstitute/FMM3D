@@ -55,8 +55,8 @@ c       lused    amount of workspace used.
 c
 C---------------------------------------------------------------------
         implicit none
-        integer ld1,ld2,nterms,m1,m2,nd
-        integer ldc,ird1,lrd,ird2,isqc,lused,ier
+        integer(8) ld1,ld2,nterms,m1,m2,nd
+        integer(8) ldc,ird1,lrd,ird2,isqc,lused,ier
         double precision theta
         double precision, allocatable :: w(:)
         double complex mpole(nd,0:ld1,-ld1:ld1)
@@ -109,8 +109,8 @@ c       rotmat: coefficients of rotation matrix
 c
 C---------------------------------------------------------------------
       implicit none
-      integer ld1,ld2,nterms,m1,m2,ldc
-      integer ier,ij,im,imp,m,mp
+      integer(8) ld1,ld2,nterms,m1,m2,ldc
+      integer(8) ier,ij,im,imp,m,mp
       double precision theta
       double precision ww,done,ctheta,stheta,hsthta,cthtap,cthtan,d
       double precision precis,scale
@@ -270,8 +270,8 @@ c       marray   coefficients of rotated expansion.
 c
 C---------------------------------------------------------------------
       implicit none
-      integer nterms,m1,m2,ld1,ld2,ldc
-      integer ij,m,mp
+      integer(8) nterms,m1,m2,ld1,ld2,ldc
+      integer(8) ij,m,mp
       double precision theta
       double complex mpole(0:ld1,-ld1:ld1)
       double complex marray(0:ld2,-ld2:ld2)
@@ -361,8 +361,8 @@ c       marray  coefficients of rotated expansion.
 c
 C---------------------------------------------------------------------
       implicit none
-      integer ld1,ld2,nterms,m1,m2,ldc,nd,idim
-      integer ij,im,imp,m,mp
+      integer(8) ld1,ld2,nterms,m1,m2,ldc,nd,idim
+      integer(8) ij,im,imp,m,mp
       double precision theta
       double precision rd1(0:ldc,-ldc:ldc)
       double precision rd2(0:ldc,-ldc:ldc)
@@ -549,8 +549,8 @@ c       marray  coefficients of rotated expansion.
 c
 C---------------------------------------------------------------------
       implicit none
-      integer ld1,ld2,nterms,m1,m2,ldc,nd,idim
-      integer ij,im,imp,m,mp
+      integer(8) ld1,ld2,nterms,m1,m2,ldc,nd,idim
+      integer(8) ij,im,imp,m,mp
       double precision theta
       double precision ww,done,ctheta,stheta,hsthta,cthtap,cthtan,d
       double precision precis,scale

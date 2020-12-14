@@ -10,8 +10,8 @@ c
 c
       implicit none
       real *8 eps
-      integer ns,nt,ifcharge,ifdipole,ifpgh,ifpghtarg,ndiv
-      integer idivflag
+      integer(8) ns,nt,ifcharge,ifdipole,ifpgh,ifpghtarg,ndiv
+      integer(8) idivflag
 
       idivflag = 0
 

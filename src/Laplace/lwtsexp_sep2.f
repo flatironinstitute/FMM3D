@@ -4490,7 +4490,7 @@ c
 c
 	subroutine numthetasix(numtets,nlams)
         implicit none
-	integer numtets(nlams),nlams 
+        integer(8) nlams, numtets(nlams)
 c
 c       This routine returns the number of Fourier modes needed in the
 c       phi integral for each of the discrete lambda values given
@@ -4600,7 +4600,7 @@ ci
       return
       end
 	subroutine numthetahalf_isep2(numtets,nlams)
-	integer numtets(nlams),nlams 
+      integer(8) nlams, numtets(nlams)
 c
 c This routine returns the number of Fourier modes needed in the
 c phi integral for each of the discrete lambda values given
@@ -4608,7 +4608,7 @@ c by Norman's quadratures. (see weights.f).
 c
 c Input arguments:
 c	nlams - number of nodes in the lambda quadrature.  This must
-c	  be an integer in the range [5,10,20,30,40].
+c	  be an integer(8) in the range [5,10,20,30,40].
 c
 c Output arguments:
 c	numtest(i) - number of Fourier modes needed for phi
