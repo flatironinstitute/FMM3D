@@ -57,7 +57,7 @@ C***********************************************************************
 c
 cc      calling sequence variables
 c
-      integer  nterms,nterms2,nquad,nd
+      integer(8)  nterms,nterms2,nquad,nd
       real *8 x0y0z0(3),xnynzn(3)
       real *8 radius,xnodes(nquad),wts(nquad)
       real *8 sc1,sc2
@@ -76,10 +76,10 @@ c
       real *8, allocatable :: ynm(:,:),ynmd(:,:)
       complex *16 imag
 
-      integer  nq, ldc,idim
+      integer(8)  nq, ldc,idim
       real *8 rshift
       real *8 d,theta,ctheta,phi,rvec(3)
-      integer  l,m,jnew,knew
+      integer(8)  l,m,jnew,knew
 
 
       data imag/(0.0d0,1.0d0)/
@@ -228,7 +228,7 @@ c     mpolen  (complex *16)  : coefficients of shifted exp.
 c
 c***********************************************************************
       implicit real *8 (a-h,o-z)
-      integer nterms,nterms2,nquad,ier,lmp,lmpn,ldc,iynm,lynm,nd
+      integer(8) nterms,nterms2,nquad,ier,lmp,lmpn,ldc,iynm,lynm,nd
       real *8   zshift,scale,scale2,radius
       real *8   xnodes(*),wts(*)
       real *8   ynm(0:nterms,0:nterms)
@@ -245,7 +245,7 @@ c     local allocated workspace arrays - no more passed workspace
 c
       real *8, allocatable :: rat1(:,:),rat2(:,:)
 c
-      integer l,m,jnew,knew
+      integer(8) l,m,jnew,knew
 C
 C----- shift along z-axis by evaluating field on target sphere and
 C     projecting onto spherical harmonics and scaling by j_n(kR).
@@ -331,7 +331,7 @@ C
 c
 cc       calling sequence variables
 
-      integer nterms,nterms2,nquad,nd
+      integer(8) nterms,nterms2,nquad,nd
       real *8 x0y0z0(3),xnynzn(3)
       real *8 xnodes(nquad),wts(nquad),radius
       real *8 sc1,sc2
@@ -351,10 +351,10 @@ c
       real *8, allocatable :: ynm(:,:),ynmd(:,:)
       complex *16 imag
 
-      integer  nq, ldc,idim
+      integer(8)  nq, ldc,idim
       real *8 rshift
       real *8 d,theta,ctheta,phi,rvec(3)
-      integer  l,m,jnew,knew
+      integer(8)  l,m,jnew,knew
 c
       data imag/(0.0d0,1.0d0)/
 C
@@ -495,8 +495,8 @@ c     local    : coefficients of shifted local exp.
 c
 C---------------------------------------------------------------------
       implicit real *8 (a-h,o-z)
-      integer nterms,nterms2,nquad,nd
-      integer l,lw,m,jnew,knew
+      integer(8) nterms,nterms2,nquad,nd,lmp,lmpn
+      integer(8) l,lw,m,jnew,knew
       real *8 zshift
       real *8 xnodes(*),wts(*)
       real *8 ynm(0:nterms,0:nterms)
@@ -590,7 +590,7 @@ C***********************************************************************
 c
 cc      calling sequence variables
 c
-      integer nterms,nterms2,nquad,nd
+      integer(8) nterms,nterms2,nquad,nd
       real *8 x0y0z0(3),xnynzn(3)
       real *8 xnodes(nquad),wts(nquad),radius
       real *8 sc1,sc2
@@ -608,10 +608,10 @@ c
       real *8, allocatable :: ynm(:,:),ynmd(:,:)
       complex *16 imag, ephi1
 
-      integer  nq, ldc,idim
+      integer(8)  nq, ldc,idim
       real *8 rshift
       real *8 d,theta,ctheta,phi,rvec(3)
-      integer  l,m,jnew,knew
+      integer(8)  l,m,jnew,knew
 c
       data imag/(0.0d0,1.0d0)/
 C
@@ -754,7 +754,8 @@ c                 CURRENTLY NOT USED
 c
 c***********************************************************************
       implicit real *8 (a-h,o-z)
-      integer nterms,nterms2,nquad,ier,l,lw,m,jnew,knew,nd
+      integer(8) nterms,nterms2,nquad,ier,l,lw,m,jnew,knew,nd
+      integer(8) lmp,lmpn
       real *8 zshift
       real *8 xnodes(nquad),wts(nquad)
       real *8 ynm(0:lmp,0:lmp)

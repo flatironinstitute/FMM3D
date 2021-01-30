@@ -63,11 +63,11 @@ c                 Total length of expansions array required
 c------------------------------------------------------------------
 
       implicit none
-      integer nlevels,nterms(0:nlevels),nd
-      integer *8 iaddr(2,*), lmptot 
-      integer laddr(2,0:nlevels)
-      integer ibox,i,iptr
-      integer *8 istart,nn,itmp
+      integer(8) nlevels,nterms(0:nlevels),nd
+      integer(8) iaddr(2,*), lmptot
+      integer(8) laddr(2,0:nlevels)
+      integer(8) ibox,i,iptr
+      integer(8) istart,nn,itmp
 
       istart = 1
       do i = 0,nlevels
@@ -105,9 +105,9 @@ c                                       i=1,2,\ldots n
 c
 
       implicit none
-      integer ndim,idim,i,n
+      integer(8) ndim,idim,i,n
       double precision arr(ndim,*),arrsort(ndim,*)
-      integer iarr(*)
+      integer(8) iarr(*)
 
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)      
       do i=1,n
@@ -135,9 +135,9 @@ c                                       i=1,2,\ldots n
 c
 
       implicit none
-      integer i,idim,ndim,n
+      integer(8) i,idim,ndim,n
       double precision arr(ndim,*),arrsort(ndim,*)
-      integer iarr(*)
+      integer(8) iarr(*)
 
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)      
       do i=1,n
@@ -166,9 +166,9 @@ c                                       i=1,2,\ldots n
 c
 
       implicit none
-      integer ndim,idim,i,n
-      integer arr(ndim,*),arrsort(ndim,*)
-      integer iarr(*)
+      integer(8) ndim,idim,i,n
+      integer(8) arr(ndim,*),arrsort(ndim,*)
+      integer(8) iarr(*)
 
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)      
       do i=1,n
@@ -196,9 +196,9 @@ c                                       i=1,2,\ldots n
 c
 
       implicit none
-      integer i,idim,ndim,n
-      integer arr(ndim,*),arrsort(ndim,*)
-      integer iarr(*)
+      integer(8) i,idim,ndim,n
+      integer(8) arr(ndim,*),arrsort(ndim,*)
+      integer(8) iarr(*)
 
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)      
       do i=1,n
@@ -219,7 +219,7 @@ c
       subroutine drescale(n,a,r)
       implicit none
       real *8 a(n),r
-      integer i,n
+      integer(8) i,n
 
 C$OMP PARALLEL DO DEFAULT(SHARED)
       do i=1,n
@@ -254,7 +254,7 @@ c       mpole  inout: double complex(nd,0:nterms,-nterms:nterms)
 c              multipole expansions to be zeroed out
 c
       implicit none
-      integer nd, i,j,nterms,idim
+      integer(8) nd,i,j,nterms,idim
       double complex mpole(nd,0:nterms,-nterms:nterms)
 
       do i=-nterms,nterms
@@ -291,7 +291,7 @@ c       mpoleout  inout: double complex(nd,0:nterms,-nterms:nterms)
 c              multipole expansions to which mpolein is to be added
 c
       implicit none
-      integer nd, i,j,nterms,idim
+      integer(8) nd, i,j,nterms,idim
       double complex mpolein(nd,0:nterms,-nterms:nterms)
       double complex mpoleout(nd,0:nterms,-nterms:nterms)
 
@@ -330,7 +330,7 @@ c       mpoleout  out: double complex(nd,0:nterms,-nterms:nterms)
 c                output multipole expansions
 c
       implicit none
-      integer nd,nterms,i,j,idim
+      integer(8) nd,nterms,i,j,idim
       double precision rsc(0:nterms)
       double complex mpolein(nd,0:nterms,-nterms:nterms)
       double complex mpoleout(nd,0:nterms,-nterms:nterms)
@@ -393,7 +393,7 @@ c
 c
       subroutine getsqrtbinomialcoeffs(n,dc)
       implicit none
-      integer i,j,n
+      integer(8) i,j,n
       real *8 dc(0:n,0:n)
       real *8, allocatable :: d(:,:)
       allocate(d(0:n,0:n))
@@ -428,6 +428,7 @@ c***********************************************************************
      1   dc)
 c***********************************************************************
       implicit double precision (a-h,o-z)
+      integer(8) nterms
       double precision pi
       double precision carray(0:4*nterms,0:4*nterms)
       double precision dc(0:4*nterms,0:4*nterms)
@@ -435,7 +436,6 @@ c***********************************************************************
       double precision rdmpi2(0:nterms,0:nterms,-nterms:nterms) 
       double precision rdsq3(0:nterms,0:nterms,-nterms:nterms) 
       double precision rdmsq3(0:nterms,0:nterms,-nterms:nterms) 
-      integer nterms
 c
 c----- call initialization routines
 c
@@ -483,8 +483,8 @@ c     printing routine displays multipole moments one degree (l)
 c     at a time , from m = 0 to m = l  .
 c
 c***********************************************************************
+      integer(8) nterms
       double complex mpole(0:nterms,0:nterms)
-      integer nterms
 c
       do 100 l = 0,ll
 	 write(6,1000)(mpole(l,m),m=0,ll)
@@ -515,7 +515,7 @@ c
 c***********************************************************************
 c
       implicit double precision (a-h,o-z)
-      integer nterms,n,m
+      integer(8) nterms,n,m
       double precision c(0:nterms,0:nterms)
       double precision sqc(0:nterms,0:nterms)
 c
@@ -557,7 +557,7 @@ c
 c---------------declares of fstrtn--------------------------------------
 c
       implicit double precision (a-h,o-z)
-      integer nterms
+      integer(8) nterms
 c
 ccc     parameter (nterms=8)
 ccc     double precision d(0:nterms,-nterms:nterms,-nterms:nterms)
@@ -678,6 +678,7 @@ c
 c-------------------------------------------------------
       subroutine geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
       implicit real *8 (a-h,o-z)
+      integer(8) ifcharge,ifdipole,ifpgh,ifpghtarg,len1
       character(len=*) str1
       character(len=13) str2
       character(len=14) str3

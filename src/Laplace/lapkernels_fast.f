@@ -73,7 +73,7 @@ cf2py intent(out) pot
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt)
       real *8 charge(nd,ns),pot(nd,nt)
       real *8 thresh
@@ -136,7 +136,7 @@ cf2py intent(out) pot,grad
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt)
       real *8 charge(nd,ns),pot(nd,nt),grad(nd,3,nt)
       real *8 thresh
@@ -205,7 +205,7 @@ cf2py intent(out) pot,grad,hess
 c
 cc      calling sequence variables
 c
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt)
       real *8 charge(nd,ns)
       real *8 pot(nd,nt),grad(nd,3,nt),hess(nd,6,nt)
@@ -269,7 +269,7 @@ cf2py intent(out) pot
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
       real *8 pot(nd,nt)
       real *8 thresh
@@ -339,7 +339,7 @@ cf2py intent(out) pot,grad
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
       real *8 pot(nd,nt),grad(nd,3,nt)
       real *8 thresh
@@ -416,7 +416,7 @@ cf2py intent(out) pot,grad,hess
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
       real *8 pot(nd,nt),grad(nd,3,nt),hess(nd,6,nt)
       real *8 thresh
@@ -481,7 +481,7 @@ cf2py intent(out) pot
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
       real *8 charge(nd,ns),pot(nd,nt)
       real *8 thresh
@@ -556,7 +556,7 @@ cf2py intent(out) pot,grad
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
       real *8 charge(nd,ns),pot(nd,nt),grad(nd,3,nt)
       real *8 thresh
@@ -631,7 +631,7 @@ cf2py intent(out) pot,grad,hess
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
       real *8 charge(nd,ns)
       real *8 pot(nd,nt),grad(nd,3,nt),hess(nd,6,nt)

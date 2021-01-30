@@ -15,7 +15,7 @@ c
 c
 c Input arguments:
 c	n - number of weights and nodes in the quadrature.  This must
-c	  be an integer in the range [2,39].
+c	  be an integer(8) in the range [2,39].
 c
 c Output arguments:
 c	w - weights
@@ -1957,7 +1957,6 @@ c
 	end
 c-----------------------------------------------    
 	subroutine numthetafour(numtets,nlams)
-	integer *4 numtets(nlams),nlams 
 c
 c This routine returns the number of Fourier modes needed in the
 c phi integral for each of the discrete lambda values given
@@ -1965,7 +1964,7 @@ c by Norman's quadratures. (see weights.f).
 c
 c Input arguments:
 c	nlams - number of nodes in the lambda quadrature.  This must
-c	  be an integer in the range [2,39].
+c	  be an integer(8) in the range [2,39].
 c
 c Output arguments:
 c	numtest(i) - number of Fourier modes needed for phi
@@ -2014,6 +2013,7 @@ c       37     0.16331E-12
 c       38     0.73497E-13
 c       39     0.31530E-13
 c
+      integer(8) nlams, numtets(nlams)
       if(nlams.eq. 2) then
          numtets( 1) =  3
          numtets( 2) =  1
@@ -2873,7 +2873,6 @@ c
       end
 c----------------------------------      
 	subroutine numthetahalf(numtets,nlams)
-	integer *4 numtets(nlams),nlams 
 c
 c This routine returns the number of Fourier modes needed in the
 c phi integral for each of the discrete lambda values given
@@ -2881,7 +2880,7 @@ c by Norman's quadratures. (see weights.f).
 c
 c Input arguments:
 c	nlams - number of nodes in the lambda quadrature.  This must
-c	  be an integer in the range [2,39].
+c	  be an integer(8) in the range [2,39].
 c
 c Output arguments:
 c	numtest(i) - number of Fourier modes needed for phi
@@ -2930,6 +2929,7 @@ c       37     0.16331E-12
 c       38     0.73497E-13
 c       39     0.31530E-13
 c
+      integer(8) nlams,numtets(nlams)
       if(nlams.eq. 2) then
          numtets( 1) = 1
          numtets( 2) = 1

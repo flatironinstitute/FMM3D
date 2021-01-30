@@ -1,7 +1,7 @@
       subroutine hnumfour(eps,zk,nl,nfour)
       implicit none
       real *8 eps
-      integer iprec,idomain,nl,nfour(nl),ier
+      integer(8) iprec,idomain,nl,nfour(nl),ier
       complex *16 zk
 
 
@@ -28,7 +28,7 @@ cccc      print *, "idomain=",idomain
 
       subroutine hnumfour_iprec0(idomain,nl,nfour)
       implicit none
-      integer idomain,nl,nfour(nl)
+      integer(8) idomain,nl,nfour(nl)
 
 
         if(idomain.eq.  1) then
@@ -8229,7 +8229,7 @@ c
 c
       subroutine hnumfour_iprec1(idomain,nl,nfour)
       implicit none
-      integer idomain,nl,nfour(nl)
+      integer(8) idomain,nl,nfour(nl)
 
         if(idomain.eq.  1) then
           nfour(  1) =   1
@@ -17422,7 +17422,7 @@ c
 
       subroutine hnumfour_iprec2(idomain,nl,nfour)
       implicit none
-      integer idomain,nl,nfour(nl)
+      integer(8) idomain,nl,nfour(nl)
 
 
         if(idomain.eq.  1) then
@@ -29836,7 +29836,7 @@ c
 c
       subroutine hnumfour_iprec3(idomain,nl,nfour)
       implicit none
-      integer idomain,nl,nfour(nl)
+      integer(8) idomain,nl,nfour(nl)
 
 
         if(idomain.eq.  1) then
@@ -46082,7 +46082,7 @@ c
 c
       subroutine hnumfour_iprec4(idomain,nl,nfour)
       implicit none
-      integer idomain,nl,nfour(nl)
+      integer(8) idomain,nl,nfour(nl)
 
 
         if(idomain.eq.  1) then

@@ -30,10 +30,10 @@ C           mpole = rescaled by 1/h_n(zk0* radius)
 C
 C---------------------------------------------------------------------
       implicit none
-      integer lmp
-      integer nterms,ier,nd,idim
-      integer l,m,jj,kk
-      integer lwfhs,ifder
+      integer(8) lmp
+      integer(8) nterms,ier,nd,idim
+      integer(8) l,m,jj,kk
+      integer(8) lwfhs,ifder
       real *8 radius,scale
       complex *16 mpole(nd,0:lmp,-lmp:lmp)
       complex *16 ephi,imag,emul,sum,zmul
@@ -98,10 +98,10 @@ C           local = computed as above.
 C
 C---------------------------------------------------------------------
       implicit none
-      integer nterms,ier,nd,idim
-      integer lmp
-      integer l,m,jj,kk
-      integer lwfhs,ifder
+      integer(8) nterms,ier,nd,idim
+      integer(8) lmp
+      integer(8) l,m,jj,kk
+      integer(8) lwfhs,ifder
       real *8 radius,scale
       complex *16 fjs(0:nterms)
       complex *16 fjder(0:nterms)
@@ -174,9 +174,9 @@ C     phitempn(k,i,j) : jth mode of phi at ith quad node, for kth expansion
 C
 C***********************************************************************
       implicit none
-      integer lmp,ier
-      integer nterms,nd,idim,nterms2,nquad
-      integer l,m,jnew,knew,jj,n,ifder,iffld
+      integer(8) lmp,ier
+      integer(8) nterms,nd,idim,nterms2,nquad
+      integer(8) l,m,jnew,knew,jj,n,ifder,iffld
       real *8 radius,scale
       real *8 zshift, targ(3), center(3)
       real *8 xnodes(nquad)
@@ -315,10 +315,10 @@ C     phitempn : nquad by (-nterms,nterms)
 C
 C---------------------------------------------------------------------
       implicit none
-      integer lmp,n
-      integer nterms,nd,idim
-      integer l,m,jnew,knew,nquad
-      integer ifder,iffld,i,jj
+      integer(8) lmp,n
+      integer(8) nterms,nd,idim
+      integer(8) l,m,jnew,knew,nquad
+      integer(8) ifder,iffld,i,jj
       real *8 zshift, targ(3), center(3)
       real *8 xnodes(nquad)
       real *8 ynm(0:nterms,0:nterms)
@@ -463,8 +463,8 @@ C   into the azimuthal quadrature weight (2*pi/nquad).
 C
 C---------------------------------------------------------------------
       implicit none
-      integer nterms,nquadn,nquadm,ier,nd,idim
-      integer l,m,jj,kk,ntold,ldl,n
+      integer(8) nterms,nquadn,nquadm,ier,nd,idim
+      integer(8) l,m,jj,kk,ntold,ldl,n
       real *8 wts(nquadn),xnodes(nquadn)
       real *8 ynm(0:nterms,0:nterms)
       real *8 cthetaj,pi

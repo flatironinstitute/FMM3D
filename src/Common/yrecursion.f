@@ -224,7 +224,7 @@ cf2py intent(in) nmax
 cf2py intent(in) x
 cf2py intent(out) y
 
-      integer nmax, m, n
+      integer(8) nmax, m, n
       double precision x, y(0:nmax,0:nmax), u
 c
 c
@@ -276,7 +276,7 @@ c
 cf2py intent(in) nmax, x
 cf2py intent(out) y,d
 c
-      integer nmax, m, n
+      integer(8) nmax, m, n
       double precision x, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u, du
 c
       u=-sqrt((1-x)*(1+x))
@@ -340,7 +340,7 @@ c
 cf2py intent(in) nmax, x
 cf2py intent(out) y,d
 c
-      integer nmax, m, n
+      integer(8) nmax, m, n
       double precision x, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u
       u=-sqrt((1-x)*(1+x))
       y(0,0)=1
@@ -421,7 +421,7 @@ cf2py intent(in) nmax
 cf2py intent(in) x
 cf2py intent(out) y
 
-      integer nmax, m, n
+      integer(8) nmax, m, n
       double precision x, y(0:nmax,0:nmax), u
 c
 c
@@ -473,7 +473,7 @@ c
 cf2py intent(in) nmax, x
 cf2py intent(out) y,d
 c
-      integer nmax, m, n
+      integer(8) nmax, m, n
       double precision x, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u, du
 c
       u=-sqrt((1-x)*(1+x))
@@ -537,7 +537,7 @@ c
 cf2py intent(in) nmax, x
 cf2py intent(out) y,d
 c
-      integer nmax, m, n
+      integer(8) nmax, m, n
       double precision x, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u, u2
 c
       u=-sqrt((1-x)*(1+x))
@@ -628,7 +628,7 @@ c
 cf2py intent(in) nmax, x
 cf2py intent(out) y,d
 c
-      integer nmax, m, n
+      integer(8) nmax, m, n
       double precision x, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u, u2
 c
       u=-sqrt((1-x))*sqrt((1+x))
@@ -705,7 +705,7 @@ c
 cf2py intent(in) nmax
 cf2py intent(out) rat1, rat2
 c
-      integer nmax, m, n
+      integer(8) nmax, m, n
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
       rat1(0,0)=1
       rat2(0,0)=1
@@ -758,7 +758,7 @@ c
 cf2py intent(in) nmax, x, rat1, rat2
 cf2py intent(out) y
 c
-      integer nmax, m, n
+      integer(8) nmax, m, n
       double precision x, y(0:nmax,0:nmax), u
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
       u=-sqrt((1-x)*(1+x))
@@ -809,7 +809,7 @@ c
 cf2py intent(in) nmax, x, rat1, rat2
 cf2py intent(out) y, d
 c
-      integer nmax, m, n
+      integer(8) nmax, m, n
       double precision x, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u, du
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
 c
@@ -872,7 +872,7 @@ c
 cf2py intent(in) nmax, x, rat1, rat2
 cf2py intent(out) y, d
 c
-      integer nmax, m, n
+      integer(8) nmax, m, n
       double precision x, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u, u2
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
       u=-sqrt((1-x)*(1+x))
@@ -951,7 +951,7 @@ c
 cf2py intent(in) nmax, x, rat1, rat2
 cf2py intent(out) y, d
 c
-      integer nmax, n, m
+      integer(8) nmax, n, m
       double precision x, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u, u2
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
       u=-sqrt((1-x)*(1+x))
@@ -1028,10 +1028,10 @@ c
 cf2py intent(in) nmax, z
 cf2py intent(out) y
 c
-      integer nmax
+      integer(8) nmax
       double complex z, y(0:nmax,0:nmax)
 c
-      integer m,n
+      integer(8) m,n
       double complex u
 c
       u=-sqrt(1-z*z)
@@ -1084,7 +1084,7 @@ c
 cf2py intent(in) nmax, z
 cf2py intent(out) y, d
 c
-      integer nmax, m, n
+      integer(8) nmax, m, n
       double complex z, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u, du
       u=-sqrt(1-z*z)
       du=-z/u
@@ -1148,7 +1148,7 @@ c
 cf2py intent(in) nmax, z
 cf2py intent(out) y, d
 c
-      integer nmax, m, n
+      integer(8) nmax, m, n
       double complex z, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u
       double complex ztmp
 
@@ -1226,7 +1226,7 @@ c
 cf2py intent(in) nmax, z, rat1, rat2
 cf2py intent(out) y
 c
-      integer nmax, m, n
+      integer(8) nmax, m, n
       double complex z, y(0:nmax,0:nmax), u
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
       u=-sqrt(1-z*z)
@@ -1277,7 +1277,7 @@ c
 cf2py intent(in) nmax, z, rat1, rat2
 cf2py intent(out) y, d
 c
-      integer nmax, m, n
+      integer(8) nmax, m, n
       double complex z, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u, du
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
       u=-sqrt(1-z*z)
@@ -1340,7 +1340,7 @@ c
 cf2py intent(in) nmax, z, rat1, rat2
 cf2py intent(out) y, d
 c
-      integer nmax, m, n
+      integer(8) nmax, m, n
       double complex z, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
       u=-sqrt(1-z*z)
@@ -1419,10 +1419,10 @@ c
 cf2py intent(in) nmax, z
 cf2py intent(out) y
 c
-      integer nmax
+      integer(8) nmax
       double complex z, y(0:nmax,0:nmax)
 c
-      integer m,n
+      integer(8) m,n
       double complex u
 c
       u=-sqrt(1-z*z)
@@ -1489,11 +1489,11 @@ c
 cf2py intent(in) nmax, z, scale
 cf2py intent(out) ysc
 c
-      integer nmax
+      integer(8) nmax
       double complex z, ysc(0:nmax,0:nmax)
       real*8 scale
 c
-      integer m,n
+      integer(8) m,n
       double complex u,ztmp
 c
       ztmp = 1-z*z
@@ -1570,7 +1570,7 @@ c
 cf2py intent(in) nmax, m2, x
 cf2py intent(out) y, d
 c
-      integer nmax, m, m2, n
+      integer(8) nmax, m, m2, n
       double precision x, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u
       u=-sqrt((1-x)*(1+x))
       y(0,0)=1
@@ -1647,7 +1647,7 @@ c
 cf2py intent(in) nmax, m2, x, rat1, rat2
 cf2py intent(out) y
 c
-      integer nmax, m, m2, n
+      integer(8) nmax, m, m2, n
       double precision x, y(0:nmax,0:nmax), u
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
       u=-sqrt((1-x)*(1+x))
@@ -1698,7 +1698,7 @@ c
 cf2py intent(in) nmax, m2, x, rat1, rat2
 cf2py intent(out) y, d
 c
-      integer nmax, m, m2, n
+      integer(8) nmax, m, m2, n
       double precision x, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u, du
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
       u=-sqrt((1-x)*(1+x))
@@ -1760,7 +1760,7 @@ c
 cf2py intent(in) nmax, m2, x, rat1, rat2
 cf2py intent(out) y, d
 c
-      integer nmax, m, m2, n
+      integer(8) nmax, m, m2, n
       double precision x, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u, u2
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
 c
@@ -1819,7 +1819,7 @@ c
 c
         subroutine ylgndrpm(nterms,y)
         implicit none
-        integer n,m,nterms
+        integer(8) n,m,nterms
         double precision y(0:nterms,0:nterms)
 c
 c       Given Y_nm(x), return Y_nm(-x)
@@ -1839,7 +1839,7 @@ c
 c
         subroutine ylgndr2pm(nterms,y,d)
         implicit none
-        integer nterms,n,m
+        integer(8) nterms,n,m
         double precision y(0:nterms,0:nterms)
         double precision d(0:nterms,0:nterms)
 c
@@ -1865,7 +1865,7 @@ c
 c
         subroutine ylgndrpm_opt(nterms,y)
         implicit none
-        integer nterms,n,m
+        integer(8) nterms,n,m
         double precision y(0:nterms,0:nterms)
 c
 c       Given Y_nm(x), return Y_nm(-x)
@@ -1891,7 +1891,7 @@ c
 c
         subroutine ylgndr2pm_opt(nterms,y,d)
         implicit none
-        integer nterms,n,m
+        integer(8) nterms,n,m
         double precision y(0:nterms,0:nterms)
         double precision d(0:nterms,0:nterms)
 c
@@ -1942,7 +1942,7 @@ c     Parameters:
 c       nmax             must be non-negative
 c       w                  contains rat1 and rat2 arrays
 c
-      integer nmax,irat1,irat2,lw,lused
+      integer(8) nmax,irat1,irat2,lw,lused
       double precision w(*)
 c
 cf2py intent(in) nmax, lw
@@ -1983,7 +1983,7 @@ c
 cf2py intent(in) nterms, x, w, nmax
 cf2py intent(out) y
 c
-      integer nterms,nmax,irat1,irat2
+      integer(8) nterms,nmax,irat1,irat2
       double precision x, y(0:nterms,0:nterms), w(*)
 c
       if( nterms .le. nmax ) then
@@ -2026,7 +2026,7 @@ c
 cf2py intent(in) nterms, x, w, nmax
 cf2py intent(out) y, d
 c
-      integer nterms,nmax,irat1,irat2
+      integer(8) nterms,nmax,irat1,irat2
       double precision x, y(0:nterms,0:nterms), d(0:nterms,0:nterms)
       double precision w(*)    
 c
@@ -2075,7 +2075,7 @@ c
 cf2py intent(in) nterms, x, w, nmax
 cf2py intent(out) y, d
 c
-      integer nterms,nmax,irat1,irat2
+      integer(8) nterms,nmax,irat1,irat2
       double precision x, y(0:nterms,0:nterms), d(0:nterms,0:nterms)
       double precision w(*)
 c
@@ -2116,7 +2116,7 @@ c
 cf2py intent(in) nterms, x, rat1, rat2, nmax
 cf2py intent(out) y
 c
-      integer nterms,nmax,m,n
+      integer(8) nterms,nmax,m,n
       double precision x, y(0:nterms,0:nterms), u
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
       u=-sqrt((1-x)*(1+x))
@@ -2167,7 +2167,7 @@ c
 cf2py intent(in) nterms, x, rat1, rat2, nmax
 cf2py intent(out) y, d
 c
-      integer nterms, nmax, m, n
+      integer(8) nterms, nmax, m, n
       double precision x, y(0:nterms,0:nterms), d(0:nterms,0:nterms)
       double precision u, du
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
@@ -2230,7 +2230,7 @@ c
 cf2py intent(in) nterms, x, rat1, rat2, nmax
 cf2py intent(out) y, d
 c
-      integer nterms, nmax, m, n
+      integer(8) nterms, nmax, m, n
       double precision x, y(0:nterms,0:nterms), d(0:nterms,0:nterms)
       double precision u, u2
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
@@ -2303,7 +2303,7 @@ c
 cf2py intent(in) nterms, x, w, nmax
 cf2py intent(out) y
 c
-      integer nterms,nmax,irat1,irat2
+      integer(8) nterms,nmax,irat1,irat2
       double precision x, y(0:nterms,0:nterms), w(*)
 c
       if( nterms .le. nmax ) then
@@ -2346,7 +2346,7 @@ c
 cf2py intent(in) nterms, x, w, nmax
 cf2py intent(out) y, d
 c
-      integer nterms,nmax,irat1,irat2
+      integer(8) nterms,nmax,irat1,irat2
       double precision x, y(0:nterms,0:nterms), d(0:nterms,0:nterms)
       double precision w(*)
 c
@@ -2395,7 +2395,7 @@ c
 cf2py intent(in) nterms, x, w, nmax
 cf2py intent(out) y, d
 c
-      integer nterms,nmax,irat1,irat2
+      integer(8) nterms,nmax,irat1,irat2
       double precision x, y(0:nterms,0:nterms), d(0:nterms,0:nterms)
       double precision w(*)
 c
@@ -2436,7 +2436,7 @@ c
 cf2py intent(in) nterms, x, rat1, rat2, nmax
 cf2py intent(out) y
 c
-      integer nterms, nmax, n, m
+      integer(8) nterms, nmax, n, m
       double precision x, y(0:nterms,0:nterms), u
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
       u=-sqrt((1-x)*(1+x))
@@ -2478,7 +2478,7 @@ c
 cf2py intent(in) nterms, x, rat1, rat2, nmax
 cf2py intent(out) y
 c
-      integer nterms, nmax, n, m
+      integer(8) nterms, nmax, n, m
       double precision x, y(0:nterms,0:nterms), u
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
 
@@ -2539,7 +2539,7 @@ c
 cf2py intent(in) nterms, x, rat1, rat2, nmax
 cf2py intent(out) y, d
 c
-      integer nterms, nmax, n, m
+      integer(8) nterms, nmax, n, m
       double precision x, y(0:nterms,0:nterms), d(0:nterms,0:nterms)
       double precision u, du
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
@@ -2590,7 +2590,7 @@ c
 cf2py intent(in) nterms, x, rat1, rat2, nmax
 cf2py intent(out) y, d
 c
-      integer nterms, nmax, n, m
+      integer(8) nterms, nmax, n, m
       double precision x, y(0:nterms,0:nterms), d(0:nterms,0:nterms)
       double precision u, u2
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
@@ -2658,7 +2658,7 @@ c
 cf2py intent(in) nterms, x, rat1, rat2, nmax
 cf2py intent(out) y, d
 c
-      integer nterms, nmax, n, m
+      integer(8) nterms, nmax, n, m
       double precision x, y(0:nterms,0:nterms), d(0:nterms,0:nterms)
       double precision u, u2
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
@@ -2731,7 +2731,7 @@ c
 cf2py intent(in) nterms, x, rat1, rat2, nmax
 cf2py intent(out) y, d
 c
-      integer nterms, nmax, n, m
+      integer(8) nterms, nmax, n, m
       double precision x, y(0:nterms,0:nterms), d(0:nterms,0:nterms)
       double precision u, u2
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
@@ -2805,7 +2805,7 @@ c
 cf2py intent(in) nmax, x, id
 cf2py intent(out) y,d
 c
-      integer nmax, m, n, id(0:nmax,0:nmax)
+      integer(8) nmax, m, n, id(0:nmax,0:nmax)
       double precision x, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u, u2
 c
       u=-sqrt((1-x))*sqrt((1+x))
@@ -2957,7 +2957,7 @@ c
 cf2py intent(in) nmax, x, rat1, rat2, id
 cf2py intent(out) y
 c
-      integer nmax, m, n, id(0:nmax,0:nmax)
+      integer(8) nmax, m, n, id(0:nmax,0:nmax)
       double precision x, y(0:nmax,0:nmax), u
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
       u=-sqrt((1-x)*(1+x))
@@ -3047,7 +3047,7 @@ c
 cf2py intent(in) nmax, x, rat1, rat2, id
 cf2py intent(out) y, d
 c
-      integer nmax, m, n, id(0:nmax,0:nmax)
+      integer(8) nmax, m, n, id(0:nmax,0:nmax)
       double precision x, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u, du
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
 c
@@ -3157,7 +3157,7 @@ c
 cf2py intent(in) nmax, x, rat1, rat2, id
 cf2py intent(out) y, d
 c
-      integer nmax, m, n, id(0:nmax,0:nmax)
+      integer(8) nmax, m, n, id(0:nmax,0:nmax)
       double precision x, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u, u2
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
       u=-sqrt((1-x)*(1+x))
@@ -3299,7 +3299,7 @@ c
 cf2py intent(in) nmax, x, rat1, rat2, id
 cf2py intent(out) y
 c
-      integer nmax, m, n, id(0:nmax,0:nmax)
+      integer(8) nmax, m, n, id(0:nmax,0:nmax)
       double precision x, y(0:nmax,0:nmax), u, sc
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
 
@@ -3348,7 +3348,7 @@ c
 cf2py intent(in) nmax, x, rat1, rat2, id
 cf2py intent(out) y, d
 c
-      integer nmax, m, n, id(0:nmax,0:nmax)
+      integer(8) nmax, m, n, id(0:nmax,0:nmax)
       double precision x, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u, du, sc
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
 c
@@ -3402,7 +3402,7 @@ c
 cf2py intent(in) nmax, x, rat1, rat2, id
 cf2py intent(out) y, d
 c
-      integer nmax, m, n, id(0:nmax,0:nmax)
+      integer(8) nmax, m, n, id(0:nmax,0:nmax)
       double precision x, y(0:nmax,0:nmax), d(0:nmax,0:nmax), u, u2, sc
       double precision rat1(0:nmax,0:nmax), rat2(0:nmax,0:nmax)
 

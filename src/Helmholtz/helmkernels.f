@@ -74,7 +74,7 @@ cf2py intent(out) pot
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       complex *16 zk
       real *8 sources(3,ns),ztarg(3,nt)
       complex *16 charge(nd,ns),pot(nd,nt)
@@ -85,7 +85,7 @@ cc     temporary variables
 c
       real *8 zdiff(3),dd,d
       complex *16 zkeye,eye,ztmp
-      integer i,j,idim
+      integer(8) i,j,idim
       data eye/(0.0d0,1.0d0)/
 
       zkeye = zk*eye
@@ -166,7 +166,7 @@ cf2py intent(out) pot,grad
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       complex *16 zk
       real *8 sources(3,ns),ztarg(3,nt)
       complex *16 charge(nd,ns),pot(nd,nt),grad(nd,3,nt)
@@ -178,7 +178,7 @@ c
       real *8 zdiff(3),dd,d
       complex *16 zkeye,eye,cd,cd1,ztmp
       complex *16 ztmp1,ztmp2,ztmp3
-      integer i,j,idim
+      integer(8) i,j,idim
       data eye/(0.0d0,1.0d0)/
 
       zkeye = zk*eye
@@ -268,7 +268,7 @@ cf2py intent(out) pot
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       complex *16 zk
       real *8 sources(3,ns),ztarg(3,nt)
       complex *16 dipvec(nd,3,ns)
@@ -280,7 +280,7 @@ cc     temporary variables
 c
       real *8 zdiff(3),dd,d,dinv
       complex *16 zkeye,eye,cd,cd1,dotprod
-      integer i,j,idim
+      integer(8) i,j,idim
       data eye/(0.0d0,1.0d0)/
 
       zkeye = zk*eye
@@ -377,7 +377,7 @@ cf2py intent(out) pot,grad
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       complex *16 zk
       real *8 sources(3,ns),ztarg(3,nt)
       complex *16 dipvec(nd,3,ns)
@@ -389,7 +389,7 @@ cc     temporary variables
 c
       real *8 zdiff(3),dd,d,dinv,dinv2
       complex *16 zkeye,eye,cd,cd2,cd3,cd4,dotprod
-      integer i,j,idim
+      integer(8) i,j,idim
       data eye/(0.0d0,1.0d0)/
 
       zkeye = zk*eye
@@ -489,7 +489,7 @@ c
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       complex *16 zk
       real *8 sources(3,ns),ztarg(3,nt)
       complex *16 dipvec(nd,3,ns)
@@ -501,7 +501,7 @@ cc     temporary variables
 c
       real *8 zdiff(3),dd,d,dinv
       complex *16 zkeye,eye,cd,cd1,dotprod
-      integer i,j,idim
+      integer(8) i,j,idim
       data eye/(0.0d0,1.0d0)/
 
       zkeye = zk*eye
@@ -602,7 +602,7 @@ cf2py intent(out) pot,grad
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       complex *16 zk
       real *8 sources(3,ns),ztarg(3,nt)
       complex *16 dipvec(nd,3,ns)
@@ -614,7 +614,7 @@ cc     temporary variables
 c
       real *8 zdiff(3),dd,d,dinv,dinv2
       complex *16 zkeye,eye,cd,cd2,cd3,cd4,dotprod
-      integer i,j,idim
+      integer(8) i,j,idim
       data eye/(0.0d0,1.0d0)/
 
       zkeye = zk*eye

@@ -127,7 +127,7 @@ c-----------------------------------------------------------------------
 c
 cc      calling sequence variables
 c
-      integer ntarg,nterms,nlege,nd
+      integer(8) ntarg,nterms,nlege,nd
       real *8 rscale,center(3),ztarg(3,ntarg)
       complex *16 zk,pot(nd,ntarg)
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
@@ -136,7 +136,7 @@ c
 c
 cc      temporary variables
 c
-      integer idim
+      integer(8) idim
       complex *16, allocatable :: ephi(:),fhs(:)
       real *8, allocatable :: ynm(:,:)
       real *8 zdiff(3),done
@@ -145,7 +145,7 @@ c
       complex *16 eye
       complex *16 ztmp1,ztmp2,ztmp3,ztmpsum,z
       complex *16 fhder
-      integer itarg,i,m,n,ifder
+      integer(8) itarg,i,m,n,ifder
       data eye/(0.0d0,1.0d0)/
 
       done = 1
@@ -268,7 +268,7 @@ c-----------------------------------------------------------------------
 c
 cc      calling sequence variables
 c
-      integer ntarg,nterms,nlege,nd
+      integer(8) ntarg,nterms,nlege,nd
       real *8 rscale,center(3),ztarg(3,ntarg)
       complex *16 zk,pot(nd,ntarg),grad(nd,3,ntarg)
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
@@ -288,7 +288,7 @@ c
       complex *16 eye
       complex *16 ztmp1,ztmp2,ztmp3,ztmpsum,z
       complex *16 ztmp4,ztmp5,ztmp6
-      integer itarg,i,m,n,ifder,idim
+      integer(8) itarg,i,m,n,ifder,idim
       data eye/(0.0d0,1.0d0)/
 
       done = 1
@@ -441,7 +441,7 @@ c     mpole           : coeffs of the h-expansion
 c
 c-----------------------------------------------------------------------
       implicit none
-      integer ns,nterms,nlege,nd
+      integer(8) ns,nterms,nlege,nd
       complex *16 zk
       real *8 rscale,sources(3,ns),center(3),wlege(*)
       complex *16 charge(nd,ns)
@@ -459,7 +459,7 @@ c
       complex *16 z,ztmp,zkeye,eye
       data eye/(0.0d0,1.0d0)/
 
-      integer isrc,i,m,n,ifder,idim
+      integer(8) isrc,i,m,n,ifder,idim
 
       ifder=0
       allocate(fjs(0:nterms),fjder(0:nterms),ephi(-nterms:nterms))
@@ -582,7 +582,7 @@ c     mpole           : coeffs of the h-expansion
 c
 c-----------------------------------------------------------------------
       implicit none
-      integer ns,nterms,nlege,nd
+      integer(8) ns,nterms,nlege,nd
       complex *16 zk
       real *8 rscale,sources(3,ns),center(3),wlege(*)
       complex *16 dipvec(nd,3,ns)
@@ -603,7 +603,7 @@ c
       complex *16 ux,uy,uz,ur,utheta,uphi,zzz
       data eye/(0.0d0,1.0d0)/
 
-      integer isrc,i,m,n,ifder,idim
+      integer(8) isrc,i,m,n,ifder,idim
 
       ifder=1
 
@@ -795,7 +795,7 @@ c     mpole           : coeffs of the h-expansion
 c
 c-----------------------------------------------------------------------
       implicit none
-      integer ns,nterms,nlege,nd
+      integer(8) ns,nterms,nlege,nd
       complex *16 zk
       real *8 rscale,sources(3,ns),center(3),wlege(*)
       complex *16 charge(nd,ns)
@@ -817,7 +817,7 @@ c
       complex *16 ux,uy,uz,ur,utheta,uphi,zzz
       data eye/(0.0d0,1.0d0)/
 
-      integer isrc,i,m,n,ifder,idim
+      integer(8) isrc,i,m,n,ifder,idim
 
       ifder=1
 
@@ -1024,7 +1024,7 @@ c-----------------------------------------------------------------------
 c
 cc      calling sequence variables
 c
-      integer ntarg,nterms,nlege,nd
+      integer(8) ntarg,nterms,nlege,nd
       real *8 rscale,center(3),ztarg(3,ntarg)
       complex *16 zk,pot(nd,ntarg)
       complex *16 locexp(nd,0:nterms,-nterms:nterms)
@@ -1041,7 +1041,7 @@ c
       complex *16 eye
       complex *16 ztmp1,ztmp2,ztmp3,ztmpsum,z
       complex *16 fjder
-      integer itarg,i,m,n,ifder,idim
+      integer(8) itarg,i,m,n,ifder,idim
       data eye/(0.0d0,1.0d0)/
 
       done = 1
@@ -1152,7 +1152,7 @@ c-----------------------------------------------------------------------
 c
 cc      calling sequence variables
 c
-      integer ntarg,nterms,nlege,nd
+      integer(8) ntarg,nterms,nlege,nd
       real *8 rscale,center(3),ztarg(3,ntarg)
       complex *16 zk,pot(nd,ntarg),grad(nd,3,ntarg)
       complex *16 locexp(nd,0:nterms,-nterms:nterms)
@@ -1173,7 +1173,7 @@ c
       complex *16 eye
       complex *16 ztmp1,ztmp2,ztmp3,ztmpsum,z
       complex *16 ztmp4,ztmp5,ztmp6
-      integer itarg,i,m,n,ifder,idim
+      integer(8) itarg,i,m,n,ifder,idim
       data eye/(0.0d0,1.0d0)/
 
       done = 1
@@ -1327,7 +1327,7 @@ c     locexp          : coeffs of the j-expansion
 c
 c-----------------------------------------------------------------------
       implicit none
-      integer ns,nterms,nlege,nd
+      integer(8) ns,nterms,nlege,nd
       complex *16 zk
       real *8 rscale,sources(3,ns),center(3),wlege(*)
       complex *16 charge(nd,ns)
@@ -1345,7 +1345,7 @@ c
       complex *16 z,ztmp,zkeye,eye
       data eye/(0.0d0,1.0d0)/
 
-      integer isrc,i,m,n,ifder,idim
+      integer(8) isrc,i,m,n,ifder,idim
 
       ifder=0
       allocate(fhs(0:nterms),fhder(0:nterms),ephi(-nterms:nterms))
@@ -1452,7 +1452,7 @@ c     locexp          : coeffs of the h-expansion
 c
 c-----------------------------------------------------------------------
       implicit none
-      integer ns,nterms,nlege,nd
+      integer(8) ns,nterms,nlege,nd
       complex *16 zk
       real *8 rscale,sources(3,ns),center(3),wlege(*)
       complex *16 dipvec(nd,3,ns)
@@ -1470,10 +1470,10 @@ c
       real *8 ctheta,stheta,cphi,sphi
       real *8 rx,thetax,phix,ry,thetay,phiy,rz,thetaz,phiz
       complex *16 ux,uy,uz,ur,utheta,uphi,zzz
-      integer idim
+      integer(8) idim
       data eye/(0.0d0,1.0d0)/
 
-      integer isrc,i,m,n,ifder
+      integer(8) isrc,i,m,n,ifder
 
       ifder=1
 
@@ -1650,7 +1650,7 @@ c     locexp          : coeffs of the h-expansion
 c
 c-----------------------------------------------------------------------
       implicit none
-      integer ns,nterms,nlege,nd
+      integer(8) ns,nterms,nlege,nd
       complex *16 zk
       real *8 rscale,sources(3,ns),center(3),wlege(*)
       complex *16 charge(nd,ns)
@@ -1669,10 +1669,10 @@ c
       real *8 ctheta,stheta,cphi,sphi
       real *8 rx,thetax,phix,ry,thetay,phiy,rz,thetaz,phiz
       complex *16 ux,uy,uz,ur,utheta,uphi,zzz
-      integer idim
+      integer(8) idim
       data eye/(0.0d0,1.0d0)/
 
-      integer isrc,i,m,n,ifder
+      integer(8) isrc,i,m,n,ifder
 
       ifder=1
 

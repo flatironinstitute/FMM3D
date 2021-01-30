@@ -101,7 +101,7 @@ if( iffldtarg == 1 ), fldtarg=complex(zeros(3,ntarg)); end;
 
 ier=0;
 
-mex_id_ = 'l3dpartdirect(i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])';
+mex_id_ = 'l3dpartdirect(i int64_t[x], i double[xx], i int64_t[x], i dcomplex[], i int64_t[x], i dcomplex[], i double[xx], i int64_t[x], io dcomplex[], i int64_t[x], io dcomplex[], i int64_t[x], i double[], i int64_t[x], io dcomplex[], i int64_t[x], io dcomplex[])';
 [pot, fld, pottarg, fldtarg] = fmm3d_legacy(mex_id_, nsource, source, ifcharge, charge, ifdipole, dipstr, dipvec, ifpot, pot, iffld, fld, ntarg, targ, ifpottarg, pottarg, iffldtarg, fldtarg, 1, 3, nsource, 1, 1, 3, nsource, 1, 1, 1, 1, 1);
 
 

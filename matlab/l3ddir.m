@@ -95,30 +95,30 @@ function [U] = l3ddir(srcinfo,targ,pgt)
 
   if(pgt == 1)
     if(ifcharge==1 && ifdipole == 0)
-      mex_id_ = 'l3ddirectcp(i int[x], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], i double[x])';
+      mex_id_ = 'l3ddirectcp(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], i double[x])';
 [pottarg] = fmm3d(mex_id_, nd, sources, charges, ns, targ, nt, pottarg, thresh, 1, 3, ns, nd, ns, 1, 3, nt, 1, nd, nt, 1);
     end
     if(ifcharge==0 && ifdipole == 1)
-      mex_id_ = 'l3ddirectdp(i int[x], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], i double[x])';
+      mex_id_ = 'l3ddirectdp(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], i double[x])';
 [pottarg] = fmm3d(mex_id_, nd, sources, dipoles, ns, targ, nt, pottarg, thresh, 1, 3, ns, nd3, ns, 1, 3, nt, 1, nd, nt, 1);
     end
     if(ifcharge==1 && ifdipole == 1)
-      mex_id_ = 'l3ddirectcdp(i int[x], i double[xx], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], i double[x])';
+      mex_id_ = 'l3ddirectcdp(i int64_t[x], i double[xx], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], i double[x])';
 [pottarg] = fmm3d(mex_id_, nd, sources, charges, dipoles, ns, targ, nt, pottarg, thresh, 1, 3, ns, nd, ns, nd3, ns, 1, 3, nt, 1, nd, nt, 1);
     end
     U.pottarg = pottarg;
   end
   if(pgt == 2)
     if(ifcharge==1 && ifdipole == 0)
-      mex_id_ = 'l3ddirectcg(i int[x], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], i double[x])';
+      mex_id_ = 'l3ddirectcg(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], i double[x])';
 [pottarg, gradtarg] = fmm3d(mex_id_, nd, sources, charges, ns, targ, nt, pottarg, gradtarg, thresh, 1, 3, ns, nd, ns, 1, 3, nt, 1, nd, nt, nd3, nt, 1);
     end
     if(ifcharge==0 && ifdipole == 1)
-      mex_id_ = 'l3ddirectdg(i int[x], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], i double[x])';
+      mex_id_ = 'l3ddirectdg(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], i double[x])';
 [pottarg, gradtarg] = fmm3d(mex_id_, nd, sources, dipoles, ns, targ, nt, pottarg, gradtarg, thresh, 1, 3, ns, nd3, ns, 1, 3, nt, 1, nd, nt, nd3, nt, 1);
     end
     if(ifcharge==1 && ifdipole == 1)
-      mex_id_ = 'l3ddirectcdg(i int[x], i double[xx], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], i double[x])';
+      mex_id_ = 'l3ddirectcdg(i int64_t[x], i double[xx], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], i double[x])';
 [pottarg, gradtarg] = fmm3d(mex_id_, nd, sources, charges, dipoles, ns, targ, nt, pottarg, gradtarg, thresh, 1, 3, ns, nd, ns, nd3, ns, 1, 3, nt, 1, nd, nt, nd3, nt, 1);
     end
     U.pottarg = pottarg;
@@ -126,15 +126,15 @@ function [U] = l3ddir(srcinfo,targ,pgt)
   end
   if(pgt == 3)
     if(ifcharge==1 && ifdipole == 0)
-      mex_id_ = 'l3ddirectch(i int[x], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], io double[xx], i double[x])';
+      mex_id_ = 'l3ddirectch(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])';
 [pottarg, gradtarg, hesstarg] = fmm3d(mex_id_, nd, sources, charges, ns, targ, nt, pottarg, gradtarg, hesstarg, thresh, 1, 3, ns, nd, ns, 1, 3, nt, 1, nd, nt, nd3, nt, nd6, nt, 1);
     end
     if(ifcharge==0 && ifdipole == 1)
-      mex_id_ = 'l3ddirectdh(i int[x], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], io double[xx], i double[x])';
+      mex_id_ = 'l3ddirectdh(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])';
 [pottarg, gradtarg, hesstarg] = fmm3d(mex_id_, nd, sources, dipoles, ns, targ, nt, pottarg, gradtarg, hesstarg, thresh, 1, 3, ns, nd3, ns, 1, 3, nt, 1, nd, nt, nd3, nt, nd6, nt, 1);
     end
     if(ifcharge==1 && ifdipole == 1)
-      mex_id_ = 'l3ddirectcdh(i int[x], i double[xx], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], io double[xx], i double[x])';
+      mex_id_ = 'l3ddirectcdh(i int64_t[x], i double[xx], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])';
 [pottarg, gradtarg, hesstarg] = fmm3d(mex_id_, nd, sources, charges, dipoles, ns, targ, nt, pottarg, gradtarg, hesstarg, thresh, 1, 3, ns, nd, ns, nd3, ns, 1, 3, nt, 1, nd, nt, nd3, nt, nd6, nt, 1);
     end
     U.pottarg = pottarg;
