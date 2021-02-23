@@ -303,7 +303,7 @@ c              Note we do not need to exclude self from
 c              the list of colleagues as a self box which
 c              is flag++ does not have any children 
 c              and will not enter the next loop
-               do j=1,4
+               do j=1,8
                   kbox = ichild(j,jbox)
                   if(kbox.gt.0) then
                      if(nchild(kbox).gt.0) then

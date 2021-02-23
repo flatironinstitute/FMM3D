@@ -19,3 +19,6 @@ lib/*
 *int2*
 *.mex*
 *debug*
+*.log
+*.sh
+sbatch*
