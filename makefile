@@ -75,7 +75,6 @@ endif
 # multi-threaded libs & flags needed
 ifneq ($(OMP),OFF)
   CFLAGS += $(OMPFLAGS)
-  CXXFLAGS += $(OMPFLAGS)
   FFLAGS += $(OMPFLAGS)
   MFLAGS += $(MOMPFLAGS)
   LIBS += $(OMPLIBS)
