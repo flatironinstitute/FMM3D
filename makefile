@@ -74,14 +74,13 @@ endif
 
 # multi-threaded libs & flags needed
 ifneq ($(OMP),OFF)
-
-CFLAGS += $(OMPFLAGS)
-FFLAGS += $(OMPFLAGS)
-MFLAGS += $(MOMPFLAGS)
-LIBS += $(OMPLIBS)
-DYLIBS += $(OMPLIBS)
-MEXLIBS += $(OMPLIBS)
-
+  CFLAGS += $(OMPFLAGS)
+  CXXFLAGS += $(OMPFLAGS)
+  FFLAGS += $(OMPFLAGS)
+  MFLAGS += $(MOMPFLAGS)
+  LIBS += $(OMPLIBS)
+  DYLIBS += $(OMPLIBS)
+  MEXLIBS += $(OMPLIBS)
 endif
 
 
