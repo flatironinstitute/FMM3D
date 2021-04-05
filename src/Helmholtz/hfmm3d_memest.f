@@ -440,7 +440,7 @@ c  processing through plane waves
 
       lmem8 = lmem8 + 100*(nn_max+1)*(nn_max+1)*(2*nn_max+1)
 
-      rmem = (lmem8+0.0d0)/1024/1024/1024
+      rmem = (lmem8+0.0d0)/1024/1024/1024*8
       if(ifprint.ge.1) call prinf('nthread=*',nthread,1)
       if(ifprint.ge.1) call prinf('nexptot_max=*',nexptot_max,1)
       if(ifprint.ge.1) call prinf('nn_max=*',nn_max,1)
