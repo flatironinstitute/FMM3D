@@ -1,0 +1,83 @@
+OS = linux
+
+#HOST = gcc
+HOST = gcc-openmp
+#HOST = intel
+#HOST = intel-openmp
+
+PROJECT = int2-hfmm3d_memest
+
+# FC - fortran compiler
+# FFLAGS - fortran compiler flags
+
+# This make file presumes that the static library is already created
+# and located at location given by 
+# STATICLIB
+#
+# It also assumes that the static library is compiled using
+# the same compiler that you are using to run the make file with
+#
+# In case you wish to you use a different compiler, make sure to include 
+# the cross compiled libraries. See fmm3d.readthedocs.io/install.html
+# for additional info
+
+
+ifneq ($(OS),Windows_NT) 
+    UNAME_S := $(shell uname -s)
+    ifeq ($(UNAME_S),Darwin)
+        ifeq ($(PREFIX),)
+            LDFMM=/usr/local/lib
+        endif
+    endif
+    ifeq ($(UNAME_S),Linux)
+        ifeq ($(PREFIX),)
+            LDFMM=${HOME}/lib
+        endif
+    endif
+endif
+
+
+ifeq ($(HOST),gcc)
+    FC=gfortran -L${LDFMM} 
+    FFLAGS=-fPIC -O3 -funroll-loops -march=native  
+endif
+
+ifeq ($(HOST),gcc-openmp)
+    FC = gfortran 
+    FFLAGS=-fPIC -O3 -funroll-loops -march=native -fopenmp 
+endif
+
+ifeq ($(HOST),intel)
+    FC=ifort 
+    FFLAGS= -O3 -fPIC -march=native
+endif
+
+ifeq ($(HOST),intel-openmp)
+    FC = ifort 
+    FFLAGS= -O3 -fPIC -march=native -qopenmp
+endif
+
+# Test objects
+TOBJS = $(COM)/hkrand.o $(COM)/dlaran.o
+
+.PHONY: all clean
+
+default: all
+
+
+OBJECTS = hfmm3d_memest_example.o \
+    ../src/Common/hkrand.o \
+    ../src/Common/dlaran.o \
+    #../src/Helmholtz/hfmm3d_memest.o
+
+all: $(OBJECTS) 
+	$(FC) $(FFLAGS)  -o $(PROJECT) $(OBJECTS) -L$(LDFMM) -lfmm3d 
+	./$(PROJECT)
+
+
+# implicit rules for objects (note -o ensures writes to correct dir)
+%.o: %.f %.h
+	$(FC) -c $(FFLAGS) $< -o $@
+
+clean: 
+	rm -f $(OBJECTS) $(PROJECT) fort.13

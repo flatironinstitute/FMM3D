@@ -5,7 +5,7 @@ c
 c
 c-----------------------------------------------------------
         subroutine hfmm3d_memest(nd,eps,zk,nsource,source,ifcharge,
-     $    ifdipole,iper,ifpgh,ntarg,targ,ifpghtarg,ier,rmem)
+     $    ifdipole,iper,ifpgh,ntarg,targ,ifpghtarg,rmem)
 c-----------------------------------------------------------------------
 c   INPUT PARAMETERS:
 c
@@ -57,13 +57,6 @@ c
 c
 c     OUTPUT parameters:
 c
-c   ier         out: integer
-c                error flag
-c                ier = 0, for successful execution
-c                ier = 4, if failed to allocate workspace
-c                      for multipole and local expansions
-c                ier = 8, if failed to allocate workspace
-c                      for plane wave expansions
 c   rmem        out: real *8
 c                 memory used in gb
 c     
@@ -92,7 +85,7 @@ c       Tree variables
       integer nlmax
       integer mnbors
       integer ifunif,nlmin
-      integer *8 ipointer(8),ltree,lmem8
+      integer *8 ipointer(8),ltree,lmem8,bigint,bigint0
       integer, allocatable :: itree(:)
       integer, allocatable :: isrcse(:,:),itargse(:,:),isrc(:)
       integer, allocatable :: itarg(:)
@@ -100,21 +93,26 @@ c       Tree variables
       integer iexpc
       double precision, allocatable :: treecenters(:,:),boxsize(:)
       double precision b0,b0inv,b0inv2,b0inv3
-      double complex zkfmm,zk2
+      integer mnlist1,mnlist2,mnlist3,mnlist4
+      
+
 
 c
 cc       temporary fmm arrays
 c
+      integer ilevcutoff
+      double complex zkfmm,zk2
       double precision epsfmm
       integer, allocatable :: nterms(:)
       integer *8, allocatable :: iaddr(:,:)
+      double precision rz,zi,zkiupbound,zkrupbound
 
       integer lmptemp,nmax
       integer *8 lmptot
 c
 c    plane wave arrays
 c
-
+      integer nlams,nphmax,ntmax,nthmax
       double complex, allocatable :: rlams(:),whts(:)
       integer, allocatable :: nfourier(:), nphysical(:)
       integer nexptot, nexptotp, nn
@@ -135,6 +133,10 @@ c
       integer i,iert,ifprint,ilev,idim
       integer nthread
       double precision time1,time2,omp_get_wtime,second
+      integer omp_get_max_threads,ntread
+      double precision done,pi
+
+
 
        
 c
@@ -198,6 +200,7 @@ c
       mnlist2 = 0
       mnlist3 = 0
       mnlist4 = 0
+      isep = 1
 
       call computemnlists(nlevels,nboxes,itree(ipointer(1)),boxsize,
      1  treecenters,itree(ipointer(3)),itree(ipointer(4)),
@@ -250,28 +253,61 @@ c    needed
 c
 c    source array
 c
-      lmem8 = lmem8 + 7*nsource
+      bigint = 7
+      bigint = bigint*nsource
+      lmem8 = lmem8 + bigint 
 c
 c    charge and dipole arrays
 c
-      if(ifcharge.eq.1) lmem8 = lmem8 + 4*nsource*nd
-      if(ifdipole.eq.1) lmem8 = lmem8 + 12*nsource*nd
+      bigint0 = nsource
+      bigint0 = bigint0*nd
+      if(ifcharge.eq.1) then
+        bigint = 4*bigint0
+        lmem8 = lmem8 + bigint
+      endif
+      if(ifdipole.eq.1) then
+        bigint = 12*bigint0
+        lmem8 = lmem8 + bigint 
+      endif
 
 c
 c    target array
 c
-      lmem8 = lmem8 + 7*ntarg
+      bigint = 7
+      bigint = 7*ntarg
+      lmem8 = lmem8 + bigint 
 c
 c
 c     pot, grad, hess arrays
 c
-      if(ifpgh.eq.1) lmem8 = lmem8 + 4*nsource*nd
-      if(ifpgh.eq.2) lmem8 = lmem8 + 12*nsource*nd
-      if(ifpgh.eq.3) lmem8 = lmem8 + 24*nsource*nd
-
-      if(ifpghtarg.eq.1) lmem8 = lmem8 + 4*ntarg*nd
-      if(ifpghtarg.eq.1) lmem8 = lmem8 + 12*ntarg*nd
-      if(ifpghtarg.eq.1) lmem8 = lmem8 + 24*ntarg*nd
+      bigint0 = nsource
+      bigint0 = bigint0*nd
+      if(ifpgh.eq.1) then
+        bigint = bigint0*4
+        lmem8 = lmem8 + bigint 
+      endif
+      if(ifpgh.eq.2) then
+        bigint = bigint0*12
+        lmem8 = lmem8 + bigint 
+      endif
+      if(ifpgh.eq.3) then
+        bigint = bigint0*24
+        lmem8 = lmem8 + bigint
+      endif
+      
+      bigint0 = ntarg*nd
+      if(ifpghtarg.eq.1) then
+        bigint = bigint0*4
+        lmem8 = lmem8 + bigint 
+      endif
+      if(ifpghtarg.eq.1) then
+        bigint = bigint0*12
+        lmem8 = lmem8 + bigint 
+      endif
+      if(ifpghtarg.eq.1) then
+        bigint = bigint0*24
+        lmem8 = lmem8 + bigint 
+      endif
 
       nthread = 1
 C$      nthread = omp_get_max_threads()
@@ -286,8 +322,10 @@ c
 c
 c   buffer for temporary arrays proportional to nboxes
 c
-
-      lmem8 = lmem8 + 20*nboxes*nthread
+      bigint = 20
+      bigint = bigint*nboxes
+      bigint = bigint*nthread
+      lmem8 = lmem8 + bigint 
 c
 c   rmlexp array
 c
@@ -295,12 +333,17 @@ c
 
 c
 c   buffer for mptemp arrays
-c 
-      lmem8 = lmem8 + 20*lmptemp*nthread
+c
+      bigint = 4
+      bigint = bigint*lmptemp
+      bigint = bigint*nthread
+      lmem8 = lmem8 + bigint 
 c
 c    list1-4
 c
-      lmem8 = lmem8 + (mnlist1+mnlist2+mnlist3+mnlist4+4)*nboxes
+      bigint = mnlist1 + mnlist2 + mnlist3 + mnlist4 + 4
+      bigint = bigint*nboxes
+      lmem8 = lmem8 + bigint 
 c
 c    pwlist 
 c
@@ -309,8 +352,15 @@ c
 c
 c    temp list3-4 arrays
 c
-      lmem8 = lmem8 + 24*2*(nsource+ntarg)*nthread
-      lmem8 = lmem8 + nthread*lmptemp*32
+      bigint = 48
+      bigint = bigint*(nsource+ntarg)
+      bigint = bigint*nthread
+      lmem8 = lmem8 + bigint
+
+      bigint = 32
+      bigint = bigint*nthread
+      bigint = bigint*lmptemp
+      lmem8 = lmem8 + bigint 
 c
 c    plane wave arrays
 c
@@ -352,11 +402,10 @@ c
           nthmax = 0
           nexptotp = 0
           nexptot = 0
-          nn = 0
+          nn = nterms(ilev)
           do i=1,nlams
             nexptotp = nexptotp + nphysical(i)
             nexptot = nexptot + 2*nfourier(i)+1
-            nn = nn + nfourier(i)*nphysical(i)
             if(nfourier(i).gt.nthmax) nthmax = nfourier(i)
             if(nphysical(i).gt.nphmax) nphmax = nphysical(i)
           enddo
@@ -365,19 +414,39 @@ c
           if(nexptot.gt.nexptot_max) nexptot_max = nexptot
         endif
       enddo
+      
+      bigint = 54
+      bigint = bigint*nexptotp_max
+      lmem8 = lmem8 + bigint
 
-      lmem8 = lmem8 + 54*nexptotp_max + 4*nd*nthread*nexptot_max
-      lmem8 = lmem8 + 36*nd*nexptotp_max*nthread
+      bigint = 4*nd
+      bigint = bigint*nthread
+      bigint = bigint*nexptot_max
+      lmem8 = lmem8 + bigint
+      bigint = 36*nd
+      bigint = bigint*nexptotp_max
+      bigint = bigint*nthread
+      lmem8 = lmem8 + bigint
 c
 c  adding buffer of 6*nboxes*nexptotp_max*nd to account for list4
 c  processing through plane waves
-c
-      lmem8 = lmem8 + nd*nexptotp_max*nboxes*18 
 
-      lmem8 = lmem8 + 100*(nn+1)*(nn+1)*(2*nn+1)
+      bigint = 18
+      bigint = bigint*nd
+      bigint = bigint*nexptotp_max
+      bigint = bigint*nboxes
+      lmem8 = lmem8 + bigint 
+
+
+      lmem8 = lmem8 + 100*(nn_max+1)*(nn_max+1)*(2*nn_max+1)
 
       rmem = (lmem8+0.0d0)/1024/1024/1024
-      if(ifprint.ge.1) "lmem8=",lmem8
+      if(ifprint.ge.1) call prinf('nthread=*',nthread,1)
+      if(ifprint.ge.1) call prinf('nexptot_max=*',nexptot_max,1)
+      if(ifprint.ge.1) call prinf('nn_max=*',nn_max,1)
+      if(ifprint.ge.1) call prinf('nboxes=*',nboxes,1)
+      if(ifprint.ge.1) call prinf('nexptotp_max=*',nexptotp_max,1)
+      if(ifprint.ge.1) print *, "lmem8=",lmem8
       if(ifprint.ge.1) call prin2('mem required in GB=*',rmem,1)
        
 
