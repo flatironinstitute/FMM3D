@@ -1115,3 +1115,175 @@ ccc   scopded function variables
 
       return
       end
+c      
+c
+c
+c
+c
+c--------------------------------------------------------------
+c
+      subroutine subdividebox(pos,npts,center,boxsize,
+     1           isorted,iboxfl,subcenters)
+      implicit none
+      double precision pos(3,npts)
+      double precision center(3)
+      double precision subcenters(3,8)
+      double precision boxsize
+      integer npts
+      integer isorted(*)
+      integer iboxfl(2,8)
+
+c     Temporary variables
+      integer isortedtmp(npts)
+      integer i,j,i12,i34,istart,jstart,kstart,ii,iii,nss,nee
+      integer jj,irefinebox,ntt
+      integer i56, i78, i1234, i5678
+      integer ibox,ifirstbox,ilastbox,nbfirst
+      integer is,it,ie
+      integer nc(8)
+
+      i1234 = 0
+      i5678 = 0
+      do i = 1,npts
+         if(pos(3,i)-center(3).lt.0) then
+            i1234 = i1234 + 1
+            isorted(i1234) = i
+         else
+            i5678 = i5678 + 1
+            isortedtmp(i5678) = i
+         endif
+      enddo
+      do i=1,i5678
+         isorted(i1234+i) = isortedtmp(i)
+      enddo
+
+c     Sort i1234 into i12 and i34         
+      i12 = 0
+      i34 = 0
+      do i = 1,i1234
+         if(pos(2,isorted(i))-center(2).lt.0) then
+            i12 = i12 + 1
+            isorted(i12) = isorted(i)
+         else
+            i34 = i34 + 1
+            isortedtmp(i34) = isorted(i)
+         endif
+      enddo
+c     Note at the end of the loop, i12 is where the particles
+c     in part 12 of the box end
+c
+c     Reorder sources to include 34 in the array
+      do i=1,i34
+         isorted(i12+i) = isortedtmp(i)
+      enddo
+
+c     sort i5678 into i56 and i78
+      i56 = i1234
+      i78 = 0
+      do i=i1234+1,npts
+         if(pos(2,isorted(i))-center(2).lt.0) then
+            i56 = i56 + 1
+            isorted(i56) = isorted(i)
+         else
+            i78 = i78 + 1
+            isortedtmp(i78) = isorted(i)
+         endif
+      enddo
+c     Reorder sources to include 78 in the array
+      do i=1,i78
+         isorted(i56+i) = isortedtmp(i)
+      enddo
+c     End of reordering i5678         
+
+      nc = 0
+c     Sort into boxes 1 and 2
+      do i = 1,i12
+         if(pos(1,isorted(i))-center(1).lt.0) then
+            nc(1) = nc(1) + 1
+            isorted(nc(1)) = isorted(i)
+         else
+            nc(2) = nc(2) + 1
+            isortedtmp(nc(2)) = isorted(i)
+         endif
+      enddo
+c     Reorder sources so that sources in 2 are at the
+c     end of this part of the array
+      do i=1,nc(2)
+         isorted(nc(1)+i) = isortedtmp(i)
+      enddo
+
+c     Sort into boxes 3 and 4
+      do i = i12+1, i1234
+         if(pos(1,isorted(i))-center(1).lt.0) then
+            nc(3) = nc(3) + 1
+            isorted(i12+nc(3)) = isorted(i)
+         else
+            nc(4) = nc(4)+1
+            isortedtmp(nc(4)) = isorted(i)
+         endif
+      enddo
+c     Reorder sources so that sources in 4 are at the
+c     end of this part of the array
+      do i=1,nc(4)
+         isorted(i12+nc(3)+i) = isortedtmp(i)
+      enddo
+
+c     Sort into boxes 5 and 6
+      do i = i1234+1,i56
+         if(pos(1,isorted(i))-center(1).lt.0) then
+            nc(5) = nc(5) + 1
+            isorted(i1234+nc(5)) = isorted(i)
+         else
+            nc(6) = nc(6) + 1
+            isortedtmp(nc(6)) = isorted(i)
+         endif
+      enddo
+c     Reorder sources so that sources in 6 are at the
+c     end of this part of the array
+      do i=1,nc(6)
+         isorted(i1234+nc(5)+i) = isortedtmp(i)
+      enddo
+c     End of sorting sources into boxes 5 and 6
+
+c     Sort into boxes 7 and 8
+      do i=i56+1,npts
+         if(pos(1,isorted(i))-center(1).lt.0) then
+            nc(7) = nc(7) + 1
+            isorted(i56+nc(7)) = isorted(i)
+         else
+            nc(8) = nc(8) + 1
+            isortedtmp(nc(8)) = isorted(i)
+         endif
+      enddo
+c     Reorder sources so that sources in 8 are at the
+c     end of the array
+      do i=1,nc(8)
+         isorted(i56+nc(7)+i) = isortedtmp(i)
+      enddo
+      
+      istart=1
+      iboxfl=0
+      subcenters=0.0d0
+      do i=1,8
+         ii = 2
+         jj = 2
+         if(i.eq.1.or.i.eq.2.or.i.eq.5.or.i.eq.6) ii = 1
+         if(i.lt.5) jj = 1
+         if(nc(i).gt.0) then
+            subcenters(1,i) = center(1)+(-1)**i*boxsize/2.0d0
+            subcenters(2,i) = center(2)+(-1)**ii*boxsize/2.0d0
+            subcenters(3,i) = center(3)+(-1)**jj*boxsize/2.0d0
+
+            iboxfl(1,i) = istart
+            iboxfl(2,i) = istart+nc(i)-1
+
+            istart = istart+nc(i)
+          endif
+      enddo
+
+      return
+      end
+c--------------------------------------------------------------------     
+c
+c
+c

@@ -34,8 +34,8 @@ c
       enddo
 
 
-      ns = 30000
-      nt = 12000
+      ns = 4000
+      nt = 4200
 
       allocate(source(3,ns),targ(3,nt))
       allocate(stoklet(3,ns),strslet(3,ns),strsvec(3,ns))

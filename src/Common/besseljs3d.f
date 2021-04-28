@@ -75,7 +75,7 @@ c      arguments in the complex plane for large
 c      nterms. For example, it is a terrible idea
 c      to use this code for z>>nterms^2
 
-      lwfjs = nterms + 10000
+      lwfjs = nterms + 100000
       ntop=lwfjs
 c
       do i=nterms,lwfjs
