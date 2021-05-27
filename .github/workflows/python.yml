@@ -28,7 +28,6 @@ jobs:
     - name: Compile python bindings
       run: |
         scl enable devtoolset-7 bash
-        .github/workflows/python_build_posix.sh /opt/python/cp35-cp35m/bin/python
         .github/workflows/python_build_posix.sh /opt/python/cp36-cp36m/bin/python
         .github/workflows/python_build_posix.sh /opt/python/cp37-cp37m/bin/python
         .github/workflows/python_build_posix.sh /opt/python/cp38-cp38/bin/python
@@ -36,7 +35,6 @@ jobs:
 
     - name: Test python bindings
       run: |
-        .github/workflows/python_test_posix.sh /opt/python/cp35-cp35m/bin/python
         .github/workflows/python_test_posix.sh /opt/python/cp36-cp36m/bin/python
         .github/workflows/python_test_posix.sh /opt/python/cp37-cp37m/bin/python
         .github/workflows/python_test_posix.sh /opt/python/cp38-cp38/bin/python
