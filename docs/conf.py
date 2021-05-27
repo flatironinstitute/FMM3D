@@ -39,7 +39,7 @@ extensions = [
     'sphinx.ext.mathjax',
 #    'sphinx.ext.autosectionlabel',   # needs v 1.4; can :ref: other files w/o this; removed 7/29/18
     'texext',
-    'sphinxcontrib.bibtex',
+#    'sphinxcontrib.bibtex',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -219,8 +219,8 @@ htmlhelp_basename = 'fmm3ddoc'
 # To fix location of equation numbering. Barnett tried 6/19/18
 # see https://samnicholls.net/2016/06/15/how-to-sphinx-readthedocs/
 def setup(app):
-    app.add_stylesheet('theme_overrides.css')
-    app.add_stylesheet('custom.css')
+    app.add_css_file('theme_overrides.css')
+    app.add_css_file('custom.css')
 # it doesn't fail if this file not found in _static  :(
 
 # -- Options for LaTeX output ---------------------------------------------
