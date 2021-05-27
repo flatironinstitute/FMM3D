@@ -60,6 +60,7 @@ In general, the subroutine names take the following form::
 
     - p: on output only $u$ is evaluated
     - g: on output both $u$ and its gradient are evaluated
+    - h: on output $u$, its gradient and its hessian are evaluated
 
 These are all the single density routines. To get a vectorized version 
 of any of the routines use::
@@ -99,16 +100,19 @@ List of interfaces
                                         
     - Potential (:ref:`lscp`)          
     - Gradient  (:ref:`lscg`)          
+    - Hessian   (:ref:`lsch`)          
                                        
   - Interaction Type: Dipoles           
                                        
     - Potential (:ref:`lsdp`)          
     - Gradient  (:ref:`lsdg`)          
+    - Hessian   (:ref:`lsdh`)          
                                        
   - Interaction Type: Charges + Dipoles 
                                        
     - Potential (:ref:`lscdp`)         
     - Gradient  (:ref:`lscdg`)         
+    - Hessian   (:ref:`lscdh`)          
 
 
 - Evaluation points: Targets  
@@ -117,16 +121,19 @@ List of interfaces
                                         
     - Potential (:ref:`ltcp`)          
     - Gradient  (:ref:`ltcg`)          
+    - Hessian   (:ref:`ltch`)          
                                        
   - Interaction Type: Dipoles           
                                        
     - Potential (:ref:`ltdp`)          
     - Gradient  (:ref:`ltdg`)          
+    - Hessian   (:ref:`ltdh`)          
                                        
   - Interaction Type: Charges + Dipoles 
                                        
     - Potential (:ref:`ltcdp`)         
     - Gradient  (:ref:`ltcdg`)         
+    - Hessian   (:ref:`ltcdh`)          
 
 - Evaluation points: Sources + Targets  
                                         
@@ -134,16 +141,19 @@ List of interfaces
                                         
     - Potential (:ref:`lstcp`)          
     - Gradient  (:ref:`lstcg`)          
+    - Hessian   (:ref:`lstch`)          
                                        
   - Interaction Type: Dipoles           
                                        
     - Potential (:ref:`lstdp`)          
     - Gradient  (:ref:`lstdg`)          
+    - Hessian   (:ref:`lstdh`)          
                                        
   - Interaction Type: Charges + Dipoles 
                                        
     - Potential (:ref:`lstcdp`)         
     - Gradient  (:ref:`lstcdg`)         
+    - Hessian   (:ref:`lstcdh`)          
 
 .. container:: rttext
 

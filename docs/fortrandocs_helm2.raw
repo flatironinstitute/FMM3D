@@ -25,6 +25,8 @@ c  Output arguments:
 c
 c    -    pot: double complex(nsource)
 c          Potential at source locations, $u(x_{j})$
+c    -    ier: integer
+c          Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory  
 c
 c
 c--------------------------------
@@ -58,6 +60,8 @@ c    -    pot: double complex(nsource)
 c          Potential at source locations, $u(x_{j})$
 c    -    grad: double complex(3,nsource)
 c          Gradient at source locations, $\nabla u(x_{j})$
+c    -    ier: integer
+c          Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory  
 c
 c
 c--------------------------------
@@ -90,6 +94,8 @@ c  Output arguments:
 c
 c    -    pot: double complex(nsource)
 c          Potential at source locations, $u(x_{j})$
+c    -    ier: integer
+c          Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory  
 c
 c
 c--------------------------------
@@ -124,6 +130,8 @@ c    -    pot: double complex(nsource)
 c          Potential at source locations, $u(x_{j})$
 c    -    grad: double complex(3,nsource)
 c          Gradient at source locations, $\nabla u(x_{j})$
+c    -    ier: integer
+c          Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory  
 c
 c
 c--------------------------------
@@ -159,6 +167,8 @@ c  Output arguments:
 c
 c    -    pot: double complex(nsource)
 c          Potential at source locations, $u(x_{j})$
+c    -    ier: integer
+c          Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory  
 c
 c
 c--------------------------------
@@ -196,6 +206,8 @@ c    -    pot: double complex(nsource)
 c          Potential at source locations, $u(x_{j})$
 c    -    grad: double complex(3,nsource)
 c          Gradient at source locations, $\nabla u(x_{j})$
+c    -    ier: integer
+c          Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory  
 c
 c
 c--------------------------------
@@ -231,6 +243,8 @@ c  Output arguments:
 c
 c    -    pottarg: double complex(ntarg)
 c          Potential at target locations, $u(t_{i})$
+c    -    ier: integer
+c          Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory  
 c
 c
 c--------------------------------
@@ -268,6 +282,8 @@ c    -    pottarg: double complex(ntarg)
 c          Potential at target locations, $u(t_{i})$
 c    -    gradtarg: double complex(3,ntarg)
 c          Gradient at target locations, $\nabla u(t_{i})$
+c    -    ier: integer
+c          Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory  
 c
 c
 c--------------------------------
@@ -304,6 +320,8 @@ c  Output arguments:
 c
 c    -    pottarg: double complex(ntarg)
 c          Potential at target locations, $u(t_{i})$
+c    -    ier: integer
+c          Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory  
 c
 c
 c--------------------------------
@@ -342,6 +360,8 @@ c    -    pottarg: double complex(ntarg)
 c          Potential at target locations, $u(t_{i})$
 c    -    gradtarg: double complex(3,ntarg)
 c          Gradient at target locations, $\nabla u(t_{i})$
+c    -    ier: integer
+c          Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory  
 c
 c
 c--------------------------------
@@ -381,6 +401,8 @@ c  Output arguments:
 c
 c    -    pottarg: double complex(ntarg)
 c          Potential at target locations, $u(t_{i})$
+c    -    ier: integer
+c          Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory  
 c
 c
 c--------------------------------
@@ -422,6 +444,8 @@ c    -    pottarg: double complex(ntarg)
 c          Potential at target locations, $u(t_{i})$
 c    -    gradtarg: double complex(3,ntarg)
 c          Gradient at target locations, $\nabla u(t_{i})$
+c    -    ier: integer
+c          Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory  
 c
 c
 c--------------------------------
@@ -459,6 +483,8 @@ c    -    pot: double complex(nsource)
 c          Potential at source locations, $u(x_{j})$
 cc    -    pottarg: double complex(ntarg)
 c          Potential at target locations, $u(t_{i})$
+c    -    ier: integer
+c          Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory  
 c
 c
 c--------------------------------
@@ -500,6 +526,8 @@ cc    -    pottarg: double complex(ntarg)
 c          Potential at target locations, $u(t_{i})$
 c    -    gradtarg: double complex(3,ntarg)
 c          Gradient at target locations, $\nabla u(t_{i})$
+c    -    ier: integer
+c          Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory  
 c
 c
 c--------------------------------
@@ -538,6 +566,8 @@ c    -    pot: double complex(nsource)
 c          Potential at source locations, $u(x_{j})$
 cc    -    pottarg: double complex(ntarg)
 c          Potential at target locations, $u(t_{i})$
+c    -    ier: integer
+c          Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory  
 c
 c
 c--------------------------------
@@ -580,6 +610,8 @@ cc    -    pottarg: double complex(ntarg)
 c          Potential at target locations, $u(t_{i})$
 c    -    gradtarg: double complex(3,ntarg)
 c          Gradient at target locations, $\nabla u(t_{i})$
+c    -    ier: integer
+c          Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory  
 c
 c
 c--------------------------------
@@ -621,6 +653,8 @@ c    -    pot: double complex(nsource)
 c          Potential at source locations, $u(x_{j})$
 cc    -    pottarg: double complex(ntarg)
 c          Potential at target locations, $u(t_{i})$
+c    -    ier: integer
+c          Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory  
 c
 c
 c--------------------------------
@@ -666,6 +700,8 @@ cc    -    pottarg: double complex(ntarg)
 c          Potential at target locations, $u(t_{i})$
 c    -    gradtarg: double complex(3,ntarg)
 c          Gradient at target locations, $\nabla u(t_{i})$
+c    -    ier: integer
+c          Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory  
 c
 c
 c--------------------------------

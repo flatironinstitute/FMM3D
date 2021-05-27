@@ -30,6 +30,7 @@ c        h: potentials+gradients+hessians
 c
 c  The wrappers are:
 c 
+c
 c  -lfmm3d_s_c_p
 c    - Evaluation points: Sources
 c    - Interaction kernel: Charges
@@ -39,6 +40,11 @@ c  -lfmm3d_s_c_g
 c    - Evaluation points: Sources
 c    - Interaction kernel: Charges
 c    - Outputs requested: Potential and Gradient
+c-------------------------------------
+c  -lfmm3d_s_c_h
+c    - Evaluation points: Sources
+c    - Interaction kernel: Charges
+c    - Outputs requested: Potential, Gradient and Hessians
 c-------------------------------------
 c  -lfmm3d_s_d_p
 c    - Evaluation points: Sources
@@ -50,6 +56,11 @@ c    - Evaluation points: Sources
 c    - Interaction kernel: Dipoles
 c    - Outputs requested: Potential and Gradient
 c-------------------------------------
+c  -lfmm3d_s_d_h
+c    - Evaluation points: Sources
+c    - Interaction kernel: Dipoles
+c    - Outputs requested: Potential, Gradient and Hessians
+c-------------------------------------
 c  -lfmm3d_s_cd_p
 c    - Evaluation points: Sources
 c    - Interaction kernel: Charges and Dipoles
@@ -59,6 +70,11 @@ c  -lfmm3d_s_cd_g
 c    - Evaluation points: Sources
 c    - Interaction kernel: Charges and Dipoles
 c    - Outputs requested: Potential and Gradient
+c-------------------------------------
+c  -lfmm3d_s_cd_h
+c    - Evaluation points: Sources
+c    - Interaction kernel: Charges and Dipoles
+c    - Outputs requested: Potential, Gradient and Hessians
 c-------------------------------------
 c  -lfmm3d_t_c_p
 c    - Evaluation points: Targets
@@ -70,6 +86,11 @@ c    - Evaluation points: Targets
 c    - Interaction kernel: Charges
 c    - Outputs requested: Potential and Gradient
 c-------------------------------------
+c  -lfmm3d_t_c_h
+c    - Evaluation points: Targets
+c    - Interaction kernel: Charges
+c    - Outputs requested: Potential, Gradient and Hessians
+c-------------------------------------
 c  -lfmm3d_t_d_p
 c    - Evaluation points: Targets
 c    - Interaction kernel: Dipoles
@@ -79,6 +100,11 @@ c  -lfmm3d_t_d_g
 c    - Evaluation points: Targets
 c    - Interaction kernel: Dipoles
 c    - Outputs requested: Potential and Gradient
+c-------------------------------------
+c  -lfmm3d_t_d_h
+c    - Evaluation points: Targets
+c    - Interaction kernel: Dipoles
+c    - Outputs requested: Potential, Gradient and Hessians
 c-------------------------------------
 c  -lfmm3d_t_cd_p
 c    - Evaluation points: Targets
@@ -90,6 +116,11 @@ c    - Evaluation points: Targets
 c    - Interaction kernel: Charges and Dipoles
 c    - Outputs requested: Potential and Gradient
 c-------------------------------------
+c  -lfmm3d_t_cd_h
+c    - Evaluation points: Targets
+c    - Interaction kernel: Charges and Dipoles
+c    - Outputs requested: Potential, Gradient and Hessians
+c-------------------------------------
 c  -lfmm3d_st_c_p
 c    - Evaluation points: Sources and Targets
 c    - Interaction kernel: Charges
@@ -99,6 +130,11 @@ c  -lfmm3d_st_c_g
 c    - Evaluation points: Sources and Targets
 c    - Interaction kernel: Charges
 c    - Outputs requested: Potential and Gradient
+c-------------------------------------
+c  -lfmm3d_st_c_h
+c    - Evaluation points: Sources and Targets
+c    - Interaction kernel: Charges
+c    - Outputs requested: Potential, Gradient and Hessians
 c-------------------------------------
 c  -lfmm3d_st_d_p
 c    - Evaluation points: Sources and Targets
@@ -110,6 +146,11 @@ c    - Evaluation points: Sources and Targets
 c    - Interaction kernel: Dipoles
 c    - Outputs requested: Potential and Gradient
 c-------------------------------------
+c  -lfmm3d_st_d_h
+c    - Evaluation points: Sources and Targets
+c    - Interaction kernel: Dipoles
+c    - Outputs requested: Potential, Gradient and Hessians
+c-------------------------------------
 c  -lfmm3d_st_cd_p
 c    - Evaluation points: Sources and Targets
 c    - Interaction kernel: Charges and Dipoles
@@ -120,7 +161,11 @@ c    - Evaluation points: Sources and Targets
 c    - Interaction kernel: Charges and Dipoles
 c    - Outputs requested: Potential and Gradient
 c-------------------------------------
-c
+c  -lfmm3d_st_cd_h
+c    - Evaluation points: Sources and Targets
+c    - Interaction kernel: Charges and Dipoles
+c    - Outputs requested: Potential, Gradient and Hessians
+c-------------------------------------
 c
 
       subroutine lfmm3d_s_c_p(eps,nsource,source,

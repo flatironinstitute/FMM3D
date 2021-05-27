@@ -47,6 +47,7 @@ grad_nd_txt =["-    grad: double complex(nd,3,nsource)","Gradient at source loca
 pottarg_nd_txt =["-    pottarg: double complex(nd,ntarg)","Potential at target locations, $u_{\ell}(t_{i})$"]
 gradtarg_nd_txt =["-    gradtarg: double complex(nd,3,ntarg)","Gradient at target locations, $\\nabla u_{\ell}(t_{i})$"]
 
+ier_txt= ["-    ier: integer","Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory"] 
 sp1 = "  "
 sp1 = "  "
 sp2 = "          "
@@ -72,20 +73,20 @@ for i in range(3):
                 subname=subname+'charge,'
             if(j==1 or j==2):
                 subname=subname+'dipvec,'
+            if(i == 2 and k==0):
+                subname=subname+'pot,'
+            if(i == 2 and k==1):
+                subname=subname+'pot,grad,'
             if(i>0):
                 subname=subname+'ntarg,targ,'
             if(i==0 and k==0):
-                subname=subname+'pot)'
+                subname=subname+'pot,ier)'
             if(i==0 and k==1):
-                subname=subname+'pot,grad)'
-            if(i==1 and k==0):
-                subname=subname+'pottarg)'
-            if(i==1 and k==1):
-                subname=subname+'pottarg,gradtarg)'
-            if(i==2 and k==0):
-                subname=subname+'pot,pottarg)'
-            if(i==2 and k==1):
-                subname=subname+'pot,grad,pottarg,gradtarg)'
+                subname=subname+'pot,grad,ier)'
+            if(i>=1 and k==0):
+                subname=subname+'pottarg,ier)'
+            if(i>=1 and k==1):
+                subname=subname+'pottarg,gradtarg,ier)'
 
             
             str_ini = 'h'+st_opts[i][1::]+c_opts[j][1::]+p_opts[k][1::]
@@ -126,6 +127,7 @@ for i in range(3):
                 f1.writelines(sp1+pottarg_txt[0]+"\n"+sp2+pottarg_txt[1]+"\n")
                 if(k==1):
                     f1.writelines(sp1+gradtarg_txt[0]+"\n"+sp2+gradtarg_txt[1]+"\n")
+            f1.writelines(sp1+ier_txt[0]+"\n"+sp2+ier_txt[1]+"  \n")
             f1.writelines("\n\n--------------------------------\n\nVectorized version: \n\n")
             f1.writelines('.. code:: fortran\n\n')
             f1.writelines(sp1+subname1+subname+'\n\n')
@@ -150,6 +152,7 @@ for i in range(3):
                 f1.writelines(sp1+pottarg_nd_txt[0]+"\n"+sp2+pottarg_nd_txt[1]+"\n")
                 if(k==1):
                     f1.writelines(sp1+gradtarg_nd_txt[0]+"\n"+sp2+gradtarg_nd_txt[1]+"\n")
+            f1.writelines(sp1+ier_txt[0]+"\n"+sp2+ier_txt[1]+"  \n")
             f1.writelines("\n\n.. container:: rttext\n\n  `Back to Helmholtz FMM <fortran-c.html#helm>`__")
             f1.writelines("\n\n.. container:: rttext\n\n  `Back to top <fortran-c.html#fcexmp>`__\n\n\n")
 
@@ -222,6 +225,7 @@ for i in range(3):
                 f1.writelines("c  "+sp1+pottarg_txt[0]+"\nc"+sp2+pottarg_txt[1]+"\nc")
                 if(k==1):
                     f1.writelines("  "+sp1+gradtarg_txt[0]+"\nc"+sp2+gradtarg_txt[1]+"\nc")
+            f1.writelines("  "+sp1+ier_txt[0]+"\nc"+sp2+ier_txt[1]+"  \nc")
             f1.writelines("\nc\nc--------------------------------\nc\n")
 
             f2.writelines('c-------------------------------------\n')
@@ -254,6 +258,7 @@ for i in range(3):
                 f2.writelines("c  "+sp1+pottarg_nd_txt[0]+"\nc"+sp2+pottarg_nd_txt[1]+"\nc")
                 if(k==1):
                     f2.writelines("  "+sp1+gradtarg_nd_txt[0]+"\nc"+sp2+gradtarg_nd_txt[1]+"\nc")
+            f2.writelines("  "+sp1+ier_txt[0]+"\n"+sp2+ier_txt[1]+"  \nc")
             f2.writelines("\nc\nc--------------------------------\nc\n")
 f1.close()
 f2.close()

@@ -1,7 +1,7 @@
 from numpy import *
 
 intro = "This subroutine evaluates the "
-pgstr = ["potential ", "potential and its gradient "]
+pgstr = ["potential ", "potential and its gradient ","potential, its gradient and its hessian"]
 intro2 = "\n\n  .. math::\n\n"
 
 eq_start = "u(x) = "
@@ -38,14 +38,19 @@ targ_txt =["-    targ: double precision(3,ntarg)","Target locations, $t_{i}$"]
 inp_returns = "Output arguments:"
 pot_txt =["-    pot: double precision(nsource)","Potential at source locations, $u(x_{j})$"]
 grad_txt =["-    grad: double precision(3,nsource)","Gradient at source locations, $\\nabla u(x_{j})$"]
+hess_txt =["-    hess: double precision(6,nsource)","Hessian at source locations, $\\nabla \\nabla u(x_{j})$"]
 pottarg_txt =["-    pottarg: double precision(ntarg)","Potential at target locations, $u(t_{i})$"]
 gradtarg_txt =["-    gradtarg: double precision(3,ntarg)","Gradient at target locations, $\\nabla u(t_{i})$"]
+hesstarg_txt =["-    hesstarg: double precision(6,ntarg)","Hessian at target locations, $\\nabla \\nabla u(t_{i})$"]
 
 pot_nd_txt =["-    pot: double precision(nd,nsource)","Potential at source locations, $u_{\ell}(x_{j})$"]
 grad_nd_txt =["-    grad: double precision(nd,3,nsource)","Gradient at source locations, $\\nabla u_{\ell}(x_{j})$"]
+hess_nd_txt =["-    hess: double precision(nd,6,nsource)","Gradient at source locations, $\\nabla \\nabla u_{\ell}(x_{j})$"]
 pottarg_nd_txt =["-    pottarg: double precision(nd,ntarg)","Potential at target locations, $u_{\ell}(t_{i})$"]
 gradtarg_nd_txt =["-    gradtarg: double precision(nd,3,ntarg)","Gradient at target locations, $\\nabla u_{\ell}(t_{i})$"]
+hesstarg_nd_txt =["-    hesstarg: double precision(nd,3,ntarg)","Hessian at target locations, $\\nabla \\nabla u_{\ell}(t_{i})$"]
 
+ier_txt= ["-    ier: integer","Error flag; ier=0 implies successful execution, and ier=4/8 implies insufficient memory"] 
 sp1 = "  "
 sp1 = "  "
 sp2 = "          "
@@ -54,8 +59,8 @@ c_opts = ['_c','_d','_cd']
 c_opts2 = ['Charges','Dipoles', 'Charges and Dipoles']
 st_opts = ['_s','_t','_st']
 st_opts2 = ['Sources','Targets','Sources and Targets']
-p_opts = ['_p','_g']
-p_opts2 = ['Potential','Potential and Gradient']
+p_opts = ['_p','_g','_h']
+p_opts2 = ['Potential','Potential and Gradient','Potential, Gradient and Hessians']
 
 ###
 #  Generate webpage for Laplace
@@ -63,7 +68,7 @@ p_opts2 = ['Potential','Potential and Gradient']
 f1 = open('fortrandocs_lap.raw','w')
 for i in range(3):
     for j in range(3):
-        for k in range(2):
+        for k in range(3):
             subname0 = 'subroutine lfmm3d'+st_opts[i]+c_opts[j]+p_opts[k]+'(eps,nsource,source,'
             subname1 = 'subroutine lfmm3d'+st_opts[i]+c_opts[j]+p_opts[k]+'_vec(nd,eps,nsource,source,'
             subname = ''
@@ -71,20 +76,26 @@ for i in range(3):
                 subname=subname+'charge,'
             if(j==1 or j==2):
                 subname=subname+'dipvec,'
+            if(i == 2 and k==0):
+                subname=subname+'pot,'
+            if(i == 2 and k==1):
+                subname=subname+'pot,grad,'
+            if(i == 2 and k==2):
+                subname=subname+'pot,grad,hess,'
             if(i>0):
                 subname=subname+'ntarg,targ,'
             if(i==0 and k==0):
-                subname=subname+'pot)'
+                subname=subname+'pot,ier)'
             if(i==0 and k==1):
-                subname=subname+'pot,grad)'
-            if(i==1 and k==0):
-                subname=subname+'pottarg)'
-            if(i==1 and k==1):
-                subname=subname+'pottarg,gradtarg)'
-            if(i==2 and k==0):
-                subname=subname+'pot,pottarg)'
-            if(i==2 and k==1):
-                subname=subname+'pot,grad,pottarg,gradtarg)'
+                subname=subname+'pot,grad,ier)'
+            if(i==0 and k==2):
+                subname=subname+'pot,grad,hess,ier)'
+            if(i>=1 and k==0):
+                subname=subname+'pottarg,ier)'
+            if(i>=1 and k==1):
+                subname=subname+'pottarg,gradtarg,ier)'
+            if(i>=1 and k==2):
+                subname=subname+'pottarg,gradtarg,hesstarg,ier)'
 
             
             str_ini = 'l'+st_opts[i][1::]+c_opts[j][1::]+p_opts[k][1::]
@@ -118,12 +129,17 @@ for i in range(3):
             f1.writelines(inp_returns+"\n\n")
             if(i==0 or i==2):
                 f1.writelines(sp1+pot_txt[0]+"\n"+sp2+pot_txt[1]+"\n")
-                if(k==1):
+                if(k>=1):
                     f1.writelines(sp1+grad_txt[0]+"\n"+sp2+grad_txt[1]+"\n")
+                if(k==2):
+                    f1.writelines(sp1+hess_txt[0]+"\n"+sp2+hess_txt[1]+"\n")
             if(i==1 or i==2):
                 f1.writelines(sp1+pottarg_txt[0]+"\n"+sp2+pottarg_txt[1]+"\n")
-                if(k==1):
+                if(k>=1):
                     f1.writelines(sp1+gradtarg_txt[0]+"\n"+sp2+gradtarg_txt[1]+"\n")
+                if(k>=1):
+                    f1.writelines(sp1+hesstarg_txt[0]+"\n"+sp2+hesstarg_txt[1]+"\n")
+            f1.writelines(sp1+ier_txt[0]+"\n"+sp2+ier_txt[1]+"  \n")
             f1.writelines("\n\n--------------------------------\n\nVectorized version: \n\n")
             f1.writelines('.. code:: fortran\n\n')
             f1.writelines(sp1+subname1+subname+'\n\n')
@@ -142,12 +158,17 @@ for i in range(3):
             f1.writelines(inp_returns+"\n\n")
             if(i==0 or i==2):
                 f1.writelines(sp1+pot_nd_txt[0]+"\n"+sp2+pot_nd_txt[1]+"\n")
-                if(k==1):
+                if(k>=1):
                     f1.writelines(sp1+grad_nd_txt[0]+"\n"+sp2+grad_nd_txt[1]+"\n")
+                if(k==2):
+                    f1.writelines(sp1+hess_nd_txt[0]+"\n"+sp2+hess_nd_txt[1]+"\n")
             if(i==1 or i==2):
                 f1.writelines(sp1+pottarg_nd_txt[0]+"\n"+sp2+pottarg_nd_txt[1]+"\n")
-                if(k==1):
+                if(k>=1):
                     f1.writelines(sp1+gradtarg_nd_txt[0]+"\n"+sp2+gradtarg_nd_txt[1]+"\n")
+                if(k==2):
+                    f1.writelines(sp1+hesstarg_nd_txt[0]+"\n"+sp2+hesstarg_nd_txt[1]+"\n")
+            f1.writelines(sp1+ier_txt[0]+"\n"+sp2+ier_txt[1]+"  \n")
             f1.writelines("\n\n.. container:: rttext\n\n  `Back to Laplace FMM <fortran-c.html#lap>`__")
             f1.writelines("\n\n.. container:: rttext\n\n  `Back to top <fortran-c.html#fcexmp>`__\n\n\n")
 
@@ -177,7 +198,7 @@ f3 = open('fortrandocs_lap_header.raw','w')
 f4 = open('fortrandocs_lap_header_vec.raw','w')
 for i in range(3):
     for j in range(3):
-        for k in range(2):
+        for k in range(3):
             f1.writelines('c-------------------------------------\n')
 
             f3.writelines('c  -lfmm3d'+st_opts[i]+c_opts[j]+p_opts[k]+'\n')
@@ -213,12 +234,17 @@ for i in range(3):
             f1.writelines("c  "+inp_returns+"\nc\n")
             if(i==0 or i==2):
                 f1.writelines("c  "+sp1+pot_txt[0]+"\nc"+sp2+pot_txt[1]+"\nc")
-                if(k==1):
+                if(k>=1):
                     f1.writelines("  "+sp1+grad_txt[0]+"\nc"+sp2+grad_txt[1]+"\nc")
+                if(k==2):
+                    f1.writelines("  "+sp1+hess_txt[0]+"\nc"+sp2+hess_txt[1]+"\nc")
             if(i==1 or i==2):
                 f1.writelines("c  "+sp1+pottarg_txt[0]+"\nc"+sp2+pottarg_txt[1]+"\nc")
-                if(k==1):
+                if(k>=1):
                     f1.writelines("  "+sp1+gradtarg_txt[0]+"\nc"+sp2+gradtarg_txt[1]+"\nc")
+                if(k==2):
+                    f1.writelines("  "+sp1+hesstarg_txt[0]+"\nc"+sp2+hesstarg_txt[1]+"\nc")
+            f1.writelines("  "+sp1+ier_txt[0]+"\nc"+sp2+ier_txt[1]+"  \nc")
             f1.writelines("\nc\nc--------------------------------\nc\n")
 
             f2.writelines('c-------------------------------------\n')
@@ -244,12 +270,17 @@ for i in range(3):
             f2.writelines("c  "+inp_returns+"\nc\n")
             if(i==0 or i==2):
                 f2.writelines("c  "+sp1+pot_nd_txt[0]+"\nc"+sp2+pot_nd_txt[1]+"\nc")
-                if(k==1):
+                if(k>=1):
                     f2.writelines("  "+sp1+grad_nd_txt[0]+"\nc"+sp2+grad_nd_txt[1]+"\nc")
+                if(k==2):
+                    f2.writelines("  "+sp1+hess_nd_txt[0]+"\nc"+sp2+hess_nd_txt[1]+"\nc")
             if(i==1 or i==2):
                 f2.writelines("c  "+sp1+pottarg_nd_txt[0]+"\nc"+sp2+pottarg_nd_txt[1]+"\nc")
-                if(k==1):
+                if(k>=1):
                     f2.writelines("  "+sp1+gradtarg_nd_txt[0]+"\nc"+sp2+gradtarg_nd_txt[1]+"\nc")
+                if(k>=2):
+                    f2.writelines("  "+sp1+hesstarg_nd_txt[0]+"\nc"+sp2+hesstarg_nd_txt[1]+"\nc")
+            f2.writelines("  "+sp1+ier_txt[0]+"\n"+sp2+ier_txt[1]+"  \nc")
             f2.writelines("\nc\nc--------------------------------\nc\n")
 f1.close()
 f2.close()
