@@ -8,7 +8,7 @@ Flatiron Institute's `FMM3D` library.
 
 For now, FMM3D.jl can be obtained by downloading this
 git repository and a recent version of julia
-(1.3 or later is recommended). Then, from the
+(1.6 or later is required). Then, from the
 root directory (the parent directory of the
 julia subdirectory) run the following in
 julia:
