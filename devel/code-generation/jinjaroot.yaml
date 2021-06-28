@@ -1,0 +1,50 @@
+laplaceWrappers:
+  -
+    name: lfmm3d_s_c_p
+    evaluationPoints: Sources
+    interactionKernel: Charges
+    outputsRequested:
+      Potential: True
+      Gradient: False
+      Hessians: False
+  -
+    name: lfmm3d_s_c_g
+    evaluationPoints: Sources
+    interactionKernel: Charges
+    outputsRequested:
+      Potential: True
+      Gradient: True
+      Hessians: False
+  -
+    name: lfmm3d_s_c_h
+    evaluationPoints: Sources
+    interactionKernel: Charges
+    outputsRequested:
+      Potential: True
+      Gradient: True
+      Hessians: True
+  -
+    name: lfmm3d_s_d_p
+    evaluationPoints: Sources
+    interactionKernel: Dipoles
+    outputsRequested:
+      Potential: True
+      Gradient: False
+      Hessians: False
+  -
+    name: lfmm3d_s_d_g
+    evaluationPoints: Sources
+    interactionKernel: Dipoles
+    outputsRequested:
+      Potential: True
+      Gradient: True
+      Hessians: False
+  -
+    name: lfmm3d_s_d_h
+    evaluationPoints: Sources
+    interactionKernel: Dipoles
+    outputsRequested:
+      Potential: True
+      Gradient: True
+      Hessians: True
+  
