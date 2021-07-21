@@ -12,8 +12,8 @@
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-subroutine emfmm3d(nd,eps,zk,ns,source,ifa_vect,a_vect,&
- ifb_vect,b_vect,iflambda,lambda,nt,targets,ifE,E,ifcurlE,curlE,&
+subroutine emfmm3d(nd,eps,zk,ns,source,ifh_current,h_current,&
+ ife_current,e_current,ife_charge,e_charge,nt,targets,ifE,E,ifcurlE,curlE,&
  ifdivE,divE,ier)
 implicit none
 
@@ -21,7 +21,7 @@ implicit none
 
 !  This function computes 
 !
-!    E = curl S_{k}[a_vect] + S_{k}[b_vect] + grad S_{k}[lambda]  -- (1)
+!    E = curl S_{k}[h_current] + S_{k}[e_current] + grad S_{k}[e_charge]  -- (1)
 !  using the vector Helmholtz fmm.
 !
 !  The subroutine also computes divE, curlE 
@@ -36,7 +36,7 @@ implicit none
 !
 !  input:
 !    nd - integer
-!      number of densities (a_vect,b_vect,lambda)
+!      number of densities (h_current,e_current,e_charge)
 !
 !    eps - real *8
 !      epsilon for the fmm call
@@ -50,26 +50,26 @@ implicit none
 !    source - real *8 (3,ns)
 !      location of the sources
 !
-!    ifa_vect - integer
-!     Contribution due to curl S_{k}[a_vect] is included if
-!     ifa_vect = 1
+!    ifh_current - integer
+!     Contribution due to curl S_{k}[h_current] is included if
+!     ifh_current = 1
 !
-!    a_vect - complex *16(nd,3,ns)
+!    h_current - complex *16(nd,3,ns)
 !      a vector source
 !
-!    ifb_vect - integer
-!      Contribution due to S_{k}[b_vect] is included if
-!      ifb_vect = 1
+!    ife_current - integer
+!      Contribution due to S_{k}[e_current] is included if
+!      ife_current = 1
 !
-!    b_vect - complex *16(nd,3,ns)
+!    e_current - complex *16(nd,3,ns)
 !      b vector source
 !
-!    iflambda - integer
-!      Contribution due to grad S_{k} [lambda] is included
-!      if iflambda = 1
+!    ife_charge - integer
+!      Contribution due to grad S_{k} [e_charge] is included
+!      if ife_charge = 1
 !
-!    lambda - complex *16(nd,ns)
-!      lambda source
+!    e_charge - complex *16(nd,ns)
+!      e_charge source
 !
 !    nt - integer
 !      number of targets
@@ -105,22 +105,22 @@ implicit none
   double complex, intent(in) :: zk
   integer, intent(in) :: nd,ns,nt
   double precision, intent(in) :: source(3,ns)
-  integer, intent(in) :: ifa_vect
-  double complex, intent(in) :: a_vect(nd,3,*)
-  integer, intent(in) :: ifb_vect
-  double complex, intent(in) :: b_vect(nd,3,*)
-  integer, intent(in) :: iflambda
-  double complex, intent(in) :: lambda(nd,*)
+  integer, intent(in) :: ifh_current
+  double complex, intent(in) :: h_current(nd,3,*)
+  integer, intent(in) :: ife_current
+  double complex, intent(in) :: e_current(nd,3,*)
+  integer, intent(in) :: ife_charge
+  double complex, intent(in) :: e_charge(nd,*)
   integer, intent(in) :: ifE
-  double complex, intent(out) :: E(nd,3,*)
+  double complex, intent(out) :: E(nd,3,nt)
   integer, intent(in) :: ifcurlE
-  double complex, intent(out) :: curlE(nd,3,*)
+  double complex, intent(out) :: curlE(nd,3,nt)
   integer, intent(in) :: ifdivE
-  double complex, intent(out) :: divE(nd,*)
+  double complex, intent(out) :: divE(nd,nt)
   double precision, intent(in) :: targets(3,nt)
 
   !List of local variables
-  double complex, allocatable :: sigma_vect(:,:,:)
+  double complex, allocatable :: sigmh_current(:,:,:)
   double complex, allocatable :: dipvect_vect(:,:,:,:)
   double complex, allocatable :: Etmp(:,:,:)
   double complex, allocatable :: gradE_vect(:,:,:,:)
@@ -134,11 +134,23 @@ implicit none
   integer i,j,nd0,l,m
   integer ifcharge,ifdipole,ifpgh,ifpghtarg
 
+!! f2py declarations
+!f2py intent(in) :: nd,eps
+!f2py intent(in) :: zk
+!f2py intent(in) :: ns,source
+!f2py intent(in) :: ifh_current,h_current
+!f2py intent(in) :: ife_current,e_current
+!f2py intent(in) :: ife_charge,e_charge
+!f2py intent(in) :: nt,targets
+!f2py intent(in) :: ifE,ifcurlE,ifdivE
+!f2py intent(out) :: E,curlE,divE
+!f2py intent(out) :: ier
+
   ndens = 3
   if(ifdivE.eq.1) ndens = 4
 
   !!Initialize sources
-  allocate(sigma_vect(nd,ndens,ns))
+  allocate(sigmh_current(nd,ndens,ns))
   allocate(dipvect_vect(nd,ndens,3,ns))
   allocate(Etmp(nd,ndens,nt))
   allocate(gradE_vect(nd,ndens,3,nt))
@@ -165,7 +177,7 @@ implicit none
   do i=1,ns
     do l=1,ndens
       do j=1,nd
-        sigma_vect(j,l,i)=0.0d0
+        sigmh_current(j,l,i)=0.0d0
       enddo
     enddo
 
@@ -179,13 +191,13 @@ implicit none
   enddo
 !$OMP END PARALLEL DO  
 
-  if (ifb_vect.eq.1) then
+  if (ife_current.eq.1) then
 
 !$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,l,j)  
     do i=1,ns
       do l=1,3
         do j=1,nd
-          sigma_vect(j,l,i)=sigma_vect(j,l,i)+b_vect(j,l,i)
+          sigmh_current(j,l,i)=sigmh_current(j,l,i)+e_current(j,l,i)
         enddo
       enddo
     enddo
@@ -196,7 +208,7 @@ implicit none
       do i=1,ns
         do l=1,3
           do j=1,nd
-            dipvect_vect(j,4,l,i) = dipvect_vect(j,4,l,i) - b_vect(j,l,i)
+            dipvect_vect(j,4,l,i) = dipvect_vect(j,4,l,i) - e_current(j,l,i)
           enddo
         enddo
       enddo
@@ -204,13 +216,13 @@ implicit none
     endif   
   endif
 
-  if (iflambda.eq.1) then
+  if (ife_charge.eq.1) then
 !$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j)  
     do i=1,ns
       do j=1,nd
-        dipvect_vect(j,1,1,i)=dipvect_vect(j,1,1,i)-lambda(j,i)
-        dipvect_vect(j,2,2,i)=dipvect_vect(j,2,2,i)-lambda(j,i)
-        dipvect_vect(j,3,3,i)=dipvect_vect(j,3,3,i)-lambda(j,i)
+        dipvect_vect(j,1,1,i)=dipvect_vect(j,1,1,i)-e_charge(j,i)
+        dipvect_vect(j,2,2,i)=dipvect_vect(j,2,2,i)-e_charge(j,i)
+        dipvect_vect(j,3,3,i)=dipvect_vect(j,3,3,i)-e_charge(j,i)
       enddo
     enddo
 !$OMP END PARALLEL DO  
@@ -218,31 +230,31 @@ implicit none
 !
 !  Add in the contribution corresponding to the divergence
 !  Here we use the identity that
-!  \nabla \cdot \nabla S_{k} [\lambda] = k^2 S_{k} [\lambda]
+!  \nabla \cdot \nabla S_{k} [\e_charge] = k^2 S_{k} [\e_charge]
 !
     if(ifdivE.eq.1) then
 !$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j)   
       do i=1,ns
         do j=1,nd
-          sigma_vect(j,4,i) = sigma_vect(j,4,i) - zk**2*lambda(j,i)
+          sigmh_current(j,4,i) = sigmh_current(j,4,i) - zk**2*e_charge(j,i)
         enddo
       enddo
 !$OMP END PARALLEL DO      
     endif
   endif
 
-  if (ifa_vect.eq.1) then
+  if (ifh_current.eq.1) then
 !$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j)  
     do i=1,ns
       do j=1,nd
-        dipvect_vect(j,1,2,i)=dipvect_vect(j,1,2,i)-a_vect(j,3,i)
-        dipvect_vect(j,1,3,i)=dipvect_vect(j,1,3,i)+a_vect(j,2,i)
+        dipvect_vect(j,1,2,i)=dipvect_vect(j,1,2,i)-h_current(j,3,i)
+        dipvect_vect(j,1,3,i)=dipvect_vect(j,1,3,i)+h_current(j,2,i)
 
-        dipvect_vect(j,2,1,i)=dipvect_vect(j,2,1,i)+a_vect(j,3,i)
-        dipvect_vect(j,2,3,i)=dipvect_vect(j,2,3,i)-a_vect(j,1,i)
+        dipvect_vect(j,2,1,i)=dipvect_vect(j,2,1,i)+h_current(j,3,i)
+        dipvect_vect(j,2,3,i)=dipvect_vect(j,2,3,i)-h_current(j,1,i)
 
-        dipvect_vect(j,3,1,i)=dipvect_vect(j,3,1,i)-a_vect(j,2,i)
-        dipvect_vect(j,3,2,i)=dipvect_vect(j,3,2,i)+a_vect(j,1,i)
+        dipvect_vect(j,3,1,i)=dipvect_vect(j,3,1,i)-h_current(j,2,i)
+        dipvect_vect(j,3,2,i)=dipvect_vect(j,3,2,i)+h_current(j,1,i)
       enddo
     enddo
 !$OMP END PARALLEL DO    
@@ -263,14 +275,14 @@ implicit none
   endif
 
   if(ifdivE.ne.1) then
-    if ((ifa_vect.ne.1).and.(iflambda.ne.1)) then
+    if ((ifh_current.ne.1).and.(ife_charge.ne.1)) then
       ifdipole=0
     endif
-    if (ifb_vect.ne.1) then
+    if (ife_current.ne.1) then
       ifcharge=0
     endif
   else
-    if (ifb_vect.ne.1.and.iflambda.ne.1) then
+    if (ife_current.ne.1.and.ife_charge.ne.1) then
       ifcharge = 0
     endif
   endif
@@ -279,7 +291,7 @@ implicit none
 
   allocate(pot(nd0),grad(nd0,3),hess(nd0,6),hesstarg(nd0,6))
 
-  call hfmm3d(nd0,eps,zk,ns,source,ifcharge,sigma_vect,ifdipole, &
+  call hfmm3d(nd0,eps,zk,ns,source,ifcharge,sigmh_current,ifdipole, &
    dipvect_vect,iper,ifpgh,pot,grad,hess,nt,targets,ifpghtarg,Etmp, &
    gradE_vect,hesstarg,ier)
 
@@ -319,7 +331,7 @@ implicit none
 !$OMP END PARALLEL DO    
   endif
 
-  deallocate(sigma_vect)
+  deallocate(sigmh_current)
   deallocate(dipvect_vect)
   deallocate(gradE_vect)
   deallocate(Etmp)
@@ -332,19 +344,19 @@ end subroutine emfmm3d
 !
 !
 
-subroutine em3ddirect(nd,zk,ns,source,ifa_vect,a_vect,&
- ifb_vect,b_vect,iflambda,lambda,nt,targets,ifE,E,ifcurlE,curlE,&
+subroutine em3ddirect(nd,zk,ns,source,ifh_current,h_current,&
+ ife_current,e_current,ife_charge,e_charge,nt,targets,ifE,E,ifcurlE,curlE,&
  ifdivE,divE,thresh)
 implicit none
 
 !  This function computes 
-!    E = curl S_{k}[a_vect] + S_{k}[b_vect] + grad S_{k}[lambda]  -- (1)
+!    E = curl S_{k}[h_current] + S_{k}[e_current] + grad S_{k}[e_charge]  -- (1)
 !  via direct computation.
 !  The subroutine also returns divE, curlE with appropriate flags
 !
 !  input:
 !    nd - integer
-!      number of densities (a_vect,b_vect,lambda)
+!      number of densities (h_current,e_current,e_charge)
 !
 !    eps - real *8
 !      epsilon for the fmm call
@@ -358,26 +370,26 @@ implicit none
 !    source - real *8 (3,ns)
 !      location of the sources
 !
-!    ifa_vect - integer
-!     Contribution due to curl S_{k}[a_vect] is included if
-!     ifa_vect = 1
+!    ifh_current - integer
+!     Contribution due to curl S_{k}[h_current] is included if
+!     ifh_current = 1
 !
-!    a_vect - complex *16(nd,3,ns)
+!    h_current - complex *16(nd,3,ns)
 !      a vector source
 !
-!    ifb_vect - integer
-!      Contribution due to S_{k}[b_vect] is included if
-!      ifb_vect = 1
+!    ife_current - integer
+!      Contribution due to S_{k}[e_current] is included if
+!      ife_current = 1
 !
-!    b_vect - complex *16(nd,3,ns)
+!    e_current - complex *16(nd,3,ns)
 !      b vector source
 !
-!    iflambda - integer
-!      Contribution due to grad S_{k} [lambda] is included
-!      if iflambda = 1
+!    ife_charge - integer
+!      Contribution due to grad S_{k} [e_charge] is included
+!      if ife_charge = 1
 !
-!    lambda - complex *16(nd,ns)
-!      lambda source
+!    e_charge - complex *16(nd,ns)
+!      e_charge source
 !
 !    nt - integer
 !      number of targets
@@ -417,24 +429,24 @@ implicit none
   double complex, intent(in) :: zk
   integer, intent(in) :: nd,ns,nt
   double precision, intent(in) :: source(3,ns)
-  integer, intent(in) :: ifa_vect
-  double complex, intent(in) :: a_vect(nd,3,*)
-  integer, intent(in) :: ifb_vect
-  double complex, intent(in) :: b_vect(nd,3,*)
-  integer, intent(in) :: iflambda
-  double complex, intent(in) :: lambda(nd,*)
+  integer, intent(in) :: ifh_current
+  double complex, intent(in) :: h_current(nd,3,*)
+  integer, intent(in) :: ife_current
+  double complex, intent(in) :: e_current(nd,3,*)
+  integer, intent(in) :: ife_charge
+  double complex, intent(in) :: e_charge(nd,*)
   integer, intent(in) :: ifE
-  double complex, intent(out) :: E(nd,3,*)
+  double complex, intent(out) :: E(nd,3,nt)
   integer, intent(in) :: ifcurlE
-  double complex, intent(out) :: curlE(nd,3,*)
+  double complex, intent(out) :: curlE(nd,3,nt)
   integer, intent(in) :: ifdivE
-  double complex, intent(out) :: divE(nd,*)
+  double complex, intent(out) :: divE(nd,nt)
   double precision, intent(in) :: targets(3,nt)
   double precision, intent(in) :: thresh
 
 
   !List of local variables
-  double complex, allocatable :: sigma_vect(:,:,:)
+  double complex, allocatable :: sigmh_current(:,:,:)
   double complex, allocatable :: dipvect_vect(:,:,:,:)
   double complex, allocatable :: gradE_vect(:,:,:,:)
   double complex, allocatable :: Etmp(:,:,:)
@@ -442,12 +454,24 @@ implicit none
   integer ifcharge,ifdipole,ifpot,ifgrad,ifpghtarg
   integer ndens
 
+!! f2py declarations
+!f2py intent(in) :: nd,eps
+!f2py intent(in) :: zk
+!f2py intent(in) :: ns,source
+!f2py intent(in) :: ifh_current,h_current
+!f2py intent(in) :: ife_current,e_current
+!f2py intent(in) :: ife_charge,e_charge
+!f2py intent(in) :: nt,targets
+!f2py intent(in) :: ifE,ifcurlE,ifdivE
+!f2py intent(in) :: thresh
+!f2py intent(out) :: E,curlE,divE
+
   !!Initialize sources
   
   ndens = 3
   if(ifdivE.eq.1) ndens = 4
 
-  allocate(sigma_vect(nd,ndens,ns))
+  allocate(sigmh_current(nd,ndens,ns))
   allocate(dipvect_vect(nd,ndens,3,ns))
   allocate(Etmp(nd,ndens,nt))
   allocate(gradE_vect(nd,ndens,3,nt))
@@ -474,7 +498,7 @@ implicit none
   do i=1,ns
     do l=1,ndens
       do j=1,nd
-        sigma_vect(j,l,i)=0.0d0
+        sigmh_current(j,l,i)=0.0d0
       enddo
     enddo
 
@@ -488,12 +512,12 @@ implicit none
   enddo
 !$OMP END PARALLEL DO  
 
-  if (ifb_vect.eq.1) then
+  if (ife_current.eq.1) then
 !$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j,l)  
     do i=1,ns
       do l=1,3
         do j=1,nd
-          sigma_vect(j,l,i)=sigma_vect(j,l,i)+b_vect(j,l,i)
+          sigmh_current(j,l,i)=sigmh_current(j,l,i)+e_current(j,l,i)
         enddo
       enddo
     enddo
@@ -505,7 +529,7 @@ implicit none
       do i=1,ns
         do l=1,3
           do j=1,nd
-            dipvect_vect(j,4,l,i) = dipvect_vect(j,4,l,i) - b_vect(j,l,i)
+            dipvect_vect(j,4,l,i) = dipvect_vect(j,4,l,i) - e_current(j,l,i)
           enddo
         enddo
       enddo
@@ -513,13 +537,13 @@ implicit none
     endif
   endif
 
-  if (iflambda.eq.1) then
+  if (ife_charge.eq.1) then
 !$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j)  
     do i=1,ns
       do j=1,nd
-        dipvect_vect(j,1,1,i)=dipvect_vect(j,1,1,i)-lambda(j,i)
-        dipvect_vect(j,2,2,i)=dipvect_vect(j,2,2,i)-lambda(j,i)
-        dipvect_vect(j,3,3,i)=dipvect_vect(j,3,3,i)-lambda(j,i)
+        dipvect_vect(j,1,1,i)=dipvect_vect(j,1,1,i)-e_charge(j,i)
+        dipvect_vect(j,2,2,i)=dipvect_vect(j,2,2,i)-e_charge(j,i)
+        dipvect_vect(j,3,3,i)=dipvect_vect(j,3,3,i)-e_charge(j,i)
       enddo
     enddo
 !$OMP END PARALLEL DO    
@@ -527,31 +551,31 @@ implicit none
 !
 !  Add in the contribution corresponding to the divergence
 !  Here we use the identity that
-!  \nabla \cdot \nabla S_{k} [\lambda] = k^2 S_{k} [\lambda]
+!  \nabla \cdot \nabla S_{k} [\e_charge] = k^2 S_{k} [\e_charge]
 !
     if(ifdivE.eq.1) then
 !$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j)   
       do i=1,ns
         do j=1,nd
-          sigma_vect(j,4,i) = sigma_vect(j,4,i) - zk**2*lambda(j,i)
+          sigmh_current(j,4,i) = sigmh_current(j,4,i) - zk**2*e_charge(j,i)
         enddo
       enddo
 !$OMP END PARALLEL DO      
     endif
   endif
 
-  if (ifa_vect.eq.1) then
+  if (ifh_current.eq.1) then
 !$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j)  
     do i=1,ns
       do j=1,nd
-        dipvect_vect(j,1,2,i)=dipvect_vect(j,1,2,i)-a_vect(j,3,i)
-        dipvect_vect(j,1,3,i)=dipvect_vect(j,1,3,i)+a_vect(j,2,i)
+        dipvect_vect(j,1,2,i)=dipvect_vect(j,1,2,i)-h_current(j,3,i)
+        dipvect_vect(j,1,3,i)=dipvect_vect(j,1,3,i)+h_current(j,2,i)
 
-        dipvect_vect(j,2,1,i)=dipvect_vect(j,2,1,i)+a_vect(j,3,i)
-        dipvect_vect(j,2,3,i)=dipvect_vect(j,2,3,i)-a_vect(j,1,i)
+        dipvect_vect(j,2,1,i)=dipvect_vect(j,2,1,i)+h_current(j,3,i)
+        dipvect_vect(j,2,3,i)=dipvect_vect(j,2,3,i)-h_current(j,1,i)
 
-        dipvect_vect(j,3,1,i)=dipvect_vect(j,3,1,i)-a_vect(j,2,i)
-        dipvect_vect(j,3,2,i)=dipvect_vect(j,3,2,i)+a_vect(j,1,i)
+        dipvect_vect(j,3,1,i)=dipvect_vect(j,3,1,i)-h_current(j,2,i)
+        dipvect_vect(j,3,2,i)=dipvect_vect(j,3,2,i)+h_current(j,1,i)
       enddo
     enddo
 !$OMP END PARALLEL DO    
@@ -567,14 +591,14 @@ implicit none
   endif
 
   if(ifdivE.ne.1) then
-    if ((ifa_vect.ne.1).and.(iflambda.ne.1)) then
+    if ((ifh_current.ne.1).and.(ife_charge.ne.1)) then
       ifdipole=0
     endif
-    if (ifb_vect.ne.1) then
+    if (ife_current.ne.1) then
       ifcharge=0
     endif
   else
-    if (ifb_vect.ne.1.and.iflambda.ne.1) then
+    if (ife_current.ne.1.and.ife_charge.ne.1) then
       ifcharge = 0
     endif
   endif
@@ -582,7 +606,7 @@ implicit none
   nd0=ndens*nd
   if(ifpghtarg.eq.1) then
     if(ifcharge.eq.1.and.ifdipole.eq.0) then
-      call h3ddirectcp(nd0,zk,source,sigma_vect,ns, &
+      call h3ddirectcp(nd0,zk,source,sigmh_current,ns, &
          targets,nt,Etmp,thresh)
     endif
     if(ifcharge.eq.0.and.ifdipole.eq.1) then
@@ -590,13 +614,13 @@ implicit none
          targets,nt,Etmp,thresh)
     endif
     if(ifcharge.eq.1.and.ifdipole.eq.1) then
-      call h3ddirectcdp(nd0,zk,source,sigma_vect,dipvect_vect,ns, &
+      call h3ddirectcdp(nd0,zk,source,sigmh_current,dipvect_vect,ns, &
          targets,nt,Etmp,thresh)
     endif
 
   else if(ifpghtarg.eq.2) then
     if(ifcharge.eq.1.and.ifdipole.eq.0) then
-      call h3ddirectcg(nd0,zk,source,sigma_vect,ns, &
+      call h3ddirectcg(nd0,zk,source,sigmh_current,ns, &
          targets,nt,Etmp,gradE_vect,thresh)
     endif
     if(ifcharge.eq.0.and.ifdipole.eq.1) then
@@ -604,7 +628,7 @@ implicit none
          targets,nt,Etmp,gradE_vect,thresh)
     endif
     if(ifcharge.eq.1.and.ifdipole.eq.1) then
-      call h3ddirectcdg(nd0,zk,source,sigma_vect,dipvect_vect,ns, &
+      call h3ddirectcdg(nd0,zk,source,sigmh_current,dipvect_vect,ns, &
          targets,nt,Etmp,gradE_vect,thresh)
     endif
   endif
@@ -646,7 +670,7 @@ implicit none
 
 
   deallocate(Etmp)
-  deallocate(sigma_vect)
+  deallocate(sigmh_current)
   deallocate(dipvect_vect)
   deallocate(gradE_vect)
 
