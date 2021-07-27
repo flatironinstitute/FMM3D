@@ -11,6 +11,12 @@ class Output():
     pottarg = None
     gradtarg = None
     hesstarg = None
+    E = None
+    curlE = None
+    divE = None
+    Etarg = None
+    curlEtarg = None
+    divEtarg = None
     ier = 0
 
 def hfmm3d(*,eps,zk,sources,charges=None,dipvec=None,
@@ -442,6 +448,61 @@ def lfmm3d(*,eps,sources,charges=None,dipvec=None,
 
     return out
 
+def emfmm3d(*,eps,zk,sources,h_current=None,e_current=None,e_charge=None,targets=None,ifE=0,ifcurlE=0,ifdivE=0,nd=1):
+    r"""
+    r"""
+    out = Output()
+
+    if(targets == None):
+        print("Nothing to compute, set targets")
+        return out
+    if(ifE == 0 and ifcurlE == 0 and ifdivE == 0):
+        print("Nothing to compute, set either ifE, ifcurlE or ifdivE to non-zero")
+        return out
+
+    assert sources.shape[0] == 3, "The first dimension of sources must be 3"
+    if(np.size(np.shape(sources))==2):
+        ns = sources.shape[1]
+    if(np.size(np.shape(sources))==1):
+        ns = 1
+    assert targets.shape[0] == 3, "The first dimension of targets must be 3"
+    if(np.size(np.shape(targets))==2):
+        nt = targets.shape[1]
+    if(np.size(np.shape(targets))==1):
+        nt = 1
+
+    ifh_current = 0
+    ife_current = 0
+    ife_charge  = 0
+
+    if(h_current is not None):
+        if(nd == 1 and ns>1):
+            assert h_current.shape[0] == 3 and h_current.shape[1] == ns, "h_current vectors must be of shape [3,number of sources]"
+        if(nd == 1 and ns==1):
+            assert h_current.shape[0] == 3, "h_current vectors must be of shape [3,number of sources]"
+        if(nd>1):
+            assert h_current.shape[0] == nd and h_current.shape[1] == 3 and h_current.shape[2] == ns, "h_current vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+        ifh_current = 1
+
+    if(e_current is not None):
+        if(nd == 1 and ns>1):
+            assert e_current.shape[0] == 3 and e_current.shape[1] == ns, "e_current vectors must be of shape [3,number of sources]"
+        if(nd == 1 and ns==1):
+            assert e_current.shape[0] == 3, "e_current vectors must be of shape [3,number of sources]"
+        if(nd>1):
+            assert e_current.shape[0] == nd and e_current.shape[1] == 3 and e_current.shape[2] == ns, "e_current vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+        ife_current = 1
+
+    if(e_charge is not None):
+        if(nd == 1):
+            assert e_charge.shape[0] == ns, "e_charge must be same length as second dimension of sources"
+        if(nd>1):
+            assert e_charge.shape[0] == nd and e_charge.shape[1]==ns, "e_charge must be of shape [nd,ns] where nd is number of densities, and ns is number of sources"
+        ife_charge = 1
+
+    out.E,out.curlE,out.divE,out.ier = mfmm.emfmm3d(nd,eps,zk,sources,ifh_current,h_current,ife_current,e_current,ife_charge,e_charge,targets,ifE,ifcurlE,ifdivE)
+
+    return out
 
 def h3ddir(*,zk,sources,targets,charges=None,dipvec=None,
           pgt=0,nd=1,thresh=1e-16):
