@@ -23,6 +23,14 @@ c
 
       subroutine st3ddirectstokg(nd,sources,stoklet,ns,targ,nt,
      1     pot,pre,grad,thresh)
+cf2py  intent(in) nd
+cf2py  intent(in) sources
+cf2py  intent(in) stoklet
+cf2py  intent(in) ns
+cf2py  intent(in) targ
+cf2py  intent(in) nt
+cf2py  intent(in) thresh
+cf2py  intent(out) pot,pre,grad
 c
 c     This subroutine evaluates the potential and gradient due
 c     to a collection of Stokeslet and stresslet sources and adds
@@ -185,6 +193,15 @@ c     stokeslet contribution
 
       subroutine st3ddirectstokstrsg(nd,sources,stoklet,istress,
      1     strslet,strsvec,ns,targ,nt,pot,pre,grad,thresh)
+cf2py  intent(in) nd
+cf2py  intent(in) sources
+cf2py  intent(in) stoklet,istress
+cf2py  intent(in) strslet,strsvec
+cf2py  intent(in) ns
+cf2py  intent(in) targ
+cf2py  intent(in) nt
+cf2py  intent(in) thresh
+cf2py  intent(out) pot,pre,grad
 c
 c     This subroutine evaluates the potential and gradient due
 c     to a collection of Stokeslet and stresslet sources and adds

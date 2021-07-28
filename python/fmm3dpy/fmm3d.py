@@ -1,5 +1,7 @@
 from . import hfmm3d_fortran as hfmm
 from . import lfmm3d_fortran as lfmm
+from . import emfmm3d_fortran as emfmm
+from . import stfmm3d_fortran as stfmm
 import numpy as np
 import numpy.linalg as la
 
@@ -17,6 +19,8 @@ class Output():
     Etarg = None
     curlEtarg = None
     divEtarg = None
+    pre = None
+    pretarg = None
     ier = 0
 
 def hfmm3d(*,eps,zk,sources,charges=None,dipvec=None,
@@ -450,6 +454,40 @@ def lfmm3d(*,eps,sources,charges=None,dipvec=None,
 
 def emfmm3d(*,eps,zk,sources,h_current=None,e_current=None,e_charge=None,targets=None,ifE=0,ifcurlE=0,ifdivE=0,nd=1):
     r"""
+      This function subrourine computes
+          E = curl S_{k}[h_current] + S_{k}[e_current] + grad S_{k}[e_charge]  -- (1)
+      using the vector Helmholtz fmm.
+      The subroutine also computes divE, curlE
+      with appropriate flags
+
+      Remark: the subroutine uses a stabilized representation
+      for computing the divergence by using integration by parts
+      wherever possible. If the divergence is not requested, then the
+      helmholtz fmm is called with 3*nd densities, while if the divergence
+      is requested, then the helmholtz fmm is calld with 4*nd densities
+
+      Args:
+        eps (float): precision requested
+        zk (complex): Helmholtz parameter
+        sources (float(3,n)): source locations
+        h_current (complex(nd,3,n) or complex(3,n)): a vector source
+        e_current (complex(nd,3,n) or complex(3,n)): b vector source
+        e_charge (complex(nd,n) or complex(n)): e_charge source
+        targets (float(3,nt)): target locations
+        ifE (integer): E is returned at the target locations if ifE = 1
+        ifcurlE (integer): curl E is returned at the target locations if ifcurlE = 1
+        ifdivE (integer): div E is returned at the target locations if ifdivE = 1
+        nd (integer): number of densities
+
+      Returns:
+        Returns an object of type Output (out) with the following variables
+
+        out.E: E field defined in (1) above at target locations if requested
+        out.curlE: curl of E field at target locations if requested
+        out.divE: divergence of E at target locations if requested
+
+      Example:
+        see emfmmexample.py
     r"""
     out = Output()
 
@@ -482,7 +520,10 @@ def emfmm3d(*,eps,zk,sources,h_current=None,e_current=None,e_charge=None,targets
             assert h_current.shape[0] == 3, "h_current vectors must be of shape [3,number of sources]"
         if(nd>1):
             assert h_current.shape[0] == nd and h_current.shape[1] == 3 and h_current.shape[2] == ns, "h_current vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+        h_current = h_current.reshape([nd,3,ns])
         ifh_current = 1
+    else:
+        h_current = np.zeros([nd,3,ns],dtype=complex)
 
     if(e_current is not None):
         if(nd == 1 and ns>1):
@@ -491,16 +532,180 @@ def emfmm3d(*,eps,zk,sources,h_current=None,e_current=None,e_charge=None,targets
             assert e_current.shape[0] == 3, "e_current vectors must be of shape [3,number of sources]"
         if(nd>1):
             assert e_current.shape[0] == nd and e_current.shape[1] == 3 and e_current.shape[2] == ns, "e_current vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+        e_current = e_current.reshape([nd,3,ns])
         ife_current = 1
+    else:
+        e_current = np.zeros([nd,3,ns],dtype=complex)
 
     if(e_charge is not None):
         if(nd == 1):
             assert e_charge.shape[0] == ns, "e_charge must be same length as second dimension of sources"
         if(nd>1):
             assert e_charge.shape[0] == nd and e_charge.shape[1]==ns, "e_charge must be of shape [nd,ns] where nd is number of densities, and ns is number of sources"
+        e_charge = e_charge.reshape([nd,ns])
         ife_charge = 1
+    else:
+        e_charge = np.zeros([nd,ns],dtype=complex)
 
-    out.E,out.curlE,out.divE,out.ier = mfmm.emfmm3d(nd,eps,zk,sources,ifh_current,h_current,ife_current,e_current,ife_charge,e_charge,targets,ifE,ifcurlE,ifdivE)
+    out.E,out.curlE,out.divE,out.ier = emfmm.emfmm3d(eps,zk,sources,ifh_current,h_current,ife_current,e_current,ife_charge,e_charge,targets,ifE,ifcurlE,ifdivE,nd,ns,nt)
+
+    if(ifE==0):
+        out.E = None
+    if(ifcurlE==0):
+        out.curlE = None
+    if(ifdivE==0):
+        out.divE = None
+
+    return out
+
+def stfmm3d(*,eps,sources,stoklet=None,strslet=None,strsvec=None,targets=None,ifppreg=0,ifppregtarg=0,nd=1):
+    r"""
+      Stokes FMM in R^{3}: evaluate all pairwise particle
+      interactions (ignoring self-interactions) and
+      interactions with targs.
+ 
+      This routine computes sums of the form
+ 
+        u(x) = sum_m G_{ij}(x,y^{(m)}) sigma^{(m)}_j
+                 + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k
+ 
+      where sigma^{(m)} is the Stokeslet charge, mu^{(m)} is the
+      stresslet charge, and nu^{(m)} is the stresslet orientation
+      (note that each of these is a 3 vector per source point y^{(m)}).
+      For x a source point, the self-interaction in the sum is omitted.
+ 
+      Optionally, the associated pressure p(x) and gradient grad u(x)
+      are returned
+ 
+        p(x) = sum_m P_j(x,y^m) sigma^{(m)}_j
+           + sum_m T_{ijk}(x,y^{(m)}) PI_{jk} mu^{(m)}_j nu^{(m)}_k
+ 
+        grad u(x) = grad[sum_m G_{ij}(x,y^m) sigma^{(m)}_j
+                 + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k]
+
+      Args:
+        eps: float   
+               precision requested
+        sources: float(3,n)   
+               source locations
+        stoklet: float(nd,3,n) or float(3,n)
+               Stokeslet charge strengths (sigma vectors above)
+        strslet: float(nd,3,n) or float(3,n)
+               stresslet strengths (mu vectors above)
+        strsvec: float(nd,3,n) or float(3,n)
+               stresslet orientations (nu vectors above)
+        targets: float(3,nt)
+               target locations (x)
+
+        ifppreg: integer
+               flag for evaluating potential, gradient, and pressure
+               at the sources
+               ifppreg = 1, only potential
+               ifppreg = 2, potential and pressure
+               ifppreg = 3, potential, pressure, and gradient
+
+        ifppregtarg: integer
+               flag for evaluating potential, gradient, and pressure
+               at the targets
+               ifppregtarg = 1, only potential
+               ifppregtarg = 2, potential and pressure
+               ifppregtarg = 3, potential, pressure, and gradient
+
+        nd:   integer
+               number of densities
+
+      Returns:
+        out.pot: velocity at source locations if requested
+        out.pre: pressure at source locations if requested
+        out.grad: gradient of velocity at source locations if requested
+        out.pottarg: velocity at target locations if requested
+        out.pretarg: pressure at target locations if requested
+        out.gradtarg: gradient of velocity at target locations if requested
+              
+      Example:
+        see stfmmexample.py
+
+    r"""
+    out = Output()
+
+    if(ifppreg == 0 and ifppregtarg == 0):
+        print("Nothing to compute, set either ifppreg or ifppregtarg to non-zero")
+        return out
+
+    if(stoklet == None and strslet == None and strsvec == None):
+        print("Nothing to compute, set either stoklet or strslet+strsvec to non-None")
+        return out
+
+    if(strslet is not None and strsvec is None):
+        print("strslet and strsvec mush be both None or both not None")
+        return out
+    if(strslet is None and strsvec is not None):
+        print("strslet and strsvec mush be both None or both not None")
+        return out
+
+    assert sources.shape[0] == 3, "The first dimension of sources must be 3"
+    if(np.size(np.shape(sources))==2):
+        ns = sources.shape[1]
+    if(np.size(np.shape(sources))==1):
+        ns = 1
+    if(targets is not None):
+        assert targets.shape[0] == 3, "The first dimension of targets must be 3"
+        if(np.size(np.shape(targets))==2):
+            nt = targets.shape[1]
+        if(np.size(np.shape(targets))==1):
+            nt = 1
+    else:
+        targets = np.zeros([3,0],dtype='double')
+        nt = 0
+
+    ifstoklet = 0
+    ifstrslet = 0
+
+    if(stoklet is not None):
+        if(nd == 1 and ns>1):
+            assert stoklet.shape[0] == 3 and stoklet.shape[1] == ns, "stoklet vectors must be of shape [3,number of sources]"
+        if(nd == 1 and ns==1):
+            assert stoklet.shape[0] == 3, "stoklet vectors must be of shape [3,number of sources]"
+        if(nd>1):
+            assert stoklet.shape[0] == nd and stoklet.shape[1] == 3 and stoklet.shape[2] == ns, "stoklet vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+        stoklet = stoklet.reshape([nd,3,ns])
+        ifstoklet = 1
+    else:
+        stoklet = np.zeros([nd,3,ns],dtype='double')
+
+    if(strslet is not None and strsvec is not None):
+        if(nd == 1 and ns>1):
+            assert strslet.shape[0] == 3 and strslet.shape[1] == ns, "strslet vectors must be of shape [3,number of sources]"
+            assert strsvec.shape[0] == 3 and strsvec.shape[1] == ns, "strsvec vectors must be of shape [3,number of sources]"
+        if(nd == 1 and ns==1):
+            assert strslet.shape[0] == 3, "strslet vectors must be of shape [3,number of sources]"
+            assert strsvec.shape[0] == 3, "strsvec vectors must be of shape [3,number of sources]"
+        if(nd>1):
+            assert strslet.shape[0] == nd and strslet.shape[1] == 3 and strslet.shape[2] == ns, "strslet vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+            assert strsvec.shape[0] == nd and strsvec.shape[1] == 3 and strsvec.shape[2] == ns, "strsvec vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+        strslet = strslet.reshape([nd,3,ns])
+        strsvec = strsvec.reshape([nd,3,ns])
+        ifstrslet = 1
+    else:
+        strslet = np.zeros([nd,3,ns],dtype='double')
+        strsvec = np.zeros([nd,3,ns],dtype='double')
+
+    out.pot,out.pre,out.grad,out.pottarg,out.pretarg,out.gradtarg,out.ier = stfmm.stfmm3d(eps,sources,ifstoklet,stoklet,ifstrslet,strslet,strsvec,ifppreg,targets,ifppregtarg,nd,ns,nt)
+
+    if(ifppreg < 3):
+        out.grad = None
+    if(ifppregtarg < 3):
+        out.gradtarg = None
+
+    if(ifppreg < 2):
+        out.pre = None
+    if(ifppregtarg < 2):
+        out.pretarg = None
+
+    if(ifppreg < 1):
+        out.pot = None
+    if(ifppregtarg < 1):
+        out.pottarg = None
 
     return out
 
@@ -728,6 +933,270 @@ def l3ddir(*,sources,targets,charges=None,dipvec=None,
 
     return out
 
+def em3ddir(*,eps,zk,sources,h_current=None,e_current=None,e_charge=None,targets=None,ifE=0,ifcurlE=0,ifdivE=0,nd=1,thresh=1e-16):
+    r"""
+      This function subrourine computes
+          E = curl S_{k}[h_current] + S_{k}[e_current] + grad S_{k}[e_charge]  -- (1)
+      using the vector Helmholtz fmm.
+      The subroutine also computes divE, curlE
+      with appropriate flags
+
+      Remark: the subroutine uses a stabilized representation
+      for computing the divergence by using integration by parts
+      wherever possible. If the divergence is not requested, then the
+      helmholtz fmm is called with 3*nd densities, while if the divergence
+      is requested, then the helmholtz fmm is calld with 4*nd densities
+
+      Args:
+        eps (float): precision requested
+        zk (complex): Helmholtz parameter
+        sources (float(3,n)): source locations
+        h_current (complex(nd,3,n) or complex(3,n)): a vector source
+        e_current (complex(nd,3,n) or complex(3,n)): b vector source
+        e_charge (complex(nd,n) or complex(n)): e_charge source
+        targets (float(3,nt)): target locations
+        ifE (integer): E is returned at the target locations if ifE = 1
+        ifcurlE (integer): curl E is returned at the target locations if ifcurlE = 1
+        ifdivE (integer): div E is returned at the target locations if ifdivE = 1
+        nd (integer): number of densities
+        thresh: contribution of source x_i, at location x ignored if |x-x_i|<=thresh
+
+      Returns:
+        Returns an object of type Output (out) with the following variables
+
+        out.E: E field defined in (1) above at target locations if requested
+        out.curlE: curl of E field at target locations if requested
+        out.divE: divergence of E at target locations if requested
+
+      Example:
+        see emfmmexample.py
+    r"""
+    out = Output()
+
+    if(targets == None):
+        print("Nothing to compute, set targets")
+        return out
+    if(ifE == 0 and ifcurlE == 0 and ifdivE == 0):
+        print("Nothing to compute, set either ifE, ifcurlE or ifdivE to non-zero")
+        return out
+
+    assert sources.shape[0] == 3, "The first dimension of sources must be 3"
+    if(np.size(np.shape(sources))==2):
+        ns = sources.shape[1]
+    if(np.size(np.shape(sources))==1):
+        ns = 1
+    assert targets.shape[0] == 3, "The first dimension of targets must be 3"
+    if(np.size(np.shape(targets))==2):
+        nt = targets.shape[1]
+    if(np.size(np.shape(targets))==1):
+        nt = 1
+
+    ifh_current = 0
+    ife_current = 0
+    ife_charge  = 0
+
+    if(h_current is not None):
+        if(nd == 1 and ns>1):
+            assert h_current.shape[0] == 3 and h_current.shape[1] == ns, "h_current vectors must be of shape [3,number of sources]"
+        if(nd == 1 and ns==1):
+            assert h_current.shape[0] == 3, "h_current vectors must be of shape [3,number of sources]"
+        if(nd>1):
+            assert h_current.shape[0] == nd and h_current.shape[1] == 3 and h_current.shape[2] == ns, "h_current vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+        h_current = h_current.reshape([nd,3,ns])
+        ifh_current = 1
+    else:
+        h_current = np.zeros([nd,3,ns],dtype=complex)
+
+    if(e_current is not None):
+        if(nd == 1 and ns>1):
+            assert e_current.shape[0] == 3 and e_current.shape[1] == ns, "e_current vectors must be of shape [3,number of sources]"
+        if(nd == 1 and ns==1):
+            assert e_current.shape[0] == 3, "e_current vectors must be of shape [3,number of sources]"
+        if(nd>1):
+            assert e_current.shape[0] == nd and e_current.shape[1] == 3 and e_current.shape[2] == ns, "e_current vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+        e_current = e_current.reshape([nd,3,ns])
+        ife_current = 1
+    else:
+        e_current = np.zeros([nd,3,ns],dtype=complex)
+
+    if(e_charge is not None):
+        if(nd == 1):
+            assert e_charge.shape[0] == ns, "e_charge must be same length as second dimension of sources"
+        if(nd>1):
+            assert e_charge.shape[0] == nd and e_charge.shape[1]==ns, "e_charge must be of shape [nd,ns] where nd is number of densities, and ns is number of sources"
+        e_charge = e_charge.reshape([nd,ns])
+        ife_charge = 1
+    else:
+        e_charge = np.zeros([nd,ns],dtype=complex)
+
+    out.E,out.curlE,out.divE,out.ier = emfmm.em3ddirect(eps,zk,sources,ifh_current,h_current,ife_current,e_current,ife_charge,e_charge,targets,ifE,ifcurlE,ifdivE,thresh,nd,ns,nt)
+
+    if(ifE==0):
+        out.E = None
+    if(ifcurlE==0):
+        out.curlE = None
+    if(ifdivE==0):
+        out.divE = None
+
+    return out
+
+def st3ddir(*,eps,sources,stoklet=None,strslet=None,strsvec=None,targets=None,ifppreg=0,ifppregtarg=0,nd=1,thresh=1e-16):
+    r"""
+      This subroutine evaluates all pairwise particle
+      interactions (ignoring self-interactions) and
+      interactions with targs.
+ 
+      This routine computes sums of the form
+ 
+        u(x) = sum_m G_{ij}(x,y^{(m)}) sigma^{(m)}_j
+                 + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k
+ 
+      where sigma^{(m)} is the Stokeslet charge, mu^{(m)} is the
+      stresslet charge, and nu^{(m)} is the stresslet orientation
+      (note that each of these is a 3 vector per source point y^{(m)}).
+      For x a source point, the self-interaction in the sum is omitted.
+ 
+      Optionally, the associated pressure p(x) and gradient grad u(x)
+      are returned
+ 
+        p(x) = sum_m P_j(x,y^m) sigma^{(m)}_j
+           + sum_m T_{ijk}(x,y^{(m)}) PI_{jk} mu^{(m)}_j nu^{(m)}_k
+ 
+        grad u(x) = grad[sum_m G_{ij}(x,y^m) sigma^{(m)}_j
+                 + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k]
+
+      Args:
+        eps: float   
+               precision requested
+        sources: float(3,n)   
+               source locations
+        stoklet: float(nd,3,n) or float(3,n)
+               Stokeslet charge strengths (sigma vectors above)
+        strslet: float(nd,3,n) or float(3,n)
+               stresslet strengths (mu vectors above)
+        strsvec: float(nd,3,n) or float(3,n)
+               stresslet orientations (nu vectors above)
+        targets: float(3,nt)
+               target locations (x)
+
+        ifppreg: integer
+               flag for evaluating potential, gradient, and pressure
+               at the sources
+               ifppreg = 1, only potential
+               ifppreg = 2, potential and pressure
+               ifppreg = 3, potential, pressure, and gradient
+
+        ifppregtarg: integer
+               flag for evaluating potential, gradient, and pressure
+               at the targets
+               ifppregtarg = 1, only potential
+               ifppregtarg = 2, potential and pressure
+               ifppregtarg = 3, potential, pressure, and gradient
+
+        nd:   integer
+               number of densities
+        
+        thresh: contribution of source x_i, at location x ignored if |x-x_i|<=thresh
+
+      Returns:
+        out.pot: velocity at source locations if requested
+        out.pre: pressure at source locations if requested
+        out.grad: gradient of velocity at source locations if requested
+        out.pottarg: velocity at target locations if requested
+        out.pretarg: pressure at target locations if requested
+        out.gradtarg: gradient of velocity at target locations if requested
+              
+      Example:
+        see stfmmexample.py
+
+    r"""
+    out = Output()
+
+    if(ifppreg == 0 and ifppregtarg == 0):
+        print("Nothing to compute, set either ifppreg or ifppregtarg to non-zero")
+        return out
+
+    if(stoklet == None and strslet == None and strsvec == None):
+        print("Nothing to compute, set either stoklet or strslet+strsvec to non-None")
+        return out
+
+    if(strslet is not None and strsvec is None):
+        print("strslet and strsvec mush be both None or both not None")
+        return out
+    if(strslet is None and strsvec is not None):
+        print("strslet and strsvec mush be both None or both not None")
+        return out
+
+    assert sources.shape[0] == 3, "The first dimension of sources must be 3"
+    if(np.size(np.shape(sources))==2):
+        ns = sources.shape[1]
+    if(np.size(np.shape(sources))==1):
+        ns = 1
+    if(targets is not None):
+        assert targets.shape[0] == 3, "The first dimension of targets must be 3"
+        if(np.size(np.shape(targets))==2):
+            nt = targets.shape[1]
+        if(np.size(np.shape(targets))==1):
+            nt = 1
+    else:
+        targets = np.zeros([3,0],dtype='double')
+        nt = 0
+
+    ifstoklet = 0
+    ifstrslet = 0
+
+    if(stoklet is not None):
+        if(nd == 1 and ns>1):
+            assert stoklet.shape[0] == 3 and stoklet.shape[1] == ns, "stoklet vectors must be of shape [3,number of sources]"
+        if(nd == 1 and ns==1):
+            assert stoklet.shape[0] == 3, "stoklet vectors must be of shape [3,number of sources]"
+        if(nd>1):
+            assert stoklet.shape[0] == nd and stoklet.shape[1] == 3 and stoklet.shape[2] == ns, "stoklet vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+        stoklet = stoklet.reshape([nd,3,ns])
+        ifstoklet = 1
+    else:
+        stoklet = np.zeros([nd,3,ns],dtype='double')
+
+    if(strslet is not None and strsvec is not None):
+        if(nd == 1 and ns>1):
+            assert strslet.shape[0] == 3 and strslet.shape[1] == ns, "strslet vectors must be of shape [3,number of sources]"
+            assert strsvec.shape[0] == 3 and strsvec.shape[1] == ns, "strsvec vectors must be of shape [3,number of sources]"
+        if(nd == 1 and ns==1):
+            assert strslet.shape[0] == 3, "strslet vectors must be of shape [3,number of sources]"
+            assert strsvec.shape[0] == 3, "strsvec vectors must be of shape [3,number of sources]"
+        if(nd>1):
+            assert strslet.shape[0] == nd and strslet.shape[1] == 3 and strslet.shape[2] == ns, "strslet vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+            assert strsvec.shape[0] == nd and strsvec.shape[1] == 3 and strsvec.shape[2] == ns, "strsvec vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+        strslet = strslet.reshape([nd,3,ns])
+        strsvec = strsvec.reshape([nd,3,ns])
+        ifstrslet = 1
+    else:
+        strslet = np.zeros([nd,3,ns],dtype='double')
+        strsvec = np.zeros([nd,3,ns],dtype='double')
+
+    if(ifstoklet == 1 and ifstrslet == 0): 
+        out.pot,out.pre,out.grad = stfmm.st3ddirectstokg(sources,stoklet,sources,thresh,nd,ns,nt)
+        out.pottarg,out.pretarg,out.gradtarg = stfmm.st3ddirectstokg(sources,stoklet,targets,thresh,nd,ns,nt)
+    else:
+        out.pot,out.pre,out.grad = stfmm.st3ddirectstokstrsg(sources,stoklet,1,strslet,strsvec,sources,thresh,nd,ns,nt)
+        out.pottarg,out.pretarg,out.gradtarg = stfmm.st3ddirectstokstrsg(sources,stoklet,1,strslet,strsvec,targets,thresh,nd,ns,nt)
+
+    if(ifppreg < 3):
+        out.grad = None
+    if(ifppregtarg < 3):
+        out.gradtarg = None
+
+    if(ifppreg < 2):
+        out.pre = None
+    if(ifppregtarg < 2):
+        out.pretarg = None
+
+    if(ifppreg < 1):
+        out.pot = None
+    if(ifppregtarg < 1):
+        out.pottarg = None
+
+    return out
 
 def comperr(*,ntest,out,outex,pg=0,pgt=0,nd=1):
     r = 0

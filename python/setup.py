@@ -65,6 +65,20 @@ ext_lap = Extension(
     extra_link_args=FLIBS
 )
 
+ext_em = Extension(
+    name='fmm3dpy.emfmm3d_fortran',
+    sources=['../src/Maxwell/emfmm3d.f90']+['../src/Common/'+item for item in list_common],
+    f2py_options=['only:']+['emfmm3d']+['em3ddirect']+[':'],
+    extra_link_args=FLIBS
+)
+
+ext_st = Extension(
+    name='fmm3dpy.stfmm3d_fortran',
+    sources=['../src/Stokes/stfmm3d.f']+['../src/Stokes/stokkernels.f']+['../src/Common/'+item for item in list_common],
+    f2py_options=['only:']+['stfmm3d']+['st3ddirectstokg']+['st3ddirectstokstrsg']+[':'],
+    extra_link_args=FLIBS
+)
+
 ## TODO: fill in the info below
 setup(
     name=pkg_name,
@@ -81,7 +95,7 @@ setup(
         "numpy",
         "pytest"
     ],
-    ext_modules=[ext_helm,ext_lap],
+    ext_modules=[ext_helm,ext_lap,ext_em,ext_st],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: Apache Software License",

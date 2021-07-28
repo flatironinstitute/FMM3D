@@ -27,6 +27,14 @@ c
      $                 ifstoklet, stoklet, ifstrslet, strslet, strsvec,
      $                 ifppreg, pot, pre, grad, ntarg, targ, 
      $                 ifppregtarg, pottarg, pretarg, gradtarg,ier)
+cf2py  intent(in) nd,eps
+cf2py  intent(in) nsource,source
+cf2py  intent(in) ifstoklet,stoklet
+cf2py  intent(in) ifstrslet,strslet,strsvec
+cf2py  intent(in) ifppreg,ifppregtarg
+cf2py  intent(out) pot,pre,grad
+cf2py  intent(out) pottarg,pretarg,gradtarg
+cf2py  intent(out) ier
 c
 c     Stokes FMM in R^{3}: evaluate all pairwise particle
 c     interactions (ignoring self-interactions) and
@@ -153,12 +161,13 @@ c------------------------------------------------------------------
       integer nd, ifstoklet, ifstrslet, ntarg
       double precision eps
       integer nsource, ifppreg, ifppregtarg
-      double precision source(3, *), targ(3, *)
-      double precision stoklet(nd, 3, *), strslet(nd, 3, *)
-      double precision strsvec(nd, 3, *)
-      double precision pot(nd, 3, *), pre(nd,*), grad(nd, 3, 3, *)
-      double precision pottarg(nd, 3, *), pretarg(nd,*),
-     1     gradtarg(nd, 3, 3, *)      
+      double precision source(3, nsource), targ(3, ntarg)
+      double precision stoklet(nd, 3, nsource), strslet(nd, 3, nsource)
+      double precision strsvec(nd, 3, nsource)
+      double precision pot(nd, 3, nsource), pre(nd,nsource)
+      double precision grad(nd, 3, 3, nsource)
+      double precision pottarg(nd, 3, ntarg), pretarg(nd,ntarg),
+     1     gradtarg(nd, 3, 3, ntarg)      
 
 c     local
       double precision, allocatable :: charge(:,:,:), dipvec(:,:,:,:)

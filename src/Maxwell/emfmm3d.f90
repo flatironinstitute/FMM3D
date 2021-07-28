@@ -106,11 +106,11 @@ implicit none
   integer, intent(in) :: nd,ns,nt
   double precision, intent(in) :: source(3,ns)
   integer, intent(in) :: ifh_current
-  double complex, intent(in) :: h_current(nd,3,*)
+  double complex, intent(in) :: h_current(nd,3,ns)
   integer, intent(in) :: ife_current
-  double complex, intent(in) :: e_current(nd,3,*)
+  double complex, intent(in) :: e_current(nd,3,ns)
   integer, intent(in) :: ife_charge
-  double complex, intent(in) :: e_charge(nd,*)
+  double complex, intent(in) :: e_charge(nd,ns)
   integer, intent(in) :: ifE
   double complex, intent(out) :: E(nd,3,nt)
   integer, intent(in) :: ifcurlE
@@ -430,11 +430,11 @@ implicit none
   integer, intent(in) :: nd,ns,nt
   double precision, intent(in) :: source(3,ns)
   integer, intent(in) :: ifh_current
-  double complex, intent(in) :: h_current(nd,3,*)
+  double complex, intent(in) :: h_current(nd,3,ns)
   integer, intent(in) :: ife_current
-  double complex, intent(in) :: e_current(nd,3,*)
+  double complex, intent(in) :: e_current(nd,3,ns)
   integer, intent(in) :: ife_charge
-  double complex, intent(in) :: e_charge(nd,*)
+  double complex, intent(in) :: e_charge(nd,ns)
   integer, intent(in) :: ifE
   double complex, intent(out) :: E(nd,3,nt)
   integer, intent(in) :: ifcurlE
