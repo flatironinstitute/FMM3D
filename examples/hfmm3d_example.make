@@ -1,9 +1,9 @@
-OS = linux
+OS = osx
 
 #HOST = gcc
 HOST = gcc-openmp
 #HOST = intel
-HOST = intel-openmp
+#HOST = intel-openmp
 
 PROJECT = hfmm3d_example
 
@@ -36,8 +36,8 @@ ifeq ($(HOST),gcc)
 endif
 
 ifeq ($(HOST),gcc-openmp)
-    FC = gfortran 
-    FFLAGS=-fPIC -O3 -funroll-loops -march=native -fopenmp 
+    FC = gfortran -L${LDFMM} 
+    FFLAGS=-fPIC -O3 -funroll-loops -march=native -fopenmp -std=legacy
 endif
 
 ifeq ($(HOST),intel)

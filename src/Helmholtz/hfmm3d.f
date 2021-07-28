@@ -704,6 +704,7 @@ c     end of list 4 variables
       integer nlfbox
       integer nthd,ithd
       integer omp_get_max_threads,omp_get_thread_num
+      integer *8 ntotl1
       nthd = 1
 C$    nthd=omp_get_max_threads()
 
@@ -2054,6 +2055,7 @@ c
 cc        directly evaluate potential at sources and targets 
 c         due to sources in list1
 
+      ntotl1 = 0
       do ilev=0,nlevels
 c
 cc           evaluate at the sources
@@ -2063,6 +2065,7 @@ c
           if(ifcharge.eq.1.and.ifdipole.eq.0) then
 C$OMP PARALLEL DO DEFAULT(SHARED)     
 C$OMP$PRIVATE(ibox,istarts,iends,npts0,i,jbox,jstart,jend,npts)
+C$OMP$REDUCTION(+:ntotl1)
             do ibox = laddr(1,ilev),laddr(2,ilev)
               istarts = isrcse(1,ibox)
               iends = isrcse(2,ibox)
@@ -2074,6 +2077,7 @@ C$OMP$PRIVATE(ibox,istarts,iends,npts0,i,jbox,jstart,jend,npts)
                 jstart = isrcse(1,jbox)
                 jend = isrcse(2,jbox)
                 npts = jend-jstart+1
+                ntotl1 = ntotl1 + npts*npts0
                 call h3ddirectcp(nd,zk,sourcesort(1,jstart),
      1             chargesort(1,jstart),npts,sourcesort(1,istarts),
      2             npts0,pot(1,istarts),thresh)          
@@ -2337,6 +2341,7 @@ C$OMP END PARALLEL DO
 C$        time2=omp_get_wtime()
       timeinfo(6) = time2-time1
       if(ifprint.ge.1) call prin2('timeinfo=*',timeinfo,6)
+      if(ifprint.ge.1) print *, ntotl1
       d = 0
       do i = 1,6
          d = d + timeinfo(i)

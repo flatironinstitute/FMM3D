@@ -97,13 +97,10 @@ c
 c     TODO: implement other stresslet options
 c------------------------------------------------------------------
       implicit none
-cf2py intent(in) nd,sources,stoklet,ns
-cf2py intent(in) targ,nt,thresh
-cf2py intent(out) pot,pre,grad
 
       integer nd, ns, nt, istress
       real *8 sources(3,ns),targ(3,nt),strslet(nd,3,ns)
-      real *8 strsvec(nd,3,ns),stoklet(nd,3,ns)
+      real *8 stoklet(nd,3,ns)
       real *8 pot(nd,3,nt),pre(nd,nt),grad(nd,3,3,nt)
       real *8 thresh
       
@@ -290,9 +287,6 @@ c
 c     TODO: implement other stresslet options
 c------------------------------------------------------------------
       implicit none
-cf2py intent(in) nd,sources,stoklet,istress,strslet,strsvec,ns
-cf2py intent(in) targ,nt,thresh
-cf2py intent(out) pot,pre,grad
 
       integer nd, ns, nt, istress
       real *8 sources(3,ns),targ(3,nt),strslet(nd,3,ns)
