@@ -32,6 +32,7 @@ cf2py  intent(in) nsource,source
 cf2py  intent(in) ifstoklet,stoklet
 cf2py  intent(in) ifstrslet,strslet,strsvec
 cf2py  intent(in) ifppreg,ifppregtarg
+cf2py  intent(in) ntarg,targ
 cf2py  intent(out) pot,pre,grad
 cf2py  intent(out) pottarg,pretarg,gradtarg
 cf2py  intent(out) ier

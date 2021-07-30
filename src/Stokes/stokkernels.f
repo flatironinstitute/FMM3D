@@ -98,8 +98,8 @@ c     TODO: implement other stresslet options
 c------------------------------------------------------------------
       implicit none
 
-      integer nd, ns, nt, istress
-      real *8 sources(3,ns),targ(3,nt),strslet(nd,3,ns)
+      integer nd, ns, nt
+      real *8 sources(3,ns),targ(3,nt)
       real *8 stoklet(nd,3,ns)
       real *8 pot(nd,3,nt),pre(nd,nt),grad(nd,3,3,nt)
       real *8 thresh

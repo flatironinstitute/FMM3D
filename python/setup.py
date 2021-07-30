@@ -67,14 +67,14 @@ ext_lap = Extension(
 
 ext_em = Extension(
     name='fmm3dpy.emfmm3d_fortran',
-    sources=['../src/Maxwell/emfmm3d.f90']+['../src/Common/'+item for item in list_common],
+    sources=['../src/Helmholtz/'+item for item in list_helm]+['../src/Maxwell/emfmm3d.f90']+['../src/Common/'+item for item in list_common],
     f2py_options=['only:']+['emfmm3d']+['em3ddirect']+[':'],
     extra_link_args=FLIBS
 )
 
 ext_st = Extension(
     name='fmm3dpy.stfmm3d_fortran',
-    sources=['../src/Stokes/stfmm3d.f']+['../src/Stokes/stokkernels.f']+['../src/Common/'+item for item in list_common],
+    sources=['../src/Laplace/'+item for item in list_lap]+['../src/Stokes/stfmm3d.f']+['../src/Stokes/stokkernels.f']+['../src/Common/'+item for item in list_common],
     f2py_options=['only:']+['stfmm3d']+['st3ddirectstokg']+['st3ddirectstokstrsg']+[':'],
     extra_link_args=FLIBS
 )
