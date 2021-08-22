@@ -40,7 +40,7 @@ function [U] = h3ddir(zk,srcinfo,targ,pgt)
 %  -  pgt: integer
 %        | target eval flag 
 %        | potential at targets evaluated if pgt = 1
-%        | potenial and gradient at targets evaluated if pgt=2  
+%        | potential and gradient at targets evaluated if pgt=2  
 %  
 %  Returns:
 %  

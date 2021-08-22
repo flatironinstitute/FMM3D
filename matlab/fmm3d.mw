@@ -39,13 +39,13 @@
 %  -  pg: integer
 %        | source eval flag
 %        | potential at sources evaluated if pg = 1
-%        | potenial and gradient at sources evaluated if pg=2
+%        | potential and gradient at sources evaluated if pg=2
 %  -  targ: double(3,nt)
 %        target locations, $t_{i}$ (optional)
 %  -  pgt: integer
 %        | target eval flag (optional)
 %        | potential at targets evaluated if pgt = 1
-%        | potenial and gradient at targets evaluated if pgt=2  
+%        | potential and gradient at targets evaluated if pgt=2  
 %  
 %  Returns:
 %  
@@ -245,7 +245,7 @@ end
 %  -  pgt: integer
 %        | target eval flag 
 %        | potential at targets evaluated if pgt = 1
-%        | potenial and gradient at targets evaluated if pgt=2  
+%        | potential and gradient at targets evaluated if pgt=2  
 %  
 %  Returns:
 %  
@@ -364,14 +364,14 @@ end
 %  -  pg: integer
 %        | source eval flag
 %        | potential at sources evaluated if pg = 1
-%        | potenial and gradient at sources evaluated if pg=2
+%        | potential and gradient at sources evaluated if pg=2
 %        | potential, gradient and hessian at sources evaluated if pg=3
 %  -  targ: double(3,nt)
 %        target locations, $t_{i}$ (optional)
 %  -  pgt: integer
 %        | target eval flag (optional)
 %        | potential at targets evaluated if pgt = 1
-%        | potenial and gradient at targets evaluated if pgt=2 
+%        | potential and gradient at targets evaluated if pgt=2 
 %        | potential, gradient and hessian at targets evaluated if pgt=3
 %  
 %  Returns:
@@ -620,7 +620,7 @@ end
 %  -  pgt: integer
 %        | target eval flag (optional)
 %        | potential at targets evaluated if pgt = 1
-%        | potenial and gradient at targets evaluated if pgt=2 
+%        | potential and gradient at targets evaluated if pgt=2 
 %        | potential, gradient and hessian at targets evaluated if pgt=3
 %  
 %  Returns:
@@ -714,4 +714,582 @@ end
     U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
     U.hesstarg = squeeze(reshape(hesstarg,[nd,6,nt]));
   end
+end
+
+% ---------------------------------------------------------------------
+@function [U] = emfmm3d(eps,zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
+%
+%
+%  This subroutine computes
+%      E = curl S_{k}[h_current] + S_{k}[e_current] + grad S_{k}[e_charge]  -- (1)
+%  using the vector Helmholtz fmm.
+%  The subroutine also computes divE, curlE
+%  with appropriate flags
+%  Remark: the subroutine uses a stabilized representation
+%  for computing the divergence by using integration by parts
+%  wherever possible. If the divergence is not requested, then the
+%  helmholtz fmm is called with 3*nd densities, while if the divergence
+%  is requested, then the helmholtz fmm is calld with 4*nd densities
+% 
+%  Args:
+%
+%  -  eps: double   
+%        precision requested
+%  -  zk: complex
+%        Helmholtz parameter, k
+%  -  srcinfo: structure
+%        structure containing sourceinfo
+%     
+%     *  srcinfo.sources: double(3,n)    
+%           source locations, $x_{j}$
+%     *  srcinfo.nd: integer
+%           number of charge/dipole vectors (optional, 
+%           default - nd = 1)
+%     *  srcinfo.h_current: complex(nd,3,n) 
+%           a vector source (optional,
+%           default - term corresponding to h_current dropped) 
+%     *  srcinfo.e_current: complex(nd,3,n) 
+%           b vector source (optional,
+%           default - term corresponding to e_current dropped) 
+%     *  srcinfo.e_charge: complex(nd,n) 
+%           e_charge source (optional, 
+%           default - term corresponding to e_charge dropped)
+%  -  targ: double(3,nt)
+%        target locations, $t_{i}$
+%  -  ifE: integer
+%        E is returned at the target locations if ifE = 1
+%  -  ifcurlE: integer
+%        curl E is returned at the target locations if ifcurlE = 1
+%  -  ifdivE: integer
+%        div E is returned at the target locations if ifdivE = 1
+%  Returns:
+%  
+%  -  U.E: E field defined in (1) above at target locations if requested
+%  -  U.curlE: curl of E field at target locations if requested
+%  -  U.divE: divergence of E at target locations if requested
+
+  if(nargin<5)
+    return;
+  end
+  if(nargin<6)
+    ifcurlE = 0;
+  end
+  if(nargin<7)
+    ifdivE = 0;
+  end
+
+  sources = srcinfo.sources;
+  [m,ns] = size(sources);
+  assert(m==3,'The first dimension of sources must be 3');
+  if(~isfield(srcinfo,'nd'))
+    nd = 1;
+  end
+  if(isfield(srcinfo,'nd'))
+    nd = srcinfo.nd;
+  end
+  
+  [m,nt] = size(targ);
+  assert(m==3,'First dimension of targets must be 3');
+
+  E = complex(zeros(nd*3,1)); nt_E = 1;
+  curlE = complex(zeros(nd*3,1)); nt_curlE = 1;
+  divE = complex(zeros(nd,1)); nt_divE = 1;
+  
+  if(ifE == 1), E = complex(zeros(nd*3,nt)); nt_E = nt; end;
+  if(ifcurlE == 1), curlE = complex(zeros(nd*3,nt)); nt_curlE = nt; end;
+  if(ifdivE == 1), divE = complex(zeros(nd,nt)); nt_divE = nt; end;
+
+  if(ifE == 0 && ifcurlE == 0 && ifdivE == 0), disp('Nothing to compute, set eigher ifE, ifcurlE or ifdiv E to 1'); return; end;
+
+  if(isfield(srcinfo,'e_charge'))
+    ife_charge = 1;
+    ns_e_charge = ns;
+    e_charge = srcinfo.e_charge;
+    if(nd==1), assert(length(e_charge)==ns,'Charges must be same length as second dimension of sources'); end;
+    if(nd>1), [a,b] = size(e_charge); assert(a==nd && b==ns,'Charges must be of shape [nd,ns] where nd is the number of densities, and ns is the number of sources'); end;
+  else
+    ife_charge = 0;
+    ns_e_charge = 1;
+    e_charge = complex(zeros(nd,1));
+  end
+
+  if(isfield(srcinfo,'h_current'))
+    ifh_current = 1;
+    ns_h_current = ns;
+    h_current = srcinfo.h_current;
+    if(nd == 1), [a,b] = size(squeeze(h_current)); assert(a==3 && b==ns,'h_current must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(h_current); assert(a==nd && b==3 && c==ns, 'h_current must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    h_current = reshape(h_current,[3*nd,ns]);
+  else
+    ifh_current = 0;
+    ns_h_current = 1;
+    h_current = complex(zeros(nd*3,1));
+  end
+
+  if(isfield(srcinfo,'e_current'))
+    ife_current = 1;
+    ns_e_current = ns;
+    e_current = srcinfo.e_current;
+    if(nd == 1), [a,b] = size(squeeze(e_current)); assert(a==3 && b==ns,'e_current must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(e_current); assert(a==nd && b==3 && c==ns, 'e_current must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    e_current = reshape(e_current,[3*nd,ns]);
+  else
+    ife_current = 0;
+    ns_e_current = 1;
+    e_current = complex(zeros(nd*3,1));
+  end
+
+  if(ife_charge == 0 && ife_current == 0 && ifh_current == 0), disp('Nothing to compute, set eigher e_charge, e_current or h_current'); return; end;
+
+  nd3 = 3*nd;
+  ier = 0;
+
+  # FORTRAN emfmm3d(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, int[1] ifh_current, dcomplex[nd3,ns_h_current] h_current, int[1] ife_current, dcomplex[nd3,ns_e_current] e_current, int[1] ife_charge, dcomplex[nd,ns_e_charge] e_charge, int[1] nt, double[3,nt] targ, int[1] ifE, inout dcomplex[nd3,nt_E] E, int[1] ifcurlE, inout dcomplex[nd3,nt_curlE] curlE, int[1] ifdivE, inout dcomplex[nd,nt_divE] divE, inout int[1] ier); 
+
+  if(ifE == 1)
+    U.E = squeeze(reshape(E,[nd,3,nt]));
+  end
+  if(ifcurlE == 1)
+    U.curlE = squeeze(reshape(curlE,[nd,3,nt]));
+  end
+  if(ifdivE == 1)
+    U.divE = divE;
+  end
+end
+
+% ---------------------------------------------------------------------
+@function [U] = em3ddir(zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
+%
+%
+%  This subroutine computes
+%      E = curl S_{k}[h_current] + S_{k}[e_current] + grad S_{k}[e_charge]  -- (1)
+%  using the vector Helmholtz fmm.
+%  The subroutine also computes divE, curlE
+%  with appropriate flags
+%  Remark: the subroutine uses a stabilized representation
+%  for computing the divergence by using integration by parts
+%  wherever possible. If the divergence is not requested, then the
+%  helmholtz fmm is called with 3*nd densities, while if the divergence
+%  is requested, then the helmholtz fmm is calld with 4*nd densities
+% 
+%  Args:
+%
+%  -  zk: complex
+%        Helmholtz parameter, k
+%  -  srcinfo: structure
+%        structure containing sourceinfo
+%     
+%     *  srcinfo.sources: double(3,n)    
+%           source locations, $x_{j}$
+%     *  srcinfo.nd: integer
+%           number of charge/dipole vectors (optional, 
+%           default - nd = 1)
+%     *  srcinfo.h_current: complex(nd,3,n) 
+%           a vector source (optional,
+%           default - term corresponding to h_current dropped) 
+%     *  srcinfo.e_current: complex(nd,3,n) 
+%           b vector source (optional,
+%           default - term corresponding to e_current dropped) 
+%     *  srcinfo.e_charge: complex(nd,n) 
+%           e_charge source (optional, 
+%           default - term corresponding to e_charge dropped)
+%  -  targ: double(3,nt)
+%        target locations, $t_{i}$
+%  -  ifE: integer
+%        E is returned at the target locations if ifE = 1
+%  -  ifcurlE: integer
+%        curl E is returned at the target locations if ifcurlE = 1
+%  -  ifdivE: integer
+%        div E is returned at the target locations if ifdivE = 1
+%  Returns:
+%  
+%  -  U.E: E field defined in (1) above at target locations if requested
+%  -  U.curlE: curl of E field at target locations if requested
+%  -  U.divE: divergence of E at target locations if requested
+
+  if(nargin<4)
+    return;
+  end
+  if(nargin<5)
+    ifcurlE = 0;
+  end
+  if(nargin<6)
+    ifdivE = 0;
+  end
+
+  sources = srcinfo.sources;
+  [m,ns] = size(sources);
+  assert(m==3,'The first dimension of sources must be 3');
+  if(~isfield(srcinfo,'nd'))
+    nd = 1;
+  end
+  if(isfield(srcinfo,'nd'))
+    nd = srcinfo.nd;
+  end
+
+  thresh = 1e-15;
+  
+  [m,nt] = size(targ);
+  assert(m==3,'First dimension of targets must be 3');
+
+  E = complex(zeros(nd*3,1)); nt_E = 1;
+  curlE = complex(zeros(nd*3,1)); nt_curlE = 1;
+  divE = complex(zeros(nd,1)); nt_divE = 1;
+  
+  if(ifE == 1), E = complex(zeros(nd*3,nt)); nt_E = nt; end;
+  if(ifcurlE == 1), curlE = complex(zeros(nd*3,nt)); nt_curlE = nt; end;
+  if(ifdivE == 1), divE = complex(zeros(nd,nt)); nt_divE = nt; end;
+
+  if(ifE == 0 && ifcurlE == 0 && ifdivE == 0), disp('Nothing to compute, set eigher ifE, ifcurlE or ifdiv E to 1'); return; end;
+
+  if(isfield(srcinfo,'e_charge'))
+    ife_charge = 1;
+    ns_e_charge = ns;
+    e_charge = srcinfo.e_charge;
+    if(nd==1), assert(length(e_charge)==ns,'Charges must be same length as second dimension of sources'); end;
+    if(nd>1), [a,b] = size(e_charge); assert(a==nd && b==ns,'Charges must be of shape [nd,ns] where nd is the number of densities, and ns is the number of sources'); end;
+  else
+    ife_charge = 0;
+    ns_e_charge = 1;
+    e_charge = complex(zeros(nd,1));
+  end
+
+  if(isfield(srcinfo,'h_current'))
+    ifh_current = 1;
+    ns_h_current = ns;
+    h_current = srcinfo.h_current;
+    if(nd == 1), [a,b] = size(squeeze(h_current)); assert(a==3 && b==ns,'h_current must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(h_current); assert(a==nd && b==3 && c==ns, 'h_current must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    h_current = reshape(h_current,[3*nd,ns]);
+  else
+    ifh_current = 0;
+    ns_h_current = 1;
+    h_current = complex(zeros(nd*3,1));
+  end
+
+  if(isfield(srcinfo,'e_current'))
+    ife_current = 1;
+    ns_e_current = ns;
+    e_current = srcinfo.e_current;
+    if(nd == 1), [a,b] = size(squeeze(e_current)); assert(a==3 && b==ns,'e_current must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(e_current); assert(a==nd && b==3 && c==ns, 'e_current must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    e_current = reshape(e_current,[3*nd,ns]);
+  else
+    ife_current = 0;
+    ns_e_current = 1;
+    e_current = complex(zeros(nd*3,1));
+  end
+
+  if(ife_charge == 0 && ife_current == 0 && ifh_current == 0), disp('Nothing to compute, set eigher e_charge, e_current or h_current'); return; end;
+
+  nd3 = 3*nd;
+  ier = 0;
+
+  # FORTRAN em3ddirect(int[1] nd, dcomplex[1] zk, int[1] ns, double[3,ns] sources, int[1] ifh_current, dcomplex[nd3,ns_h_current] h_current, int[1] ife_current, dcomplex[nd3,ns_e_current] e_current, int[1] ife_charge, dcomplex[nd,ns_e_charge] e_charge, int[1] nt, double[3,nt] targ, int[1] ifE, inout dcomplex[nd3,nt_E] E, int[1] ifcurlE, inout dcomplex[nd3,nt_curlE] curlE, int[1] ifdivE, inout dcomplex[nd,nt_divE] divE, double[1] thresh); 
+
+  if(ifE == 1)
+    U.E = squeeze(reshape(E,[nd,3,nt]));
+  end
+  if(ifcurlE == 1)
+    U.curlE = squeeze(reshape(curlE,[nd,3,nt]));
+  end
+  if(ifdivE == 1)
+    U.divE = divE;
+  end
+end
+
+
+% ---------------------------------------------------------------------
+@function [U] = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
+%
+%
+%  Stokes FMM in R^{3}: evaluate all pairwise particle
+%  interactions (ignoring self-interactions) and
+%  interactions with targs.
+%
+%  This routine computes sums of the form
+%
+%  u(x) = sum_m G_{ij}(x,y^{(m)}) sigma^{(m)}_j
+%       + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k
+%
+%  where sigma^{(m)} is the Stokeslet charge, mu^{(m)} is the
+%  stresslet charge, and nu^{(m)} is the stresslet orientation
+%  (note that each of these is a 3 vector per source point y^{(m)}).
+%  For x a source point, the self-interaction in the sum is omitted.
+%
+%  Optionally, the associated pressure p(x) and gradient grad u(x)
+%  are returned
+%
+%    p(x) = sum_m P_j(x,y^m) sigma^{(m)}_j
+%         + sum_m T_{ijk}(x,y^{(m)}) PI_{jk} mu^{(m)}_j nu^{(m)}_k
+%
+%    grad u(x) = grad[sum_m G_{ij}(x,y^m) sigma^{(m)}_j
+%              + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k]
+% 
+%  Args:
+%
+%  -  eps: double   
+%        precision requested
+%  -  srcinfo: structure
+%        structure containing sourceinfo
+%     
+%     *  srcinfo.sources: double(3,n)    
+%           source locations, $x_{j}$
+%     *  srcinfo.nd: integer
+%           number of densities (optional, 
+%           default - nd = 1)
+%     *  srcinfo.stoklet: double(nd,3,n) 
+%           Stokeslet charge strengths, $sigma_{j}$ (optional, 
+%           default - term corresponding to Stokeslet charge strengths dropped)
+%     *  srcinfo.strslet: double(nd,3,n) 
+%           stresslet strengths, $mu_{j}$ (optional
+%           default - term corresponding to stresslet strengths dropped) 
+%     *  srcinfo.strsvec: double(nd,3,n) 
+%           stresslet orientations, $nu_{j}$ (optional
+%           default - term corresponding to stresslet orientations dropped) 
+%  -  ifppreg: integer
+%        | source eval flag
+%        | potential at sources evaluated if ifppreg = 1
+%        | potential and pressure at sources evaluated if ifppreg=2
+%        | potential, pressure and gradient at sources evaluated if ifppreg=3
+%
+%  -  targ: double(3,nt)
+%        target locations, $t_{i}$ (optional)
+%  -  ifppregtarg: integer
+%        | target eval flag (optional)
+%        | potential at targets evaluated if ifppregtarg = 1
+%        | potential and pressure at targets evaluated if ifppregtarg = 2 
+%        | potential, pressure and gradient at targets evaluated if ifppregtarg = 3
+%  
+%  Returns:
+%  
+%  -  U.pot: velocity at source locations if requested
+%  -  U.pre: pressure at source locations if requested
+%  -  U.grad: gradient of velocity at source locations if requested
+%  -  U.pottarg: velocity at target locations if requested
+%  -  U.pretarg: pressure at target locations if requested
+%  -  U.gradtarg: gradient of velocity at target locations if requested
+
+  sources = srcinfo.sources;
+  [m,ns] = size(sources);
+  assert(m==3,'The first dimension of sources must be 3');
+  if(~isfield(srcinfo,'nd'))
+    nd = 1;
+  end
+  if(isfield(srcinfo,'nd'))
+    nd = srcinfo.nd;
+  end
+
+  pot = zeros(nd*3,1); ns_pot = 1;
+  pre = zeros(nd,1); ns_pre = 1;
+  grad = zeros(nd*9,1); ns_grad = 1;
+
+  if(ifppreg >= 1), pot = zeros(nd*3,ns); ns_pot = ns; end;
+  if(ifppreg >= 2), pre = zeros(nd,ns); ns_pre = ns; end;
+  if(ifppreg >= 3), grad = zeros(nd*9,ns); ns_grad = ns; end;
+
+  pottarg = zeros(nd*3,1); nt_pot = 1;
+  pretarg = zeros(nd,1); nt_pre = 1;
+  gradtarg = zeros(nd*9,1); nt_grad = 1;
+  if( nargin <= 3 )
+    nt = 0;
+    ifppregtarg = 0;
+    targ = zeros(3,0);
+  else
+    if( nargin <= 4 ), ifppregtarg = 0; end;
+    [m,nt] = size(targ);
+    assert(m==3,'First dimension of targets must be 3');
+    if(ifppregtarg >= 1), pottarg = zeros(nd*3,nt); nt_pot = nt; end;
+    if(ifppregtarg >= 2), pretarg = zeros(nd,nt); nt_pre = nt; end;
+    if(ifppregtarg >= 3), gradtarg = zeros(nd*9,nt); nt_grad = nt; end;
+  end
+
+  if(ifppreg ==0 && ifppregtarg ==0), disp('Nothing to compute, set eigher ifppreg or ifppregtarg to 1 or 2 or 3'); return; end;
+
+  if(isfield(srcinfo,'stoklet'))
+    ifstoklet = 1;
+    ns_stok = ns;
+    stoklet = srcinfo.stoklet;
+    if(nd == 1), [a,b] = size(squeeze(stoklet)); assert(a==3 && b==ns,'Stoklet must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(stoklet); assert(a==nd && b==3 && c==ns, 'Stoklet must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    stoklet = reshape(stoklet,[3*nd,ns]);
+  else
+    ifstoklet = 0;
+    ns_stok = 1;
+    stoklet = zeros(nd*3,1);
+  end
+
+  if(isfield(srcinfo,'strslet') && isfield(srcinfo,'strsvec'))
+    ifstrslet = 1;
+    ns_strs = ns;
+    strslet = srcinfo.strslet;
+    strsvec = srcinfo.strsvec;
+    if(nd == 1), [a,b] = size(squeeze(strslet)); assert(a==3 && b==ns,'Strslet must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd == 1), [a,b] = size(squeeze(strsvec)); assert(a==3 && b==ns,'Strsvec must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(strslet); assert(a==nd && b==3 && c==ns, 'Strslet must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(strsvec); assert(a==nd && b==3 && c==ns, 'Strsvec must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    strslet = reshape(strslet,[3*nd,ns]);
+    strsvec = reshape(strsvec,[3*nd,ns]);
+  else
+    ifstrslet = 0;
+    ns_strs = 1;
+    strslet = zeros(nd*3,1);
+    strsvec = zeros(nd*3,1);
+  end
+
+  nd3 = 3*nd;
+  nd9 = 9*nd;
+  ier = 0;
+
+  # FORTRAN stfmm3d(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, int[1] ifstoklet, double[nd3,ns_stok] stoklet, int[1] ifstrslet, double[nd3,ns_strs] strslet, double[nd3,ns_strs] strsvec, int[1] ifppreg, inout double[nd3,ns_pot] pot, inout double[nd,ns_pre] pre, inout double[nd9,ns_grad] grad, int[1] nt, double[3,nt] targ, int[1] ifppregtarg, inout double[nd3,nt_pot] pottarg, inout double [nd,nt_pre] pretarg, inout double[nd9,nt_grad] gradtarg, inout int[1] ier); 
+
+  U.pot = [];
+  U.pre = [];
+  U.grad = [];
+  U.pottarg = [];
+  U.pretarg = [];
+  U.gradtarg = [];
+  if(ifppreg >= 1), U.pot = squeeze(reshape(pot,[nd,3,ns])); end;
+  if(ifppreg >= 2), U.pre = pre; end;
+  if(ifppreg >= 3), U.grad = squeeze(reshape(grad,[nd,3,3,ns])); end;
+  if(ifppregtarg >= 1), U.pottarg = squeeze(reshape(pottarg,[nd,3,nt])); end;
+  if(ifppregtarg >= 2), U.pretarg = pretarg; end;
+  if(ifppregtarg >= 3), U.gradtarg = squeeze(reshape(gradtarg,[nd,3,3,nt])); end;
+
+end
+
+% ---------------------------------------------------------------------
+@function [U] = st3ddir(srcinfo,targ,ifppregtarg)
+%
+%
+%  Stokes FMM in R^{3}: evaluate all pairwise particle
+%  interactions (ignoring self-interactions) and
+%  interactions with targs.
+%
+%  This routine computes sums of the form
+%
+%  u(x) = sum_m G_{ij}(x,y^{(m)}) sigma^{(m)}_j
+%       + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k
+%
+%  where sigma^{(m)} is the Stokeslet charge, mu^{(m)} is the
+%  stresslet charge, and nu^{(m)} is the stresslet orientation
+%  (note that each of these is a 3 vector per source point y^{(m)}).
+%  For x a source point, the self-interaction in the sum is omitted.
+%
+%  Optionally, the associated pressure p(x) and gradient grad u(x)
+%  are returned
+%
+%    p(x) = sum_m P_j(x,y^m) sigma^{(m)}_j
+%         + sum_m T_{ijk}(x,y^{(m)}) PI_{jk} mu^{(m)}_j nu^{(m)}_k
+%
+%    grad u(x) = grad[sum_m G_{ij}(x,y^m) sigma^{(m)}_j
+%              + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k]
+% 
+%  Args:
+%
+%  -  srcinfo: structure
+%        structure containing sourceinfo
+%     
+%     *  srcinfo.sources: double(3,n)    
+%           source locations, $x_{j}$
+%     *  srcinfo.nd: integer
+%           number of densities (optional, 
+%           default - nd = 1)
+%     *  srcinfo.stoklet: double(nd,3,n) 
+%           Stokeslet charge strengths, $sigma_{j}$ (optional, 
+%           default - term corresponding to Stokeslet charge strengths dropped)
+%     *  srcinfo.strslet: double(nd,3,n) 
+%           stresslet strengths, $mu_{j}$ (optional
+%           default - term corresponding to stresslet strengths dropped) 
+%     *  srcinfo.strsvec: double(nd,3,n) 
+%           stresslet orientations, $nu_{j}$ (optional
+%           default - term corresponding to stresslet orientations dropped) 
+%
+%  -  targ: double(3,nt)
+%        target locations, $t_{i}$ (optional)
+%  -  ifppregtarg: integer
+%        | target eval flag (optional)
+%        | potential at targets evaluated if ifppregtarg = 1
+%        | potential and pressure at targets evaluated if ifppregtarg = 2 
+%        | potential, pressure and gradient at targets evaluated if ifppregtarg = 3
+%  
+%  Returns:
+%  
+%  -  U.pottarg: velocity at target locations if requested
+%  -  U.pretarg: pressure at target locations if requested
+%  -  U.gradtarg: gradient of velocity at target locations if requested
+
+  sources = srcinfo.sources;
+  [m,ns] = size(sources);
+  assert(m==3,'The first dimension of sources must be 3');
+  if(~isfield(srcinfo,'nd'))
+    nd = 1;
+  end
+  if(isfield(srcinfo,'nd'))
+    nd = srcinfo.nd;
+  end
+
+  thresh = 1e-15;
+
+  if( nargin <= 1 )
+    return;
+  else
+    if( nargin <= 2 ), ifppregtarg = 3; end;
+    [m,nt] = size(targ);
+    assert(m==3,'First dimension of targets must be 3');
+    pottarg = zeros(nd*3,nt);
+    pretarg = zeros(nd,nt);
+    gradtarg = zeros(nd*9,nt);
+  end
+
+  if(ifppregtarg == 0), disp('Nothing to compute, set eigher ifppregtarg to 1 or 2 or 3'); return; end;
+
+  if(isfield(srcinfo,'stoklet'))
+    ifstoklet = 1;
+    ns_stok = ns;
+    stoklet = srcinfo.stoklet;
+    if(nd == 1), [a,b] = size(squeeze(stoklet)); assert(a==3 && b==ns,'Stoklet must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(stoklet); assert(a==nd && b==3 && c==ns, 'Stoklet must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    stoklet = reshape(stoklet,[3*nd,ns]);
+  else
+    ifstoklet = 0;
+    ns_stok = 1;
+    stoklet = zeros(nd*3,1);
+  end
+
+  if(isfield(srcinfo,'strslet') && isfield(srcinfo,'strsvec'))
+    ifstrslet = 1;
+    ns_strs = ns;
+    strslet = srcinfo.strslet;
+    strsvec = srcinfo.strsvec;
+    if(nd == 1), [a,b] = size(squeeze(strslet)); assert(a==3 && b==ns,'Strslet must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd == 1), [a,b] = size(squeeze(strsvec)); assert(a==3 && b==ns,'Strsvec must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(strslet); assert(a==nd && b==3 && c==ns, 'Strslet must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(strsvec); assert(a==nd && b==3 && c==ns, 'Strsvec must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    strslet = reshape(strslet,[3*nd,ns]);
+    strsvec = reshape(strsvec,[3*nd,ns]);
+  else
+    ifstrslet = 0;
+    ns_strs = 1;
+    strslet = zeros(nd*3,1);
+    strsvec = zeros(nd*3,1);
+  end
+
+  nd3 = 3*nd;
+  nd9 = 9*nd;
+  ier = 0;
+
+  if(ifstoklet == 1 && ifstrslet == 0)
+    # FORTRAN st3ddirectstokg(int[1] nd, double[3,ns] sources, double[nd3,ns_stok] stoklet, int[1] ns, double[3,nt] targ, int[1] nt, inout double[nd3,nt] pottarg, inout double [nd,nt] pretarg, inout double[nd9,nt] gradtarg, double[1] thresh); 
+  else
+    istress = 1;
+    # FORTRAN st3ddirectstokstrsg(int[1] nd, double[3,ns] sources, double[nd3,ns_stok] stoklet, int[1] istress, double[nd3,ns_strs] strslet, double[nd3,ns_strs] strsvec, int[1] ns, double[3,nt] targ, int[1] nt, inout double[nd3,nt] pottarg, inout double [nd,nt] pretarg, inout double[nd9,nt] gradtarg, double[1] thresh); 
+  end
+
+  U.pottarg = [];
+  U.pretarg = [];
+  U.gradtarg = [];
+  if(ifppregtarg >= 1), U.pottarg = squeeze(reshape(pottarg,[nd,3,nt])); end;
+  if(ifppregtarg >= 2), U.pretarg = pretarg; end;
+  if(ifppregtarg >= 3), U.gradtarg = squeeze(reshape(gradtarg,[nd,3,3,nt])); end;
 end

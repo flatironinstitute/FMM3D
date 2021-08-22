@@ -1029,7 +1029,7 @@ def em3ddir(*,eps,zk,sources,h_current=None,e_current=None,e_charge=None,targets
     else:
         e_charge = np.zeros([nd,ns],dtype=complex)
 
-    out.E,out.curlE,out.divE,out.ier = emfmm.em3ddirect(eps,zk,sources,ifh_current,h_current,ife_current,e_current,ife_charge,e_charge,targets,ifE,ifcurlE,ifdivE,thresh,nd,ns,nt)
+    out.E,out.curlE,out.divE = emfmm.em3ddirect(eps,zk,sources,ifh_current,h_current,ife_current,e_current,ife_charge,e_charge,targets,ifE,ifcurlE,ifdivE,thresh,nd,ns,nt)
 
     if(ifE==0):
         out.E = None

@@ -38,7 +38,7 @@ function [U] = l3ddir(srcinfo,targ,pgt)
 %  -  pgt: integer
 %        | target eval flag (optional)
 %        | potential at targets evaluated if pgt = 1
-%        | potenial and gradient at targets evaluated if pgt=2 
+%        | potential and gradient at targets evaluated if pgt=2 
 %        | potential, gradient and hessian at targets evaluated if pgt=3
 %  
 %  Returns:
@@ -142,3 +142,5 @@ function [U] = l3ddir(srcinfo,targ,pgt)
     U.hesstarg = squeeze(reshape(hesstarg,[nd,6,nt]));
   end
 end
+
+% ---------------------------------------------------------------------

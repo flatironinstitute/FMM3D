@@ -38,13 +38,13 @@ function [U] = hfmm3d(eps,zk,srcinfo,pg,targ,pgt)
 %  -  pg: integer
 %        | source eval flag
 %        | potential at sources evaluated if pg = 1
-%        | potenial and gradient at sources evaluated if pg=2
+%        | potential and gradient at sources evaluated if pg=2
 %  -  targ: double(3,nt)
 %        target locations, $t_{i}$ (optional)
 %  -  pgt: integer
 %        | target eval flag (optional)
 %        | potential at targets evaluated if pgt = 1
-%        | potenial and gradient at targets evaluated if pgt=2  
+%        | potential and gradient at targets evaluated if pgt=2  
 %  
 %  Returns:
 %  

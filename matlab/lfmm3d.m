@@ -36,14 +36,14 @@ function [U] = lfmm3d(eps,srcinfo,pg,targ,pgt)
 %  -  pg: integer
 %        | source eval flag
 %        | potential at sources evaluated if pg = 1
-%        | potenial and gradient at sources evaluated if pg=2
+%        | potential and gradient at sources evaluated if pg=2
 %        | potential, gradient and hessian at sources evaluated if pg=3
 %  -  targ: double(3,nt)
 %        target locations, $t_{i}$ (optional)
 %  -  pgt: integer
 %        | target eval flag (optional)
 %        | potential at targets evaluated if pgt = 1
-%        | potenial and gradient at targets evaluated if pgt=2 
+%        | potential and gradient at targets evaluated if pgt=2 
 %        | potential, gradient and hessian at targets evaluated if pgt=3
 %  
 %  Returns:
