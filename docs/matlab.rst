@@ -89,7 +89,7 @@ target locations.
 
 Example:
 
--  see ``lfmmexample.m``
+-  see ``lfmm3d_example.m``
 
 .. container:: rttext
 
@@ -177,7 +177,7 @@ target locations.
 
 Example:
 
--  see ``hfmmexample.m``
+-  see ``hfmm3d_example.m``
 
 .. container:: rttext
 
@@ -300,7 +300,7 @@ target locations.
 
 Example:
 
--  see ``stfmmexample.m``
+-  see ``stfmm3d_example.m``
 
 .. container:: rttext
 
@@ -391,7 +391,7 @@ target locations.
 
 Example:
 
--  see ``emfmmexample.m``
+-  see ``emfmm3d_example.m``
 
 .. container:: rttext
 
