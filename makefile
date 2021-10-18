@@ -174,7 +174,7 @@ usage:
 	@echo "  make mex - generate matlab interfaces (for expert users only, requires mwrap)"
 	@echo "For faster (multicore) making, append the flag -j"
 	@echo "  'make [task] OMP=OFF' for single-threaded"
-	@echo "  'make [task] FAST_KER=ON' for using vectorized kernel evaluation and multi-threaded (needs c++)"
+	@echo "  'make [task] FAST_KER=ON' for using vectorized kernel evaluation and multi-threading (needs c++)"
 
 
 # implicit rules for objects (note -o ensures writes to correct dir)
@@ -251,8 +251,9 @@ mex:  $(STATICLIB)
 #python
 python: $(STATICLIB)
 	cd python && \
-	FMM_FLIBS='$(LIBS) $(OMPFLAGS)' $(PYTHON) -m pip install -e . && \
-	$(PYTHON) -m pytest test/ -s
+	FMM_FLIBS='$(LIBS) $(OMPFLAGS)' $(PYTHON) -m pip install -e . --verbose 
+#	FMM_FLIBS='$(LIBS) $(OMPFLAGS)' $(PYTHON) -m pip install -e . && \
+#	$(PYTHON) -m pytest test/ -s
 
 python-dist: $(STATICLIB)
 	cd python && \
@@ -440,14 +441,15 @@ clean: objclean
 	rm -rf python/build
 	rm -rf python/dist
 	rm -rf python/fmm3dpy.egg-info
+	rm -rf matlab/*.mex*
 	rm -f examples/lfmm3d_example
 	rm -f examples/lfmm3d_vec_example
 	rm -f examples/lfmm3d_legacy_example
 	rm -f test/Laplace/int2-*
 	rm -f test/Helmholtz/int2-*
-	rm -f examples/hfmm3d_example
-	rm -f examples/hfmm3d_vec_example
-	rm -f examples/hfmm3d_legacy_example
+	rm -f test/Maxwell/int2-*
+	rm -f test/Stokes/int2-*
+	rm -f examples/int2-*
 	rm -f c/int2-*
 	rm -f vec-kernels/src/libkernels.o
 
