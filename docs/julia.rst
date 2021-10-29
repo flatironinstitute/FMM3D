@@ -290,9 +290,6 @@ target locations.
 
 ------------------------------------------------------------------
 
-Example:
-
--  see ``stfmmexample.jl``
 
 .. container:: rttext
 
@@ -384,10 +381,6 @@ target locations.
                 nd=1,thresh=1e-16)
 
 ------------------------------------------------------------------
-
-Example:
-
--  see ``emfmmexample.jl``
 
 .. container:: rttext
 
