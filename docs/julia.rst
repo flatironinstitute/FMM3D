@@ -320,7 +320,7 @@ from the sum.
 
 .. code:: julia
    
-    vals = emfmm3d(eps,zk,sources;A=nothing,B=nothing,lambda=nothing,
+    vals = emfmm3d(eps,zk,sources;h_current=nothing,e_current=nothing,e_charge=nothing,
                 ifE=false,ifdivE=false,ifcurlE=false,
                 ifEtarg=false,ifdivEtarg=false,ifcurlEtarg=false,
                 nd=1,targets=nothing)
@@ -338,11 +338,11 @@ Args:
       Wavenumber, k
 -  sources: float(3,n)   
       source locations
--  A: complex(3,n) or complex(nd,3,n)
+-  h_current: complex(3,n) or complex(nd,3,n)
       Magnetic currents, $M_{j}$
--  B: complex(3,n) or complex(nd,3,n)
+-  e_current: complex(3,n) or complex(nd,3,n)
       Electric currents, $J_{j}$
--  lambda: complex(n,) or complex(nd,n)
+-  e_charge: complex(n,) or complex(nd,n)
       Electric charges, $\rho_{j}$
 -  targets: float(3,nt)
       target locations, $t_{i}$ 
@@ -376,7 +376,7 @@ target locations.
               
 .. code:: julia
    
-    vals = em3ddir(zk,sources,targets;A=nothing,B=nothing,lambda=nothing,
+    vals = em3ddir(zk,sources,targets;h_current=nothing,e_current=nothing,e_charge=nothing,
                 ifEtarg=false,ifdivEtarg=false,ifcurlEtarg=false,
                 nd=1,thresh=1e-16)
 
