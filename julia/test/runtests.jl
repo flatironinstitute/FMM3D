@@ -176,57 +176,57 @@ end
     nt = 11
     sources = randn(3,n)
     targets = randn(3,nt)
-    A = randn(3,n) + im*randn(3,n)
-    B = randn(3,n) + im*randn(3,n)
-    lambda = randn(n) + im*randn(n)
+    h_current = randn(3,n) + im*randn(3,n)
+    e_current = randn(3,n) + im*randn(3,n)
+    e_charge = randn(n) + im*randn(n)
     zk = 2.1
 
-    vals1A = em3ddir(zk,sources,targets,A=A,
+    vals1A = em3ddir(zk,sources,targets,h_current=h_current,
                      ifEtarg=true,ifdivEtarg=true,
                      ifcurlEtarg=true,thresh=1e-16)
 
-    vals1As = em3ddir(zk,sources,sources,A=A,
+    vals1As = em3ddir(zk,sources,sources,h_current=h_current,
                      ifEtarg=true,ifdivEtarg=true,
                      ifcurlEtarg=true,thresh=1e-16)
 
-    vals1B = em3ddir(zk,sources,targets,B=B,
+    vals1B = em3ddir(zk,sources,targets,e_current=e_current,
                      ifEtarg=true,ifdivEtarg=true,
                      ifcurlEtarg=true,thresh=1e-16)
 
-    vals1Bs = em3ddir(zk,sources,sources,B=B,
+    vals1Bs = em3ddir(zk,sources,sources,e_current=e_current,
                      ifEtarg=true,ifdivEtarg=true,
                      ifcurlEtarg=true,thresh=1e-16)
 
-    vals1lambda = em3ddir(zk,sources,targets,lambda=lambda,
+    vals1lambda = em3ddir(zk,sources,targets,e_charge=e_charge,
                      ifEtarg=true,ifdivEtarg=true,
                      ifcurlEtarg=true,thresh=1e-16)
 
-    vals1lambdas = em3ddir(zk,sources,sources,lambda=lambda,
+    vals1lambdas = em3ddir(zk,sources,sources,e_charge=e_charge,
                      ifEtarg=true,ifdivEtarg=true,
                      ifcurlEtarg=true,thresh=1e-16)
 
-    vals1all = em3ddir(zk,sources,targets,A=A,B=B,lambda=lambda,
+    vals1all = em3ddir(zk,sources,targets,h_current=h_current,e_current=e_current,e_charge=e_charge,
                      ifEtarg=true,ifdivEtarg=true,
                      ifcurlEtarg=true,thresh=1e-16)
 
-    vals1alls = em3ddir(zk,sources,sources,A=A,B=B,lambda=lambda,
+    vals1alls = em3ddir(zk,sources,sources,h_current=h_current,e_current=e_current,e_charge=e_charge,
                      ifEtarg=true,ifdivEtarg=true,
                      ifcurlEtarg=true,thresh=1e-16)
 
     eps = 1e-12
-    vals2A = emfmm3d(eps,zk,sources,targets=targets,A=A,
+    vals2A = emfmm3d(eps,zk,sources,targets=targets,h_current=h_current,
                     ifE=true,ifdivE=true,ifcurlE=true,
                     ifEtarg=true,ifdivEtarg=true,ifcurlEtarg=true)
     
-    vals2B = emfmm3d(eps,zk,sources,targets=targets,B=B,
+    vals2B = emfmm3d(eps,zk,sources,targets=targets,e_current=e_current,
                     ifE=true,ifdivE=true,ifcurlE=true,
                     ifEtarg=true,ifdivEtarg=true,ifcurlEtarg=true)
     
-    vals2lambda = emfmm3d(eps,zk,sources,targets=targets,lambda=lambda,
+    vals2lambda = emfmm3d(eps,zk,sources,targets=targets,e_charge=e_charge,
                     ifE=true,ifdivE=true,ifcurlE=true,
                     ifEtarg=true,ifdivEtarg=true,ifcurlEtarg=true)
     
-    vals2all = emfmm3d(eps,zk,sources,targets=targets,A=A,B=B,lambda=lambda,
+    vals2all = emfmm3d(eps,zk,sources,targets=targets,h_current=h_current,e_current=e_current,e_charge=e_charge,
                     ifE=true,ifdivE=true,ifcurlE=true,
                     ifEtarg=true,ifdivEtarg=true,ifcurlEtarg=true)
 

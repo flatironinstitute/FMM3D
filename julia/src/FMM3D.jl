@@ -1644,8 +1644,8 @@ end
 
 """
 ```julia
-    anyfail, n, nt, ifA, ifB, iflam = (
-        emfmm3dinputcheck(sources,A,B,lambda,
+    anyfail, n, nt, ifh_current, ife_current, ife_charge = (
+        emfmm3dinputcheck(sources,h_current,e_current,e_charge,
                         targets,ifE,ifdivE,ifcurlE,
                         ifEtarg,ifdivEtarg,
                         ifcurlEtarg,nd) )
@@ -1662,11 +1662,11 @@ Output:
 * `anyfail` - boolean is true if any checks fail, false otherwise
 * `n` - integer, number of sources
 * `nt` - integer, number of targets
-* `ifA` - integer, is 1 if there is an A vector, 0 otherwise
-* `ifB` - integer, is 1 if there is a B vector, 0 otherwise
-* `iflam` - integer, is 1 if there is a lambda density, 0 otherwise
+* `ifh_current` - integer, is 1 if there is an h_current vector, 0 otherwise
+* `ife_current` - integer, is 1 if there is a e_current vector, 0 otherwise
+* `ife_charge` - integer, is 1 if there is a e_charge density, 0 otherwise
 """
-function emfmm3dinputcheck(sources,A,B,lambda,targets,
+function emfmm3dinputcheck(sources,h_current,e_current,e_charge,targets,
                            ifE,ifdivE,ifcurlE,ifEtarg,ifdivEtarg,
                            ifcurlEtarg,nd)
     anyfail = false
@@ -1691,38 +1691,38 @@ function emfmm3dinputcheck(sources,A,B,lambda,targets,
         nt = div(length(targets),3)
     end
     
-    if A != nothing
-        if (div(length(A),nd) != 3*n)
-            @warn "size of A vector array incompatible with sources array and nd parameter, computing nothing"
+    if h_current != nothing
+        if (div(length(h_current),nd) != 3*n)
+            @warn "size of h_current vector array incompatible with sources array and nd parameter, computing nothing"
             anyfail = true
         end
-        ifA = 1
+        ifh_current = 1
     else
-        ifA = 0
+        ifh_current = 0
     end
 
-    if B != nothing
-        if (div(length(B),nd) != 3*n)
-            @warn "size of B vector array incompatible with sources array and nd parameter, computing nothing"
+    if e_current != nothing
+        if (div(length(e_current),nd) != 3*n)
+            @warn "size of e_current vector array incompatible with sources array and nd parameter, computing nothing"
             anyfail = true
         end
-        ifB = 1
+        ife_current = 1
     else
-        ifB = 0
+        ife_current = 0
     end
 
-    if lambda != nothing
-        if (div(length(lambda),nd) != n)
-            @warn "size of lambda array incompatible with sources array and nd parameter, computing nothing"
+    if e_charge != nothing
+        if (div(length(e_charge),nd) != n)
+            @warn "size of e_charge array incompatible with sources array and nd parameter, computing nothing"
             anyfail = true
         end
-        iflam = 1
+        ife_charge = 1
     else
-        iflam = 0
+        ife_charge = 0
     end
 
-    if ifA == 0 && ifB == 0 && iflam == 0
-        @warn "none of A vectors, B vectors, or lambdas provided at sources, doing nothing"
+    if ifh_current == 0 && ife_current == 0 && ife_charge == 0
+        @warn "none of h_current vectors, e_current vectors, or e_charges provided at sources, doing nothing"
         anyfail = true
     end
 
@@ -1735,13 +1735,13 @@ function emfmm3dinputcheck(sources,A,B,lambda,targets,
         @warn "target values requested but no targets provided, doing nothing for these"
     end
 
-    return anyfail, n, nt, ifA, ifB, iflam
+    return anyfail, n, nt, ifh_current, ife_current, ife_charge
 end
 
 
 """
 ```julia
-    vals = emfmm3d(eps,zk,sources;A=nothing,B=nothing,lambda=nothing,
+    vals = emfmm3d(eps,zk,sources;h_current=nothing,e_current=nothing,e_charge=nothing,
                 ifE=false,ifdivE=false,ifcurlE=false,
                 ifEtarg=false,ifdivEtarg=false,ifcurlEtarg=false,
                 nd=1,targets=nothing)
@@ -1762,12 +1762,12 @@ is
 This routine computes the sum 
 
 ```math
-E(x) = \\sum_{j=1}^m \\nabla \\times (G_k(x,x_{j}) A_j) + 
-G_k(x,x_{j}) B_j + \\nabla G_k(x,x_{j}) \\lambda_j
+E(x) = \\sum_{j=1}^m \\nabla \\times (G_k(x,x_{j}) h_current_j) + 
+G_k(x,x_{j}) e_current_j + \\nabla G_k(x,x_{j}) \\e_charge_j
 ```
  
-where ``A_{j}`` and ``B_{j}`` are vector densities
-      ``\\lambda_{j}`` is a scalar density, and 
+where ``h_current_{j}`` and ``e_current_{j}`` are vector densities
+      ``\\e_charge_{j}`` is a scalar density, and 
       ``x_{j}`` are the source locations.
       When ``x=x_{m}``, the term corresponding to 
       ``x_{m}`` is dropped from the sum
@@ -1782,9 +1782,9 @@ where ``A_{j}`` and ``B_{j}`` are vector densities
 # Optional Keyword Input
 
 * `targets::Array{Float64}` size (3,nt) target locations (``x``)
-* `A::Array{ComplexF64}` size (nd,3,n) or (3,n) vector densities
-* `B::Array{ComplexF64}` size (nd,3,n) or (3,n) vector densities
-* `lambda::Array{ComplexF64}` size (nd,n) or (n) scalar densities
+* `h_current::Array{ComplexF64}` size (nd,3,n) or (3,n) vector densities
+* `e_current::Array{ComplexF64}` size (nd,3,n) or (3,n) vector densities
+* `e_charge::Array{ComplexF64}` size (nd,n) or (n) scalar densities
 * `ifE::Bool` E field evaluation flag, if true evaluate E at source points. 
 * `ifdivE::Bool` divergence of E field evaluation flag, if true evaluate divergence of E at source points. 
 * `ifcurlE::Bool` curl of E field evaluation flag, if true evaluate curl of E at source points.
@@ -1811,7 +1811,7 @@ Non-zero values may indicate insufficient memory available. See the documentatio
 If not set (`nothing`), then FMM3D library was never called.
 """
 function emfmm3d(eps::Float64,zk::Union{Float64,ComplexF64},sources::Array{Float64};
-                 A::TCN=nothing,B::TCN=nothing,lambda::TCN=nothing,
+                 h_current::TCN=nothing,e_current::TCN=nothing,e_charge::TCN=nothing,
                  ifE::Bool=false,ifdivE::Bool=false,
                  ifcurlE::Bool=false,ifEtarg::Bool=false,
                  ifdivEtarg::Bool=false,ifcurlEtarg::Bool=false,
@@ -1834,8 +1834,8 @@ function emfmm3d(eps::Float64,zk::Union{Float64,ComplexF64},sources::Array{Float
 
     # check inputs
 
-    anyfail, n, nt, ifA, ifB, iflam = (
-        emfmm3dinputcheck(sources,A,B,lambda,
+    anyfail, n, nt, ifh_current, ife_current, ife_charge = (
+        emfmm3dinputcheck(sources,h_current,e_current,e_charge,
                           targets,ifE,ifdivE,ifcurlE,
                           ifEtarg,ifdivEtarg,
                           ifcurlEtarg,nd) )
@@ -1844,9 +1844,9 @@ function emfmm3d(eps::Float64,zk::Union{Float64,ComplexF64},sources::Array{Float
         return vals
     end
 
-    if (ifA == 0); A = zero3 end
-    if (ifB == 0); B = zero3 end
-    if (iflam == 0); lambda = zero end    
+    if (ifh_current == 0); h_current = zero3 end
+    if (ife_current == 0); e_current = zero3 end
+    if (ife_charge == 0); e_charge = zero end    
     if (nt == 0); targets = zero3 end
 
     # allocate memory for return values
@@ -1908,14 +1908,14 @@ function emfmm3d(eps::Float64,zk::Union{Float64,ComplexF64},sources::Array{Float
 #
 # fortran calling sequence
 #  subroutine emfmm3d(nd,eps,zk,ns,source,ifa_vect,a_vect,&
-#   ifb_vect,b_vect,iflambda,lambda,nt,targets,ifE,E,ifcurlE,curlE,&
+#   ifb_vect,b_vect,ife_charge,e_charge,nt,targets,ifE,E,ifcurlE,curlE,&
 #   ifdivE,divE,ier)
 
     
     ccall((:emfmm3d_,libfmm3d),Cvoid,(Fi,Fd,Fc,Fi,Fd,Fi,Fc,
                                       Fi,Fc,Fi,Fc,Fi,Fd,Fi,Fc,
                                       Fi,Fc,Fi,Fc,Fi),
-          nd,eps,zk,n,sources,ifA,A,ifB,B,iflam,lambda,
+          nd,eps,zk,n,sources,ifh_current,h_current,ife_current,e_current,ife_charge,e_charge,
           ntot,targ1,ifE1,E1,ifcurlE1,curlE1,ifdivE1,divE1,ier)
 
     # copy over error message
@@ -1949,7 +1949,7 @@ end
 
 """
 ```julia
-    vals = em3ddir(zk,sources,targets;A=nothing,B=nothing,lambda=nothing,
+    vals = em3ddir(zk,sources,targets;h_current=nothing,e_current=nothing,e_charge=nothing,
                 ifEtarg=false,ifdivEtarg=false,ifcurlEtarg=false,
                 nd=1,thresh=1e-16)
 ```
@@ -1971,12 +1971,12 @@ is
 This routine computes the sum 
 
 ```math
-E(x) = \\sum_{j=1}^m \\nabla \\times (G_k(x,x_{j}) A_j) + 
-G_k(x,x_{j}) B_j + \\nabla G_k(x,x_{j}) \\lambda_j
+E(x) = \\sum_{j=1}^m \\nabla \\times (G_k(x,x_{j}) h_current_j) + 
+G_k(x,x_{j}) e_current_j + \\nabla G_k(x,x_{j}) \\e_charge_j
 ```
  
-where ``A_{j}`` and ``B_{j}`` are vector densities
-      ``\\lambda_{j}`` is a scalar density, and 
+where ``h_current_{j}`` and ``e_current_{j}`` are vector densities
+      ``\\e_charge_{j}`` is a scalar density, and 
       ``x_{j}`` are the source locations.
       When ``x=x_{m}``, the term corresponding to 
       ``x_{m}`` is dropped from the sum
@@ -1990,9 +1990,9 @@ where ``A_{j}`` and ``B_{j}`` are vector densities
 
 # Optional Keyword Input
 
-* `A::Array{ComplexF64}` size (nd,3,n) or (3,n) vector densities
-* `B::Array{ComplexF64}` size (nd,3,n) or (3,n) vector densities
-* `lambda::Array{ComplexF64}` size (nd,n) or (n) scalar densities
+* `h_current::Array{ComplexF64}` size (nd,3,n) or (3,n) vector densities
+* `e_current::Array{ComplexF64}` size (nd,3,n) or (3,n) vector densities
+* `e_charge::Array{ComplexF64}` size (nd,n) or (n) scalar densities
 * `ifEtarg::Bool` E field evaluation flag, if true evaluate E at target points. 
 * `ifdivEtarg::Bool` divergence of E field evaluation flag, if true evaluate divergence of E at target points. 
 * `ifcurlEtarg::Bool` curl of E field evaluation flag, if true evaluate curl of E at target points. 
@@ -2011,7 +2011,7 @@ is computed.
 """
 function em3ddir(zk::Union{Float64,ComplexF64},sources::Array{Float64},
                  targets::Array{Float64};
-                 A::TCN=nothing,B::TCN=nothing,lambda::TCN=nothing,
+                 h_current::TCN=nothing,e_current::TCN=nothing,e_charge::TCN=nothing,
                  ifEtarg::Bool=false,
                  ifdivEtarg::Bool=false,ifcurlEtarg::Bool=false,
                  nd::Integer=1,thresh::Float64=1e-16)
@@ -2035,8 +2035,8 @@ function em3ddir(zk::Union{Float64,ComplexF64},sources::Array{Float64},
 
     ifE = false; ifdivE = false; ifcurlE = false
 
-    anyfail, n, nt, ifA, ifB, iflam = (
-        emfmm3dinputcheck(sources,A,B,lambda,
+    anyfail, n, nt, ifh_current, ife_current, ife_charge = (
+        emfmm3dinputcheck(sources,h_current,e_current,e_charge,
                           targets,ifE,ifdivE,ifcurlE,
                           ifEtarg,ifdivEtarg,
                           ifcurlEtarg,nd) )
@@ -2044,9 +2044,9 @@ function em3ddir(zk::Union{Float64,ComplexF64},sources::Array{Float64},
         return vals
     end
 
-    if (ifA == 0); A = zero3 end
-    if (ifB == 0); B = zero3 end
-    if (iflam == 0); lambda = zero end    
+    if (ifh_current == 0); h_current = zero3 end
+    if (ife_current == 0); e_current = zero3 end
+    if (ife_charge == 0); e_charge = zero end    
     if (nt == 0); targets = zero3 end
 
     if (nt == 0)
@@ -2088,14 +2088,14 @@ function em3ddir(zk::Union{Float64,ComplexF64},sources::Array{Float64},
 # actually call routine    
 #
 # subroutine em3ddirect(nd,zk,ns,source,ifa_vect,a_vect,&
-#  ifb_vect,b_vect,iflambda,lambda,nt,targets,ifE,E,ifcurlE,curlE,&
+#  ifb_vect,b_vect,ife_charge,e_charge,nt,targets,ifE,E,ifcurlE,curlE,&
 #  ifdivE,divE,thresh)
 
     ccall((:em3ddirect_,libfmm3d),Cvoid,(Fi,Fc,Fi,Fd,Fi,Fc,
                                          Fi,Fc,Fi,Fc,Fi,Fd,
                                          Fi,Fc,Fi,Fc,Fi,Fc,
                                          Fd),
-          nd,zk,n,sources,ifA,A,ifB,B,iflam,lambda,nt,targets,
+          nd,zk,n,sources,ifh_current,h_current,ife_current,e_current,ife_charge,e_charge,nt,targets,
           ifE1,Etarg,ifcurlE1,curlEtarg,ifdivE1,divEtarg,thresh)
 
     if ifEtarg; vals.Etarg = Etarg end
