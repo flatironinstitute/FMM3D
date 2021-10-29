@@ -42,7 +42,7 @@ in test/runtests.jl.
 * If the pull request is fixing a bug, that bug
 should be tested in test/runtests.jl
 * Any new wrapper which is exported by the module
-should have documentattion. Typically, the documentation
+should have documentation. Typically, the documentation
 from the original Fortran code is a good starting
 point. See existing wrappers for style.
 * Wrappers for the highest level routines (actual
