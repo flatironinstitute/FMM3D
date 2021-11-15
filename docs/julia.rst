@@ -71,8 +71,8 @@ variables
 -  vals.grad: gradient at source locations, if requested, $\nabla u(x_{j})$
 -  vals.pottarg: potential at target locations, if requested, $u(t_{i})$
 -  vals.gradtarg: gradient at target locations, if requested, $\nabla u(t_{i})$
-- vals.ier: error flag as returned by FMM3D library. A value of 0 indicates a successful call. 
-Non-zero values may indicate insufficient memory available. See the documentation for the FMM3D library. 
+-  vals.ier: error flag as returned by FMM3D library. A value of 0 indicates a successful call. 
+   Non-zero values may indicate insufficient memory available. See the documentation for the FMM3D library. 
    
 
 ------------------------------------------------------------------

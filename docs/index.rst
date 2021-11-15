@@ -87,6 +87,7 @@ faster.
    fortran-c
    matlab
    python
+   julia
    legacy
    ackn
    ref

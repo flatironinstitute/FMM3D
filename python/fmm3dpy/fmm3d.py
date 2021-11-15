@@ -632,7 +632,7 @@ def stfmm3d(*,eps,sources,stoklet=None,strslet=None,strsvec=None,targets=None,if
         print("Nothing to compute, set either ifppreg or ifppregtarg to non-zero")
         return out
 
-    if(stoklet == None and strslet == None and strsvec == None):
+    if(stoklet is None and strslet is None and strsvec is None):
         print("Nothing to compute, set either stoklet or strslet+strsvec to non-None")
         return out
 

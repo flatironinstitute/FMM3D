@@ -2,11 +2,11 @@ disp("This is an example matlab driver for the stokes fmm");
 disp("On output the code prints the pot+pre+grad in example1 and, pot+pottarg+pre+pretarg in example2");
 disp(" ");
 disp(" ");
-%%   source to source, stokeslet only, pot+grad example
+%%   source to source, stokeslet only, pot+pre+grad example
 %
 
 clear srcinfo ns U eps pg;
-disp("Example 1: source to source, stokeslet, pot+grad");
+disp("Example 1: source to source, stokeslet, pot+pre+grad");
 disp(" ");
 disp(" ");
 
