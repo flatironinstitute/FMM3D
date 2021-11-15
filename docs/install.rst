@@ -257,7 +257,8 @@ Then do::
 On Windows
 ~~~~~~~~~~~~~~~
 
-Download 64 bit mingw (available `here <http://mingw-w64.org/doku.php>`_). 
+Download 64 bit mingw (available `here <https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release/>`_).
+Recommended version is ``gcc-8.1.0``, ``x86_64-posix-seh``.
 Follow the install instructions and append to the environment variable ``PATH`` the
 location of the bin directory of your mingw installation.
 
