@@ -84,7 +84,7 @@ target locations.
 
 Example:
 
--  see ``lfmmexample.py``
+-  see ``lfmm3d_example.py``
 
 .. container:: rttext
 
@@ -166,7 +166,7 @@ target locations.
 
 Example:
 
--  see ``hfmmexample.py``
+-  see ``hfmm3d_example.py``
 
 .. container:: rttext
 
@@ -240,9 +240,9 @@ Args:
 -  stoklet: float(nd,3,n) or float(3,n)
       Stokeslet charge strengths ($\sigma_{j}$ above)
 -  strslet: float(nd,3,n) or float(3,n)
-      stresslet strengths ($mu_{j}$ above)
+      stresslet strengths ($\mu_{j}$ above)
 -  strsvec: float(nd,3,n) or float(3,n)
-      stresslet orientations ($nu_{j}$ above)
+      stresslet orientations ($\nu_{j}$ above)
 -  targets: float(3,nt)
       target locations (x)
 -  ifppreg: integer
@@ -279,7 +279,7 @@ target locations.
 
 Example:
 
--  see ``stfmmexample.py``
+-  see ``stfmm3d_example.py``
 
 .. container:: rttext
 
@@ -360,7 +360,7 @@ target locations.
 
 Example:
 
--  see ``emfmmexample.py``
+-  see ``emfmm3d_example.py``
 
 .. container:: rttext
 

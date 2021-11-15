@@ -33,7 +33,7 @@ clear srcinfo targ ns U eps ifE ifcurlE ifdivE zk;
 %
 disp(" ");
 disp(" ");
-disp("Example 2: source to target, charge+dipole, multiple densities, pot");
+disp("Example 2: source to target, electric current+charge, multiple densities, field+curl");
 disp(" ");
 disp(" ");
 

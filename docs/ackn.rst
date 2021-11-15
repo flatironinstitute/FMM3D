@@ -2,7 +2,7 @@ Acknowledgments
 ================
 
 Principal contributors to this code base are
-Zydrunas Gimbutas, Leslie Greengard, Libin Lu, Jeremy Magland, Dhairya Malhotra, Michael O'Neil, Manas Rachh, and Vladimir Rokhlin
+Travis Askham, Zydrunas Gimbutas, Leslie Greengard, Libin Lu, Jeremy Magland, Dhairya Malhotra, Michael O'Neil, Manas Rachh, Vladimir Rokhlin, and Felipe Vico
 
-Thanks to Joakim Anden, Travis Askham, Alex Barnett, David Stein, Felipe Vico, and Jun Wang 
+Thanks to Joakim Anden, Alex Barnett, Shidong Jiang, David Stein, and Jun Wang 
 for several useful discussions

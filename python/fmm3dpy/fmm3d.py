@@ -491,7 +491,7 @@ def emfmm3d(*,eps,zk,sources,h_current=None,e_current=None,e_charge=None,targets
     r"""
     out = Output()
 
-    if(targets == None):
+    if(targets is None):
         print("Nothing to compute, set targets")
         return out
     if(ifE == 0 and ifcurlE == 0 and ifdivE == 0):

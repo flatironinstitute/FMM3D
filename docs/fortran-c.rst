@@ -5,6 +5,8 @@ Fortran and C interfaces
 
 -  :ref:`lap`
 -  :ref:`helm`
+-  :ref:`stokes`
+-  :ref:`maxwell`
 -  :ref:`cinter`
 
 
@@ -307,6 +309,246 @@ List of interfaces
 .. include:: fortrandocs_helm.raw
 
 
+.. _stokes:
+
+Stokes FMM
+------------
+
+
+Let $\mathcal{G}^{\textrm{stok}}(x,y)$ 
+denote the Stokeslet given by
+
+
+.. math::
+   \mathcal{G}^{\textrm{stok}}(x,y)=\frac{1}{2 \|x-y\|^3}
+   \begin{bmatrix}
+   (x_{1}-y_{1})^2 + \|x-y \|^2 & (x_{1}-y_{1})(x_{2}-y_{2}) &
+   (x_{1}-y_{1})(x_{3}-y_{3}) \\ 
+   (x_{2}-y_{2})(x_{1}-y_{1}) & (x_{2}-y_{2})^2 + \|x-y \|^2 & 
+   (x_{2}-y_{2})(x_{3}-y_{3}) \\ 
+   (x_{3}-y_{3})(x_{1}-y_{1})  & (x_{3}-y_{3})(x_{2}-y_{2}) & 
+   (x_{3}-y_{3})^2 + \|x-y \|^2 
+   \end{bmatrix} \, ,
+
+and $\mathcal{T}^{\textrm{stok}}(x,y)$ denote the Stresslet whose action on
+a vector $v$ is given by
+
+.. math::
+   v\cdot \mathcal{T}^{\textrm{stok}}(x,y)  = 
+   \frac{3 v \cdot (x-y)}{\|x-y \|^5}
+   \begin{bmatrix}
+   (x_{1}-y_{1})^2 & (x_{1}-y_{1})(x_{2}-y_{2}) &
+   (x_{1}-y_{1})(x_{3}-y_{3}) \\ 
+   (x_{2}-y_{2})(x_{1}-y_{1}) & (x_{2}-y_{2})^2 & 
+   (x_{2}-y_{2})(x_{3}-y_{3}) \\ 
+   (x_{3}-y_{3})(x_{1}-y_{1})  & (x_{3}-y_{3})(x_{2}-y_{2}) & 
+   (x_{3}-y_{3})^2  
+   \end{bmatrix} \, .
+
+The Stokes FMM evaluates the following velocity, its gradient
+and the associated pressure
+
+.. math::
+
+    u(x) = \sum_{m=1}^{N} \mathcal{G}^{\textrm{stok}}(x,x_{j}) \sigma_{j}  + \nu_{j} \cdot \mathcal{T}^{\textrm{stok}}(x,x_{j}) \cdot \mu_{j}  \, . 
+
+Here $x_{j}$ are the source locations,
+$\sigma_{j}$ are the Stokeslet densities,
+$\nu_{j}$ are the stresslet orientation vectors, $\mu_{j}$ 
+are the stresslet densities, and rhw xollwxrion of $x$ 
+at which the velocity and its gradient are evaluated are referred to
+as the evaluation points.
+
+Unlike the Laplace and Helmholtz FMM, currently we  
+have only the guru interface for the Stokes FMM  (for both the single density
+and the vectorized density cases)
+with appropriate flags for including or excluding the 
+stokeslet/stresslet term in the interaction, and flags
+for computing velocity/velocity and pressure/velocity, pressure, and
+gradients at the evaluation points.
+
+
+.. code::
+
+   subroutine stfmm3d(nd,eps,nsource,source,ifstoklet,stoklet,ifstrslet,strslet,strsvec,ifppreg,pot,pre,grad,ntarg,targ,ifppregtarg,pottarg,pretarg,gradtarg,ier) 
+
+Input arguments:
+
+  -    nd: integer
+          Number of densities
+  -    eps: double precision
+          Precision requested
+  -    nsource: integer
+          Number of sources
+  -    source: double precision(3,nsource)
+          Source locations, $x_{j}$
+  -    ifstoklet: integer
+          Flag for including Stokeslet ($\sigma_{j}$) term in interaction kernel
+          Stokeslet term will be included if ifstoklet
+          = 1
+  -    stoklet: double precision(nd,3,nsource)
+          Stokeslet strengths, $\sigma_{j}$
+  -    ifstrslet: integer
+          Flag for including Stresslet ($\mu_{j},\nu_{j}$) term in interaction kernel
+          Stresslet term will be included if ifstrslet
+          = 1
+  -    strslet: double precision(nd,3,nsource)
+          Stresslet strengths, $\mu_{j}$
+  -    strsvec: double precision(nd,3,nsource)
+          Stresslet orientation vectors, $\nu_{j}$
+  -    ifppreg: integer
+          | Flag for computing velocity, pressure and/or gradients at source locations
+          | ifppreg = 1, compute velocity
+          | ifppreg = 2, compute velocity and pressure
+          | ifppreg = 3, compute veloicty, pressure and gradient
+  -    ntarg: integer
+          Number of targets
+  -    targets: double precision (3,ntarg)
+          Target locations $x$
+  -    ifppregtarg: integer
+          | Flag for computing velocity, pressure and/or gradients at target locations
+          | ifppregtarg = 1, compute velocity
+          | ifppregtarg = 2, compute velocity and pressure
+          | ifppregtarg = 3, compute veloicty, pressure and gradient
+
+Output arguments:
+
+  -    pot: double precision (nd,3,nsource)
+          Velocity at source locations if requested
+  -    pre: double precision (nd,nsource)
+          Pressure at source locations if requested
+  -    grad: double precision (nd,3,3,nsource)
+          Gradient at source locations if requested
+  -    pottarg: double precision (nd,3,ntarg)
+          Velocity at target locations if requested
+  -    pretarg: double precision (nd,ntarg)
+          Pressure at target locations if requested
+  -    gradtarg: double precision (nd,3,3,ntarg)
+          Gradient at target locations if requested
+  -    ier: integer
+          Error flag; ier=0 implies successful execution, and ier=4/8
+          implies insufficient memory
+
+Example drivers:
+
+-   ``examples/stfmm3d_example.f``. The corresponding makefile is
+    ``examples/stfmm3d_example.make``
+   
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+.. _maxwell:
+
+Maxwell FMM
+--------------
+
+The Maxwell FMM evaluates the following field, its curl, and its
+divergence
+
+ 
+.. math::
+
+    E(x) = \sum_{j=1}^{N} \nabla \times \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} M_{j} + \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} J_{j} +  \nabla \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} \rho_{j}  \, .     
+
+Here $x_{j}$ are the source locations,
+$M_{j}$ are the magnetic current densities,
+$J_{j}$ are the electric current densities, 
+$\rho_{j}$ are the electric charge densities, and
+the collection of $x$ at which the field, its curl and its
+divergence are evalauated are referred to as the evaluation points.
+
+Unlike the Laplace and Helmholtz FMM, currently we  
+have only the guru interface for the Maxwell FMM  (for both the single density
+and the vectorized density cases)
+with appropriate flags for including or excluding the 
+magnetic current/electric current/electric charge term in the interaction, and flags
+for computing field/curl/divergence at the evaluation points.
+
+.. code:: fortran
+
+   subroutine emfmm3d(nd,eps,zk,ns,source,ifh_current,h_current,ife_current,e_current,ife_charge,e_charge,nt,targets,ifE,E,ifcurlE,curlE,ifdivE,divE,ier) 
+
+Input arguments:
+
+  -    nd: integer
+          Number of densities
+  -    eps: double precision
+          Precision requested
+  -    zk: double complex
+          Wave number $k$
+  -    ns: integer
+          Number of sources
+  -    source: double precision(3,ns)
+          Source locations, $x_{j}$
+  -    ifh_current: integer
+          Flag for including magnetic current ($M_{j}$) term in
+          interaction kernel.
+          Magnetic current term will be included if ifh_current
+          = 1
+  -    h_current: double complex(nd,3,ns)
+          Magnetic currents, $M_{j}$
+  -    ife_current: integer
+          Flag for including electric current ($J_{j}$) term in interaction kernel.
+          Electric current term will be included if ife_current
+          = 1
+  -    e_current: double complex(nd,3,ns)
+          Electric currents, $J_{j}$
+  -    ife_charge: integer
+          Flag for including electric charge ($\rho_{j}$) term in interaction kernel.
+          Electric charge term will be included if ife_charge
+          = 1
+  -    e_charge: double complex(nd,ns)
+          Electric charges, $\rho_{j}$
+  -    nt: integer
+          Number of targets
+  -    targets: double precision (3,nt)
+          Target locations $x$
+  -    ifE: integer
+          Flag for computing field. The field $E$ will be returned if
+          ifE = 1
+  -    ifcurlE: integer
+          Flag for computing curl of field. $\nabla \times E$ will be returned if
+          ifcurlE = 1
+  -    ifdivE: integer
+          Flag for computing divergence of field. $\nabla \cdot E$ will be returned if
+          ifdivE = 1
+
+Output arguments:
+
+  -    E: double complex (nd,3,nt)
+          Field at the evaluation points if requested
+  -    curlE: double complex (nd,3,nt)
+          Curl of field at the evaluation points if requested
+  -    divE: double complex (nd,nt)
+          Divergence of field at the evaluation points if requested
+  -    ier: integer
+          Error flag; ier=0 implies successful execution, and ier=4/8
+          implies insufficient memory
+
+
+Example drivers:
+
+-   ``examples/emfmm3d_example.f``. The corresponding makefile is
+    ``examples/emfmm3d_example.make``
+
+   
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
+List of interfaces
+******************
+ 
+
+.. container:: rttext
+
+  `Back to top <fortran-c.html#fcexmp>`__
+
+
 .. _cinter:
 
 C interfaces
@@ -355,7 +597,9 @@ Example drivers:
         -   ``c/hfmm3d_vec_example.c``. The corresponding makefile is
             ``c/hfmm3d_vec_example.make``
 
-   
+The Maxwell and Stokes interfaces are currently unavailable in C, and
+will be made available soon.
+
 .. container:: rttext
 
   `Back to top <fortran-c.html#fcexmp>`__
