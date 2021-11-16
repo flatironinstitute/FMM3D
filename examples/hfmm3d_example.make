@@ -5,7 +5,7 @@ HOST = gcc-openmp
 #HOST = intel
 #HOST = intel-openmp
 
-PROJECT = hfmm3d_example
+PROJECT = int2-hfmm3d_example
 
 # FC - fortran compiler
 # FFLAGS - fortran compiler flags

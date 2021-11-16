@@ -1,11 +1,11 @@
-OS = linux
+OS = osx
 
 #HOST = gcc
 HOST = gcc-openmp
 #HOST = intel
 #HOST = intel-openmp
 
-PROJECT = int2-lfmm3d_example
+PROJECT = int2-emfmm3d_example
 
 # FC - fortran compiler
 # FFLAGS - fortran compiler flags
@@ -21,7 +21,6 @@ PROJECT = int2-lfmm3d_example
 # the cross compiled libraries. See fmm3d.readthedocs.io/install.html
 # for additional info
 
-
 ifeq ($(OS),osx)
     LDFMM = /usr/local/lib
 endif
@@ -30,29 +29,26 @@ ifeq ($(OS),linux)
     LDFMM = ./../lib
 endif
 
+
 ifeq ($(HOST),gcc)
-    FC=gfortran -L${LDFMM}
+    FC=gfortran -L${LDFMM} 
     FFLAGS=-fPIC -O3 -funroll-loops -march=native  
 endif
 
 ifeq ($(HOST),gcc-openmp)
-    FC = gfortran -L${LDFMM}
+    FC = gfortran -L${LDFMM} 
     FFLAGS=-fPIC -O3 -funroll-loops -march=native -fopenmp -std=legacy
 endif
 
 ifeq ($(HOST),intel)
-    FC=ifort -L${LDFMM}
-    FFLAGS= -O3 -xW -ip -xHost
+    FC=ifort 
+    FFLAGS= -O3 -fPIC -march=native
 endif
 
 ifeq ($(HOST),intel-openmp)
-    FC = ifort -L${LDFMM}
-    FFLAGS= -O3 -xW -ip -xHost -qopenmp
+    FC = ifort 
+    FFLAGS= -O3 -fPIC -march=native -qopenmp
 endif
-
-
-
-
 
 # Test objects
 TOBJS = $(COM)/hkrand.o $(COM)/dlaran.o
@@ -62,7 +58,7 @@ TOBJS = $(COM)/hkrand.o $(COM)/dlaran.o
 default: all
 
 
-OBJECTS = lfmm3d_example.o \
+OBJECTS = emfmm3d_example.o \
     ../src/Common/hkrand.o \
     ../src/Common/dlaran.o 
 
@@ -74,8 +70,6 @@ all: $(OBJECTS)
 # implicit rules for objects (note -o ensures writes to correct dir)
 %.o: %.f %.h
 	$(FC) -c $(FFLAGS) $< -o $@
-
-	
 
 clean: 
 	rm -f $(OBJECTS) $(PROJECT) fort.13
