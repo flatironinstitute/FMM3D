@@ -10,6 +10,8 @@
       double precision t1,t2,omp_get_wtime
       data ima/(0.0d0,1.0d0)/
 
+      call prini(6,13)
+
 
       ns = 4001
       nt = 3998
@@ -68,10 +70,10 @@ c
 cc  test h_current, e_charge 
 cc   with fields
 c
-      write(*,*) 'interaction: h_current,e_charge'
-      write(*,*) 'output: fields'
-      write(*,*) 
-      write(*,*)
+      write(6,*) 'interaction: h_current,e_charge'
+      write(6,*) 'output: fields'
+      write(6,*) 
+      write(6,*)
 
       ifE = 1
       ifdivE = 0
@@ -80,6 +82,8 @@ c
       ife_current = 0
       ife_charge = 1
       ier = 0
+
+      eps = 0.5d-3
 
 
       call cpu_time(t1)
@@ -90,8 +94,9 @@ C$     t1 = omp_get_wtime()
       call cpu_time(t2)
 C$      t2 = omp_get_wtime() 
       
-      write(*,*) 'E='
-      write(*,'(6(2x,e11.5))') E(1:2,1:3,1:2)
+c      write(*,*) 'E='
+c      write(*,'(6(2x,e11.5))') E(1:2,1:3,1:2)
       
+      call prin2('E=*',E,12)
       return
       end
