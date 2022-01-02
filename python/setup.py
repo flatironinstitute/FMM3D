@@ -83,13 +83,13 @@ ext_st = Extension(
 setup(
     name=pkg_name,
     python_requires='>=3.0.0',
-    version="0.0.5",
+    version="1.0.0",
     author="Zydrunas Gimbutas, Leslie Greengard, Libin Lu, Jeremy Magland, Dhairya Malhotra, Michael O'Neil, Manas Rachh, and Vladimir Rokhlin",
     author_email="mrachh@flatironinstitute.org",
-    description="This pacakge contains basic routines for Laplace and Helmholtz fast multipole methods in three dimensions",
+    description="This pacakge contains basic routines for Laplace, Helmholtz, Stokes and Maxwell fast multipole methods in three dimensions",
     long_description=open('../README.md').read(),
     long_description_content_type='text/markdown',
-    url="",
+    url="https://github.com/flatironinstitute/FMM3D",
     packages=['fmm3dpy'],
     install_requires=[
         "numpy",
