@@ -119,6 +119,8 @@ c------------------------------------------------------------------
       double complex pot(nd,*),grad(nd,3,*),
      1     pottarg(nd,3,*),
      1     gradtarg(nd,3,*),hess(nd,6,*),hesstarg(nd,6,*)
+      
+      double precision timeinfo(6)
 
 c       Tree variables
       integer mhung,idivflag,ndiv,isep,nboxes,nbmax,nlevels
@@ -477,7 +479,8 @@ C$    time1=omp_get_wtime()
      $   nboxes,iper,boxsize,treecenters,isrcse,itargse,iexpcse,
      $   scales,itree(ipointer(1)),nterms,
      $   ifpgh,potsort,gradsort,hesssort,ifpghtarg,pottargsort,
-     $   gradtargsort,hesstargsort,ntj,texpssort,scjsort,ifnear,ier)
+     $   gradtargsort,hesstargsort,ntj,texpssort,scjsort,ifnear,
+     $   timeinfo,ier)
 
       if(ier.ne.0) return
 
@@ -531,7 +534,7 @@ c
      $     nboxes,iper,boxsize,centers,isrcse,itargse,iexpcse,
      $     rscales,laddr,nterms,ifpgh,pot,grad,hess,
      $     ifpghtarg,pottarg,gradtarg,hesstarg,
-     $     ntj,jsort,scjsort,ifnear,ier)
+     $     ntj,jsort,scjsort,ifnear,timeinfo,ier)
 
 
       implicit none
@@ -569,7 +572,7 @@ c
       double precision mptemp(lmptemp)
       double precision mptemp2(lmptemp)
        
-      double precision timeinfo(10)
+      double precision timeinfo(6)
       double precision centers(3,nboxes)
 c
 cc      tree variables
@@ -816,7 +819,7 @@ C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j,k,idim)
 C$OMP END PARALLEL DO
 
 c       
-      do i=1,10
+      do i=1,6
         timeinfo(i)=0
       enddo
         
@@ -2168,7 +2171,7 @@ C$OMP$PRIVATE(ibox,istarts,iends,npts0,i,jbox,jstart,jend,npts)
                 npts = jend-jstart+1
                 call h3ddirectdg(nd,zk,sourcesort(1,jstart),
      2             dipvecsort(1,1,jstart),npts,sourcesort(1,istarts),
-     2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)          
+     2             npts0,pot(1,istarts),grad(1,1,istarts),thresh)       
               enddo
             enddo
 C$OMP END PARALLEL DO     

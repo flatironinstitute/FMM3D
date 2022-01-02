@@ -113,6 +113,8 @@ c
        double precision pot(nd,*),grad(nd,3,*),hess(nd,6,*)
        double precision pottarg(nd,*),gradtarg(nd,3,*),hesstarg(nd,6,*)
 
+       double precision timeinfo(6)
+
 c
 cc       tree variables
 c
@@ -487,7 +489,7 @@ C$      time1=omp_get_wtime()
      $   scales,itree(ipointer(1)),nterms,
      $   ifpgh,potsort,gradsort,hesssort,
      $   ifpghtarg,pottargsort,gradtargsort,hesstargsort,ntj,
-     $   texpssort,scjsort,ifnear,ier)
+     $   texpssort,scjsort,ifnear,timeinfo,ier)
       if(ier.ne.0) return
 
       call cpu_time(time2)
@@ -542,7 +544,7 @@ c
      $     rscales,laddr,nterms,
      $     ifpgh,pot,grad,hess,
      $     ifpghtarg,pottarg,gradtarg,hesstarg,ntj,
-     $     tsort,scjsort,ifnear,ier)
+     $     tsort,scjsort,ifnear,timeinfo,ier)
       implicit none
 
       integer nd
@@ -578,7 +580,7 @@ c
 
       double precision thresh
        
-      double precision timeinfo(10)
+      double precision timeinfo(6)
       double precision centers(3,nboxes)
 
       integer isep,iper
@@ -920,7 +922,7 @@ C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j,k,idim)
 C$OMP END PARALLEL DO
 
 c       
-      do i=1,10
+      do i=1,6
         timeinfo(i)=0
       enddo
 
@@ -1166,7 +1168,7 @@ C$OMP END PARALLEL DO
       call cpu_time(time2)
 C$    time2=omp_get_wtime()
       if(ifprint.ge.1) print *,"mexp list4 time:",time2-time1
-      timeinfo(2)=time2-time1
+      timeinfo(3)=time2-time1
 c     end of count number of boxes are in list4
 c
 
@@ -1288,7 +1290,7 @@ C$OMP END PARALLEL DO
 
       call cpu_time(time2)
 C$    time2=omp_get_wtime()
-      timeinfo(2)=timeinfo(2)+time2-time1
+      timeinfo(2)=time2-time1
 
       if(ifprint.ge.1)
      $    call prinf('=== Step 3 (mp to loc+formta+mpeval) ===*',i,0)
@@ -1844,7 +1846,7 @@ C$OMP END PARALLEL DO
       deallocate(tmp,mptmp)
       call cpu_time(time2)
 C$        time2=omp_get_wtime()
-      timeinfo(3) = time2-time1
+      timeinfo(3) = timeinfo(3) + time2-time1
 
 
       if(ifprint.ge.1)

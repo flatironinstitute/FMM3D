@@ -104,14 +104,14 @@ HOBJS = $(HELM)/h3dcommon.o $(HELM)/h3dterms.o $(HELM)/h3dtrans.o \
 	$(HELM)/helmrouts3d.o $(HELM)/hfmm3d.o $(HELM)/hfmm3dwrap.o \
 	$(HELM)/hfmm3dwrap_legacy.o $(HELM)/hfmm3dwrap_vec.o $(HELM)/hpwrouts.o \
 	$(HELM)/hwts3e.o $(HELM)/hnumphys.o $(HELM)/hnumfour.o $(HELM)/projections.o \
-	$(HELM)/hfmm3d_mps.o $(HELM)/hfmm3d_memest.o
+	$(HELM)/hfmm3d_mps.o $(HELM)/hfmm3d_memest.o $(HELM)/hfmm3d_ndiv.o
 
 # Laplace objects
 LAP = src/Laplace
 LOBJS = $(LAP)/lwtsexp_sep1.o $(LAP)/l3dterms.o $(LAP)/l3dtrans.o \
 	$(LAP)/laprouts3d.o $(LAP)/lfmm3d.o $(LAP)/lfmm3dwrap.o \
 	$(LAP)/lfmm3dwrap_legacy.o $(LAP)/lfmm3dwrap_vec.o $(LAP)/lwtsexp_sep2.o \
-	$(LAP)/lpwrouts.o
+	$(LAP)/lpwrouts.o $(LAP)/lfmm3d_ndiv.o
 
 # Stokes objects
 STOK = src/Stokes

@@ -1,5 +1,5 @@
 % ---------------------------------------------------------------------
-@function [U] = hfmm3d(eps,zk,srcinfo,pg,targ,pgt)
+@function [U,varargout] = hfmm3d(eps,zk,srcinfo,pg,varargin)
 %
 %
 %  This subroutine computes the N-body Helmholtz
@@ -35,17 +35,26 @@
 %     *  srcinfo.dipoles: complex(nd,3,n) 
 %           dipole orientation vectors, $v_{j}$ (optional
 %           default - term corresponding to dipoles dropped) 
-%  
 %  -  pg: integer
 %        | source eval flag
 %        | potential at sources evaluated if pg = 1
 %        | potential and gradient at sources evaluated if pg=2
+%        
+%  Optional args
 %  -  targ: double(3,nt)
-%        target locations, $t_{i}$ (optional)
+%        target locations, $t_{i}$ 
 %  -  pgt: integer
-%        | target eval flag (optional)
+%        | target eval flag 
 %        | potential at targets evaluated if pgt = 1
-%        | potential and gradient at targets evaluated if pgt=2  
+%        | potential and gradient at targets evaluated if pgt=2 
+%  -  opts: options structure, values in brackets indicate default
+%           values wherever applicable
+%        opts.ndiv: set number of points for subdivision criterion
+%        opts.idivflag: set subdivision criterion (0)
+%           opts.idivflag = 0, subdivide on sources only
+%           opts.idivflag = 1, subdivide on targets only
+%           opts.idivflag = 2, subdivide on sources and targets
+%        opts.ifnear: include near (list 1) interactions (true)
 %  
 %  Returns:
 %  
@@ -53,6 +62,33 @@
 %  -  U.grad: gradient at source locations, if requested, $\nabla u(x_{j})$
 %  -  U.pottarg: potential at target locations, if requested, $u(t_{i})$
 %  -  U.gradtarg: gradient at target locations, if requested, $\nabla u(t_{i})$
+%
+%  - ier: error code for fmm run
+%  - timeinfo: time taken in each step of the fmm
+%       timeinfo(1): form multipole step
+%       timeinfo(2): multipole->multipole translation step
+%       timeinfo(3): multipole to local translation, form local + multipole eval step
+%       timeinfo(4): local->local translation step
+%       timeinfo(5): local eval step
+%       timeinfo(6): direct evaluation step
+%
+%
+%  Examples:
+%  U = hfmm3d(eps,zk,srcinfo,pg)
+%     Call the FMM for sources only with default arguments
+%  U = hfmm3d(eps,zk,srcinfo,pg,targ,pgt)
+%     Call the FMM for sources + targets with default arguments
+%  U = hfmm3d(eps,zk,srcinfo,pg,opts)
+%     Call the FMM for sources only with user specified arguments
+%  U = hfmm3d(eps,zk,srcinfo,pg,targ,pgt)
+%     Call the FMM for sources + targets with user specified arguments 
+%  [U,ier] = hfmm3d(eps,zk,srcinfo,pg)
+%     Call the FMM for sources only with default arguments and returns
+%     the error code for the FMM as well
+%  [U,ier,timeinfo] = hfmm3d(eps,zk,srcinfo,pg)
+%     Call the FMM for sources only with default arguments, returns
+%     the error code for the FMM as well and the time split
+%      
  
 
 
@@ -66,29 +102,44 @@
     nd = srcinfo.nd;
   end
 
-  pot = complex(zeros(nd,1)); 
-  grad = complex(zeros(nd*3,1));
+  pot = complex(zeros(nd,ns)); 
+  grad = complex(zeros(nd*3,ns));
+  hess = complex(zeros(nd*6,ns));
   
-
-  if(pg>=1), pot = complex(zeros(nd,ns)); end;
-  if(pg == 2), grad = complex(zeros(nd*3,ns)); end;
-
-  pottarg = complex(zeros(nd,1));
-  gradtarg = complex(zeros(nd*3,1));
+  if( nargin < 4)
+    disp('Not enough input arguments, exiting\n');
+    return;
+  end
   if( nargin == 4 )
     nt = 0;
-    iftarg = 0;
     pgt = 0;
     targ = zeros(3,1);
-  else
+    opts = [];
+  elseif (nargin == 5)
+    nt = 0;
+    pgt = 0;
+    targ = zeros(3,1);
+    opts = varargin{1};
+  elseif (nargin == 6)
+    targ = varargin{1};
+    pgt = varargin{2};
     [m,nt] = size(targ);
-    iftarg = 1;
     assert(m==3,'First dimension of targets must be 3');
-    if(pgt >=1), pottarg = complex(zeros(nd,nt)); end;
-    if(pgt == 2), gradtarg = complex(zeros(nd*3,nt)); end;
+    opts = [];
+  elseif (nargin == 7)
+    targ = varargin{1};
+    pgt = varargin{2};
+    [m,nt] = size(targ);
+    assert(m==3,'First dimension of targets must be 3');
+    opts = varargin{3};
   end
+  ntuse = max(nt,1);
+  pottarg = complex(zeros(nd,ntuse));
+  gradtarg = complex(zeros(nd*3,ntuse));
+  hesstarg = complex(zeros(nd*6,ntuse));
 
-  if(pg ==0 && pgt ==0), disp('Nothing to compute, set eigher pg or pgt to 1 or 2'); return; end;
+
+  if((pg ==0 && pgt ==0) || (ns == 0)), disp('Nothing to compute, set eigher pg or pgt to 1 or 2'); return; end;
 
   if(isfield(srcinfo,'charges'))
     ifcharge = 1;
@@ -97,7 +148,7 @@
     if(nd>1), [a,b] = size(charges); assert(a==nd && b==ns,'Charges must be of shape [nd,ns] where nd is the number of densities, and ns is the number of sources'); end;
   else
     ifcharge = 0;
-    charges = complex(zeros(nd,1));
+    charges = complex(zeros(nd,ns));
   end
 
   if(isfield(srcinfo,'dipoles'))
@@ -108,98 +159,45 @@
     dipoles = reshape(dipoles,[3*nd,ns]);
   else
     ifdipole = 0;
-    dipoles = complex(zeros(nd*3,1));
+    dipoles = complex(zeros(nd*3,ns));
   end
 
   nd3 = 3*nd;
+  nd6 = 6*nd;
   ier = 0;
 
+  ndiv = 400;
+  idivflag = 0;
+  # FORTRAN hndiv(double[1] eps,int[1] ns,int[1] nt,int[1] ifcharge,int[1] ifdipole,int[1] pg, int[1] pgt, inout int[1] ndiv, inout int[1] idivflag); 
+  if(isfield(opts,'ndiv'))
+    ndiv = opts.ndiv;
+  end
 
-  if(iftarg == 0 || (pgt ~=1 && pgt ~=2)) 
-    if(pg == 1)
-      if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN hfmm3d_s_c_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, inout dcomplex[nd,ns] pot, inout int[1] ier); 
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN hfmm3d_s_d_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, inout int[1] ier); 
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN hfmm3d_s_cd_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, inout int[1] ier); 
-      end
-      U.pot = pot;
-    end
-    if(pg == 2)
-      if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN hfmm3d_s_c_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad, inout int[1] ier); 
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN hfmm3d_s_d_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad, inout int[1] ier); 
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN hfmm3d_s_cd_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, inout dcomplex [nd3,ns] grad, inout int[1] ier); 
-      end
-      U.pot = pot;
-      U.grad = squeeze(reshape(grad,[nd,3,ns]));
-    end
+  if(isfield(opts,'idivflag'))
+    idivflag = opts.idivflag;
   end
-  if(iftarg == 1 && pg ~=1 && pg ~=2) 
-    if(pgt == 1)
-      if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN hfmm3d_t_c_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout int[1] ier); 
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN hfmm3d_t_d_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout int[1] ier); 
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN hfmm3d_t_cd_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout int[1] ier); 
-      end
-      U.pottarg = pottarg;
-    end
-    if(pgt == 2)
-      if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN hfmm3d_t_c_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex[nd3,nt] gradtarg, inout int[1] ier); 
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN hfmm3d_t_d_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex[nd3,nt] gradtarg, inout int[1] ier); 
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN hfmm3d_t_cd_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex [nd3,nt] gradtarg, inout int[1] ier); 
-      end
-      U.pottarg = pottarg;
-      U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
-    end
+
+  ifnear = 1;
+  if(isfield(opts,'ifnear'))
+    ifnear = opts.ifnear;
   end
-  if(iftarg == 1 && (pg ==1 || pg ==2))
-    assert(pg==pgt,'pg must be pgt');
-    if(pgt == 1)
-      if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN hfmm3d_st_c_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, inout dcomplex[nd,ns] pot, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout int[1] ier); 
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN hfmm3d_st_d_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout int[1] ier); 
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN hfmm3d_st_cd_p_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout int[1] ier); 
-      end
-      U.pot = pot;
-      U.pottarg = pottarg;
-    end
-    if(pgt == 2)
-      if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN hfmm3d_st_c_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd,ns] charges, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex[nd3,nt] gradtarg, inout int[1] ier); 
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN hfmm3d_st_d_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources,dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex[nd3,nt] gradtarg, inout int[1] ier); 
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN hfmm3d_st_cd_g_vec(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, dcomplex[nd,ns] charges, dcomplex[nd3,ns] dipoles, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout dcomplex[nd,nt] pottarg, inout dcomplex [nd3,nt] gradtarg, inout int[1] ier); 
-      end
-      U.pot = pot;
-      U.grad = squeeze(reshape(grad,[nd,3,ns]));
-      U.pottarg = pottarg;
-      U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
-    end
-  end
+  iper = 1;
+  timeinfo = zeros(6,1);
+  # FORTRAN hfmm3d_ndiv(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3,ns] sources, int[1] ifcharge, dcomplex[nd,ns] charges, int[1] ifdipole, dcomplex[nd3,ns] dipoles, int[1] iper, int[1] pg, inout dcomplex[nd,ns] pot, inout dcomplex[nd3,ns] grad, inout dcomplex[nd6,ns] hess, int[1] nt, double[3,ntuse] targ, int[1] pgt, inout dcomplex[nd,ntuse] pottarg, inout dcomplex [nd3,ntuse] gradtarg, inout dcomplex[nd6,ntuse] hesstarg, int[1] ndiv, int[1] idivflag, int[1] ifnear, inout double[6] timeinfo, inout int[1] ier); 
+
+  U.pot = [];
+  U.grad = [];
+  U.hess = [];
+  U.pottarg = [];
+  U.gradtarg = [];
+  U.hesstarg = [];
+  if(pg >= 1), U.pot = squeeze(reshape(pot,[nd,ns])); end;
+  if(pg >= 2), U.grad = squeeze(reshape(grad,[nd,3,ns])); end;
+  if(pgt >= 1), U.pottarg = squeeze(reshape(pottarg,[nd,nt])); end;
+  if(pgt >= 2), U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt])); end;
+
+  varargout{1} = ier;
+  varargout{2} = timeinfo;
 end
 
 % ---------------------------------------------------------------------
@@ -326,7 +324,7 @@ end
 end
 
 % ---------------------------------------------------------------------
-@function [U] = lfmm3d(eps,srcinfo,pg,targ,pgt)
+@function [U,varargout] = lfmm3d(eps,srcinfo,pg,varargin)
 %
 %
 %  This subroutine computes the N-body Laplace
@@ -366,13 +364,22 @@ end
 %        | potential at sources evaluated if pg = 1
 %        | potential and gradient at sources evaluated if pg=2
 %        | potential, gradient and hessian at sources evaluated if pg=3
+%        
+%  Optional args
 %  -  targ: double(3,nt)
-%        target locations, $t_{i}$ (optional)
+%        target locations, $t_{i}$ 
 %  -  pgt: integer
-%        | target eval flag (optional)
+%        | target eval flag 
 %        | potential at targets evaluated if pgt = 1
 %        | potential and gradient at targets evaluated if pgt=2 
-%        | potential, gradient and hessian at targets evaluated if pgt=3
+%  -  opts: options structure, values in brackets indicate default
+%           values wherever applicable
+%        opts.ndiv: set number of points for subdivision criterion
+%        opts.idivflag: set subdivision criterion (0)
+%           opts.idivflag = 0, subdivide on sources only
+%           opts.idivflag = 1, subdivide on targets only
+%           opts.idivflag = 2, subdivide on sources and targets
+%        opts.ifnear: include near (list 1) interactions (true)
 %  
 %  Returns:
 %  
@@ -382,6 +389,35 @@ end
 %  -  U.pottarg: potential at target locations, if requested, $u(t_{i})$
 %  -  U.gradtarg: gradient at target locations, if requested, $\nabla u(t_{i})$
 %  -  U.hesstarg: hessian at target locations, if requested, $\nabla^2 u(t_{i})$
+%
+%  - ier: error code for fmm run
+%  - timeinfo: time taken in each step of the fmm
+%       timeinfo(1): form multipole step
+%       timeinfo(2): multipole->multipole translation step
+%       timeinfo(3): multipole to local translation, form local + multipole eval step
+%       timeinfo(4): local->local translation step
+%       timeinfo(5): local eval step
+%       timeinfo(6): direct evaluation step
+%
+%
+%  Examples:
+%  U = lfmm3d(eps,srcinfo,pg)
+%     Call the FMM for sources only with default arguments
+%  U = lfmm3d(eps,srcinfo,pg,targ,pgt)
+%     Call the FMM for sources + targets with default arguments
+%  U = lfmm3d(eps,srcinfo,pg,opts)
+%     Call the FMM for sources only with user specified arguments
+%  U = lfmm3d(eps,srcinfo,pg,targ,pgt)
+%     Call the FMM for sources + targets with user specified arguments 
+%  [U,ier] = lfmm3d(eps,srcinfo,pg)
+%     Call the FMM for sources only with default arguments and returns
+%     the error code for the FMM as well
+%  [U,ier,timeinfo] = lfmm3d(eps,srcinfo,pg)
+%     Call the FMM for sources only with default arguments, returns
+%     the error code for the FMM as well and the time split
+%      
+
+
 
   sources = srcinfo.sources;
   [m,ns] = size(sources);
@@ -393,33 +429,44 @@ end
     nd = srcinfo.nd;
   end
 
-  pot = zeros(nd,1); 
-  grad = zeros(nd*3,1);
-  hess = zeros(nd*6,1);
+  pot = zeros(nd,ns); 
+  grad = zeros(nd*3,ns);
+  hess = zeros(nd*6,ns);
   
-
-  if(pg>=1), pot = zeros(nd,ns); end;
-  if(pg >= 2), grad = zeros(nd*3,ns); end;
-  if(pg >= 3), hess = zeros(nd*6,ns); end;
-
-  pottarg = zeros(nd,1);
-  gradtarg = zeros(nd*3,1);
-  hesstarg = zeros(nd*6,1);
+  if( nargin < 3)
+    disp('Not enough input arguments, exiting\n');
+    return;
+  end
   if( nargin == 3 )
     nt = 0;
-    iftarg = 0;
     pgt = 0;
     targ = zeros(3,1);
-  else
+    opts = [];
+  elseif (nargin == 4)
+    nt = 0;
+    pgt = 0;
+    targ = zeros(3,1);
+    opts = varargin{1};
+  elseif (nargin == 5)
+    targ = varargin{1};
+    pgt = varargin{2};
     [m,nt] = size(targ);
-    iftarg = 1;
     assert(m==3,'First dimension of targets must be 3');
-    if(pgt >=1), pottarg = zeros(nd,nt); end;
-    if(pgt >= 2), gradtarg = zeros(nd*3,nt); end;
-    if(pgt >= 3), hesstarg = zeros(nd*6,nt); end;
+    opts = [];
+  elseif (nargin == 6)
+    targ = varargin{1};
+    pgt = varargin{2};
+    [m,nt] = size(targ);
+    assert(m==3,'First dimension of targets must be 3');
+    opts = varargin{3};
   end
+  ntuse = max(nt,1);
+  pottarg = zeros(nd,ntuse);
+  gradtarg = zeros(nd*3,ntuse);
+  hesstarg = zeros(nd*6,ntuse);
 
-  if(pg ==0 && pgt ==0), disp('Nothing to compute, set eigher pg or pgt to 1 or 2'); return; end;
+
+  if((pg ==0 && pgt ==0) || (ns == 0)), disp('Nothing to compute, set eigher pg or pgt to 1 or 2'); return; end;
 
   if(isfield(srcinfo,'charges'))
     ifcharge = 1;
@@ -428,7 +475,7 @@ end
     if(nd>1), [a,b] = size(charges); assert(a==nd && b==ns,'Charges must be of shape [nd,ns] where nd is the number of densities, and ns is the number of sources'); end;
   else
     ifcharge = 0;
-    charges = zeros(nd,1);
+    charges = zeros(nd,ns);
   end
 
   if(isfield(srcinfo,'dipoles'))
@@ -439,144 +486,47 @@ end
     dipoles = reshape(dipoles,[3*nd,ns]);
   else
     ifdipole = 0;
-    dipoles = zeros(nd*3,1);
+    dipoles = zeros(nd*3,ns);
   end
 
   nd3 = 3*nd;
   nd6 = 6*nd;
   ier = 0;
 
+  ndiv = 400;
+  idivflag = 0;
+  # FORTRAN lndiv(double[1] eps,int[1] ns,int[1] nt,int[1] ifcharge,int[1] ifdipole,int[1] pg, int[1] pgt, inout int[1] ndiv, inout int[1] idivflag); 
+  if(isfield(opts,'ndiv'))
+    ndiv = opts.ndiv;
+  end
 
-  if(iftarg == 0 || (pgt ~=1 && pgt ~=2)) 
-    if(pg == 1)
-      if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN lfmm3d_s_c_p_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot, inout int[1] ier); 
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN lfmm3d_s_d_p_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot, inout int[1] ier); 
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN lfmm3d_s_cd_p_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot, inout int[1] ier); 
-      end
-      U.pot = pot;
-    end
-    if(pg == 2)
-      if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN lfmm3d_s_c_g_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot, inout double[nd3,ns] grad, inout int[1] ier); 
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN lfmm3d_s_d_g_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double[nd3,ns] grad, inout int[1] ier); 
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN lfmm3d_s_cd_g_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double [nd3,ns] grad, inout int[1] ier); 
-      end
-      U.pot = pot;
-      U.grad = squeeze(reshape(grad,[nd,3,ns]));
-    end
-    if(pg == 3)
-      if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN lfmm3d_s_c_h_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot, inout double[nd3,ns] grad, inout double[nd6,ns] hess, inout int[1] ier); 
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN lfmm3d_s_d_h_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double[nd3,ns] grad, inout double[nd6,ns] hess, inout int[1] ier); 
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN lfmm3d_s_cd_h_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double [nd3,ns] grad, inout double[nd6,ns] hess, inout int[1] ier); 
-      end
-      U.pot = pot;
-      U.grad = squeeze(reshape(grad,[nd,3,ns]));
-      U.hess = squeeze(reshape(hess,[nd,6,ns]));
-    end
+  if(isfield(opts,'idivflag'))
+    idivflag = opts.idivflag;
   end
-  if(iftarg == 1 && pg ~=1 && pg ~=2) 
-    if(pgt == 1)
-      if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN lfmm3d_t_c_p_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout int[1] ier); 
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN lfmm3d_t_d_p_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout int[1] ier); 
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN lfmm3d_t_cd_p_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout int[1] ier); 
-      end
-      U.pottarg = pottarg;
-    end
-    if(pgt == 2)
-      if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN lfmm3d_t_c_g_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg, inout int[1] ier); 
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN lfmm3d_t_d_g_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg, inout int[1] ier); 
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN lfmm3d_t_cd_g_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double [nd3,nt] gradtarg, inout int[1] ier); 
-      end
-      U.pottarg = pottarg;
-      U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
-    end
-    if(pgt == 3)
-      if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN lfmm3d_t_c_h_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg, inout double[nd6,nt] hesstarg, inout int[1] ier); 
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN lfmm3d_t_d_h_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg, inout double[nd6,nt] hesstarg, inout int[1] ier); 
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN lfmm3d_t_cd_h_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double [nd3,nt] gradtarg, inout double[nd6,nt] hesstarg, inout int[1] ier); 
-      end
-      U.pottarg = pottarg;
-      U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
-      U.hesstarg = squeeze(reshape(hesstarg,[nd,6,nt]));
-    end
+
+  ifnear = 1;
+  if(isfield(opts,'ifnear'))
+    ifnear = opts.ifnear;
   end
-  if(iftarg == 1 && (pg ==1 || pg ==2))
-    assert(pg==pgt,'pg must be pgt');
-    if(pgt == 1)
-      if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN lfmm3d_st_c_p_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout int[1] ier); 
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN lfmm3d_st_d_p_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout int[1] ier); 
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN lfmm3d_st_cd_p_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout int[1] ier); 
-      end
-      U.pot = pot;
-      U.pottarg = pottarg;
-    end
-    if(pgt == 2)
-      if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN lfmm3d_st_c_g_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot, inout double[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg, inout int[1] ier); 
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN lfmm3d_st_d_g_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg, inout int[1] ier); 
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN lfmm3d_st_cd_g_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double[nd3,ns] grad, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double [nd3,nt] gradtarg, inout int[1] ier); 
-      end
-      U.pot = pot;
-      U.grad = squeeze(reshape(grad,[nd,3,ns]));
-      U.pottarg = pottarg;
-      U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
-    end
-    if(pgt == 3)
-      if(ifcharge==1 && ifdipole == 0)
-        # FORTRAN lfmm3d_st_c_h_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd,ns] charges, inout double[nd,ns] pot, inout double[nd3,ns] grad, inout double[nd6,ns] hess, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg, inout double[nd6,nt] hesstarg, inout int[1] ier); 
-      end
-      if(ifcharge==0 && ifdipole == 1)
-        # FORTRAN lfmm3d_st_d_h_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources,double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double[nd3,ns] grad, inout double[nd6,ns] hess, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double[nd3,nt] gradtarg, inout double[nd6,nt] hesstarg, inout int[1] ier); 
-      end
-      if(ifcharge==1 && ifdipole == 1)
-        # FORTRAN lfmm3d_st_cd_h_vec(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, double[nd,ns] charges, double[nd3,ns] dipoles, inout double[nd,ns] pot, inout double[nd3,ns] grad, inout double[nd6,ns] hess, int[1] nt, double[3,nt] targ, inout double[nd,nt] pottarg, inout double [nd3,nt] gradtarg, inout double[nd6,nt] hesstarg, inout int[1] ier); 
-      end
-      U.pot = pot;
-      U.grad = squeeze(reshape(grad,[nd,3,ns]));
-      U.hess = squeeze(reshape(hess,[nd,6,ns]));
-      U.pottarg = pottarg;
-      U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt]));
-      U.hesstarg = squeeze(reshape(hesstarg,[nd,6,nt]));
-    end
-  end
+  iper = 1;
+  timeinfo = zeros(6,1);
+  # FORTRAN lfmm3d_ndiv(int[1] nd, double[1] eps, int[1] ns, double[3,ns] sources, int[1] ifcharge, double[nd,ns] charges, int[1] ifdipole, double[nd3,ns] dipoles, int[1] iper, int[1] pg, inout double[nd,ns] pot, inout double[nd3,ns] grad, inout double[nd6,ns] hess, int[1] nt, double[3,ntuse] targ, int[1] pgt, inout double[nd,ntuse] pottarg, inout double [nd3,ntuse] gradtarg, inout double[nd6,ntuse] hesstarg, int[1] ndiv, int[1] idivflag, int[1] ifnear, inout double[6] timeinfo, inout int[1] ier); 
+
+  U.pot = [];
+  U.grad = [];
+  U.hess = [];
+  U.pottarg = [];
+  U.gradtarg = [];
+  U.hesstarg = [];
+  if(pg >= 1), U.pot = squeeze(reshape(pot,[nd,ns])); end;
+  if(pg >= 2), U.grad = squeeze(reshape(grad,[nd,3,ns])); end;
+  if(pg >= 3), U.hess = squeeze(reshape(hess,[nd,6,ns])); end;
+  if(pgt >= 1), U.pottarg = squeeze(reshape(pottarg,[nd,nt])); end;
+  if(pgt >= 2), U.gradtarg = squeeze(reshape(gradtarg,[nd,3,nt])); end;
+  if(pgt >= 3), U.hesstarg = squeeze(reshape(hesstarg,[nd,6,nt])); end;
+
+  varargout{1} = ier;
+  varargout{2} = timeinfo;
 end
 
 % ---------------------------------------------------------------------
