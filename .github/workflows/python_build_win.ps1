@@ -3,7 +3,7 @@ Set-Variable -Name PYTHON -Value (Get-Command python).definition
 Set-Variable -Name MSYSTEM -Value MINGW64
 
 # setup setup.cfg
-New-Item -Path .\python -Name "setup.cfg" -ItemType "file" -Value "[build]`r`ncompiler=mingw32`r`n[build_ext]`r`ncompiler=mingw32"
+New-Item -Force -Path .\python -Name "setup.cfg" -ItemType "file" -Value "[build]`r`ncompiler=mingw32`r`n[build_ext]`r`ncompiler=mingw32"
 
 # Setup the make.inc file
 Copy-Item -Path make.inc.windows.mingw -Destination make.inc
