@@ -1,4 +1,5 @@
-Flatiron Institute Fast Multipole Libraries 
+# Flatiron Institute Fast Multipole Libraries
+[![Actions status](https://github.com/flatironinstitute/FMM3D/workflows/Python%20Build/badge.svg)](https://github.com/flatironinstitute/FMM3D/actions)
 
 This codebase is a set of libraries to compute N-body interactions
 governed by the Laplace and Helmholtz equations, to a specified
