@@ -383,7 +383,7 @@ c       fldtarg: complex *16 (3,ntarg): field (-gradient) at target locations
 c
       integer(8) nsource,ifcharge,ifdipole,ifpot,iffld,ntarg
       integer(8) ifpottarg,iffldtarg
-      integer(8) nt,ns
+      integer(8) nt,ns,ione
       double precision source(3,*), targ(3,*)
       double complex charge(*),dipstr(*)
       double precision, allocatable :: charge_in(:,:)
@@ -411,6 +411,7 @@ c
       nt = ntarg
       ns = nsource
 
+      ione = 1
       ifpgh = 0
       ifpghtarg = 0
 
@@ -558,7 +559,7 @@ c
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,ns
             call l3ddirectcp(nd,source,charge_in,ns,
-     1            source(1,i),1,pottmp(1,i),thresh)
+     1            source(1,i),ione,pottmp(1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
         endif
@@ -567,7 +568,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,ns
             call l3ddirectcg(nd,source,charge_in,ns,
-     1            source(1,i),1,pottmp(1,i),gradtmp(1,1,i),thresh)
+     1            source(1,i),ione,pottmp(1,i),gradtmp(1,1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
         endif
@@ -577,7 +578,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,nt
             call l3ddirectcp(nd,source,charge_in,ns,
-     1            targ(1,i),1,pottargtmp(1,i),thresh)
+     1            targ(1,i),ione,pottargtmp(1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
         endif
@@ -586,7 +587,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,nt
             call l3ddirectcg(nd,source,charge_in,ns,
-     1            targ(1,i),1,pottargtmp(1,i),
+     1            targ(1,i),ione,pottargtmp(1,i),
      2            gradtargtmp(1,1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
@@ -599,7 +600,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,ns
             call l3ddirectdp(nd,source,dipvec_in,ns,
-     1            source(1,i),1,pottmp(1,i),thresh)
+     1            source(1,i),ione,pottmp(1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
         endif
@@ -608,7 +609,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,ns
             call l3ddirectdg(nd,source,dipvec_in,ns,
-     1            source(1,i),1,pottmp(1,i),gradtmp(1,1,i),thresh)
+     1            source(1,i),ione,pottmp(1,i),gradtmp(1,1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
         endif
@@ -618,7 +619,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,nt
             call l3ddirectdp(nd,source,dipvec_in,ns,
-     1            targ(1,i),1,pottargtmp(1,i),thresh)
+     1            targ(1,i),ione,pottargtmp(1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
         endif
@@ -627,7 +628,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,nt
             call l3ddirectdg(nd,source,dipvec_in,ns,
-     1            targ(1,i),1,pottargtmp(1,i),
+     1            targ(1,i),ione,pottargtmp(1,i),
      2            gradtargtmp(1,1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
@@ -641,7 +642,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,ns
             call l3ddirectcdp(nd,source,charge_in,dipvec_in,ns,
-     1            source(1,i),1,pottmp(1,i),thresh)
+     1            source(1,i),ione,pottmp(1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
         endif
@@ -650,7 +651,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,ns
             call l3ddirectcdg(nd,source,charge_in,dipvec_in,ns,
-     1            source(1,i),1,pottmp(1,i),gradtmp(1,1,i),thresh)
+     1            source(1,i),ione,pottmp(1,i),gradtmp(1,1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
         endif
@@ -670,7 +671,7 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
           do i=1,nt
             call l3ddirectcdg(nd,source,charge_in,dipvec_in,ns,
-     1            targ(1,i),1,pottargtmp(1,i),
+     1            targ(1,i),ione,pottargtmp(1,i),
      2            gradtargtmp(1,1,i),thresh)
           enddo
 C$OMP END PARALLEL DO
