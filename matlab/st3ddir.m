@@ -119,11 +119,11 @@ function [U] = st3ddir(srcinfo,targ,ifppregtarg)
   ier = 0;
 
   if(ifstoklet == 1 && ifstrslet == 0)
-    mex_id_ = 'st3ddirectstokg(i int[x], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], io double[xx], i double[x])';
+    mex_id_ = 'st3ddirectstokg(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])';
 [pottarg, pretarg, gradtarg] = fmm3d(mex_id_, nd, sources, stoklet, ns, targ, nt, pottarg, pretarg, gradtarg, thresh, 1, 3, ns, nd3, ns_stok, 1, 3, nt, 1, nd3, nt, nd, nt, nd9, nt, 1);
   else
     istress = 1;
-    mex_id_ = 'st3ddirectstokstrsg(i int[x], i double[xx], i double[xx], i int[x], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], io double[xx], i double[x])';
+    mex_id_ = 'st3ddirectstokstrsg(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])';
 [pottarg, pretarg, gradtarg] = fmm3d(mex_id_, nd, sources, stoklet, istress, strslet, strsvec, ns, targ, nt, pottarg, pretarg, gradtarg, thresh, 1, 3, ns, nd3, ns_stok, 1, nd3, ns_strs, nd3, ns_strs, 1, 3, nt, 1, nd3, nt, nd, nt, nd9, nt, 1);
   end
 

@@ -118,10 +118,10 @@ if( iffldtarg == 1 ), fldtarg=complex(zeros(3,ntarg)); end;
 ier=0;
 
 if( ntarg == 0 ) 
-mex_id_ = 'hfmm3dpartself(io int[x], i int[x], i dcomplex[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[])';
+mex_id_ = 'hfmm3dpartself(io int64_t[x], i int64_t[x], i dcomplex[x], i int64_t[x], i double[xx], i int64_t[x], i dcomplex[], i int64_t[x], i dcomplex[], i double[xx], i int64_t[x], io dcomplex[], i int64_t[x], io dcomplex[])';
 [ier, pot, fld] = fmm3d_legacy(mex_id_, ier, iprec, zk, nsource, source, ifcharge, charge, ifdipole, dipstr, dipvec, ifpot, pot, iffld, fld, 1, 1, 1, 1, 3, nsource, 1, 1, 3, nsource, 1, 1);
 else
-mex_id_ = 'hfmm3dparttarg(io int[x], i int[x], i dcomplex[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])';
+mex_id_ = 'hfmm3dparttarg(io int64_t[x], i int64_t[x], i dcomplex[x], i int64_t[x], i double[xx], i int64_t[x], i dcomplex[], i int64_t[x], i dcomplex[], i double[xx], i int64_t[x], io dcomplex[], i int64_t[x], io dcomplex[], i int64_t[x], i double[], i int64_t[x], io dcomplex[], i int64_t[x], io dcomplex[])';
 [ier, pot, fld, pottarg, fldtarg] = fmm3d_legacy(mex_id_, ier, iprec, zk, nsource, source, ifcharge, charge, ifdipole, dipstr, dipvec, ifpot, pot, iffld, fld, ntarg, targ, ifpottarg, pottarg, iffldtarg, fldtarg, 1, 1, 1, 1, 3, nsource, 1, 1, 3, nsource, 1, 1, 1, 1, 1);
 end
 

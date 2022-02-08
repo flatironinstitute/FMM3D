@@ -5,7 +5,7 @@ c**********************************************************************
       subroutine jfuns3d(ier,nterms,z,scale,fjs,ifder,fjder,
      1	      lwfjs,iscale,ntop)
       implicit none
-      integer ier,nterms,ifder,lwfjs,ntop,i,ncntr
+      integer(8) ier,nterms,ifder,lwfjs,ntop,i,ncntr
       real *8 scale,d0,d1,dc1,dc2,dcoef,dd,done,tiny,zero
       real *8 scalinv,sctot,upbound,upbound2,upbound2inv
 c**********************************************************************
@@ -33,31 +33,31 @@ c             at the relevant level.
 c
 c INPUT:
 c
-c    nterms (integer): order of expansion of output array fjs 
+c    nterms (integer(8)): order of expansion of output array fjs 
 c    z     (complex *16): argument of the spherical Bessel functions
 c    scale    (real *8) : scaling factor (discussed above)
-c    ifder  (integer): flag indicating whether to calculate "fjder"
+c    ifder  (integer(8)): flag indicating whether to calculate "fjder"
 c		          0	NO
 c		          1	YES
-c    lwfjs  (integer): upper limit of input arrays 
+c    lwfjs  (integer(8)): upper limit of input arrays 
 c                         fjs(0:lwfjs) and iscale(0:lwfjs)
-c    iscale (integer): integer workspace used to keep track of 
+c    iscale (integer(8)): integer(8) workspace used to keep track of 
 c                         internal scaling
 c
 c OUTPUT:
 c
-c    ier    (integer): error return code 
+c    ier    (integer(8)): error return code 
 c                         ier=0 normal return;
 c                         ier=8 insufficient array dimension lwfjs
 c    fjs   (complex *16): array of scaled Bessel functions.
 c    fjder (complex *16): array of derivs of scaled Bessel functions.
-c    ntop  (integer) : highest index in arrays fjs that is nonzero
+c    ntop  (integer(8)) : highest index in arrays fjs that is nonzero
 c
 c       NOTE, that fjs and fjder arrays must be at least (nterms+2)
 c       complex *16 elements long.
 c
 c
-      integer iscale(0:lwfjs)
+      integer(8) iscale(0:lwfjs)
       complex *16 wavek,fjs(0:lwfjs),fjder(0:*)
       complex *16 z,zinv,com,fj0,fj1,zscale,ztmp
 c

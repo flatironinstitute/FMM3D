@@ -5,10 +5,10 @@
 #include <sctl.hpp>
 
 
-template <class Real> void h3ddirectcp_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
-  static constexpr int32_t COORD_DIM = 3;
-  static constexpr int32_t KDIM0 = 2;
-  static constexpr int32_t KDIM1 = 2;
+template <class Real> void h3ddirectcp_cpp(const int64_t* nd, const Real* zk, const Real* sources, const Real* charge, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, const Real* thresh) {
+  static constexpr sctl::Integer COORD_DIM = 3;
+  static constexpr sctl::Integer KDIM0 = 2;
+  static constexpr sctl::Integer KDIM1 = 2;
   long Ntrg = nt[0];
   long Nsrc = ns[0];
   long nd_ = nd[0];
@@ -41,7 +41,7 @@ template <class Real> void h3ddirectcp_cpp(const int32_t* nd, const Real* zk, co
 
 
 // charge, potential 
-template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcp_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcp_vec_cpp(const int64_t* nd, const Real* zk, const Real* sources, const Real* charge, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
   static constexpr sctl::Integer KDIM1 = 2;
@@ -156,7 +156,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcp_vec_cpp(const 
 
 
 // charge, potential and gradient
-template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcg_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcg_vec_cpp(const int64_t* nd, const Real* zk, const Real* sources, const Real* charge, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, Real* grad, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
   static constexpr sctl::Integer KDIM1 = 2;
@@ -304,7 +304,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcg_vec_cpp(const 
 
 
 // charge, potential, gradient and hessian
-template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectch_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectch_vec_cpp(const int64_t* nd, const Real* zk, const Real* sources, const Real* charge, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
   static constexpr sctl::Integer KDIM1 = 2;
@@ -498,7 +498,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectch_vec_cpp(const 
 
 
 // dipole, potential 
-template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdp_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdp_vec_cpp(const int64_t* nd, const Real* zk, const Real* sources, const Real* dipvec, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
   static constexpr sctl::Integer KDIM1 = 2;
@@ -630,7 +630,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdp_vec_cpp(const 
 
 
 // dipole, potential and gradient
-template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdg_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdg_vec_cpp(const int64_t* nd, const Real* zk, const Real* sources, const Real* dipvec, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, Real* grad, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
   static constexpr sctl::Integer KDIM1 = 2;
@@ -794,7 +794,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdg_vec_cpp(const 
 
 
 // dipole, potential, gradient and hessian
-template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdh_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdh_vec_cpp(const int64_t* nd, const Real* zk, const Real* sources, const Real* dipvec, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
   static constexpr sctl::Integer KDIM1 = 2;
@@ -1057,7 +1057,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdh_vec_cpp(const 
 
 
 // charge and dipole, potential
-template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdp_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdp_vec_cpp(const int64_t* nd, const Real* zk, const Real* sources, const Real* charge, const Real* dipvec, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
   static constexpr sctl::Integer KDIM1 = 2;
@@ -1198,7 +1198,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdp_vec_cpp(const
 
 
 // charge and dipole, potential and gradient
-template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdg_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdg_vec_cpp(const int64_t* nd, const Real* zk, const Real* sources, const Real* charge, const Real* dipvec, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, Real* grad, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
   static constexpr sctl::Integer KDIM1 = 2;
@@ -1388,7 +1388,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdg_vec_cpp(const
 
 
 // charge and dipole, potential, gradient and hessian
-template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const int64_t* nd, const Real* zk, const Real* sources, const Real* charge, const Real* dipvec, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
   static constexpr sctl::Integer KDIM1 = 2;
@@ -1699,7 +1699,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
 
 // Laplace kernels
 // charge, potential 
-template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcp_vec_cpp(const int32_t* nd, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcp_vec_cpp(const int64_t* nd, const Real* sources, const Real* charge, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
 
   sctl::Long nd_ = nd[0];
@@ -1802,7 +1802,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcp_vec_cpp(const 
 
 
 // charge, potential and gradient
-template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcg_vec_cpp(const int32_t* nd, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcg_vec_cpp(const int64_t* nd, const Real* sources, const Real* charge, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, Real* grad, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
 
   sctl::Long nd_ = nd[0];
@@ -1921,7 +1921,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcg_vec_cpp(const 
 
 
 // charge, potential, gradient and hessian
-template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectch_vec_cpp(const int32_t* nd, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectch_vec_cpp(const int64_t* nd, const Real* sources, const Real* charge, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
 
   sctl::Long nd_ = nd[0];
@@ -2064,7 +2064,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectch_vec_cpp(const 
 
 
 // dipole, potential
-template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdp_vec_cpp(const int32_t* nd, const Real* sources, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdp_vec_cpp(const int64_t* nd, const Real* sources, const Real* dipvec, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
 
   sctl::Long nd_ = nd[0];
@@ -2172,7 +2172,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdp_vec_cpp(const 
 
 
 // dipole, potential and gradient
-template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdg_vec_cpp(const int32_t* nd, const Real* sources, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdg_vec_cpp(const int64_t* nd, const Real* sources, const Real* dipvec, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, Real* grad, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
 
   sctl::Long nd_ = nd[0];
@@ -2296,7 +2296,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdg_vec_cpp(const 
 
 
 // dipole, potential, gradient and hessian
-template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdh_vec_cpp(const int32_t* nd, const Real* sources, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdh_vec_cpp(const int64_t* nd, const Real* sources, const Real* dipvec, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
 
   sctl::Long nd_ = nd[0];
@@ -2447,7 +2447,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdh_vec_cpp(const 
 
 
 // charge and dipole, potential
-template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdp_vec_cpp(const int32_t* nd, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdp_vec_cpp(const int64_t* nd, const Real* sources, const Real* charge, const Real* dipvec, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
 
   sctl::Long nd_ = nd[0];
@@ -2559,7 +2559,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdp_vec_cpp(const
 
 
 // charge and dipole, potential and gradient
-template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdg_vec_cpp(const int32_t* nd, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdg_vec_cpp(const int64_t* nd, const Real* sources, const Real* charge, const Real* dipvec, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, Real* grad, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
 
   sctl::Long nd_ = nd[0];
@@ -2690,7 +2690,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdg_vec_cpp(const
 
 
 // charge and dipole, potential, gradient and hessian
-template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdh_vec_cpp(const int32_t* nd, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdh_vec_cpp(const int64_t* nd, const Real* sources, const Real* charge, const Real* dipvec, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
 
   sctl::Long nd_ = nd[0];

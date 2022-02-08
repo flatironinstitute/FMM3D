@@ -4,6 +4,7 @@ c-------------------------------------------------------------
 
       subroutine rlscini(rlsc,nlambs,rlams,nterms)
       implicit double precision (a-h,o-z)
+      integer(8) nlambs,nterms,i,j,k,nl
       double precision rlsc(0:nterms,0:nterms,nlambs)
       double precision     rlams(nlambs),rlampow(0:100)
       double precision     facts(0:200)
@@ -34,12 +35,13 @@ c
 c-------------------------------------------------------------
       subroutine mkexps(rlams,nlambs,numphys,nexptotp,xs,ys,zs)
       implicit double precision (a-h,o-z)
+      integer(8) nlambs,nexptotp
       double complex ima
       double complex xs(-5:5,nexptotp)
       double complex ys(-5:5,nexptotp)
       double precision zs(5,nexptotp)
       double precision     rlams(nlambs),u
-      integer  nlambs,numphys(nlambs),nexptotp
+      integer(8) numphys(nlambs)
       data ima/(0.0d0,1.0d0)/
 c
 c     this subroutine computes the tables of exponentials needed
@@ -129,7 +131,7 @@ c***********************************************************************
       double complex fexpe(1)
       double complex fexpo(1)
       double complex fexpback(1)
-      integer  nlambs,numphys(nlambs),numfour(nlambs)
+      integer(8)  nlambs,numphys(nlambs),numfour(nlambs)
       data ima/(0.0d0,1.0d0)/
 c
 c     this subroutine computes the tables of exponentials needed
@@ -231,24 +233,24 @@ c     Inspection of the integral formula for Y_n^{-m} shows
 c     that M_\lambda(-m) = dconjg(M_\lambda) * (-1)**m
 c
 c     INPUT arguments
-c     nd          in: integer
+c     nd          in: integer(8)
 c                 number of multipole expansions
 c
 c     mpole       in: double complex (nd,0:nterms, -nterms:nterms)
 c                 The multipole expansion 
 c  
-c     nterms:     in: integer
+c     nterms:     in: integer(8)
 c                 Order of the multipole expansion
 c
-c     nlambs      in: integer
+c     nlambs      in: integer(8)
 c                 number of discretization points in the \lambda
 c                 integral
 c
-c     numtets     in: integer(nlambs)
+c     numtets     in: integer(8)(nlambs)
 c                 number of fourier modes needed in expansion
 c                 of \alpha variable for each \lambda variable
 c
-c     nexptot     in: integer
+c     nexptot     in: integer(8)
 c                 nexptot = \sum_{j} numtets(j)
 c
 c     rlsc        in: double precision(0:nterms, 0:nterms,nlambs)
@@ -277,8 +279,8 @@ c                 discrete \lambda values
 c---------------------------------------------------------------
 
       implicit none
-      integer nd
-      integer nterms,nlambs,numtets(nlambs),nexptot
+      integer(8) nd
+      integer(8) nterms,nlambs,numtets(nlambs),nexptot
       double complex mpole(nd,0:nterms,-nterms:nterms)
       double complex mexpupf(nd,nexptot)
       double complex mexpdownf(nd,nexptot)
@@ -288,7 +290,7 @@ c     Temp variables
       double complex, allocatable :: ztmp1(:),ztmp2(:)
       double complex zeyep
       double precision sgn
-      integer ntot,ncurrent,nl,mth,nm,idim
+      integer(8) ntot,ncurrent,nl,mth,nm,idim
 
       allocate(ztmp1(nd),ztmp2(nd))
 
@@ -340,7 +342,7 @@ c-----------------------------------------------------------------
 c     INPUT arguments
 c     nd               in: number of local expansions
 c 
-c     nterms           in: integer
+c     nterms           in: integer(8)
 c                      Order of local expansion
 c
 c     rlambs           in: double precision(nlambs)
@@ -349,18 +351,18 @@ c
 c     whts             in: double precision(nlambs)
 c                      quadrature weights in \lambda integral
 c
-c     nlambs           in: integer
+c     nlambs           in: integer(8)
 c                      number of discretization points in \lambda
 c                      integral
 c
-c     numtets          in: integer(nlambs)
+c     numtets          in: integer(8)(nlambs)
 c                      number of fourier modes in expansion of
 c                      \alpha variable for \lambda_j
 c
-c     nthmax           in: integer
+c     nthmax           in: integer(8)
 c                      max_j numtets(j)
 c
-c     nexptot          in: integer
+c     nexptot          in: integer(8)
 c                      sum_j numtets(j)
 c                      
 c
@@ -399,9 +401,9 @@ c     local(nd,0:nterms,-nterms:nterms): output local expansion of order
 c                                     nterms
         
       implicit none
-      integer nd
-      integer nterms,nlambs,numtets(nlambs),nexptot,nthmax
-      integer ncurrent,ntot,nl
+      integer(8) nd
+      integer(8) nterms,nlambs,numtets(nlambs),nexptot,nthmax
+      integer(8) ncurrent,ntot,nl
       double complex local(nd,0:nterms,-nterms:nterms)
       double complex lexp1f(nd,nexptot),lexp2f(nd,nexptot)
       double complex zeye(0:nterms)
@@ -411,7 +413,7 @@ c                                     nterms
       double complex ima
     
 c     Temporary variables
-      integer i, nm, mth, j, mmax,idim
+      integer(8) i, nm, mth, j, mmax,idim
       double precision dtmp
 
       data ima/(0.0d0,1.0d0)/
@@ -480,12 +482,13 @@ c------------------------------------------------
       subroutine phystof(nd,mexpf,nlambs,numfour,numphys,
      1                      mexpphys,fexpback)
       implicit double precision (a-h,o-z)
+      integer(8) nd
       double complex mexpf(nd,*)
       double complex mexpphys(nd,*),ima
       double complex fexpback(*)
       double precision hh
       double precision, allocatable :: alphas(:)
-      integer  nlambs,numfour(nlambs),numphys(nlambs),nthmax
+      integer(8)  nlambs,numfour(nlambs),numphys(nlambs),nthmax
       data ima/(0.0d0,1.0d0)/
 c
 c     this subroutine converts the discretized exponential moment function
@@ -573,13 +576,14 @@ c
       subroutine ftophys(nd,mexpf,nlambs,rlams,numfour,numphys,
      1                      nthmax,mexpphys,fexpe,fexpo)
       implicit double precision (a-h,o-z)
+      integer(8) nd,nlambs
       double complex mexpf(nd,*)
       double complex mexpphys(nd,*),ima,ctmp
       double complex fexpe(*)
       double complex fexpo(*)
       double precision     rlams(nlambs)
       double precision, allocatable :: alphas(:) 
-      integer  nlambs,numfour(nlambs),numphys(nlambs),nthmax
+      integer(8)  numfour(nlambs),numphys(nlambs),nthmax
       data ima/(0.0d0,1.0d0)/
 c
 c     this subroutine evaluates the fourier expansion of the
@@ -673,14 +677,14 @@ c--------------------------------------------------------------------
 c      process up down expansions for box ibox
 c-------------------------------------------------------------------
       implicit none
-      integer idim,nd
-      integer ibox,ilev,nboxes,nterms,nlams,nthmax
-      integer nphysical(nlams),nfourier(nlams)
-      integer *8 iaddr(2,nboxes)
-      integer ichild(8,nboxes)
-      integer nexptot,nexptotp,nmax
-      integer nuall,ndall,nu1234,nd5678
-      integer uall(*),dall(*),u1234(*),d5678(*)
+      integer(8) idim,nd
+      integer(8) ibox,ilev,nboxes,nterms,nlams,nthmax
+      integer(8) nphysical(nlams),nfourier(nlams)
+      integer(8) iaddr(2,nboxes)
+      integer(8) ichild(8,nboxes)
+      integer(8) nexptot,nexptotp,nmax
+      integer(8) nuall,ndall,nu1234,nd5678
+      integer(8) uall(*),dall(*),u1234(*),d5678(*)
       double precision rscale,bs
       double precision rlams(*),whts(*)
       double complex, allocatable :: tloc(:,:,:)  
@@ -694,12 +698,12 @@ c-------------------------------------------------------------------
       double precision zs(5,nexptotp)
       double precision rlsc(0:nterms,0:nterms,nlams),rscpow(0:nterms)
       double complex fexpback(*)
-      integer cntlist4,list4(*),nlist4s(*),ilist4(*),mnlist4
-      integer nlist4
+      integer(8) cntlist4,list4(*),nlist4s(*),ilist4(*),mnlist4
+      integer(8) nlist4
       double complex pgboxwexp(nd,nexptotp,cntlist4,6)
 
 c      temp variables
-      integer jbox,ctr,ii,jj,i,ix,iy,iz,j,kbox
+      integer(8) jbox,ctr,ii,jj,i,ix,iy,iz,j,kbox
       double precision rtmp,rtmp2
       double complex ztmp,zmul,ztmp2
      
@@ -1104,15 +1108,15 @@ c--------------------------------------------------------------------
 c      create up down expansions for box ibox
 c-------------------------------------------------------------------
       implicit none
-      integer nd
-      integer ibox,ilev,nboxes,nterms,nlams,nthmax
-      integer nphysical(nlams),nfourier(nlams)
-      integer *8 iaddr(2,nboxes)
-      integer ichild(8,nboxes)
-      integer nexptot,nexptotp,nmax
-      integer nnall,nsall,nn1256,ns3478,nn12,nn56,ns34,ns78
-      integer nall(*),sall(*),n1256(*),s3478(*)
-      integer n12(*),n56(*),s34(*),s78(*)
+      integer(8) nd
+      integer(8) ibox,ilev,nboxes,nterms,nlams,nthmax
+      integer(8) nphysical(nlams),nfourier(nlams)
+      integer(8) iaddr(2,nboxes)
+      integer(8) ichild(8,nboxes)
+      integer(8) nexptot,nexptotp,nmax
+      integer(8) nnall,nsall,nn1256,ns3478,nn12,nn56,ns34,ns78
+      integer(8) nall(*),sall(*),n1256(*),s3478(*)
+      integer(8) n12(*),n56(*),s34(*),s78(*)
       double precision rscale,bs
       double complex zk2
       double precision rlams(*),whts(*)
@@ -1131,12 +1135,12 @@ c-------------------------------------------------------------------
       double precision zs(5,nexptotp)
       double precision rlsc(0:nterms,0:nterms,nlams),rscpow(0:nterms)
       double complex fexpback(*)
-      integer cntlist4,list4(*),nlist4s(*),ilist4(*),mnlist4
-      integer nlist4
+      integer(8) cntlist4,list4(*),nlist4s(*),ilist4(*),mnlist4
+      integer(8) nlist4
       double complex pgboxwexp(nd,nexptotp,cntlist4,6)
 
 c      temp variables
-      integer jbox,ctr,ii,jj,i,ix,iy,iz,j,idim,kbox
+      integer(8) jbox,ctr,ii,jj,i,ix,iy,iz,j,idim,kbox
       double complex ztmp,zmul,ztmp2
       double precision rtmp,rtmp2
     
@@ -1617,17 +1621,17 @@ c--------------------------------------------------------------------
 c      create up down expansions for box ibox
 c-------------------------------------------------------------------
       implicit none
-      integer nd
-      integer ibox,ilev,nboxes,nterms,nlams,nthmax
-      integer nphysical(nlams),nfourier(nlams)
-      integer *8 iaddr(2,nboxes)
-      integer ichild(8,nboxes)
-      integer nexptot,nexptotp,nmax
-      integer neall,nwall,ne1357,nw2468,ne13,ne57,nw24,nw68
-      integer ne1,ne3,ne5,ne7,nw2,nw4,nw6,nw8
-      integer eall(*),wall(*),e1357(*),w2468(*)
-      integer e13(*),e57(*),w24(*),w68(*)
-      integer e1(*),e3(*),e5(*),e7(*),w2(*),w4(*),w6(*),w8(*)
+      integer(8) nd
+      integer(8) ibox,ilev,nboxes,nterms,nlams,nthmax
+      integer(8) nphysical(nlams),nfourier(nlams)
+      integer(8) iaddr(2,nboxes)
+      integer(8) ichild(8,nboxes)
+      integer(8) nexptot,nexptotp,nmax
+      integer(8) neall,nwall,ne1357,nw2468,ne13,ne57,nw24,nw68
+      integer(8) ne1,ne3,ne5,ne7,nw2,nw4,nw6,nw8
+      integer(8) eall(*),wall(*),e1357(*),w2468(*)
+      integer(8) e13(*),e57(*),w24(*),w68(*)
+      integer(8) e1(*),e3(*),e5(*),e7(*),w2(*),w4(*),w6(*),w8(*)
       double precision rscale,bs
       double complex zk2
       double precision rlams(*),whts(*)
@@ -1649,12 +1653,12 @@ c-------------------------------------------------------------------
       double precision zs(5,nexptotp)
       double precision rlsc(0:nterms,0:nterms,nlams),rscpow(0:nterms)
       double complex fexpback(*)
-      integer cntlist4,list4(*),nlist4s(*),ilist4(*),mnlist4
-      integer nlist4
+      integer(8) cntlist4,list4(*),nlist4s(*),ilist4(*),mnlist4
+      integer(8) nlist4
       double complex pgboxwexp(nd,nexptotp,cntlist4,6)
 
 c      temp variables
-      integer jbox,ctr,ii,jj,i,ix,iy,iz,j,l,idim,kbox
+      integer(8) jbox,ctr,ii,jj,i,ix,iy,iz,j,l,idim,kbox
       double complex ztmp,zmul,ztmp2
       double precision rtmp,rtmp2
      
@@ -2252,11 +2256,11 @@ c--------------------------------------------------------------------
 c      process up down expansions for box ibox
 c-------------------------------------------------------------------
       implicit none
-      integer idim,nd
-      integer ibox,nboxes,nterms,nlams,nthmax
-      integer nexptot,nexptotp
-      integer nuall,ndall
-      integer uall(*),dall(*)
+      integer(8) idim,nd
+      integer(8) ibox,nboxes,nterms,nlams,nthmax
+      integer(8) nexptot,nexptotp
+      integer(8) nuall,ndall
+      integer(8) uall(*),dall(*)
       double precision bs
       double complex mexp(nd,nexptotp,nboxes,6)
       double precision centers(3,nboxes)
@@ -2265,7 +2269,7 @@ c-------------------------------------------------------------------
       double precision zs(5,nexptotp)
 
 c      temp variables
-      integer jbox,i,ix,iy,iz,j
+      integer(8) jbox,i,ix,iy,iz,j
       double precision rtmp
       double complex ztmp,zmul,ztmp2
      
@@ -2330,11 +2334,11 @@ c--------------------------------------------------------------------
 c      create up down expansions for box ibox
 c-------------------------------------------------------------------
       implicit none
-      integer nd
-      integer ibox,nboxes,nterms,nlams,nthmax
-      integer nexptotp
-      integer nnall,nsall
-      integer nall(*),sall(*)
+      integer(8) nd
+      integer(8) ibox,nboxes,nterms,nlams,nthmax
+      integer(8) nexptotp
+      integer(8) nnall,nsall
+      integer(8) nall(*),sall(*)
       double precision bs
       double complex mexp(nd,nexptotp,nboxes,6)
       double precision centers(3,*)
@@ -2343,7 +2347,7 @@ c-------------------------------------------------------------------
       double precision zs(5,nexptotp)
 
 c      temp variables
-      integer jbox,i,ix,iy,iz,j,idim
+      integer(8) jbox,i,ix,iy,iz,j,idim
       double complex ztmp,zmul,ztmp2
       double precision rtmp
     
@@ -2406,11 +2410,11 @@ c--------------------------------------------------------------------
 c      create up down expansions for box ibox
 c-------------------------------------------------------------------
       implicit none
-      integer nd
-      integer ibox,nboxes,nterms,nlams,nthmax
-      integer nexptotp
-      integer neall,nwall
-      integer eall(*),wall(*)
+      integer(8) nd
+      integer(8) ibox,nboxes,nterms,nlams,nthmax
+      integer(8) nexptotp
+      integer(8) neall,nwall
+      integer(8) eall(*),wall(*)
       double precision bs 
       double complex mexp(nd,nexptotp,nboxes,6)
       double precision centers(3,*)
@@ -2419,7 +2423,7 @@ c-------------------------------------------------------------------
       double precision zs(5,nexptotp)
 
 c      temp variables
-      integer jbox,i,ix,iy,iz,j,l,idim
+      integer(8) jbox,i,ix,iy,iz,j,l,idim
       double complex ztmp,zmul,ztmp2
       double precision rtmp
      
@@ -2483,14 +2487,14 @@ c--------------------------------------------------------------------
       subroutine lpw_ud_eval_p(nd,center,boxsize,ntarg,targ,nlam,rlams,
      1   whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot)
       implicit none
-      integer nd
+      integer(8) nd
       real *8 center(3),boxsize,targ(3,ntarg),rlams(nlam),pot(nd,ntarg)
       real *8 whts(nlam)
-      integer ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      integer(8) ntarg,nlam,nphys(nlam),nexptotp,nphmax
       complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       complex *16 ima
       complex *16, allocatable :: cc(:)
-      integer itarg,i,j,k,l,il,ii,iphys,istart,idim
+      integer(8) itarg,i,j,k,l,il,ii,iphys,istart,idim
       real *8 pi2inv,rexp1,alpha,pi2,x,y,z
       real *8 h,hh,rr
       complex *16 rz
@@ -2550,14 +2554,14 @@ c--------------------------------------------------------------------
       subroutine lpw_ns_eval_p(nd,center,boxsize,ntarg,targ,nlam,rlams,
      1   whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot)
       implicit none
-      integer nd
+      integer(8) nd
       real *8 center(3),boxsize,targ(3,ntarg),rlams(nlam),pot(nd,ntarg)
       real *8 whts(nlam)
-      integer ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      integer(8) ntarg,nlam,nphys(nlam),nexptotp,nphmax
       complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       complex *16 ima
       complex *16, allocatable :: cc(:)
-      integer itarg,i,j,k,l,il,ii,iphys,istart,idim
+      integer(8) itarg,i,j,k,l,il,ii,iphys,istart,idim
       real *8 pi2inv,rexp1,alpha,pi2,x,y,z
       real *8 h,hh,rr
       complex *16 rz
@@ -2615,14 +2619,14 @@ c--------------------------------------------------------------------
       subroutine lpw_ew_eval_p(nd,center,boxsize,ntarg,targ,nlam,rlams,
      1   whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot)
       implicit none
-      integer nd
+      integer(8) nd
       real *8 center(3),boxsize,targ(3,ntarg),rlams(nlam),pot(nd,ntarg)
       real *8 whts(nlam)
-      integer ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      integer(8) ntarg,nlam,nphys(nlam),nexptotp,nphmax
       complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       complex *16 ima
       complex *16, allocatable :: cc(:)
-      integer itarg,i,j,k,l,il,ii,iphys,istart,idim
+      integer(8) itarg,i,j,k,l,il,ii,iphys,istart,idim
       real *8 pi2inv,rexp1,alpha,pi2,x,y,z
       real *8 h,hh,rr
       complex *16 rz
@@ -2680,15 +2684,15 @@ c--------------------------------------------------------------------
       subroutine lpw_ud_eval_g(nd,center,boxsize,ntarg,targ,nlam,rlams,
      1   whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot,grad)
       implicit none
-      integer nd
+      integer(8) nd
       real *8 center(3),boxsize,targ(3,ntarg),rlams(nlam),pot(nd,ntarg)
       real *8 grad(nd,3,ntarg)
       real *8 whts(nlam)
-      integer ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      integer(8) ntarg,nlam,nphys(nlam),nexptotp,nphmax
       complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       complex *16 ima
       complex *16, allocatable :: cc(:),crc(:),crs(:)
-      integer itarg,i,j,k,l,il,ii,iphys,istart,idim
+      integer(8) itarg,i,j,k,l,il,ii,iphys,istart,idim
       real *8 pi2inv,rexp1,alpha,pi2,x,y,z
       real *8 h,hh,rr,binv
       complex *16 rz,rz1,rz2
@@ -2761,15 +2765,15 @@ c--------------------------------------------------------------------
       subroutine lpw_ns_eval_g(nd,center,boxsize,ntarg,targ,nlam,rlams,
      1   whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot,grad)
       implicit none
-      integer nd
+      integer(8) nd
       real *8 center(3),boxsize,targ(3,ntarg),rlams(nlam),pot(nd,ntarg)
       real *8 grad(nd,3,ntarg)
       real *8 whts(nlam)
-      integer ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      integer(8) ntarg,nlam,nphys(nlam),nexptotp,nphmax
       complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       complex *16 ima
       complex *16, allocatable :: cc(:),crc(:),crs(:)
-      integer itarg,i,j,k,l,il,ii,iphys,istart,idim
+      integer(8) itarg,i,j,k,l,il,ii,iphys,istart,idim
       real *8 pi2inv,rexp1,alpha,pi2,x,y,z
       real *8 h,hh,rr,binv
       complex *16 rz,rz1,rz2
@@ -2840,15 +2844,15 @@ c--------------------------------------------------------------------
       subroutine lpw_ew_eval_g(nd,center,boxsize,ntarg,targ,nlam,rlams,
      1   whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot,grad)
       implicit none
-      integer nd
+      integer(8) nd
       real *8 center(3),boxsize,targ(3,ntarg),rlams(nlam),pot(nd,ntarg)
       real *8 grad(nd,3,ntarg)
       real *8 whts(nlam)
-      integer ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      integer(8) ntarg,nlam,nphys(nlam),nexptotp,nphmax
       complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       complex *16 ima
       complex *16, allocatable :: cc(:),crc(:),crs(:)
-      integer itarg,i,j,k,l,il,ii,iphys,istart,idim
+      integer(8) itarg,i,j,k,l,il,ii,iphys,istart,idim
       real *8 pi2inv,rexp1,alpha,pi2,x,y,z
       real *8 h,hh,rr,binv
       complex *16 rz,rz1,rz2
@@ -2928,9 +2932,9 @@ c--------------------------------------------------------------------
 c      process up down expansions for box ibox
 c-------------------------------------------------------------------
       implicit none
-      integer idim,nd
-      integer jbox,i
-      integer nexptotp
+      integer(8) idim,nd
+      integer(8) jbox,i
+      integer(8) nexptotp
       double complex mexpugbox(nd,nexptotp)
       double complex mexpdgbox(nd,nexptotp)
       double complex mexpuall(nd,nexptotp)
@@ -3060,9 +3064,9 @@ c--------------------------------------------------------------------
 c      process up down expansions for box ibox
 c-------------------------------------------------------------------
       implicit none
-      integer idim,nd
-      integer jbox,i
-      integer nexptotp
+      integer(8) idim,nd
+      integer(8) jbox,i
+      integer(8) nexptotp
       double complex mexpngbox(nd,nexptotp)
       double complex mexpsgbox(nd,nexptotp)
       double complex mexpnall(nd,nexptotp)
@@ -3192,9 +3196,9 @@ c--------------------------------------------------------------------
 c      process up down expansions for box ibox
 c-------------------------------------------------------------------
       implicit none
-      integer idim,nd
-      integer jbox,i
-      integer nexptotp
+      integer(8) idim,nd
+      integer(8) jbox,i
+      integer(8) nexptotp
       double complex mexpegbox(nd,nexptotp)
       double complex mexpwgbox(nd,nexptotp)
       double complex mexpeall(nd,nexptotp)
@@ -3328,16 +3332,16 @@ c--------------------------------------------------------------------
 c-------------------------------------------------------------------
       implicit none
 ccc   input/output variables
-      integer ilev
-      integer nd
-      integer nexptotp,nexptot
-      integer nterms,nmax,nlams,nlege,nthmax
-      integer nlevels,cntlist4
-      integer ifcharge,ifdipole
-      integer list4(*),itree(*),laddr(2,0:nlevels)
-      integer *8 ipointer(32)
-      integer nfourier(*)
-      integer nphysical(*)
+      integer(8) ilev
+      integer(8) nd
+      integer(8) nexptotp,nexptot
+      integer(8) nterms,nmax,nlams,nlege,nthmax
+      integer(8) nlevels,cntlist4
+      integer(8) ifcharge,ifdipole
+      integer(8) list4(*),itree(*),laddr(2,0:nlevels)
+      integer(8) ipointer(32)
+      integer(8) nfourier(*)
+      integer(8) nphysical(*)
       double precision rscales
       double precision boxsize
       double precision zshift(5,nexptotp)
@@ -3358,11 +3362,12 @@ ccc   input/output variables
       double complex tmp(nd,0:nmax,-nmax:nmax)
       double complex pgboxwexp(nd,nexptotp,cntlist4,6)
 ccc   scoped function variables
-      integer ibox,jbox,i,idim,nlist3,j
-      integer istart,iend,npts
-      integer jstart,jend,npts0
-      integer gboxfl(2,8)
-      integer, allocatable :: gboxind(:)
+      integer(8) ibox,jbox,i,idim,nlist3,j
+      integer(8) istart,iend,npts
+      integer(8) jstart,jend,npts0
+      integer(8) gboxfl(2,8)
+      integer(8), allocatable :: gboxind(:)
+      integer(8) itmp
       double precision time1,time2,omp_get_wtime
       double precision gboxsubcenters(3,8)
       double precision, allocatable ::  gboxsort(:,:)
@@ -3382,7 +3387,7 @@ C$OMP PARALLEL DO DEFAULT(SHARED)
 C$OMP$PRIVATE(ibox,istart,iend,jbox,jstart,jend,npts,npts0,i)
 C$OMP$PRIVATE(gboxind,gboxsort,gboxfl,gboxsubcenters)
 C$OMP$PRIVATE(gboxwexp,gboxmexp,gboxcgsort,gboxdpsort)
-C$OMP$PRIVATE(mexpf1,mexpf2,tmp,mptemp)
+C$OMP$PRIVATE(mexpf1,mexpf2,tmp,mptemp,itmp)
       do ibox=laddr(1,ilev),laddr(2,ilev)
         if(list4(ibox).gt.0) then
           istart=itree(ipointer(10)+ibox-1)
@@ -3396,7 +3401,8 @@ C$OMP$PRIVATE(mexpf1,mexpf2,tmp,mptemp)
             call subdividebox(sourcesort(1,istart),npts,
      1           centers(1,ibox),boxsize,
      2           gboxind,gboxfl,gboxsubcenters)
-            call dreorderf(3,npts,sourcesort(1,istart),
+            itmp = 3
+            call dreorderf(itmp,npts,sourcesort(1,istart),
      1           gboxsort,gboxind)
             if(ifcharge.eq.1) then
               allocate(gboxcgsort(nd,npts))
@@ -3529,10 +3535,10 @@ c--------------------------------------------------------------------
 c-------------------------------------------------------------------
       implicit none
 ccc   input/output variables
-      integer nd
-      integer nexptotp
-      integer jbox
-      integer cntlist4
+      integer(8) nd
+      integer(8) nexptotp
+      integer(8) jbox
+      integer(8) cntlist4
       integer dirtype
       double complex mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       double complex pgboxwexp(nd,nexptotp,cntlist4,6)
@@ -3541,8 +3547,8 @@ ccc   input/output variables
       double precision boxsize
       double precision censrc(3),centrg(3)
 ccc   scoped function variables
-      integer dir
-      integer i,ix,iy,iz,idim
+      integer(8) dir
+      integer(8) i,ix,iy,iz,idim
       double complex zmul
       double precision rtmp
       double precision ctmp(3)
@@ -3646,12 +3652,12 @@ c--------------------------------------------------------------------
 c      process up down expansions for box ibox
 c-------------------------------------------------------------------
       implicit none
-      integer idim,nd
-      integer ibox,nboxes,nterms,nlams,nthmax
-      integer nphysical(nlams),nfourier(nlams)
-      integer nexptot,nexptotp
-      integer nuall,ndall
-      integer uall(*),dall(*)
+      integer(8) idim,nd
+      integer(8) ibox,nboxes,nterms,nlams,nthmax
+      integer(8) nphysical(nlams),nfourier(nlams)
+      integer(8) nexptot,nexptotp
+      integer(8) nuall,ndall
+      integer(8) uall(*),dall(*)
       double precision rscale
       double precision rlams(*),whts(*)
       double complex, allocatable :: tloc(:,:,:)  
@@ -3667,7 +3673,7 @@ c-------------------------------------------------------------------
       double complex fexpback(*)
 
 c      temp variables
-      integer jbox,i,ix,iy,iz,j
+      integer(8) jbox,i,ix,iy,iz,j
       double precision rtmp
       double complex ztmp,zmul,ztmp2
      
@@ -3969,12 +3975,12 @@ c--------------------------------------------------------------------
 c      create up down expansions for box ibox
 c-------------------------------------------------------------------
       implicit none
-      integer nd
-      integer ibox,nboxes,nterms,nlams,nthmax
-      integer nphysical(nlams),nfourier(nlams)
-      integer nexptot,nexptotp
-      integer nnall,nsall
-      integer nall(*),sall(*)
+      integer(8) nd
+      integer(8) ibox,nboxes,nterms,nlams,nthmax
+      integer(8) nphysical(nlams),nfourier(nlams)
+      integer(8) nexptot,nexptotp
+      integer(8) nnall,nsall
+      integer(8) nall(*),sall(*)
       double precision rscale
       double precision rlams(*),whts(*)
       double complex, allocatable :: tloc(:,:,:)
@@ -3992,7 +3998,7 @@ c-------------------------------------------------------------------
       double complex fexpback(*)
 
 c      temp variables
-      integer jbox,i,ix,iy,iz,j,idim
+      integer(8) jbox,i,ix,iy,iz,j,idim
       double complex ztmp,zmul,ztmp2
       double precision rtmp
     
@@ -4299,12 +4305,12 @@ c--------------------------------------------------------------------
 c      create up down expansions for box ibox
 c-------------------------------------------------------------------
       implicit none
-      integer nd
-      integer ibox,nboxes,nterms,nlams,nthmax
-      integer nphysical(nlams),nfourier(nlams)
-      integer nexptot,nexptotp
-      integer neall,nwall
-      integer eall(*),wall(*)
+      integer(8) nd
+      integer(8) ibox,nboxes,nterms,nlams,nthmax
+      integer(8) nphysical(nlams),nfourier(nlams)
+      integer(8) nexptot,nexptotp
+      integer(8) neall,nwall
+      integer(8) eall(*),wall(*)
       double precision rscale
       double precision rlams(*),whts(*)
       double complex, allocatable :: tloc(:,:,:),tloc2(:,:,:)
@@ -4321,7 +4327,7 @@ c-------------------------------------------------------------------
       double complex fexpback(*)
 
 c      temp variables
-      integer jbox,i,ix,iy,iz,j,l,idim
+      integer(8) jbox,i,ix,iy,iz,j,l,idim
       double complex ztmp,zmul,ztmp2
       double precision rtmp
      

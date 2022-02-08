@@ -144,7 +144,7 @@ c
 cc     calling sequence variables
 c
 
-      integer nterms,nlege,ntarg,nd
+      integer(8) nterms,nlege,ntarg,nd
       real *8 rscale,center(3),ztarg(3,ntarg)
       real *8 pot(nd,ntarg)
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
@@ -154,10 +154,10 @@ c
 cc     temporary variables
 c
 
-      integer idim
+      integer(8) idim
       real *8, allocatable :: ynm(:,:),fr(:)
       complex *16, allocatable :: ephi(:)
-      integer i,j,k,l,m,n,itarg
+      integer(8) i,j,k,l,m,n,itarg
       real *8 done,r,theta,phi,zdiff(3)
       real *8 ctheta,stheta,cphi,sphi
       real *8 d,rs,rtmp1,rtmp2
@@ -283,7 +283,7 @@ c
 cc     calling sequence variables
 c
 
-      integer nterms,nlege,ntarg,nd
+      integer(8) nterms,nlege,ntarg,nd
       real *8 rscale,center(3),ztarg(3,ntarg)
       real *8 pot(nd,ntarg),grad(nd,3,ntarg)
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
@@ -292,10 +292,10 @@ c
 c
 cc     temporary variables
 c
-      integer idim
+      integer(8) idim
       real *8, allocatable :: ynm(:,:),ynmd(:,:),fr(:),frder(:)
       complex *16, allocatable :: ephi(:)
-      integer i,j,k,l,m,n,itarg
+      integer(8) i,j,k,l,m,n,itarg
       real *8 done,r,theta,phi,zdiff(3)
       real *8 ctheta,stheta,cphi,sphi
       real *8 d,rx,ry,rz,thetax,thetay,thetaz,phix,phiy,phiz,rs
@@ -463,7 +463,7 @@ c
 cc       calling sequence variables
 c
       
-      integer nterms,ns,nd, nlege
+      integer(8) nterms,ns,nd, nlege
       real *8 center(3),sources(3,ns)
       real *8 wlege(0:nlege,0:nlege)
       real *8 rscale
@@ -474,7 +474,7 @@ c
 cc       temporary variables
 c
 
-      integer i,j,k,l,m,n,isrc,idim
+      integer(8) i,j,k,l,m,n,isrc,idim
       real *8 zdiff(3)
       real *8, allocatable :: ynm(:,:),fr(:),rfac(:)
       real *8 theta,stheta,ctheta,phi,sphi,cphi,dtmp,d,r
@@ -606,7 +606,7 @@ c
 cc       calling sequence variables
 c
       
-      integer nterms,ns,nd, nlege
+      integer(8) nterms,ns,nd, nlege
       real *8 center(3),sources(3,ns)
       real *8 wlege(0:nlege,0:nlege)
       real *8 rscale
@@ -617,7 +617,7 @@ c
 cc       temporary variables
 c
 
-      integer i,j,k,l,m,n,isrc,idim
+      integer(8) i,j,k,l,m,n,isrc,idim
       real *8 zdiff(3)
       real *8, allocatable :: ynm(:,:),fr(:),rfac(:),frder(:),ynmd(:,:)
       real *8 thetaz,thetay,thetax, theta
@@ -812,7 +812,7 @@ c
 cc       calling sequence variables
 c
       
-      integer nterms,ns,nd, nlege
+      integer(8) nterms,ns,nd, nlege
       real *8 center(3),sources(3,ns)
       real *8 wlege(0:nlege,0:nlege)
       real *8 rscale
@@ -824,7 +824,7 @@ c
 cc       temporary variables
 c
 
-      integer i,j,k,l,m,n,isrc,idim
+      integer(8) i,j,k,l,m,n,isrc,idim
       real *8 zdiff(3)
       real *8, allocatable :: ynm(:,:),fr(:),rfac(:),frder(:),ynmd(:,:)
       real *8 thetaz,thetay,thetax, theta
@@ -1026,7 +1026,7 @@ c----------------------------------------------------------------------
 c
 cc     calling sequence variables
 c
-      integer nterms,nlege,ntarg,nd
+      integer(8) nterms,nlege,ntarg,nd
       real *8 rscale,center(3),ztarg(3,ntarg)
       real *8 pot(nd,ntarg)
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
@@ -1034,10 +1034,10 @@ c
 c
 cc     temporary variables
 c
-      integer idim
+      integer(8) idim
       real *8, allocatable :: ynm(:,:),fr(:)
       complex *16, allocatable :: ephi(:)
-      integer i,j,k,l,m,n,itarg
+      integer(8) i,j,k,l,m,n,itarg
       real *8 done,r,theta,phi,zdiff(3)
       real *8 ctheta,stheta,cphi,sphi
       real *8 d,rs,rtmp1,rtmp2
@@ -1151,7 +1151,7 @@ c----------------------------------------------------------------------
 c
 cc     calling sequence variables
 c
-      integer nterms,nlege,ntarg,nd
+      integer(8) nterms,nlege,ntarg,nd
       real *8 rscale,center(3),ztarg(3,ntarg)
       real *8 pot(nd,ntarg),grad(nd,3,ntarg)
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
@@ -1159,10 +1159,10 @@ c
 c
 cc     temporary variables
 c
-      integer idim
+      integer(8) idim
       real *8, allocatable :: ynm(:,:),ynmd(:,:),fr(:),frder(:)
       complex *16, allocatable :: ephi(:)
-      integer i,j,k,l,m,n,itarg
+      integer(8) i,j,k,l,m,n,itarg
       real *8 done,r,theta,phi,zdiff(3)
       real *8 ctheta,stheta,cphi,sphi
       real *8 d,rx,ry,rz,thetax,thetay,thetaz,phix,phiy,phiz,rs
@@ -1327,7 +1327,7 @@ c
 cc       calling sequence variables
 c
       
-      integer nterms,ns,nd, nlege
+      integer(8) nterms,ns,nd, nlege
       real *8 center(3),sources(3,ns)
       real *8 wlege(0:nlege,0:nlege)
       real *8 rscale
@@ -1338,7 +1338,7 @@ c
 cc       temporary variables
 c
 
-      integer i,j,k,l,m,n,isrc,idim
+      integer(8) i,j,k,l,m,n,isrc,idim
       real *8 zdiff(3)
       real *8, allocatable :: ynm(:,:),fr(:),rfac(:)
       real *8 theta,stheta,ctheta,phi,sphi,cphi,dtmp,d,r
@@ -1471,7 +1471,7 @@ c
 cc       calling sequence variables
 c
       
-      integer nterms,ns,nd, nlege
+      integer(8) nterms,ns,nd, nlege
       real *8 center(3),sources(3,ns)
       real *8 wlege(0:nlege,0:nlege)
       real *8 rscale
@@ -1482,7 +1482,7 @@ c
 cc       temporary variables
 c
 
-      integer i,j,k,l,m,n,isrc,idim
+      integer(8) i,j,k,l,m,n,isrc,idim
       real *8 zdiff(3)
       real *8, allocatable :: ynm(:,:),fr(:),rfac(:),frder(:),ynmd(:,:)
       real *8 thetaz,thetay,thetax, theta
@@ -1669,7 +1669,7 @@ c
 cc       calling sequence variables
 c
       
-      integer nterms,ns,nd, nlege
+      integer(8) nterms,ns,nd, nlege
       real *8 center(3),sources(3,ns)
       real *8 wlege(0:nlege,0:nlege)
       real *8 rscale
@@ -1681,7 +1681,7 @@ c
 cc       temporary variables
 c
 
-      integer i,j,k,l,m,n,isrc,idim
+      integer(8) i,j,k,l,m,n,isrc,idim
       real *8 zdiff(3)
       real *8, allocatable :: ynm(:,:),fr(:),rfac(:),frder(:),ynmd(:,:)
       real *8 thetaz,thetay,thetax, theta
@@ -1861,7 +1861,7 @@ C
 c     scarray         : work array of size > 10*(nterms+2)**2
 c-----------------------------------------------------------------------
       implicit none
-      integer  nterms,l,j,k,m,ll,mm,iuse,lnew,mnew
+      integer(8)  nterms,l,j,k,m,ll,mm,iuse,lnew,mnew
       real *8 scarray(1),cscale
       real *8 d
       real *8, allocatable :: c(:,:)
@@ -1965,8 +1965,8 @@ c     hess   :   updated Hessian at ztarg
 c                 ordered as dxx,dyy,dzz,dxy,dxz,dyz.
 c--------------------------------------------------------------------
       implicit none
-      integer nterms,ntarg,nd,itarg
-      integer  l,m,lnew,mnew,ll,mm,iuse,j,k,lsum,idim
+      integer(8) nterms,ntarg,nd,itarg
+      integer(8)  l,m,lnew,mnew,ll,mm,iuse,j,k,lsum,idim
       real *8 center(3),ztarg(3,ntarg)
       real *8 zdiff(3)
       real *8 scarray(*),rscale,thresh
@@ -2140,7 +2140,7 @@ C
 c     scarray         : work array of size > 10*(nterms+2)**2
 c-----------------------------------------------------------------------
       implicit none
-      integer  nterms,l,j,k,m,ll,mm,iuse
+      integer(8)  nterms,l,j,k,m,ll,mm,iuse
       real *8 scarray(1)
       real *8 d
       real *8, allocatable :: cs(:,:)
@@ -2241,8 +2241,8 @@ c     hess   :   updated Hessian at ztarg
 c                 ordered as dxx,dyy,dzz,dxy,dxz,dyz.
 c--------------------------------------------------------------------
       implicit none
-      integer nterms,ntarg,nd,itarg
-      integer  l,m,lnew,mnew,ll,mm,iuse,j,k,ldiff,idim
+      integer(8) nterms,ntarg,nd,itarg
+      integer(8)  l,m,lnew,mnew,ll,mm,iuse,j,k,ldiff,idim
       real *8 center(3),ztarg(3,ntarg)
       real *8 zdiff(3)
       real *8 scarray(*),rscale

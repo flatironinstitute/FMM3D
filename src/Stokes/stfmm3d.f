@@ -63,20 +63,20 @@ c
 c-----------------------------------------------------------------------
 c     INPUT PARAMETERS:
 c     
-c   nd:    in: integer
+c   nd:    in: integer(8)
 c              number of densities
 c   
 c   eps:   in: double precision
 c              requested precision
 c
-c   nsource in: integer  
+c   nsource in: integer(8)  
 c               number of sources
 c
 c   source  in: double precision (3,nsource)
 c               source(k,j) is the kth component of the jth
 c               source locations
 c
-c   ifstoklet  in: integer  
+c   ifstoklet  in: integer(8)  
 c               Stokeslet charge computation flag
 c               ifstoklet = 1   =>  include Stokeslet contribution
 c                                   otherwise do not
@@ -84,7 +84,7 @@ c
 c   stoklet in: double precision (nd,3,nsource) 
 c               Stokeslet charge strengths (sigma vectors above)
 c
-c   ifstrslet in: integer
+c   ifstrslet in: integer(8)
 c               stresslet computation flag
 c               ifstrslet = 1   =>  include standard stresslet
 c                                   (type I)
@@ -103,7 +103,7 @@ c
 c   strsvec  in: double precision (nd,3,nsource)   
 c               stresslet orientations (nu vectors above)
 c
-c     ifppreg    in: integer      
+c     ifppreg    in: integer(8)      
 c               flag for evaluating potential, gradient, and pressure
 c               at the sources
 c               ifppreg = 1, only potential
@@ -111,14 +111,14 @@ c               ifppreg = 2, potential and pressure
 c         GRADIENT NOT IMPLEMENTED
 c               ifppreg = 3, potential, pressure, and gradient 
 c      
-c   ntarg   in: integer  
+c   ntarg   in: integer(8)  
 c              number of targs 
 c
 c   targ    in: double precision (3,ntarg)
 c             targ(k,j) is the kth component of the jth
 c             targ location
 c      
-c   ifppregtarg in: integer
+c   ifppregtarg in: integer(8)
 c                flag for evaluating potential, gradient, and pressure
 c                at the targets
 c                ifppregtarg = 1, only potential
@@ -153,15 +153,15 @@ c               gradient of velocity at the targets
 c               gradtarg(l,i,j,k) is the ith component of the
 c               gradient of the jth component of the velocity
 c               for the lth density at the kth target
-c     ier     out: integer
+c     ier     out: integer(8)
 c               error flag
 c
 c     TODO: implement other stresslet options and gradient
 c------------------------------------------------------------------
       implicit none
-      integer nd, ifstoklet, ifstrslet, ntarg
+      integer(8) nd, ifstoklet, ifstrslet, ntarg
       double precision eps
-      integer nsource, ifppreg, ifppregtarg
+      integer(8) nsource, ifppreg, ifppregtarg
       double precision source(3, nsource), targ(3, ntarg)
       double precision stoklet(nd, 3, nsource), strslet(nd, 3, nsource)
       double precision strsvec(nd, 3, nsource)
@@ -178,10 +178,10 @@ c     local
       double precision :: pt(3), gl(3), hl(6), vel(3), velgrad(3,3)
       double precision :: press, pl, pv, dmu(3), dnu(3), sigma(3)
 
-      integer ndl, ifchargel, ifdipolel, ifpghl, ifpghtargl
-      integer ndper
+      integer(8) ndl, ifchargel, ifdipolel, ifpghl, ifpghtargl
+      integer(8) ndper
 
-      integer i, j, ii, ifppreg1, l, npt, ier,iper
+      integer(8) i, j, ii, ifppreg1, l, npt, ier,iper
       
 
       ndper = 0

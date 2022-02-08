@@ -1005,6 +1005,12 @@ mxWrapReturnDef  (mxWrapReturn_int,   int)
 mxWrapGetArrayDef_single(mxWrapGetArray_single_int, int)
 mxWrapCopyDef_single    (mxWrapCopy_single_int,     int)
 mxWrapReturnDef_single  (mxWrapReturn_single_int,   int)
+mxWrapGetArrayDef(mxWrapGetArray_int64_t, int64_t)
+mxWrapCopyDef    (mxWrapCopy_int64_t,     int64_t)
+mxWrapReturnDef  (mxWrapReturn_int64_t,   int64_t)
+mxWrapGetArrayDef_single(mxWrapGetArray_single_int64_t, int64_t)
+mxWrapCopyDef_single    (mxWrapCopy_single_int64_t,     int64_t)
+mxWrapReturnDef_single  (mxWrapReturn_single_int64_t,   int64_t)
 mxWrapGetArrayDef(mxWrapGetArray_long, long)
 mxWrapCopyDef    (mxWrapCopy_long,     long)
 mxWrapReturnDef  (mxWrapReturn_long,   long)
@@ -1147,53 +1153,53 @@ extern "C" { /* Prevent C++ name mangling */
 #define MWF77_RETURN int
 #endif
 
-MWF77_RETURN MWF77_hndiv(double*, int*, int*, int*, int*, int*, int*, int*, int*);
-MWF77_RETURN MWF77_hfmm3d_ndiv(int*, double*, dcomplex*, int*, double*, int*, dcomplex*, int*, dcomplex*, int*, int*, dcomplex*, dcomplex*, dcomplex*, int*, double*, int*, dcomplex*, dcomplex*, dcomplex*, int*, int*, int*, double*, int*);
-MWF77_RETURN MWF77_h3ddirectcp(int*, dcomplex*, double*, dcomplex*, int*, double*, int*, dcomplex*, double*);
-MWF77_RETURN MWF77_h3ddirectdp(int*, dcomplex*, double*, dcomplex*, int*, double*, int*, dcomplex*, double*);
-MWF77_RETURN MWF77_h3ddirectcdp(int*, dcomplex*, double*, dcomplex*, dcomplex*, int*, double*, int*, dcomplex*, double*);
-MWF77_RETURN MWF77_h3ddirectcg(int*, dcomplex*, double*, dcomplex*, int*, double*, int*, dcomplex*, dcomplex*, double*);
-MWF77_RETURN MWF77_h3ddirectdg(int*, dcomplex*, double*, dcomplex*, int*, double*, int*, dcomplex*, dcomplex*, double*);
-MWF77_RETURN MWF77_h3ddirectcdg(int*, dcomplex*, double*, dcomplex*, dcomplex*, int*, double*, int*, dcomplex*, dcomplex*, double*);
-MWF77_RETURN MWF77_lndiv(double*, int*, int*, int*, int*, int*, int*, int*, int*);
-MWF77_RETURN MWF77_lfmm3d_ndiv(int*, double*, int*, double*, int*, double*, int*, double*, int*, int*, double*, double*, double*, int*, double*, int*, double*, double*, double*, int*, int*, int*, double*, int*);
-MWF77_RETURN MWF77_l3ddirectcp(int*, double*, double*, int*, double*, int*, double*, double*);
-MWF77_RETURN MWF77_l3ddirectdp(int*, double*, double*, int*, double*, int*, double*, double*);
-MWF77_RETURN MWF77_l3ddirectcdp(int*, double*, double*, double*, int*, double*, int*, double*, double*);
-MWF77_RETURN MWF77_l3ddirectcg(int*, double*, double*, int*, double*, int*, double*, double*, double*);
-MWF77_RETURN MWF77_l3ddirectdg(int*, double*, double*, int*, double*, int*, double*, double*, double*);
-MWF77_RETURN MWF77_l3ddirectcdg(int*, double*, double*, double*, int*, double*, int*, double*, double*, double*);
-MWF77_RETURN MWF77_l3ddirectch(int*, double*, double*, int*, double*, int*, double*, double*, double*, double*);
-MWF77_RETURN MWF77_l3ddirectdh(int*, double*, double*, int*, double*, int*, double*, double*, double*, double*);
-MWF77_RETURN MWF77_l3ddirectcdh(int*, double*, double*, double*, int*, double*, int*, double*, double*, double*, double*);
-MWF77_RETURN MWF77_emfmm3d(int*, double*, dcomplex*, int*, double*, int*, dcomplex*, int*, dcomplex*, int*, dcomplex*, int*, double*, int*, dcomplex*, int*, dcomplex*, int*, dcomplex*, int*);
-MWF77_RETURN MWF77_em3ddirect(int*, dcomplex*, int*, double*, int*, dcomplex*, int*, dcomplex*, int*, dcomplex*, int*, double*, int*, dcomplex*, int*, dcomplex*, int*, dcomplex*, double*);
-MWF77_RETURN MWF77_stfmm3d(int*, double*, int*, double*, int*, double*, int*, double*, double*, int*, double*, double*, double*, int*, double*, int*, double*, double*, double*, int*);
-MWF77_RETURN MWF77_st3ddirectstokg(int*, double*, double*, int*, double*, int*, double*, double*, double*, double*);
-MWF77_RETURN MWF77_st3ddirectstokstrsg(int*, double*, double*, int*, double*, double*, int*, double*, int*, double*, double*, double*, double*);
+MWF77_RETURN MWF77_hndiv(double*, int64_t*, int64_t*, int64_t*, int64_t*, int64_t*, int64_t*, int64_t*, int64_t*);
+MWF77_RETURN MWF77_hfmm3d_ndiv(int64_t*, double*, dcomplex*, int64_t*, double*, int64_t*, dcomplex*, int64_t*, dcomplex*, int64_t*, int64_t*, dcomplex*, dcomplex*, dcomplex*, int64_t*, double*, int64_t*, dcomplex*, dcomplex*, dcomplex*, int64_t*, int64_t*, int64_t*, double*, int64_t*);
+MWF77_RETURN MWF77_h3ddirectcp(int64_t*, dcomplex*, double*, dcomplex*, int64_t*, double*, int64_t*, dcomplex*, double*);
+MWF77_RETURN MWF77_h3ddirectdp(int64_t*, dcomplex*, double*, dcomplex*, int64_t*, double*, int64_t*, dcomplex*, double*);
+MWF77_RETURN MWF77_h3ddirectcdp(int64_t*, dcomplex*, double*, dcomplex*, dcomplex*, int64_t*, double*, int64_t*, dcomplex*, double*);
+MWF77_RETURN MWF77_h3ddirectcg(int64_t*, dcomplex*, double*, dcomplex*, int64_t*, double*, int64_t*, dcomplex*, dcomplex*, double*);
+MWF77_RETURN MWF77_h3ddirectdg(int64_t*, dcomplex*, double*, dcomplex*, int64_t*, double*, int64_t*, dcomplex*, dcomplex*, double*);
+MWF77_RETURN MWF77_h3ddirectcdg(int64_t*, dcomplex*, double*, dcomplex*, dcomplex*, int64_t*, double*, int64_t*, dcomplex*, dcomplex*, double*);
+MWF77_RETURN MWF77_lndiv(double*, int64_t*, int64_t*, int64_t*, int64_t*, int64_t*, int64_t*, int64_t*, int64_t*);
+MWF77_RETURN MWF77_lfmm3d_ndiv(int64_t*, double*, int64_t*, double*, int64_t*, double*, int64_t*, double*, int64_t*, int64_t*, double*, double*, double*, int64_t*, double*, int64_t*, double*, double*, double*, int64_t*, int64_t*, int64_t*, double*, int64_t*);
+MWF77_RETURN MWF77_l3ddirectcp(int64_t*, double*, double*, int64_t*, double*, int64_t*, double*, double*);
+MWF77_RETURN MWF77_l3ddirectdp(int64_t*, double*, double*, int64_t*, double*, int64_t*, double*, double*);
+MWF77_RETURN MWF77_l3ddirectcdp(int64_t*, double*, double*, double*, int64_t*, double*, int64_t*, double*, double*);
+MWF77_RETURN MWF77_l3ddirectcg(int64_t*, double*, double*, int64_t*, double*, int64_t*, double*, double*, double*);
+MWF77_RETURN MWF77_l3ddirectdg(int64_t*, double*, double*, int64_t*, double*, int64_t*, double*, double*, double*);
+MWF77_RETURN MWF77_l3ddirectcdg(int64_t*, double*, double*, double*, int64_t*, double*, int64_t*, double*, double*, double*);
+MWF77_RETURN MWF77_l3ddirectch(int64_t*, double*, double*, int64_t*, double*, int64_t*, double*, double*, double*, double*);
+MWF77_RETURN MWF77_l3ddirectdh(int64_t*, double*, double*, int64_t*, double*, int64_t*, double*, double*, double*, double*);
+MWF77_RETURN MWF77_l3ddirectcdh(int64_t*, double*, double*, double*, int64_t*, double*, int64_t*, double*, double*, double*, double*);
+MWF77_RETURN MWF77_emfmm3d(int64_t*, double*, dcomplex*, int64_t*, double*, int64_t*, dcomplex*, int64_t*, dcomplex*, int64_t*, dcomplex*, int64_t*, double*, int64_t*, dcomplex*, int64_t*, dcomplex*, int64_t*, dcomplex*, int64_t*);
+MWF77_RETURN MWF77_em3ddirect(int64_t*, dcomplex*, int64_t*, double*, int64_t*, dcomplex*, int64_t*, dcomplex*, int64_t*, dcomplex*, int64_t*, double*, int64_t*, dcomplex*, int64_t*, dcomplex*, int64_t*, dcomplex*, double*);
+MWF77_RETURN MWF77_stfmm3d(int64_t*, double*, int64_t*, double*, int64_t*, double*, int64_t*, double*, double*, int64_t*, double*, double*, double*, int64_t*, double*, int64_t*, double*, double*, double*, int64_t*);
+MWF77_RETURN MWF77_st3ddirectstokg(int64_t*, double*, double*, int64_t*, double*, int64_t*, double*, double*, double*, double*);
+MWF77_RETURN MWF77_st3ddirectstokstrsg(int64_t*, double*, double*, int64_t*, double*, double*, int64_t*, double*, int64_t*, double*, double*, double*, double*);
 
 #ifdef __cplusplus
 } /* end extern C */
 #endif
 
 /* ---- fmm3d.mw: 171 ----
- * hndiv(double[1] eps, int[1] ns, int[1] nt, int[1] ifcharge, int[1] ifdipole, int[1] pg, int[1] pgt, inout int[1] ndiv, inout int[1] idivflag);
+ * hndiv(double[1] eps, int64_t[1] ns, int64_t[1] nt, int64_t[1] ifcharge, int64_t[1] ifdipole, int64_t[1] pg, int64_t[1] pgt, inout int64_t[1] ndiv, inout int64_t[1] idivflag);
  */
-static const char* stubids1_ = "hndiv(i double[x], i int[x], i int[x], i int[x], i int[x], i int[x], i int[x], io int[x], io int[x])";
+static const char* stubids1_ = "hndiv(i double[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], io int64_t[x], io int64_t[x])";
 
 void mexStub1(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
     double*     in0_ =0; /* eps        */
-    int*        in1_ =0; /* ns         */
-    int*        in2_ =0; /* nt         */
-    int*        in3_ =0; /* ifcharge   */
-    int*        in4_ =0; /* ifdipole   */
-    int*        in5_ =0; /* pg         */
-    int*        in6_ =0; /* pgt        */
-    int*        in7_ =0; /* ndiv       */
-    int*        in8_ =0; /* idivflag   */
+    int64_t*    in1_ =0; /* ns         */
+    int64_t*    in2_ =0; /* nt         */
+    int64_t*    in3_ =0; /* ifcharge   */
+    int64_t*    in4_ =0; /* ifdipole   */
+    int64_t*    in5_ =0; /* pg         */
+    int64_t*    in6_ =0; /* pgt        */
+    int64_t*    in7_ =0; /* ndiv       */
+    int64_t*    in8_ =0; /* idivflag   */
     mwSize      dim9_;   /* 1          */
     mwSize      dim10_;   /* 1          */
     mwSize      dim11_;   /* 1          */
@@ -1262,49 +1268,49 @@ void mexStub1(int nlhs, mxArray* plhs[],
     } else
         in0_ = NULL;
     if (mxGetM(prhs[1])*mxGetN(prhs[1]) != 0) {
-        in1_ = mxWrapGetArray_int(prhs[1], &mw_err_txt_);
+        in1_ = mxWrapGetArray_int64_t(prhs[1], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in1_ = NULL;
     if (mxGetM(prhs[2])*mxGetN(prhs[2]) != 0) {
-        in2_ = mxWrapGetArray_int(prhs[2], &mw_err_txt_);
+        in2_ = mxWrapGetArray_int64_t(prhs[2], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in2_ = NULL;
     if (mxGetM(prhs[3])*mxGetN(prhs[3]) != 0) {
-        in3_ = mxWrapGetArray_int(prhs[3], &mw_err_txt_);
+        in3_ = mxWrapGetArray_int64_t(prhs[3], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in3_ = NULL;
     if (mxGetM(prhs[4])*mxGetN(prhs[4]) != 0) {
-        in4_ = mxWrapGetArray_int(prhs[4], &mw_err_txt_);
+        in4_ = mxWrapGetArray_int64_t(prhs[4], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in4_ = NULL;
     if (mxGetM(prhs[5])*mxGetN(prhs[5]) != 0) {
-        in5_ = mxWrapGetArray_int(prhs[5], &mw_err_txt_);
+        in5_ = mxWrapGetArray_int64_t(prhs[5], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in5_ = NULL;
     if (mxGetM(prhs[6])*mxGetN(prhs[6]) != 0) {
-        in6_ = mxWrapGetArray_int(prhs[6], &mw_err_txt_);
+        in6_ = mxWrapGetArray_int64_t(prhs[6], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in6_ = NULL;
     if (mxGetM(prhs[7])*mxGetN(prhs[7]) != 0) {
-        in7_ = mxWrapGetArray_int(prhs[7], &mw_err_txt_);
+        in7_ = mxWrapGetArray_int64_t(prhs[7], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in7_ = NULL;
     if (mxGetM(prhs[8])*mxGetN(prhs[8]) != 0) {
-        in8_ = mxWrapGetArray_int(prhs[8], &mw_err_txt_);
+        in8_ = mxWrapGetArray_int64_t(prhs[8], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -1313,9 +1319,9 @@ void mexStub1(int nlhs, mxArray* plhs[],
         mexprofrecord_[1]++;
     MWF77_hndiv(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_);
     plhs[0] = mxCreateDoubleMatrix(dim16_, 1, mxREAL);
-    mxWrapCopy_int(plhs[0], in7_, dim16_);
+    mxWrapCopy_int64_t(plhs[0], in7_, dim16_);
     plhs[1] = mxCreateDoubleMatrix(dim17_, 1, mxREAL);
-    mxWrapCopy_int(plhs[1], in8_, dim17_);
+    mxWrapCopy_int64_t(plhs[1], in8_, dim17_);
 
 mw_err_label:
     if (in1_)  mxFree(in1_);
@@ -1331,39 +1337,39 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 186 ----
- * hfmm3d_ndiv(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, int[1] ifcharge, dcomplex[nd, ns] charges, int[1] ifdipole, dcomplex[nd3, ns] dipoles, int[1] iper, int[1] pg, inout dcomplex[nd, ns] pot, inout dcomplex[nd3, ns] grad, inout dcomplex[nd6, ns] hess, int[1] nt, double[3, ntuse] targ, int[1] pgt, inout dcomplex[nd, ntuse] pottarg, inout dcomplex[nd3, ntuse] gradtarg, inout dcomplex[nd6, ntuse] hesstarg, int[1] ndiv, int[1] idivflag, int[1] ifnear, inout double[6] timeinfo, inout int[1] ier);
+ * hfmm3d_ndiv(int64_t[1] nd, double[1] eps, dcomplex[1] zk, int64_t[1] ns, double[3, ns] sources, int64_t[1] ifcharge, dcomplex[nd, ns] charges, int64_t[1] ifdipole, dcomplex[nd3, ns] dipoles, int64_t[1] iper, int64_t[1] pg, inout dcomplex[nd, ns] pot, inout dcomplex[nd3, ns] grad, inout dcomplex[nd6, ns] hess, int64_t[1] nt, double[3, ntuse] targ, int64_t[1] pgt, inout dcomplex[nd, ntuse] pottarg, inout dcomplex[nd3, ntuse] gradtarg, inout dcomplex[nd6, ntuse] hesstarg, int64_t[1] ndiv, int64_t[1] idivflag, int64_t[1] ifnear, inout double[6] timeinfo, inout int64_t[1] ier);
  */
-static const char* stubids2_ = "hfmm3d_ndiv(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i int[x], i dcomplex[xx], i int[x], i dcomplex[xx], i int[x], i int[x], io dcomplex[xx], io dcomplex[xx], io dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], io dcomplex[xx], i int[x], i int[x], i int[x], io double[x], io int[x])";
+static const char* stubids2_ = "hfmm3d_ndiv(i int64_t[x], i double[x], i dcomplex[x], i int64_t[x], i double[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i int64_t[x], io dcomplex[xx], io dcomplex[xx], io dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], io dcomplex[xx], io dcomplex[xx], i int64_t[x], i int64_t[x], i int64_t[x], io double[x], io int64_t[x])";
 
 void mexStub2(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     double*     in1_ =0; /* eps        */
     dcomplex*   in2_ =0; /* zk         */
-    int*        in3_ =0; /* ns         */
+    int64_t*    in3_ =0; /* ns         */
     double*     in4_ =0; /* sources    */
-    int*        in5_ =0; /* ifcharge   */
+    int64_t*    in5_ =0; /* ifcharge   */
     dcomplex*   in6_ =0; /* charges    */
-    int*        in7_ =0; /* ifdipole   */
+    int64_t*    in7_ =0; /* ifdipole   */
     dcomplex*   in8_ =0; /* dipoles    */
-    int*        in9_ =0; /* iper       */
-    int*        in10_ =0; /* pg         */
+    int64_t*    in9_ =0; /* iper       */
+    int64_t*    in10_ =0; /* pg         */
     dcomplex*   in11_ =0; /* pot        */
     dcomplex*   in12_ =0; /* grad       */
     dcomplex*   in13_ =0; /* hess       */
-    int*        in14_ =0; /* nt         */
+    int64_t*    in14_ =0; /* nt         */
     double*     in15_ =0; /* targ       */
-    int*        in16_ =0; /* pgt        */
+    int64_t*    in16_ =0; /* pgt        */
     dcomplex*   in17_ =0; /* pottarg    */
     dcomplex*   in18_ =0; /* gradtarg   */
     dcomplex*   in19_ =0; /* hesstarg   */
-    int*        in20_ =0; /* ndiv       */
-    int*        in21_ =0; /* idivflag   */
-    int*        in22_ =0; /* ifnear     */
+    int64_t*    in20_ =0; /* ndiv       */
+    int64_t*    in21_ =0; /* idivflag   */
+    int64_t*    in22_ =0; /* ifnear     */
     double*     in23_ =0; /* timeinfo   */
-    int*        in24_ =0; /* ier        */
+    int64_t*    in24_ =0; /* ier        */
     mwSize      dim25_;   /* 1          */
     mwSize      dim26_;   /* 1          */
     mwSize      dim27_;   /* 1          */
@@ -1557,7 +1563,7 @@ void mexStub2(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -1583,7 +1589,7 @@ void mexStub2(int nlhs, mxArray* plhs[],
     } else
         in2_ = NULL;
     if (mxGetM(prhs[3])*mxGetN(prhs[3]) != 0) {
-        in3_ = mxWrapGetArray_int(prhs[3], &mw_err_txt_);
+        in3_ = mxWrapGetArray_int64_t(prhs[3], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -1600,7 +1606,7 @@ void mexStub2(int nlhs, mxArray* plhs[],
     } else
         in4_ = NULL;
     if (mxGetM(prhs[5])*mxGetN(prhs[5]) != 0) {
-        in5_ = mxWrapGetArray_int(prhs[5], &mw_err_txt_);
+        in5_ = mxWrapGetArray_int64_t(prhs[5], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -1615,7 +1621,7 @@ void mexStub2(int nlhs, mxArray* plhs[],
     } else
         in6_ = NULL;
     if (mxGetM(prhs[7])*mxGetN(prhs[7]) != 0) {
-        in7_ = mxWrapGetArray_int(prhs[7], &mw_err_txt_);
+        in7_ = mxWrapGetArray_int64_t(prhs[7], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -1630,13 +1636,13 @@ void mexStub2(int nlhs, mxArray* plhs[],
     } else
         in8_ = NULL;
     if (mxGetM(prhs[9])*mxGetN(prhs[9]) != 0) {
-        in9_ = mxWrapGetArray_int(prhs[9], &mw_err_txt_);
+        in9_ = mxWrapGetArray_int64_t(prhs[9], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in9_ = NULL;
     if (mxGetM(prhs[10])*mxGetN(prhs[10]) != 0) {
-        in10_ = mxWrapGetArray_int(prhs[10], &mw_err_txt_);
+        in10_ = mxWrapGetArray_int64_t(prhs[10], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -1669,7 +1675,7 @@ void mexStub2(int nlhs, mxArray* plhs[],
     } else
         in13_ = NULL;
     if (mxGetM(prhs[14])*mxGetN(prhs[14]) != 0) {
-        in14_ = mxWrapGetArray_int(prhs[14], &mw_err_txt_);
+        in14_ = mxWrapGetArray_int64_t(prhs[14], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -1686,7 +1692,7 @@ void mexStub2(int nlhs, mxArray* plhs[],
     } else
         in15_ = NULL;
     if (mxGetM(prhs[16])*mxGetN(prhs[16]) != 0) {
-        in16_ = mxWrapGetArray_int(prhs[16], &mw_err_txt_);
+        in16_ = mxWrapGetArray_int64_t(prhs[16], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -1719,19 +1725,19 @@ void mexStub2(int nlhs, mxArray* plhs[],
     } else
         in19_ = NULL;
     if (mxGetM(prhs[20])*mxGetN(prhs[20]) != 0) {
-        in20_ = mxWrapGetArray_int(prhs[20], &mw_err_txt_);
+        in20_ = mxWrapGetArray_int64_t(prhs[20], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in20_ = NULL;
     if (mxGetM(prhs[21])*mxGetN(prhs[21]) != 0) {
-        in21_ = mxWrapGetArray_int(prhs[21], &mw_err_txt_);
+        in21_ = mxWrapGetArray_int64_t(prhs[21], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in21_ = NULL;
     if (mxGetM(prhs[22])*mxGetN(prhs[22]) != 0) {
-        in22_ = mxWrapGetArray_int(prhs[22], &mw_err_txt_);
+        in22_ = mxWrapGetArray_int64_t(prhs[22], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -1743,7 +1749,7 @@ void mexStub2(int nlhs, mxArray* plhs[],
     } else
         in23_ = NULL;
     if (mxGetM(prhs[24])*mxGetN(prhs[24]) != 0) {
-        in24_ = mxWrapGetArray_int(prhs[24], &mw_err_txt_);
+        in24_ = mxWrapGetArray_int64_t(prhs[24], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -1766,7 +1772,7 @@ void mexStub2(int nlhs, mxArray* plhs[],
     plhs[6] = mxCreateDoubleMatrix(dim58_, 1, mxREAL);
     mxWrapCopy_double(plhs[6], in23_, dim58_);
     plhs[7] = mxCreateDoubleMatrix(dim59_, 1, mxREAL);
-    mxWrapCopy_int(plhs[7], in24_, dim59_);
+    mxWrapCopy_int64_t(plhs[7], in24_, dim59_);
 
 mw_err_label:
     if (in0_)  mxFree(in0_);
@@ -1796,21 +1802,21 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 301 ----
- * h3ddirectcp(int[1] nd, dcomplex[1] zk, double[3, ns] sources, dcomplex[nd, ns] charges, int[1] ns, double[3, nt] targ, int[1] nt, inout dcomplex[nd, nt] pottarg, double[1] thresh);
+ * h3ddirectcp(int64_t[1] nd, dcomplex[1] zk, double[3, ns] sources, dcomplex[nd, ns] charges, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout dcomplex[nd, nt] pottarg, double[1] thresh);
  */
-static const char* stubids3_ = "h3ddirectcp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])";
+static const char* stubids3_ = "h3ddirectcp(i int64_t[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], i double[x])";
 
 void mexStub3(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     dcomplex*   in1_ =0; /* zk         */
     double*     in2_ =0; /* sources    */
     dcomplex*   in3_ =0; /* charges    */
-    int*        in4_ =0; /* ns         */
+    int64_t*    in4_ =0; /* ns         */
     double*     in5_ =0; /* targ       */
-    int*        in6_ =0; /* nt         */
+    int64_t*    in6_ =0; /* nt         */
     dcomplex*   in7_ =0; /* pottarg    */
     double*     in8_ =0; /* thresh     */
     mwSize      dim9_;   /* 1          */
@@ -1886,7 +1892,7 @@ void mexStub3(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -1921,7 +1927,7 @@ void mexStub3(int nlhs, mxArray* plhs[],
     } else
         in3_ = NULL;
     if (mxGetM(prhs[4])*mxGetN(prhs[4]) != 0) {
-        in4_ = mxWrapGetArray_int(prhs[4], &mw_err_txt_);
+        in4_ = mxWrapGetArray_int64_t(prhs[4], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -1938,7 +1944,7 @@ void mexStub3(int nlhs, mxArray* plhs[],
     } else
         in5_ = NULL;
     if (mxGetM(prhs[6])*mxGetN(prhs[6]) != 0) {
-        in6_ = mxWrapGetArray_int(prhs[6], &mw_err_txt_);
+        in6_ = mxWrapGetArray_int64_t(prhs[6], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -1981,21 +1987,21 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 304 ----
- * h3ddirectdp(int[1] nd, dcomplex[1] zk, double[3, ns] sources, dcomplex[nd3, ns] dipoles, int[1] ns, double[3, nt] targ, int[1] nt, inout dcomplex[nd, nt] pottarg, double[1] thresh);
+ * h3ddirectdp(int64_t[1] nd, dcomplex[1] zk, double[3, ns] sources, dcomplex[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout dcomplex[nd, nt] pottarg, double[1] thresh);
  */
-static const char* stubids4_ = "h3ddirectdp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])";
+static const char* stubids4_ = "h3ddirectdp(i int64_t[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], i double[x])";
 
 void mexStub4(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     dcomplex*   in1_ =0; /* zk         */
     double*     in2_ =0; /* sources    */
     dcomplex*   in3_ =0; /* dipoles    */
-    int*        in4_ =0; /* ns         */
+    int64_t*    in4_ =0; /* ns         */
     double*     in5_ =0; /* targ       */
-    int*        in6_ =0; /* nt         */
+    int64_t*    in6_ =0; /* nt         */
     dcomplex*   in7_ =0; /* pottarg    */
     double*     in8_ =0; /* thresh     */
     mwSize      dim9_;   /* 1          */
@@ -2071,7 +2077,7 @@ void mexStub4(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -2106,7 +2112,7 @@ void mexStub4(int nlhs, mxArray* plhs[],
     } else
         in3_ = NULL;
     if (mxGetM(prhs[4])*mxGetN(prhs[4]) != 0) {
-        in4_ = mxWrapGetArray_int(prhs[4], &mw_err_txt_);
+        in4_ = mxWrapGetArray_int64_t(prhs[4], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -2123,7 +2129,7 @@ void mexStub4(int nlhs, mxArray* plhs[],
     } else
         in5_ = NULL;
     if (mxGetM(prhs[6])*mxGetN(prhs[6]) != 0) {
-        in6_ = mxWrapGetArray_int(prhs[6], &mw_err_txt_);
+        in6_ = mxWrapGetArray_int64_t(prhs[6], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -2166,22 +2172,22 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 307 ----
- * h3ddirectcdp(int[1] nd, dcomplex[1] zk, double[3, ns] sources, dcomplex[nd, ns] charges, dcomplex[nd3, ns] dipoles, int[1] ns, double[3, nt] targ, int[1] nt, inout dcomplex[nd, nt] pottarg, double[1] thresh);
+ * h3ddirectcdp(int64_t[1] nd, dcomplex[1] zk, double[3, ns] sources, dcomplex[nd, ns] charges, dcomplex[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout dcomplex[nd, nt] pottarg, double[1] thresh);
  */
-static const char* stubids5_ = "h3ddirectcdp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])";
+static const char* stubids5_ = "h3ddirectcdp(i int64_t[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], i double[x])";
 
 void mexStub5(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     dcomplex*   in1_ =0; /* zk         */
     double*     in2_ =0; /* sources    */
     dcomplex*   in3_ =0; /* charges    */
     dcomplex*   in4_ =0; /* dipoles    */
-    int*        in5_ =0; /* ns         */
+    int64_t*    in5_ =0; /* ns         */
     double*     in6_ =0; /* targ       */
-    int*        in7_ =0; /* nt         */
+    int64_t*    in7_ =0; /* nt         */
     dcomplex*   in8_ =0; /* pottarg    */
     double*     in9_ =0; /* thresh     */
     mwSize      dim10_;   /* 1          */
@@ -2267,7 +2273,7 @@ void mexStub5(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -2311,7 +2317,7 @@ void mexStub5(int nlhs, mxArray* plhs[],
     } else
         in4_ = NULL;
     if (mxGetM(prhs[5])*mxGetN(prhs[5]) != 0) {
-        in5_ = mxWrapGetArray_int(prhs[5], &mw_err_txt_);
+        in5_ = mxWrapGetArray_int64_t(prhs[5], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -2328,7 +2334,7 @@ void mexStub5(int nlhs, mxArray* plhs[],
     } else
         in6_ = NULL;
     if (mxGetM(prhs[7])*mxGetN(prhs[7]) != 0) {
-        in7_ = mxWrapGetArray_int(prhs[7], &mw_err_txt_);
+        in7_ = mxWrapGetArray_int64_t(prhs[7], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -2372,21 +2378,21 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 313 ----
- * h3ddirectcg(int[1] nd, dcomplex[1] zk, double[3, ns] sources, dcomplex[nd, ns] charges, int[1] ns, double[3, nt] targ, int[1] nt, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg, double[1] thresh);
+ * h3ddirectcg(int64_t[1] nd, dcomplex[1] zk, double[3, ns] sources, dcomplex[nd, ns] charges, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg, double[1] thresh);
  */
-static const char* stubids6_ = "h3ddirectcg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])";
+static const char* stubids6_ = "h3ddirectcg(i int64_t[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], io dcomplex[xx], i double[x])";
 
 void mexStub6(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     dcomplex*   in1_ =0; /* zk         */
     double*     in2_ =0; /* sources    */
     dcomplex*   in3_ =0; /* charges    */
-    int*        in4_ =0; /* ns         */
+    int64_t*    in4_ =0; /* ns         */
     double*     in5_ =0; /* targ       */
-    int*        in6_ =0; /* nt         */
+    int64_t*    in6_ =0; /* nt         */
     dcomplex*   in7_ =0; /* pottarg    */
     dcomplex*   in8_ =0; /* gradtarg   */
     double*     in9_ =0; /* thresh     */
@@ -2473,7 +2479,7 @@ void mexStub6(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -2508,7 +2514,7 @@ void mexStub6(int nlhs, mxArray* plhs[],
     } else
         in3_ = NULL;
     if (mxGetM(prhs[4])*mxGetN(prhs[4]) != 0) {
-        in4_ = mxWrapGetArray_int(prhs[4], &mw_err_txt_);
+        in4_ = mxWrapGetArray_int64_t(prhs[4], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -2525,7 +2531,7 @@ void mexStub6(int nlhs, mxArray* plhs[],
     } else
         in5_ = NULL;
     if (mxGetM(prhs[6])*mxGetN(prhs[6]) != 0) {
-        in6_ = mxWrapGetArray_int(prhs[6], &mw_err_txt_);
+        in6_ = mxWrapGetArray_int64_t(prhs[6], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -2580,21 +2586,21 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 316 ----
- * h3ddirectdg(int[1] nd, dcomplex[1] zk, double[3, ns] sources, dcomplex[nd3, ns] dipoles, int[1] ns, double[3, nt] targ, int[1] nt, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg, double[1] thresh);
+ * h3ddirectdg(int64_t[1] nd, dcomplex[1] zk, double[3, ns] sources, dcomplex[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg, double[1] thresh);
  */
-static const char* stubids7_ = "h3ddirectdg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])";
+static const char* stubids7_ = "h3ddirectdg(i int64_t[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], io dcomplex[xx], i double[x])";
 
 void mexStub7(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     dcomplex*   in1_ =0; /* zk         */
     double*     in2_ =0; /* sources    */
     dcomplex*   in3_ =0; /* dipoles    */
-    int*        in4_ =0; /* ns         */
+    int64_t*    in4_ =0; /* ns         */
     double*     in5_ =0; /* targ       */
-    int*        in6_ =0; /* nt         */
+    int64_t*    in6_ =0; /* nt         */
     dcomplex*   in7_ =0; /* pottarg    */
     dcomplex*   in8_ =0; /* gradtarg   */
     double*     in9_ =0; /* thresh     */
@@ -2681,7 +2687,7 @@ void mexStub7(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -2716,7 +2722,7 @@ void mexStub7(int nlhs, mxArray* plhs[],
     } else
         in3_ = NULL;
     if (mxGetM(prhs[4])*mxGetN(prhs[4]) != 0) {
-        in4_ = mxWrapGetArray_int(prhs[4], &mw_err_txt_);
+        in4_ = mxWrapGetArray_int64_t(prhs[4], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -2733,7 +2739,7 @@ void mexStub7(int nlhs, mxArray* plhs[],
     } else
         in5_ = NULL;
     if (mxGetM(prhs[6])*mxGetN(prhs[6]) != 0) {
-        in6_ = mxWrapGetArray_int(prhs[6], &mw_err_txt_);
+        in6_ = mxWrapGetArray_int64_t(prhs[6], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -2788,22 +2794,22 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 319 ----
- * h3ddirectcdg(int[1] nd, dcomplex[1] zk, double[3, ns] sources, dcomplex[nd, ns] charges, dcomplex[nd3, ns] dipoles, int[1] ns, double[3, nt] targ, int[1] nt, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg, double[1] thresh);
+ * h3ddirectcdg(int64_t[1] nd, dcomplex[1] zk, double[3, ns] sources, dcomplex[nd, ns] charges, dcomplex[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg, double[1] thresh);
  */
-static const char* stubids8_ = "h3ddirectcdg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])";
+static const char* stubids8_ = "h3ddirectcdg(i int64_t[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], io dcomplex[xx], i double[x])";
 
 void mexStub8(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     dcomplex*   in1_ =0; /* zk         */
     double*     in2_ =0; /* sources    */
     dcomplex*   in3_ =0; /* charges    */
     dcomplex*   in4_ =0; /* dipoles    */
-    int*        in5_ =0; /* ns         */
+    int64_t*    in5_ =0; /* ns         */
     double*     in6_ =0; /* targ       */
-    int*        in7_ =0; /* nt         */
+    int64_t*    in7_ =0; /* nt         */
     dcomplex*   in8_ =0; /* pottarg    */
     dcomplex*   in9_ =0; /* gradtarg   */
     double*     in10_ =0; /* thresh     */
@@ -2900,7 +2906,7 @@ void mexStub8(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -2944,7 +2950,7 @@ void mexStub8(int nlhs, mxArray* plhs[],
     } else
         in4_ = NULL;
     if (mxGetM(prhs[5])*mxGetN(prhs[5]) != 0) {
-        in5_ = mxWrapGetArray_int(prhs[5], &mw_err_txt_);
+        in5_ = mxWrapGetArray_int64_t(prhs[5], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -2961,7 +2967,7 @@ void mexStub8(int nlhs, mxArray* plhs[],
     } else
         in6_ = NULL;
     if (mxGetM(prhs[7])*mxGetN(prhs[7]) != 0) {
-        in7_ = mxWrapGetArray_int(prhs[7], &mw_err_txt_);
+        in7_ = mxWrapGetArray_int64_t(prhs[7], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -3017,23 +3023,23 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 498 ----
- * lndiv(double[1] eps, int[1] ns, int[1] nt, int[1] ifcharge, int[1] ifdipole, int[1] pg, int[1] pgt, inout int[1] ndiv, inout int[1] idivflag);
+ * lndiv(double[1] eps, int64_t[1] ns, int64_t[1] nt, int64_t[1] ifcharge, int64_t[1] ifdipole, int64_t[1] pg, int64_t[1] pgt, inout int64_t[1] ndiv, inout int64_t[1] idivflag);
  */
-static const char* stubids9_ = "lndiv(i double[x], i int[x], i int[x], i int[x], i int[x], i int[x], i int[x], io int[x], io int[x])";
+static const char* stubids9_ = "lndiv(i double[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], io int64_t[x], io int64_t[x])";
 
 void mexStub9(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
     double*     in0_ =0; /* eps        */
-    int*        in1_ =0; /* ns         */
-    int*        in2_ =0; /* nt         */
-    int*        in3_ =0; /* ifcharge   */
-    int*        in4_ =0; /* ifdipole   */
-    int*        in5_ =0; /* pg         */
-    int*        in6_ =0; /* pgt        */
-    int*        in7_ =0; /* ndiv       */
-    int*        in8_ =0; /* idivflag   */
+    int64_t*    in1_ =0; /* ns         */
+    int64_t*    in2_ =0; /* nt         */
+    int64_t*    in3_ =0; /* ifcharge   */
+    int64_t*    in4_ =0; /* ifdipole   */
+    int64_t*    in5_ =0; /* pg         */
+    int64_t*    in6_ =0; /* pgt        */
+    int64_t*    in7_ =0; /* ndiv       */
+    int64_t*    in8_ =0; /* idivflag   */
     mwSize      dim9_;   /* 1          */
     mwSize      dim10_;   /* 1          */
     mwSize      dim11_;   /* 1          */
@@ -3102,49 +3108,49 @@ void mexStub9(int nlhs, mxArray* plhs[],
     } else
         in0_ = NULL;
     if (mxGetM(prhs[1])*mxGetN(prhs[1]) != 0) {
-        in1_ = mxWrapGetArray_int(prhs[1], &mw_err_txt_);
+        in1_ = mxWrapGetArray_int64_t(prhs[1], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in1_ = NULL;
     if (mxGetM(prhs[2])*mxGetN(prhs[2]) != 0) {
-        in2_ = mxWrapGetArray_int(prhs[2], &mw_err_txt_);
+        in2_ = mxWrapGetArray_int64_t(prhs[2], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in2_ = NULL;
     if (mxGetM(prhs[3])*mxGetN(prhs[3]) != 0) {
-        in3_ = mxWrapGetArray_int(prhs[3], &mw_err_txt_);
+        in3_ = mxWrapGetArray_int64_t(prhs[3], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in3_ = NULL;
     if (mxGetM(prhs[4])*mxGetN(prhs[4]) != 0) {
-        in4_ = mxWrapGetArray_int(prhs[4], &mw_err_txt_);
+        in4_ = mxWrapGetArray_int64_t(prhs[4], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in4_ = NULL;
     if (mxGetM(prhs[5])*mxGetN(prhs[5]) != 0) {
-        in5_ = mxWrapGetArray_int(prhs[5], &mw_err_txt_);
+        in5_ = mxWrapGetArray_int64_t(prhs[5], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in5_ = NULL;
     if (mxGetM(prhs[6])*mxGetN(prhs[6]) != 0) {
-        in6_ = mxWrapGetArray_int(prhs[6], &mw_err_txt_);
+        in6_ = mxWrapGetArray_int64_t(prhs[6], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in6_ = NULL;
     if (mxGetM(prhs[7])*mxGetN(prhs[7]) != 0) {
-        in7_ = mxWrapGetArray_int(prhs[7], &mw_err_txt_);
+        in7_ = mxWrapGetArray_int64_t(prhs[7], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in7_ = NULL;
     if (mxGetM(prhs[8])*mxGetN(prhs[8]) != 0) {
-        in8_ = mxWrapGetArray_int(prhs[8], &mw_err_txt_);
+        in8_ = mxWrapGetArray_int64_t(prhs[8], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -3153,9 +3159,9 @@ void mexStub9(int nlhs, mxArray* plhs[],
         mexprofrecord_[9]++;
     MWF77_lndiv(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_);
     plhs[0] = mxCreateDoubleMatrix(dim16_, 1, mxREAL);
-    mxWrapCopy_int(plhs[0], in7_, dim16_);
+    mxWrapCopy_int64_t(plhs[0], in7_, dim16_);
     plhs[1] = mxCreateDoubleMatrix(dim17_, 1, mxREAL);
-    mxWrapCopy_int(plhs[1], in8_, dim17_);
+    mxWrapCopy_int64_t(plhs[1], in8_, dim17_);
 
 mw_err_label:
     if (in1_)  mxFree(in1_);
@@ -3171,38 +3177,38 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 513 ----
- * lfmm3d_ndiv(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, int[1] ifcharge, double[nd, ns] charges, int[1] ifdipole, double[nd3, ns] dipoles, int[1] iper, int[1] pg, inout double[nd, ns] pot, inout double[nd3, ns] grad, inout double[nd6, ns] hess, int[1] nt, double[3, ntuse] targ, int[1] pgt, inout double[nd, ntuse] pottarg, inout double[nd3, ntuse] gradtarg, inout double[nd6, ntuse] hesstarg, int[1] ndiv, int[1] idivflag, int[1] ifnear, inout double[6] timeinfo, inout int[1] ier);
+ * lfmm3d_ndiv(int64_t[1] nd, double[1] eps, int64_t[1] ns, double[3, ns] sources, int64_t[1] ifcharge, double[nd, ns] charges, int64_t[1] ifdipole, double[nd3, ns] dipoles, int64_t[1] iper, int64_t[1] pg, inout double[nd, ns] pot, inout double[nd3, ns] grad, inout double[nd6, ns] hess, int64_t[1] nt, double[3, ntuse] targ, int64_t[1] pgt, inout double[nd, ntuse] pottarg, inout double[nd3, ntuse] gradtarg, inout double[nd6, ntuse] hesstarg, int64_t[1] ndiv, int64_t[1] idivflag, int64_t[1] ifnear, inout double[6] timeinfo, inout int64_t[1] ier);
  */
-static const char* stubids10_ = "lfmm3d_ndiv(i int[x], i double[x], i int[x], i double[xx], i int[x], i double[xx], i int[x], i double[xx], i int[x], i int[x], io double[xx], io double[xx], io double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], io double[xx], i int[x], i int[x], i int[x], io double[x], io int[x])";
+static const char* stubids10_ = "lfmm3d_ndiv(i int64_t[x], i double[x], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i int64_t[x], i int64_t[x], io double[xx], io double[xx], io double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i int64_t[x], i int64_t[x], i int64_t[x], io double[x], io int64_t[x])";
 
 void mexStub10(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     double*     in1_ =0; /* eps        */
-    int*        in2_ =0; /* ns         */
+    int64_t*    in2_ =0; /* ns         */
     double*     in3_ =0; /* sources    */
-    int*        in4_ =0; /* ifcharge   */
+    int64_t*    in4_ =0; /* ifcharge   */
     double*     in5_ =0; /* charges    */
-    int*        in6_ =0; /* ifdipole   */
+    int64_t*    in6_ =0; /* ifdipole   */
     double*     in7_ =0; /* dipoles    */
-    int*        in8_ =0; /* iper       */
-    int*        in9_ =0; /* pg         */
+    int64_t*    in8_ =0; /* iper       */
+    int64_t*    in9_ =0; /* pg         */
     double*     in10_ =0; /* pot        */
     double*     in11_ =0; /* grad       */
     double*     in12_ =0; /* hess       */
-    int*        in13_ =0; /* nt         */
+    int64_t*    in13_ =0; /* nt         */
     double*     in14_ =0; /* targ       */
-    int*        in15_ =0; /* pgt        */
+    int64_t*    in15_ =0; /* pgt        */
     double*     in16_ =0; /* pottarg    */
     double*     in17_ =0; /* gradtarg   */
     double*     in18_ =0; /* hesstarg   */
-    int*        in19_ =0; /* ndiv       */
-    int*        in20_ =0; /* idivflag   */
-    int*        in21_ =0; /* ifnear     */
+    int64_t*    in19_ =0; /* ndiv       */
+    int64_t*    in20_ =0; /* idivflag   */
+    int64_t*    in21_ =0; /* ifnear     */
     double*     in22_ =0; /* timeinfo   */
-    int*        in23_ =0; /* ier        */
+    int64_t*    in23_ =0; /* ier        */
     mwSize      dim24_;   /* 1          */
     mwSize      dim25_;   /* 1          */
     mwSize      dim26_;   /* 1          */
@@ -3390,7 +3396,7 @@ void mexStub10(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -3407,7 +3413,7 @@ void mexStub10(int nlhs, mxArray* plhs[],
     } else
         in1_ = NULL;
     if (mxGetM(prhs[2])*mxGetN(prhs[2]) != 0) {
-        in2_ = mxWrapGetArray_int(prhs[2], &mw_err_txt_);
+        in2_ = mxWrapGetArray_int64_t(prhs[2], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -3424,7 +3430,7 @@ void mexStub10(int nlhs, mxArray* plhs[],
     } else
         in3_ = NULL;
     if (mxGetM(prhs[4])*mxGetN(prhs[4]) != 0) {
-        in4_ = mxWrapGetArray_int(prhs[4], &mw_err_txt_);
+        in4_ = mxWrapGetArray_int64_t(prhs[4], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -3441,7 +3447,7 @@ void mexStub10(int nlhs, mxArray* plhs[],
     } else
         in5_ = NULL;
     if (mxGetM(prhs[6])*mxGetN(prhs[6]) != 0) {
-        in6_ = mxWrapGetArray_int(prhs[6], &mw_err_txt_);
+        in6_ = mxWrapGetArray_int64_t(prhs[6], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -3458,13 +3464,13 @@ void mexStub10(int nlhs, mxArray* plhs[],
     } else
         in7_ = NULL;
     if (mxGetM(prhs[8])*mxGetN(prhs[8]) != 0) {
-        in8_ = mxWrapGetArray_int(prhs[8], &mw_err_txt_);
+        in8_ = mxWrapGetArray_int64_t(prhs[8], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in8_ = NULL;
     if (mxGetM(prhs[9])*mxGetN(prhs[9]) != 0) {
-        in9_ = mxWrapGetArray_int(prhs[9], &mw_err_txt_);
+        in9_ = mxWrapGetArray_int64_t(prhs[9], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -3488,7 +3494,7 @@ void mexStub10(int nlhs, mxArray* plhs[],
     } else
         in12_ = NULL;
     if (mxGetM(prhs[13])*mxGetN(prhs[13]) != 0) {
-        in13_ = mxWrapGetArray_int(prhs[13], &mw_err_txt_);
+        in13_ = mxWrapGetArray_int64_t(prhs[13], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -3505,7 +3511,7 @@ void mexStub10(int nlhs, mxArray* plhs[],
     } else
         in14_ = NULL;
     if (mxGetM(prhs[15])*mxGetN(prhs[15]) != 0) {
-        in15_ = mxWrapGetArray_int(prhs[15], &mw_err_txt_);
+        in15_ = mxWrapGetArray_int64_t(prhs[15], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -3529,19 +3535,19 @@ void mexStub10(int nlhs, mxArray* plhs[],
     } else
         in18_ = NULL;
     if (mxGetM(prhs[19])*mxGetN(prhs[19]) != 0) {
-        in19_ = mxWrapGetArray_int(prhs[19], &mw_err_txt_);
+        in19_ = mxWrapGetArray_int64_t(prhs[19], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in19_ = NULL;
     if (mxGetM(prhs[20])*mxGetN(prhs[20]) != 0) {
-        in20_ = mxWrapGetArray_int(prhs[20], &mw_err_txt_);
+        in20_ = mxWrapGetArray_int64_t(prhs[20], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
         in20_ = NULL;
     if (mxGetM(prhs[21])*mxGetN(prhs[21]) != 0) {
-        in21_ = mxWrapGetArray_int(prhs[21], &mw_err_txt_);
+        in21_ = mxWrapGetArray_int64_t(prhs[21], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -3553,7 +3559,7 @@ void mexStub10(int nlhs, mxArray* plhs[],
     } else
         in22_ = NULL;
     if (mxGetM(prhs[23])*mxGetN(prhs[23]) != 0) {
-        in23_ = mxWrapGetArray_int(prhs[23], &mw_err_txt_);
+        in23_ = mxWrapGetArray_int64_t(prhs[23], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -3576,7 +3582,7 @@ void mexStub10(int nlhs, mxArray* plhs[],
     plhs[6] = mxCreateDoubleMatrix(dim56_, 1, mxREAL);
     mxWrapCopy_double(plhs[6], in22_, dim56_);
     plhs[7] = mxCreateDoubleMatrix(dim57_, 1, mxREAL);
-    mxWrapCopy_int(plhs[7], in23_, dim57_);
+    mxWrapCopy_int64_t(plhs[7], in23_, dim57_);
 
 mw_err_label:
     if (in0_)  mxFree(in0_);
@@ -3603,20 +3609,20 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 630 ----
- * l3ddirectcp(int[1] nd, double[3, ns] sources, double[nd, ns] charges, int[1] ns, double[3, nt] targ, int[1] nt, inout double[nd, nt] pottarg, double[1] thresh);
+ * l3ddirectcp(int64_t[1] nd, double[3, ns] sources, double[nd, ns] charges, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd, nt] pottarg, double[1] thresh);
  */
-static const char* stubids11_ = "l3ddirectcp(i int[x], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], i double[x])";
+static const char* stubids11_ = "l3ddirectcp(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], i double[x])";
 
 void mexStub11(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     double*     in1_ =0; /* sources    */
     double*     in2_ =0; /* charges    */
-    int*        in3_ =0; /* ns         */
+    int64_t*    in3_ =0; /* ns         */
     double*     in4_ =0; /* targ       */
-    int*        in5_ =0; /* nt         */
+    int64_t*    in5_ =0; /* nt         */
     double*     in6_ =0; /* pottarg    */
     double*     in7_ =0; /* thresh     */
     mwSize      dim8_;   /* 1          */
@@ -3686,7 +3692,7 @@ void mexStub11(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -3714,7 +3720,7 @@ void mexStub11(int nlhs, mxArray* plhs[],
     } else
         in2_ = NULL;
     if (mxGetM(prhs[3])*mxGetN(prhs[3]) != 0) {
-        in3_ = mxWrapGetArray_int(prhs[3], &mw_err_txt_);
+        in3_ = mxWrapGetArray_int64_t(prhs[3], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -3731,7 +3737,7 @@ void mexStub11(int nlhs, mxArray* plhs[],
     } else
         in4_ = NULL;
     if (mxGetM(prhs[5])*mxGetN(prhs[5]) != 0) {
-        in5_ = mxWrapGetArray_int(prhs[5], &mw_err_txt_);
+        in5_ = mxWrapGetArray_int64_t(prhs[5], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -3769,20 +3775,20 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 633 ----
- * l3ddirectdp(int[1] nd, double[3, ns] sources, double[nd3, ns] dipoles, int[1] ns, double[3, nt] targ, int[1] nt, inout double[nd, nt] pottarg, double[1] thresh);
+ * l3ddirectdp(int64_t[1] nd, double[3, ns] sources, double[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd, nt] pottarg, double[1] thresh);
  */
-static const char* stubids12_ = "l3ddirectdp(i int[x], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], i double[x])";
+static const char* stubids12_ = "l3ddirectdp(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], i double[x])";
 
 void mexStub12(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     double*     in1_ =0; /* sources    */
     double*     in2_ =0; /* dipoles    */
-    int*        in3_ =0; /* ns         */
+    int64_t*    in3_ =0; /* ns         */
     double*     in4_ =0; /* targ       */
-    int*        in5_ =0; /* nt         */
+    int64_t*    in5_ =0; /* nt         */
     double*     in6_ =0; /* pottarg    */
     double*     in7_ =0; /* thresh     */
     mwSize      dim8_;   /* 1          */
@@ -3852,7 +3858,7 @@ void mexStub12(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -3880,7 +3886,7 @@ void mexStub12(int nlhs, mxArray* plhs[],
     } else
         in2_ = NULL;
     if (mxGetM(prhs[3])*mxGetN(prhs[3]) != 0) {
-        in3_ = mxWrapGetArray_int(prhs[3], &mw_err_txt_);
+        in3_ = mxWrapGetArray_int64_t(prhs[3], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -3897,7 +3903,7 @@ void mexStub12(int nlhs, mxArray* plhs[],
     } else
         in4_ = NULL;
     if (mxGetM(prhs[5])*mxGetN(prhs[5]) != 0) {
-        in5_ = mxWrapGetArray_int(prhs[5], &mw_err_txt_);
+        in5_ = mxWrapGetArray_int64_t(prhs[5], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -3935,21 +3941,21 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 636 ----
- * l3ddirectcdp(int[1] nd, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, int[1] ns, double[3, nt] targ, int[1] nt, inout double[nd, nt] pottarg, double[1] thresh);
+ * l3ddirectcdp(int64_t[1] nd, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd, nt] pottarg, double[1] thresh);
  */
-static const char* stubids13_ = "l3ddirectcdp(i int[x], i double[xx], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], i double[x])";
+static const char* stubids13_ = "l3ddirectcdp(i int64_t[x], i double[xx], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], i double[x])";
 
 void mexStub13(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     double*     in1_ =0; /* sources    */
     double*     in2_ =0; /* charges    */
     double*     in3_ =0; /* dipoles    */
-    int*        in4_ =0; /* ns         */
+    int64_t*    in4_ =0; /* ns         */
     double*     in5_ =0; /* targ       */
-    int*        in6_ =0; /* nt         */
+    int64_t*    in6_ =0; /* nt         */
     double*     in7_ =0; /* pottarg    */
     double*     in8_ =0; /* thresh     */
     mwSize      dim9_;   /* 1          */
@@ -4029,7 +4035,7 @@ void mexStub13(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -4068,7 +4074,7 @@ void mexStub13(int nlhs, mxArray* plhs[],
     } else
         in3_ = NULL;
     if (mxGetM(prhs[4])*mxGetN(prhs[4]) != 0) {
-        in4_ = mxWrapGetArray_int(prhs[4], &mw_err_txt_);
+        in4_ = mxWrapGetArray_int64_t(prhs[4], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -4085,7 +4091,7 @@ void mexStub13(int nlhs, mxArray* plhs[],
     } else
         in5_ = NULL;
     if (mxGetM(prhs[6])*mxGetN(prhs[6]) != 0) {
-        in6_ = mxWrapGetArray_int(prhs[6], &mw_err_txt_);
+        in6_ = mxWrapGetArray_int64_t(prhs[6], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -4123,20 +4129,20 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 642 ----
- * l3ddirectcg(int[1] nd, double[3, ns] sources, double[nd, ns] charges, int[1] ns, double[3, nt] targ, int[1] nt, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg, double[1] thresh);
+ * l3ddirectcg(int64_t[1] nd, double[3, ns] sources, double[nd, ns] charges, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg, double[1] thresh);
  */
-static const char* stubids14_ = "l3ddirectcg(i int[x], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], i double[x])";
+static const char* stubids14_ = "l3ddirectcg(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], i double[x])";
 
 void mexStub14(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     double*     in1_ =0; /* sources    */
     double*     in2_ =0; /* charges    */
-    int*        in3_ =0; /* ns         */
+    int64_t*    in3_ =0; /* ns         */
     double*     in4_ =0; /* targ       */
-    int*        in5_ =0; /* nt         */
+    int64_t*    in5_ =0; /* nt         */
     double*     in6_ =0; /* pottarg    */
     double*     in7_ =0; /* gradtarg   */
     double*     in8_ =0; /* thresh     */
@@ -4217,7 +4223,7 @@ void mexStub14(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -4245,7 +4251,7 @@ void mexStub14(int nlhs, mxArray* plhs[],
     } else
         in2_ = NULL;
     if (mxGetM(prhs[3])*mxGetN(prhs[3]) != 0) {
-        in3_ = mxWrapGetArray_int(prhs[3], &mw_err_txt_);
+        in3_ = mxWrapGetArray_int64_t(prhs[3], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -4262,7 +4268,7 @@ void mexStub14(int nlhs, mxArray* plhs[],
     } else
         in4_ = NULL;
     if (mxGetM(prhs[5])*mxGetN(prhs[5]) != 0) {
-        in5_ = mxWrapGetArray_int(prhs[5], &mw_err_txt_);
+        in5_ = mxWrapGetArray_int64_t(prhs[5], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -4309,20 +4315,20 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 645 ----
- * l3ddirectdg(int[1] nd, double[3, ns] sources, double[nd3, ns] dipoles, int[1] ns, double[3, nt] targ, int[1] nt, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg, double[1] thresh);
+ * l3ddirectdg(int64_t[1] nd, double[3, ns] sources, double[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg, double[1] thresh);
  */
-static const char* stubids15_ = "l3ddirectdg(i int[x], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], i double[x])";
+static const char* stubids15_ = "l3ddirectdg(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], i double[x])";
 
 void mexStub15(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     double*     in1_ =0; /* sources    */
     double*     in2_ =0; /* dipoles    */
-    int*        in3_ =0; /* ns         */
+    int64_t*    in3_ =0; /* ns         */
     double*     in4_ =0; /* targ       */
-    int*        in5_ =0; /* nt         */
+    int64_t*    in5_ =0; /* nt         */
     double*     in6_ =0; /* pottarg    */
     double*     in7_ =0; /* gradtarg   */
     double*     in8_ =0; /* thresh     */
@@ -4403,7 +4409,7 @@ void mexStub15(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -4431,7 +4437,7 @@ void mexStub15(int nlhs, mxArray* plhs[],
     } else
         in2_ = NULL;
     if (mxGetM(prhs[3])*mxGetN(prhs[3]) != 0) {
-        in3_ = mxWrapGetArray_int(prhs[3], &mw_err_txt_);
+        in3_ = mxWrapGetArray_int64_t(prhs[3], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -4448,7 +4454,7 @@ void mexStub15(int nlhs, mxArray* plhs[],
     } else
         in4_ = NULL;
     if (mxGetM(prhs[5])*mxGetN(prhs[5]) != 0) {
-        in5_ = mxWrapGetArray_int(prhs[5], &mw_err_txt_);
+        in5_ = mxWrapGetArray_int64_t(prhs[5], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -4495,21 +4501,21 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 648 ----
- * l3ddirectcdg(int[1] nd, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, int[1] ns, double[3, nt] targ, int[1] nt, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg, double[1] thresh);
+ * l3ddirectcdg(int64_t[1] nd, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg, double[1] thresh);
  */
-static const char* stubids16_ = "l3ddirectcdg(i int[x], i double[xx], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], i double[x])";
+static const char* stubids16_ = "l3ddirectcdg(i int64_t[x], i double[xx], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], i double[x])";
 
 void mexStub16(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     double*     in1_ =0; /* sources    */
     double*     in2_ =0; /* charges    */
     double*     in3_ =0; /* dipoles    */
-    int*        in4_ =0; /* ns         */
+    int64_t*    in4_ =0; /* ns         */
     double*     in5_ =0; /* targ       */
-    int*        in6_ =0; /* nt         */
+    int64_t*    in6_ =0; /* nt         */
     double*     in7_ =0; /* pottarg    */
     double*     in8_ =0; /* gradtarg   */
     double*     in9_ =0; /* thresh     */
@@ -4600,7 +4606,7 @@ void mexStub16(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -4639,7 +4645,7 @@ void mexStub16(int nlhs, mxArray* plhs[],
     } else
         in3_ = NULL;
     if (mxGetM(prhs[4])*mxGetN(prhs[4]) != 0) {
-        in4_ = mxWrapGetArray_int(prhs[4], &mw_err_txt_);
+        in4_ = mxWrapGetArray_int64_t(prhs[4], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -4656,7 +4662,7 @@ void mexStub16(int nlhs, mxArray* plhs[],
     } else
         in5_ = NULL;
     if (mxGetM(prhs[6])*mxGetN(prhs[6]) != 0) {
-        in6_ = mxWrapGetArray_int(prhs[6], &mw_err_txt_);
+        in6_ = mxWrapGetArray_int64_t(prhs[6], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -4703,20 +4709,20 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 655 ----
- * l3ddirectch(int[1] nd, double[3, ns] sources, double[nd, ns] charges, int[1] ns, double[3, nt] targ, int[1] nt, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg, inout double[nd6, nt] hesstarg, double[1] thresh);
+ * l3ddirectch(int64_t[1] nd, double[3, ns] sources, double[nd, ns] charges, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg, inout double[nd6, nt] hesstarg, double[1] thresh);
  */
-static const char* stubids17_ = "l3ddirectch(i int[x], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], io double[xx], i double[x])";
+static const char* stubids17_ = "l3ddirectch(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])";
 
 void mexStub17(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     double*     in1_ =0; /* sources    */
     double*     in2_ =0; /* charges    */
-    int*        in3_ =0; /* ns         */
+    int64_t*    in3_ =0; /* ns         */
     double*     in4_ =0; /* targ       */
-    int*        in5_ =0; /* nt         */
+    int64_t*    in5_ =0; /* nt         */
     double*     in6_ =0; /* pottarg    */
     double*     in7_ =0; /* gradtarg   */
     double*     in8_ =0; /* hesstarg   */
@@ -4808,7 +4814,7 @@ void mexStub17(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -4836,7 +4842,7 @@ void mexStub17(int nlhs, mxArray* plhs[],
     } else
         in2_ = NULL;
     if (mxGetM(prhs[3])*mxGetN(prhs[3]) != 0) {
-        in3_ = mxWrapGetArray_int(prhs[3], &mw_err_txt_);
+        in3_ = mxWrapGetArray_int64_t(prhs[3], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -4853,7 +4859,7 @@ void mexStub17(int nlhs, mxArray* plhs[],
     } else
         in4_ = NULL;
     if (mxGetM(prhs[5])*mxGetN(prhs[5]) != 0) {
-        in5_ = mxWrapGetArray_int(prhs[5], &mw_err_txt_);
+        in5_ = mxWrapGetArray_int64_t(prhs[5], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -4909,20 +4915,20 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 658 ----
- * l3ddirectdh(int[1] nd, double[3, ns] sources, double[nd3, ns] dipoles, int[1] ns, double[3, nt] targ, int[1] nt, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg, inout double[nd6, nt] hesstarg, double[1] thresh);
+ * l3ddirectdh(int64_t[1] nd, double[3, ns] sources, double[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg, inout double[nd6, nt] hesstarg, double[1] thresh);
  */
-static const char* stubids18_ = "l3ddirectdh(i int[x], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], io double[xx], i double[x])";
+static const char* stubids18_ = "l3ddirectdh(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])";
 
 void mexStub18(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     double*     in1_ =0; /* sources    */
     double*     in2_ =0; /* dipoles    */
-    int*        in3_ =0; /* ns         */
+    int64_t*    in3_ =0; /* ns         */
     double*     in4_ =0; /* targ       */
-    int*        in5_ =0; /* nt         */
+    int64_t*    in5_ =0; /* nt         */
     double*     in6_ =0; /* pottarg    */
     double*     in7_ =0; /* gradtarg   */
     double*     in8_ =0; /* hesstarg   */
@@ -5014,7 +5020,7 @@ void mexStub18(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5042,7 +5048,7 @@ void mexStub18(int nlhs, mxArray* plhs[],
     } else
         in2_ = NULL;
     if (mxGetM(prhs[3])*mxGetN(prhs[3]) != 0) {
-        in3_ = mxWrapGetArray_int(prhs[3], &mw_err_txt_);
+        in3_ = mxWrapGetArray_int64_t(prhs[3], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5059,7 +5065,7 @@ void mexStub18(int nlhs, mxArray* plhs[],
     } else
         in4_ = NULL;
     if (mxGetM(prhs[5])*mxGetN(prhs[5]) != 0) {
-        in5_ = mxWrapGetArray_int(prhs[5], &mw_err_txt_);
+        in5_ = mxWrapGetArray_int64_t(prhs[5], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5115,21 +5121,21 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 661 ----
- * l3ddirectcdh(int[1] nd, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, int[1] ns, double[3, nt] targ, int[1] nt, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg, inout double[nd6, nt] hesstarg, double[1] thresh);
+ * l3ddirectcdh(int64_t[1] nd, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg, inout double[nd6, nt] hesstarg, double[1] thresh);
  */
-static const char* stubids19_ = "l3ddirectcdh(i int[x], i double[xx], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], io double[xx], i double[x])";
+static const char* stubids19_ = "l3ddirectcdh(i int64_t[x], i double[xx], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])";
 
 void mexStub19(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     double*     in1_ =0; /* sources    */
     double*     in2_ =0; /* charges    */
     double*     in3_ =0; /* dipoles    */
-    int*        in4_ =0; /* ns         */
+    int64_t*    in4_ =0; /* ns         */
     double*     in5_ =0; /* targ       */
-    int*        in6_ =0; /* nt         */
+    int64_t*    in6_ =0; /* nt         */
     double*     in7_ =0; /* pottarg    */
     double*     in8_ =0; /* gradtarg   */
     double*     in9_ =0; /* hesstarg   */
@@ -5231,7 +5237,7 @@ void mexStub19(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5270,7 +5276,7 @@ void mexStub19(int nlhs, mxArray* plhs[],
     } else
         in3_ = NULL;
     if (mxGetM(prhs[4])*mxGetN(prhs[4]) != 0) {
-        in4_ = mxWrapGetArray_int(prhs[4], &mw_err_txt_);
+        in4_ = mxWrapGetArray_int64_t(prhs[4], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5287,7 +5293,7 @@ void mexStub19(int nlhs, mxArray* plhs[],
     } else
         in5_ = NULL;
     if (mxGetM(prhs[6])*mxGetN(prhs[6]) != 0) {
-        in6_ = mxWrapGetArray_int(prhs[6], &mw_err_txt_);
+        in6_ = mxWrapGetArray_int64_t(prhs[6], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5343,34 +5349,34 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 797 ----
- * emfmm3d(int[1] nd, double[1] eps, dcomplex[1] zk, int[1] ns, double[3, ns] sources, int[1] ifh_current, dcomplex[nd3, ns_h_current] h_current, int[1] ife_current, dcomplex[nd3, ns_e_current] e_current, int[1] ife_charge, dcomplex[nd, ns_e_charge] e_charge, int[1] nt, double[3, nt] targ, int[1] ifE, inout dcomplex[nd3, nt_E] E, int[1] ifcurlE, inout dcomplex[nd3, nt_curlE] curlE, int[1] ifdivE, inout dcomplex[nd, nt_divE] divE, inout int[1] ier);
+ * emfmm3d(int64_t[1] nd, double[1] eps, dcomplex[1] zk, int64_t[1] ns, double[3, ns] sources, int64_t[1] ifh_current, dcomplex[nd3, ns_h_current] h_current, int64_t[1] ife_current, dcomplex[nd3, ns_e_current] e_current, int64_t[1] ife_charge, dcomplex[nd, ns_e_charge] e_charge, int64_t[1] nt, double[3, nt] targ, int64_t[1] ifE, inout dcomplex[nd3, nt_E] E, int64_t[1] ifcurlE, inout dcomplex[nd3, nt_curlE] curlE, int64_t[1] ifdivE, inout dcomplex[nd, nt_divE] divE, inout int64_t[1] ier);
  */
-static const char* stubids20_ = "emfmm3d(i int[x], i double[x], i dcomplex[x], i int[x], i double[xx], i int[x], i dcomplex[xx], i int[x], i dcomplex[xx], i int[x], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i int[x], io dcomplex[xx], i int[x], io dcomplex[xx], io int[x])";
+static const char* stubids20_ = "emfmm3d(i int64_t[x], i double[x], i dcomplex[x], i int64_t[x], i double[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], i int64_t[x], io dcomplex[xx], i int64_t[x], io dcomplex[xx], io int64_t[x])";
 
 void mexStub20(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     double*     in1_ =0; /* eps        */
     dcomplex*   in2_ =0; /* zk         */
-    int*        in3_ =0; /* ns         */
+    int64_t*    in3_ =0; /* ns         */
     double*     in4_ =0; /* sources    */
-    int*        in5_ =0; /* ifh_current */
+    int64_t*    in5_ =0; /* ifh_current */
     dcomplex*   in6_ =0; /* h_current  */
-    int*        in7_ =0; /* ife_current */
+    int64_t*    in7_ =0; /* ife_current */
     dcomplex*   in8_ =0; /* e_current  */
-    int*        in9_ =0; /* ife_charge */
+    int64_t*    in9_ =0; /* ife_charge */
     dcomplex*   in10_ =0; /* e_charge   */
-    int*        in11_ =0; /* nt         */
+    int64_t*    in11_ =0; /* nt         */
     double*     in12_ =0; /* targ       */
-    int*        in13_ =0; /* ifE        */
+    int64_t*    in13_ =0; /* ifE        */
     dcomplex*   in14_ =0; /* E          */
-    int*        in15_ =0; /* ifcurlE    */
+    int64_t*    in15_ =0; /* ifcurlE    */
     dcomplex*   in16_ =0; /* curlE      */
-    int*        in17_ =0; /* ifdivE     */
+    int64_t*    in17_ =0; /* ifdivE     */
     dcomplex*   in18_ =0; /* divE       */
-    int*        in19_ =0; /* ier        */
+    int64_t*    in19_ =0; /* ier        */
     mwSize      dim20_;   /* 1          */
     mwSize      dim21_;   /* 1          */
     mwSize      dim22_;   /* 1          */
@@ -5526,7 +5532,7 @@ void mexStub20(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5552,7 +5558,7 @@ void mexStub20(int nlhs, mxArray* plhs[],
     } else
         in2_ = NULL;
     if (mxGetM(prhs[3])*mxGetN(prhs[3]) != 0) {
-        in3_ = mxWrapGetArray_int(prhs[3], &mw_err_txt_);
+        in3_ = mxWrapGetArray_int64_t(prhs[3], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5569,7 +5575,7 @@ void mexStub20(int nlhs, mxArray* plhs[],
     } else
         in4_ = NULL;
     if (mxGetM(prhs[5])*mxGetN(prhs[5]) != 0) {
-        in5_ = mxWrapGetArray_int(prhs[5], &mw_err_txt_);
+        in5_ = mxWrapGetArray_int64_t(prhs[5], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5584,7 +5590,7 @@ void mexStub20(int nlhs, mxArray* plhs[],
     } else
         in6_ = NULL;
     if (mxGetM(prhs[7])*mxGetN(prhs[7]) != 0) {
-        in7_ = mxWrapGetArray_int(prhs[7], &mw_err_txt_);
+        in7_ = mxWrapGetArray_int64_t(prhs[7], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5599,7 +5605,7 @@ void mexStub20(int nlhs, mxArray* plhs[],
     } else
         in8_ = NULL;
     if (mxGetM(prhs[9])*mxGetN(prhs[9]) != 0) {
-        in9_ = mxWrapGetArray_int(prhs[9], &mw_err_txt_);
+        in9_ = mxWrapGetArray_int64_t(prhs[9], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5614,7 +5620,7 @@ void mexStub20(int nlhs, mxArray* plhs[],
     } else
         in10_ = NULL;
     if (mxGetM(prhs[11])*mxGetN(prhs[11]) != 0) {
-        in11_ = mxWrapGetArray_int(prhs[11], &mw_err_txt_);
+        in11_ = mxWrapGetArray_int64_t(prhs[11], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5631,7 +5637,7 @@ void mexStub20(int nlhs, mxArray* plhs[],
     } else
         in12_ = NULL;
     if (mxGetM(prhs[13])*mxGetN(prhs[13]) != 0) {
-        in13_ = mxWrapGetArray_int(prhs[13], &mw_err_txt_);
+        in13_ = mxWrapGetArray_int64_t(prhs[13], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5646,7 +5652,7 @@ void mexStub20(int nlhs, mxArray* plhs[],
     } else
         in14_ = NULL;
     if (mxGetM(prhs[15])*mxGetN(prhs[15]) != 0) {
-        in15_ = mxWrapGetArray_int(prhs[15], &mw_err_txt_);
+        in15_ = mxWrapGetArray_int64_t(prhs[15], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5661,7 +5667,7 @@ void mexStub20(int nlhs, mxArray* plhs[],
     } else
         in16_ = NULL;
     if (mxGetM(prhs[17])*mxGetN(prhs[17]) != 0) {
-        in17_ = mxWrapGetArray_int(prhs[17], &mw_err_txt_);
+        in17_ = mxWrapGetArray_int64_t(prhs[17], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5676,7 +5682,7 @@ void mexStub20(int nlhs, mxArray* plhs[],
     } else
         in18_ = NULL;
     if (mxGetM(prhs[19])*mxGetN(prhs[19]) != 0) {
-        in19_ = mxWrapGetArray_int(prhs[19], &mw_err_txt_);
+        in19_ = mxWrapGetArray_int64_t(prhs[19], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5691,7 +5697,7 @@ void mexStub20(int nlhs, mxArray* plhs[],
     plhs[2] = mxCreateDoubleMatrix(dim45_, dim46_, mxCOMPLEX);
     mxWrapCopy_dcomplex(plhs[2], in18_, dim45_*dim46_);
     plhs[3] = mxCreateDoubleMatrix(dim47_, 1, mxREAL);
-    mxWrapCopy_int(plhs[3], in19_, dim47_);
+    mxWrapCopy_int64_t(plhs[3], in19_, dim47_);
 
 mw_err_label:
     if (in0_)  mxFree(in0_);
@@ -5716,31 +5722,31 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 938 ----
- * em3ddirect(int[1] nd, dcomplex[1] zk, int[1] ns, double[3, ns] sources, int[1] ifh_current, dcomplex[nd3, ns_h_current] h_current, int[1] ife_current, dcomplex[nd3, ns_e_current] e_current, int[1] ife_charge, dcomplex[nd, ns_e_charge] e_charge, int[1] nt, double[3, nt] targ, int[1] ifE, inout dcomplex[nd3, nt_E] E, int[1] ifcurlE, inout dcomplex[nd3, nt_curlE] curlE, int[1] ifdivE, inout dcomplex[nd, nt_divE] divE, double[1] thresh);
+ * em3ddirect(int64_t[1] nd, dcomplex[1] zk, int64_t[1] ns, double[3, ns] sources, int64_t[1] ifh_current, dcomplex[nd3, ns_h_current] h_current, int64_t[1] ife_current, dcomplex[nd3, ns_e_current] e_current, int64_t[1] ife_charge, dcomplex[nd, ns_e_charge] e_charge, int64_t[1] nt, double[3, nt] targ, int64_t[1] ifE, inout dcomplex[nd3, nt_E] E, int64_t[1] ifcurlE, inout dcomplex[nd3, nt_curlE] curlE, int64_t[1] ifdivE, inout dcomplex[nd, nt_divE] divE, double[1] thresh);
  */
-static const char* stubids21_ = "em3ddirect(i int[x], i dcomplex[x], i int[x], i double[xx], i int[x], i dcomplex[xx], i int[x], i dcomplex[xx], i int[x], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i int[x], io dcomplex[xx], i int[x], io dcomplex[xx], i double[x])";
+static const char* stubids21_ = "em3ddirect(i int64_t[x], i dcomplex[x], i int64_t[x], i double[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], i int64_t[x], io dcomplex[xx], i int64_t[x], io dcomplex[xx], i double[x])";
 
 void mexStub21(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     dcomplex*   in1_ =0; /* zk         */
-    int*        in2_ =0; /* ns         */
+    int64_t*    in2_ =0; /* ns         */
     double*     in3_ =0; /* sources    */
-    int*        in4_ =0; /* ifh_current */
+    int64_t*    in4_ =0; /* ifh_current */
     dcomplex*   in5_ =0; /* h_current  */
-    int*        in6_ =0; /* ife_current */
+    int64_t*    in6_ =0; /* ife_current */
     dcomplex*   in7_ =0; /* e_current  */
-    int*        in8_ =0; /* ife_charge */
+    int64_t*    in8_ =0; /* ife_charge */
     dcomplex*   in9_ =0; /* e_charge   */
-    int*        in10_ =0; /* nt         */
+    int64_t*    in10_ =0; /* nt         */
     double*     in11_ =0; /* targ       */
-    int*        in12_ =0; /* ifE        */
+    int64_t*    in12_ =0; /* ifE        */
     dcomplex*   in13_ =0; /* E          */
-    int*        in14_ =0; /* ifcurlE    */
+    int64_t*    in14_ =0; /* ifcurlE    */
     dcomplex*   in15_ =0; /* curlE      */
-    int*        in16_ =0; /* ifdivE     */
+    int64_t*    in16_ =0; /* ifdivE     */
     dcomplex*   in17_ =0; /* divE       */
     double*     in18_ =0; /* thresh     */
     mwSize      dim19_;   /* 1          */
@@ -5892,7 +5898,7 @@ void mexStub21(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5907,7 +5913,7 @@ void mexStub21(int nlhs, mxArray* plhs[],
     } else
         in1_ = NULL;
     if (mxGetM(prhs[2])*mxGetN(prhs[2]) != 0) {
-        in2_ = mxWrapGetArray_int(prhs[2], &mw_err_txt_);
+        in2_ = mxWrapGetArray_int64_t(prhs[2], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5924,7 +5930,7 @@ void mexStub21(int nlhs, mxArray* plhs[],
     } else
         in3_ = NULL;
     if (mxGetM(prhs[4])*mxGetN(prhs[4]) != 0) {
-        in4_ = mxWrapGetArray_int(prhs[4], &mw_err_txt_);
+        in4_ = mxWrapGetArray_int64_t(prhs[4], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5939,7 +5945,7 @@ void mexStub21(int nlhs, mxArray* plhs[],
     } else
         in5_ = NULL;
     if (mxGetM(prhs[6])*mxGetN(prhs[6]) != 0) {
-        in6_ = mxWrapGetArray_int(prhs[6], &mw_err_txt_);
+        in6_ = mxWrapGetArray_int64_t(prhs[6], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5954,7 +5960,7 @@ void mexStub21(int nlhs, mxArray* plhs[],
     } else
         in7_ = NULL;
     if (mxGetM(prhs[8])*mxGetN(prhs[8]) != 0) {
-        in8_ = mxWrapGetArray_int(prhs[8], &mw_err_txt_);
+        in8_ = mxWrapGetArray_int64_t(prhs[8], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5969,7 +5975,7 @@ void mexStub21(int nlhs, mxArray* plhs[],
     } else
         in9_ = NULL;
     if (mxGetM(prhs[10])*mxGetN(prhs[10]) != 0) {
-        in10_ = mxWrapGetArray_int(prhs[10], &mw_err_txt_);
+        in10_ = mxWrapGetArray_int64_t(prhs[10], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -5986,7 +5992,7 @@ void mexStub21(int nlhs, mxArray* plhs[],
     } else
         in11_ = NULL;
     if (mxGetM(prhs[12])*mxGetN(prhs[12]) != 0) {
-        in12_ = mxWrapGetArray_int(prhs[12], &mw_err_txt_);
+        in12_ = mxWrapGetArray_int64_t(prhs[12], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -6001,7 +6007,7 @@ void mexStub21(int nlhs, mxArray* plhs[],
     } else
         in13_ = NULL;
     if (mxGetM(prhs[14])*mxGetN(prhs[14]) != 0) {
-        in14_ = mxWrapGetArray_int(prhs[14], &mw_err_txt_);
+        in14_ = mxWrapGetArray_int64_t(prhs[14], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -6016,7 +6022,7 @@ void mexStub21(int nlhs, mxArray* plhs[],
     } else
         in15_ = NULL;
     if (mxGetM(prhs[16])*mxGetN(prhs[16]) != 0) {
-        in16_ = mxWrapGetArray_int(prhs[16], &mw_err_txt_);
+        in16_ = mxWrapGetArray_int64_t(prhs[16], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -6073,34 +6079,34 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 1094 ----
- * stfmm3d(int[1] nd, double[1] eps, int[1] ns, double[3, ns] sources, int[1] ifstoklet, double[nd3, ns_stok] stoklet, int[1] ifstrslet, double[nd3, ns_strs] strslet, double[nd3, ns_strs] strsvec, int[1] ifppreg, inout double[nd3, ns_pot] pot, inout double[nd, ns_pre] pre, inout double[nd9, ns_grad] grad, int[1] nt, double[3, nt] targ, int[1] ifppregtarg, inout double[nd3, nt_pot] pottarg, inout double[nd, nt_pre] pretarg, inout double[nd9, nt_grad] gradtarg, inout int[1] ier);
+ * stfmm3d(int64_t[1] nd, double[1] eps, int64_t[1] ns, double[3, ns] sources, int64_t[1] ifstoklet, double[nd3, ns_stok] stoklet, int64_t[1] ifstrslet, double[nd3, ns_strs] strslet, double[nd3, ns_strs] strsvec, int64_t[1] ifppreg, inout double[nd3, ns_pot] pot, inout double[nd, ns_pre] pre, inout double[nd9, ns_grad] grad, int64_t[1] nt, double[3, nt] targ, int64_t[1] ifppregtarg, inout double[nd3, nt_pot] pottarg, inout double[nd, nt_pre] pretarg, inout double[nd9, nt_grad] gradtarg, inout int64_t[1] ier);
  */
-static const char* stubids22_ = "stfmm3d(i int[x], i double[x], i int[x], i double[xx], i int[x], i double[xx], i int[x], i double[xx], i double[xx], i int[x], io double[xx], io double[xx], io double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], io double[xx], io int[x])";
+static const char* stubids22_ = "stfmm3d(i int64_t[x], i double[x], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], io int64_t[x])";
 
 void mexStub22(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     double*     in1_ =0; /* eps        */
-    int*        in2_ =0; /* ns         */
+    int64_t*    in2_ =0; /* ns         */
     double*     in3_ =0; /* sources    */
-    int*        in4_ =0; /* ifstoklet  */
+    int64_t*    in4_ =0; /* ifstoklet  */
     double*     in5_ =0; /* stoklet    */
-    int*        in6_ =0; /* ifstrslet  */
+    int64_t*    in6_ =0; /* ifstrslet  */
     double*     in7_ =0; /* strslet    */
     double*     in8_ =0; /* strsvec    */
-    int*        in9_ =0; /* ifppreg    */
+    int64_t*    in9_ =0; /* ifppreg    */
     double*     in10_ =0; /* pot        */
     double*     in11_ =0; /* pre        */
     double*     in12_ =0; /* grad       */
-    int*        in13_ =0; /* nt         */
+    int64_t*    in13_ =0; /* nt         */
     double*     in14_ =0; /* targ       */
-    int*        in15_ =0; /* ifppregtarg */
+    int64_t*    in15_ =0; /* ifppregtarg */
     double*     in16_ =0; /* pottarg    */
     double*     in17_ =0; /* pretarg    */
     double*     in18_ =0; /* gradtarg   */
-    int*        in19_ =0; /* ier        */
+    int64_t*    in19_ =0; /* ier        */
     mwSize      dim20_;   /* 1          */
     mwSize      dim21_;   /* 1          */
     mwSize      dim22_;   /* 1          */
@@ -6268,7 +6274,7 @@ void mexStub22(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -6285,7 +6291,7 @@ void mexStub22(int nlhs, mxArray* plhs[],
     } else
         in1_ = NULL;
     if (mxGetM(prhs[2])*mxGetN(prhs[2]) != 0) {
-        in2_ = mxWrapGetArray_int(prhs[2], &mw_err_txt_);
+        in2_ = mxWrapGetArray_int64_t(prhs[2], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -6302,7 +6308,7 @@ void mexStub22(int nlhs, mxArray* plhs[],
     } else
         in3_ = NULL;
     if (mxGetM(prhs[4])*mxGetN(prhs[4]) != 0) {
-        in4_ = mxWrapGetArray_int(prhs[4], &mw_err_txt_);
+        in4_ = mxWrapGetArray_int64_t(prhs[4], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -6319,7 +6325,7 @@ void mexStub22(int nlhs, mxArray* plhs[],
     } else
         in5_ = NULL;
     if (mxGetM(prhs[6])*mxGetN(prhs[6]) != 0) {
-        in6_ = mxWrapGetArray_int(prhs[6], &mw_err_txt_);
+        in6_ = mxWrapGetArray_int64_t(prhs[6], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -6347,7 +6353,7 @@ void mexStub22(int nlhs, mxArray* plhs[],
     } else
         in8_ = NULL;
     if (mxGetM(prhs[9])*mxGetN(prhs[9]) != 0) {
-        in9_ = mxWrapGetArray_int(prhs[9], &mw_err_txt_);
+        in9_ = mxWrapGetArray_int64_t(prhs[9], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -6371,7 +6377,7 @@ void mexStub22(int nlhs, mxArray* plhs[],
     } else
         in12_ = NULL;
     if (mxGetM(prhs[13])*mxGetN(prhs[13]) != 0) {
-        in13_ = mxWrapGetArray_int(prhs[13], &mw_err_txt_);
+        in13_ = mxWrapGetArray_int64_t(prhs[13], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -6388,7 +6394,7 @@ void mexStub22(int nlhs, mxArray* plhs[],
     } else
         in14_ = NULL;
     if (mxGetM(prhs[15])*mxGetN(prhs[15]) != 0) {
-        in15_ = mxWrapGetArray_int(prhs[15], &mw_err_txt_);
+        in15_ = mxWrapGetArray_int64_t(prhs[15], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -6412,7 +6418,7 @@ void mexStub22(int nlhs, mxArray* plhs[],
     } else
         in18_ = NULL;
     if (mxGetM(prhs[19])*mxGetN(prhs[19]) != 0) {
-        in19_ = mxWrapGetArray_int(prhs[19], &mw_err_txt_);
+        in19_ = mxWrapGetArray_int64_t(prhs[19], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -6433,7 +6439,7 @@ void mexStub22(int nlhs, mxArray* plhs[],
     plhs[5] = mxCreateDoubleMatrix(dim48_, dim49_, mxREAL);
     mxWrapCopy_double(plhs[5], in18_, dim48_*dim49_);
     plhs[6] = mxCreateDoubleMatrix(dim50_, 1, mxREAL);
-    mxWrapCopy_int(plhs[6], in19_, dim50_);
+    mxWrapCopy_int64_t(plhs[6], in19_, dim50_);
 
 mw_err_label:
     if (in0_)  mxFree(in0_);
@@ -6455,20 +6461,20 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 1233 ----
- * st3ddirectstokg(int[1] nd, double[3, ns] sources, double[nd3, ns_stok] stoklet, int[1] ns, double[3, nt] targ, int[1] nt, inout double[nd3, nt] pottarg, inout double[nd, nt] pretarg, inout double[nd9, nt] gradtarg, double[1] thresh);
+ * st3ddirectstokg(int64_t[1] nd, double[3, ns] sources, double[nd3, ns_stok] stoklet, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd3, nt] pottarg, inout double[nd, nt] pretarg, inout double[nd9, nt] gradtarg, double[1] thresh);
  */
-static const char* stubids23_ = "st3ddirectstokg(i int[x], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], io double[xx], i double[x])";
+static const char* stubids23_ = "st3ddirectstokg(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])";
 
 void mexStub23(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     double*     in1_ =0; /* sources    */
     double*     in2_ =0; /* stoklet    */
-    int*        in3_ =0; /* ns         */
+    int64_t*    in3_ =0; /* ns         */
     double*     in4_ =0; /* targ       */
-    int*        in5_ =0; /* nt         */
+    int64_t*    in5_ =0; /* nt         */
     double*     in6_ =0; /* pottarg    */
     double*     in7_ =0; /* pretarg    */
     double*     in8_ =0; /* gradtarg   */
@@ -6560,7 +6566,7 @@ void mexStub23(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -6588,7 +6594,7 @@ void mexStub23(int nlhs, mxArray* plhs[],
     } else
         in2_ = NULL;
     if (mxGetM(prhs[3])*mxGetN(prhs[3]) != 0) {
-        in3_ = mxWrapGetArray_int(prhs[3], &mw_err_txt_);
+        in3_ = mxWrapGetArray_int64_t(prhs[3], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -6605,7 +6611,7 @@ void mexStub23(int nlhs, mxArray* plhs[],
     } else
         in4_ = NULL;
     if (mxGetM(prhs[5])*mxGetN(prhs[5]) != 0) {
-        in5_ = mxWrapGetArray_int(prhs[5], &mw_err_txt_);
+        in5_ = mxWrapGetArray_int64_t(prhs[5], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -6661,23 +6667,23 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 1236 ----
- * st3ddirectstokstrsg(int[1] nd, double[3, ns] sources, double[nd3, ns_stok] stoklet, int[1] istress, double[nd3, ns_strs] strslet, double[nd3, ns_strs] strsvec, int[1] ns, double[3, nt] targ, int[1] nt, inout double[nd3, nt] pottarg, inout double[nd, nt] pretarg, inout double[nd9, nt] gradtarg, double[1] thresh);
+ * st3ddirectstokstrsg(int64_t[1] nd, double[3, ns] sources, double[nd3, ns_stok] stoklet, int64_t[1] istress, double[nd3, ns_strs] strslet, double[nd3, ns_strs] strsvec, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd3, nt] pottarg, inout double[nd, nt] pretarg, inout double[nd9, nt] gradtarg, double[1] thresh);
  */
-static const char* stubids24_ = "st3ddirectstokstrsg(i int[x], i double[xx], i double[xx], i int[x], i double[xx], i double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], io double[xx], i double[x])";
+static const char* stubids24_ = "st3ddirectstokstrsg(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])";
 
 void mexStub24(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
 {
     const char* mw_err_txt_ = 0;
-    int*        in0_ =0; /* nd         */
+    int64_t*    in0_ =0; /* nd         */
     double*     in1_ =0; /* sources    */
     double*     in2_ =0; /* stoklet    */
-    int*        in3_ =0; /* istress    */
+    int64_t*    in3_ =0; /* istress    */
     double*     in4_ =0; /* strslet    */
     double*     in5_ =0; /* strsvec    */
-    int*        in6_ =0; /* ns         */
+    int64_t*    in6_ =0; /* ns         */
     double*     in7_ =0; /* targ       */
-    int*        in8_ =0; /* nt         */
+    int64_t*    in8_ =0; /* nt         */
     double*     in9_ =0; /* pottarg    */
     double*     in10_ =0; /* pretarg    */
     double*     in11_ =0; /* gradtarg   */
@@ -6795,7 +6801,7 @@ void mexStub24(int nlhs, mxArray* plhs[],
     }
 
     if (mxGetM(prhs[0])*mxGetN(prhs[0]) != 0) {
-        in0_ = mxWrapGetArray_int(prhs[0], &mw_err_txt_);
+        in0_ = mxWrapGetArray_int64_t(prhs[0], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -6823,7 +6829,7 @@ void mexStub24(int nlhs, mxArray* plhs[],
     } else
         in2_ = NULL;
     if (mxGetM(prhs[3])*mxGetN(prhs[3]) != 0) {
-        in3_ = mxWrapGetArray_int(prhs[3], &mw_err_txt_);
+        in3_ = mxWrapGetArray_int64_t(prhs[3], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -6851,7 +6857,7 @@ void mexStub24(int nlhs, mxArray* plhs[],
     } else
         in5_ = NULL;
     if (mxGetM(prhs[6])*mxGetN(prhs[6]) != 0) {
-        in6_ = mxWrapGetArray_int(prhs[6], &mw_err_txt_);
+        in6_ = mxWrapGetArray_int64_t(prhs[6], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else
@@ -6868,7 +6874,7 @@ void mexStub24(int nlhs, mxArray* plhs[],
     } else
         in7_ = NULL;
     if (mxGetM(prhs[8])*mxGetN(prhs[8]) != 0) {
-        in8_ = mxWrapGetArray_int(prhs[8], &mw_err_txt_);
+        in8_ = mxWrapGetArray_int64_t(prhs[8], &mw_err_txt_);
         if (mw_err_txt_)
             goto mw_err_label;
     } else

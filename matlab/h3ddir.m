@@ -95,30 +95,30 @@ function [U] = h3ddir(zk,srcinfo,targ,pgt)
 
   if(pgt == 1)
     if(ifcharge==1 && ifdipole == 0)
-      mex_id_ = 'h3ddirectcp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])';
+      mex_id_ = 'h3ddirectcp(i int64_t[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], i double[x])';
 [pottarg] = fmm3d(mex_id_, nd, zk, sources, charges, ns, targ, nt, pottarg, thresh, 1, 1, 3, ns, nd, ns, 1, 3, nt, 1, nd, nt, 1);
     end
     if(ifcharge==0 && ifdipole == 1)
-      mex_id_ = 'h3ddirectdp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])';
+      mex_id_ = 'h3ddirectdp(i int64_t[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], i double[x])';
 [pottarg] = fmm3d(mex_id_, nd, zk, sources, dipoles, ns, targ, nt, pottarg, thresh, 1, 1, 3, ns, nd3, ns, 1, 3, nt, 1, nd, nt, 1);
     end
     if(ifcharge==1 && ifdipole == 1)
-      mex_id_ = 'h3ddirectcdp(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], i double[x])';
+      mex_id_ = 'h3ddirectcdp(i int64_t[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], i double[x])';
 [pottarg] = fmm3d(mex_id_, nd, zk, sources, charges, dipoles, ns, targ, nt, pottarg, thresh, 1, 1, 3, ns, nd, ns, nd3, ns, 1, 3, nt, 1, nd, nt, 1);
     end
     U.pottarg = pottarg;
   end
   if(pgt == 2)
     if(ifcharge==1 && ifdipole == 0)
-      mex_id_ = 'h3ddirectcg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
+      mex_id_ = 'h3ddirectcg(i int64_t[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
 [pottarg, gradtarg] = fmm3d(mex_id_, nd, zk, sources, charges, ns, targ, nt, pottarg, gradtarg, thresh, 1, 1, 3, ns, nd, ns, 1, 3, nt, 1, nd, nt, nd3, nt, 1);
     end
     if(ifcharge==0 && ifdipole == 1)
-      mex_id_ = 'h3ddirectdg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
+      mex_id_ = 'h3ddirectdg(i int64_t[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
 [pottarg, gradtarg] = fmm3d(mex_id_, nd, zk, sources, dipoles, ns, targ, nt, pottarg, gradtarg, thresh, 1, 1, 3, ns, nd3, ns, 1, 3, nt, 1, nd, nt, nd3, nt, 1);
     end
     if(ifcharge==1 && ifdipole == 1)
-      mex_id_ = 'h3ddirectcdg(i int[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int[x], i double[xx], i int[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
+      mex_id_ = 'h3ddirectcdg(i int64_t[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], io dcomplex[xx], i double[x])';
 [pottarg, gradtarg] = fmm3d(mex_id_, nd, zk, sources, charges, dipoles, ns, targ, nt, pottarg, gradtarg, thresh, 1, 1, 3, ns, nd, ns, nd3, ns, 1, 3, nt, 1, nd, nt, nd3, nt, 1);
     end
     U.pottarg = pottarg;

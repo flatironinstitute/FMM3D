@@ -16,10 +16,10 @@ c		fjder_n(z)=\frac{\partial fjs_n(z)}{\partial z}
 c
 c INPUT:
 c
-c    nterms (integer): order of expansion of output array fjs 
+c    nterms (integer(8)): order of expansion of output array fjs 
 c    z     (complex *16): argument of the spherical Bessel functions
 c    scale    (real *8) : scaling factor (discussed above)
-c    ifder  (integer): flag indicating whether to calculate "fjder"
+c    ifder  (integer(8)): flag indicating whether to calculate "fjder"
 c		          0	NO
 c		          1	YES
 c OUTPUT:
@@ -28,10 +28,10 @@ c    fjder (complex *16): array of derivs of scaled Bessel functions.
 c
 c
       implicit none
-      integer ier,nterms,ifder,lwfjs,ntop,i,ncntr
+      integer(8) ier,nterms,ifder,lwfjs,ntop,i,ncntr
       real *8 scale,d0,d1,dc1,dc2,dcoef,dd,done,tiny,zero
       real *8 scalinv,sctot,upbound,upbound2,upbound2inv
-      integer, allocatable :: iscale(:)
+      integer(8), allocatable :: iscale(:)
       complex *16, allocatable :: fjtmp(:)
       complex *16 wavek,fjs(0:nterms),fjder(0:*)
       complex *16 z,zinv,com,fjm1,fj0,fj1,zscale,ztmp

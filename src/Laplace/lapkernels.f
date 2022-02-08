@@ -84,7 +84,7 @@ cf2py intent(out) pot
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt)
       real *8 charge(nd,ns),pot(nd,nt)
       real *8 thresh
@@ -93,7 +93,7 @@ c
 cc     temporary variables
 c
       real *8 zdiff(3),dd,d,ztmp,threshsq
-      integer i,j,idim
+      integer(8) i,j,idim
 
 
       threshsq = thresh**2
@@ -169,7 +169,7 @@ cf2py intent(out) pot,grad
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt)
       real *8 charge(nd,ns),pot(nd,nt),grad(nd,3,nt)
       real *8 thresh
@@ -179,7 +179,7 @@ cc     temporary variables
 c
       real *8 zdiff(3),dd,d,cd,cd1,ztmp1,ztmp2,ztmp3
       real *8 threshsq
-      integer i,j,idim
+      integer(8) i,j,idim
 
 
       threshsq = thresh**2 
@@ -267,7 +267,7 @@ cf2py intent(out) pot,grad,hess
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt)
       real *8 charge(nd,ns)
       real *8 pot(nd,nt),grad(nd,3,nt),hess(nd,6,nt)
@@ -279,7 +279,7 @@ c
       real *8 zdiff(3),dd,d,cd,cd1,cd2,ztmp1,ztmp2,ztmp3
       real *8 htmp1,htmp2,htmp3,htmp4,htmp5,htmp6
       real *8 threshsq
-      integer i,j,idim
+      integer(8) i,j,idim
 
 
       threshsq = thresh**2 
@@ -375,7 +375,7 @@ cf2py intent(out) pot
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
       real *8 pot(nd,nt)
       real *8 thresh
@@ -385,7 +385,7 @@ cc     temporary variables
 c
       real *8 zdiff(3),dd,d,cd,dotprod
       real *8 threshsq
-      integer i,j,idim
+      integer(8) i,j,idim
 
       threshsq = thresh**2
 
@@ -475,7 +475,7 @@ cf2py intent(out) pot,grad
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
       real *8 pot(nd,nt),grad(nd,3,nt)
       real *8 thresh
@@ -486,7 +486,7 @@ c
       real *8 zdiff(3),dd,d,dinv,dinv2,dotprod
       real *8 cd,cd2,cd3,cd4
       real *8 threshsq
-      integer i,j,idim
+      integer(8) i,j,idim
 
       threshsq = thresh**2
 
@@ -593,7 +593,7 @@ cf2py intent(out) pot,grad,hess
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
       real *8 pot(nd,nt),grad(nd,3,nt),hess(nd,6,nt)
       real *8 thresh
@@ -604,7 +604,7 @@ c
       real *8 zdiff(3),dd,d,dinv,dinv2,dotprod
       real *8 cd,cd2,cd3,cd4,cd5,dx,dy,dz
       real *8 threshsq
-      integer i,j,idim
+      integer(8) i,j,idim
 
       threshsq = thresh**2
 
@@ -723,7 +723,7 @@ cf2py intent(out) pot
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
       real *8 charge(nd,ns),pot(nd,nt)
       real *8 thresh
@@ -732,7 +732,7 @@ c
 cc     temporary variables
 c
       real *8 zdiff(3),dd,d,dinv2,dotprod,cd,cd1
-      integer i,j,idim
+      integer(8) i,j,idim
       real *8 threshsq
 
       threshsq = thresh**2
@@ -830,7 +830,7 @@ cf2py intent(out) pot,grad
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
       real *8 charge(nd,ns),pot(nd,nt),grad(nd,3,nt)
       real *8 thresh
@@ -839,7 +839,7 @@ c
 cc     temporary variables
 c
       real *8 zdiff(3),dd,d,dinv,dinv2,dotprod,cd,cd2,cd3,cd4
-      integer i,j,idim
+      integer(8) i,j,idim
       real *8 threshsq
 
       threshsq = thresh**2
@@ -947,7 +947,7 @@ cf2py intent(out) pot,grad,hess
 c
 cc      calling sequence variables
 c  
-      integer ns,nt,nd
+      integer(8) ns,nt,nd
       real *8 sources(3,ns),ztarg(3,nt),dipvec(nd,3,ns)
       real *8 charge(nd,ns)
       real *8 pot(nd,nt),grad(nd,3,nt),hess(nd,6,nt)
@@ -956,7 +956,7 @@ c
 c
 cc     temporary variables
 c
-      integer i,j,idim
+      integer(8) i,j,idim
       real *8 zdiff(3),dd,d,dinv,dinv2,dotprod,cd,cd2,cd3,cd4,cd5
       real *8 htmp1,htmp2,htmp3,htmp4,htmp5,htmp6,dx,dy,dz
       real *8 threshsq

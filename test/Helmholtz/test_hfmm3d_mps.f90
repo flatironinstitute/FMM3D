@@ -3,11 +3,11 @@ program test_hfmm3d_mp2loc
   
   character(len=72) str1
   
-  integer :: ns, nt, nc
-  integer :: i,j,k,ntest,nd,idim
-  integer :: ifcharge,ifdipole,ifpgh,ifpghtarg
-  integer :: ipass(18),len1,ntests,isum
-  integer, allocatable :: nterms(:), impole(:)
+  integer(8) :: ns, nt, nc, nlege, ns1, n1, ntm
+  integer(8) :: i,j,k,ntest,nd,idim,ntot,ijk,lw,lused
+  integer(8) :: ifcharge,ifdipole,ifpgh,ifpghtarg
+  integer(8) :: ipass(18),len1,ntests,isum
+  integer(8), allocatable :: nterms(:), impole(:)
   
   double precision :: eps, err, hkrand, dnorms(1000), force(10)
   double precision, allocatable :: source(:,:), targ(:,:)
@@ -283,6 +283,7 @@ end subroutine prinmp
 
 subroutine zinitialize(len, zs)
   implicit double precision (a-h,o-z)
+  integer(8) len,i
   double complex :: zs(len)
 
   do i = 1,len
@@ -301,7 +302,7 @@ subroutine comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole, &
 
   implicit none
   double complex zk
-  integer ns,nt,ifcharge,ifdipole,ifpgh,ifpghtarg
+  integer(8) ns,nt,ifcharge,ifdipole,ifpgh,ifpghtarg
 
   double precision source(3,*),targ(3,*)
   double complex dipvec(nd,3,*)
@@ -310,7 +311,7 @@ subroutine comperr_vec(nd,zk,ns,source,ifcharge,charge,ifdipole, &
   double complex pot(nd,*),pottarg(nd,*),grad(nd,3,*), &
       gradtarg(nd,3,*)
 
-  integer i,j,ntest,nd,idim
+  integer(8) i,j,ntest,nd,idim
 
   double precision err,ra
 

@@ -16,9 +16,9 @@ c     followed by a rotation of -pi/2 radians about the y'
 c     axis in the rotated frame of refernce
 c 
 c     INPUT arguments:
-c     nd           in: integer
+c     nd           in: integer(8)
 c                  number of expansions
-c     nterms       in: integer
+c     nterms       in: integer(8)
 c                  number of terms in the multipole expansion
 c
 c     mpole        in: double complex (nd,0:nterms,-nterms:nterms)
@@ -34,14 +34,14 @@ c     mrotate      out: double complex (nd,0:nterms,-nterms:nterms)
 c                  rotated multipole expansion  
 c                   
       implicit none
-      integer nterms,nd
+      integer(8) nterms,nd
       double precision rdminus(0:nterms,0:nterms,-nterms:nterms),rr
       double complex mpole(nd,0:nterms,-nterms:nterms)
       double complex, allocatable :: mptemp(:,:,:)
       double complex mrotate(nd,0:nterms,-nterms:nterms)
       double complex ephi(-nterms:nterms), eyem, eye
-      integer idim
-      integer l,m,mp
+      integer(8) idim
+      integer(8) l,m,mp
 
       allocate(mptemp(nd,0:nterms,-nterms:nterms))
       call mpzero(nd,mrotate,nterms) 
@@ -102,9 +102,9 @@ c     followed by a rotation of pi/2 radians about the z
 c     axis to bring back to original frame of reference
 c 
 c     INPUT arguments:
-c     nd           in: integer
+c     nd           in: integer(8)
 c                  number of expansions
-c     nterms       in: integer
+c     nterms       in: integer(8)
 c                  number of terms in the multipole expansion
 c
 c     mpole        in: double complex (nd,0:nterms,-nterms:nterms)
@@ -120,13 +120,13 @@ c     mrotate      out: double complex (nd,0:nterms,-nterms:nterms)
 c                  rotated multipole expansion  
 c                   
       implicit none
-      integer nterms,nd
+      integer(8) nterms,nd
       double precision rdplus(0:nterms,0:nterms,-nterms:nterms)
       double complex mpole(nd,0:nterms,-nterms:nterms)
       double complex, allocatable :: mptemp(:,:,:)
       double complex mrotate(nd,0:nterms,-nterms:nterms)
       double complex ephi(-nterms:nterms), eyem, eye
-      integer l,m,mp,idim
+      integer(8) l,m,mp,idim
 
       allocate(mptemp(nd,0:nterms,-nterms:nterms))
 
@@ -187,10 +187,10 @@ c     This is achieved by first rotating by pi/2 about
 c     the y-axis in the original co-ordinate system
 c 
 c     INPUT arguments:
-c     nd           in: integer
+c     nd           in: integer(8)
 c                  number of expansions
 c
-c     nterms       in: integer
+c     nterms       in: integer(8)
 c                  number of terms in the multipole expansion
 c
 c     mpole        in: double complex (nd,0:nterms,-nterms:nterms)
@@ -206,11 +206,11 @@ c     mrotate      out: double complex (nd,0:nterms,-nterms:nterms)
 c                  rotated multipole expansion  
 c                   
       implicit none
-      integer nterms,nd
+      integer(8) nterms,nd
       double precision rdplus(0:nterms,0:nterms,-nterms:nterms)
       double complex mpole(nd,0:nterms,-nterms:nterms)
       double complex mrotate(nd,0:nterms,-nterms:nterms)
-      integer l,m,mp,idim
+      integer(8) l,m,mp,idim
 
 c     rotate by pi/2 radians about the y' axis in
 c     the new co-ordinate system
