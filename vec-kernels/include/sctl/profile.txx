@@ -268,7 +268,6 @@ inline void Profile::print(const Comm* comm_) {
 
 inline void Profile::reset() {
   ProfileData& prof = ProfData();
-  prof.MEM = 0;
   prof.FLOP = 0;
   while (!prof.sync.empty()) prof.sync.pop();
   while (!prof.name.empty()) prof.name.pop();

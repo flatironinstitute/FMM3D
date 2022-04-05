@@ -7,6 +7,24 @@
 
 namespace SCTL_NAMESPACE {
 
+template <class Real, Integer bits = sizeof(Real)*8> struct GetSigBits {
+  static constexpr Integer value() {
+    return (pow<bits>((Real)0.5)+1 == (Real)1 ? GetSigBits<Real,bits-1>::value() : bits);
+  }
+};
+template <class Real> struct GetSigBits<Real,0> {
+  static constexpr Integer value() {
+    return 0;
+  }
+};
+template <class Real> inline constexpr Integer significant_bits() {
+  return GetSigBits<Real>::value();
+}
+
+template <class Real> inline constexpr Real machine_eps() {
+  return pow<-GetSigBits<Real>::value()-1,Real>(2);
+}
+
 template <class Real> inline Real atoreal(const char* str) { // Warning: does not do correct rounding
   int i = 0;
   Real sign = 1.0;
@@ -42,39 +60,34 @@ template <class Real> inline Real atoreal(const char* str) { // Warning: does no
   return sign * val;
 }
 
-template <class Real> inline Real const_pi_generic() {
-  static Real pi = atoreal<Real>("3.1415926535897932384626433832795028841");
-  return pi;
+template <class Real> static inline constexpr Real const_pi_generic() {
+  return 113187804032455044LL*pow<-55,Real>(2) + 59412220499329904LL*pow<-112,Real>(2);
 }
 
-template <class Real> inline Real const_e_generic() {
-  static Real e = atoreal<Real>("2.7182818284590452353602874713526624977");
-  return e;
+template <class Real> static inline constexpr Real const_e_generic() {
+  return 97936424237889173LL*pow<-55,Real>(2) + 30046841068362992LL*pow<-112,Real>(2);
 }
 
-template <class Real> inline Real fabs_generic(const Real a) {
-  if (a >= 0.0)
-    return a;
-  else
-    return -a;
+template <class Real> static inline constexpr Real fabs_generic(const Real a) {
+  return (a<0?-a:a);
 }
 
-template <class Real> inline Real sqrt_generic(const Real a) {
+template <class Real> static inline Real sqrt_generic(const Real a) {
   Real b = ::sqrt((double)a);
-  if (a > 0) {
+  if (a > 0) { // Newton iterations for greater accuracy
     b = (b + a / b) * 0.5;
     b = (b + a / b) * 0.5;
   }
   return b;
 }
 
-template <class Real> inline Real sin_generic(const Real a) {
+template <class Real> static inline Real sin_generic(const Real a) {
   const int N = 200;
   static std::vector<Real> theta;
   static std::vector<Real> sinval;
   static std::vector<Real> cosval;
   if (theta.size() == 0) {
-#pragma omp critical(QUAD_SIN)
+#pragma omp critical(SCTL_QUAD_SIN)
     if (theta.size() == 0) {
       sinval.resize(N);
       cosval.resize(N);
@@ -90,7 +103,10 @@ template <class Real> inline Real sin_generic(const Real a) {
       cosval[N - 1] = 1.0 - sinval[N - 1] * sinval[N - 1] / 2;
       for (int i = N - 2; i >= 0; i--) {
         sinval[i] = 2.0 * sinval[i + 1] * cosval[i + 1];
-        cosval[i] = sqrt<Real>(1.0 - sinval[i] * sinval[i]);
+        cosval[i] = cosval[i + 1] * cosval[i + 1] - sinval[i + 1] * sinval[i + 1];
+        Real s = 1 / sqrt<Real>(cosval[i] * cosval[i] + sinval[i] * sinval[i]);
+        sinval[i] *= s;
+        cosval[i] *= s;
       }
       theta_.swap(theta);
     }
@@ -111,13 +127,13 @@ template <class Real> inline Real sin_generic(const Real a) {
   return (a < 0.0 ? -sval : sval);
 }
 
-template <class Real> inline Real cos_generic(const Real a) {
+template <class Real> static inline Real cos_generic(const Real a) {
   const int N = 200;
   static std::vector<Real> theta;
   static std::vector<Real> sinval;
   static std::vector<Real> cosval;
   if (theta.size() == 0) {
-#pragma omp critical(QUAD_COS)
+#pragma omp critical(SCTL_QUAD_COS)
     if (theta.size() == 0) {
       sinval.resize(N);
       cosval.resize(N);
@@ -133,7 +149,10 @@ template <class Real> inline Real cos_generic(const Real a) {
       cosval[N - 1] = 1.0 - sinval[N - 1] * sinval[N - 1] / 2;
       for (int i = N - 2; i >= 0; i--) {
         sinval[i] = 2.0 * sinval[i + 1] * cosval[i + 1];
-        cosval[i] = sqrt<Real>(1.0 - sinval[i] * sinval[i]);
+        cosval[i] = cosval[i + 1] * cosval[i + 1] - sinval[i + 1] * sinval[i + 1];
+        Real s = 1 / sqrt<Real>(cosval[i] * cosval[i] + sinval[i] * sinval[i]);
+        sinval[i] *= s;
+        cosval[i] *= s;
       }
 
       theta_.swap(theta);
@@ -155,14 +174,23 @@ template <class Real> inline Real cos_generic(const Real a) {
   return cval;
 }
 
-template <class Real> inline Real exp_generic(const Real a) {
+template <class Real> static inline Real acos_generic(const Real a) {
+  Real b = ::acos((double)a);
+  if (b > 0) { // Newton iterations for greater accuracy
+    b += (cos<Real>(b)-a)/sin<Real>(b);
+    b += (cos<Real>(b)-a)/sin<Real>(b);
+  }
+  return b;
+}
+
+template <class Real> static inline Real exp_generic(const Real a) {
   const int N = 200;
   static std::vector<Real> theta0;
   static std::vector<Real> theta1;
   static std::vector<Real> expval0;
   static std::vector<Real> expval1;
   if (theta0.size() == 0) {
-#pragma omp critical(QUAD_EXP)
+#pragma omp critical(SCTL_QUAD_EXP)
     if (theta0.size() == 0) {
       std::vector<Real> theta0_(N);
       theta1.resize(N);
@@ -201,14 +229,17 @@ template <class Real> inline Real exp_generic(const Real a) {
   return (a < 0.0 ? 1.0 / eval : eval);
 }
 
-template <class Real> inline Real log_generic(const Real a) {
+template <class Real> static inline Real log_generic(const Real a) {
+  if (a == 0) return (Real)NAN;
   Real y0 = ::log((double)a);
-  y0 = y0 + (a / exp<Real>(y0) - 1.0);
-  y0 = y0 + (a / exp<Real>(y0) - 1.0);
+  { // Newton iterations
+    y0 = y0 + (a / exp<Real>(y0) - 1.0);
+    y0 = y0 + (a / exp<Real>(y0) - 1.0);
+  }
   return y0;
 }
 
-template <class Real> inline Real pow_generic(const Real b, const Real e) {
+template <class Real> static inline Real pow_generic(const Real b, const Real e) {
   if (e == 0) return 1;
   if (b == 0) return 0;
   if (b < 0) {
@@ -217,6 +248,25 @@ template <class Real> inline Real pow_generic(const Real b, const Real e) {
     return exp<Real>(log<Real>(-b) * e) * (e_ % 2 ? (Real)-1 : (Real)1.0);
   }
   return exp<Real>(log<Real>(b) * e);
+}
+template <class ValueType> static inline constexpr ValueType pow_integer_exp(ValueType b, Long e) {
+  return (e > 0) ? ((e & 1) ? b : ValueType(1)) * pow_integer_exp(b*b, e>>1) : ValueType(1);
+}
+template <class Real, class ExpType> class pow_wrapper {
+  public:
+    static Real pow(Real b, ExpType e) {
+      return (Real)std::pow(b, e);
+    }
+};
+template <class ValueType> class pow_wrapper<ValueType,Long> {
+  public:
+    static constexpr ValueType pow(ValueType b, Long e) {
+      return (e > 0) ? pow_integer_exp(b, e) : 1/pow_integer_exp(b, -e);
+    }
+};
+
+template <Long e, class ValueType> inline constexpr ValueType pow(ValueType b) {
+  return (e > 0) ? pow_integer_exp<ValueType>(b, e) : 1/pow_integer_exp<ValueType>(b, -e);
 }
 
 template <class Real> inline std::ostream& ostream_insertion_generic(std::ostream& output, const Real q_) {
@@ -262,53 +312,12 @@ template <class Real> inline std::ostream& ostream_insertion_generic(std::ostrea
   return output;
 }
 
-template <Integer e, class Real> static inline constexpr Real pow_helper(Real b) {
-  return (e > 0) ? ((e & 1) ? b : Real(1)) * pow_helper<(e>>1),Real>(b*b) : Real(1);
-}
 
-template <Integer e, class Real> inline constexpr Real pow(Real b) {
-  return (e > 0) ? pow_helper<e,Real>(b) : 1/pow_helper<-e,Real>(b);
-}
-
-template <class Real> static inline constexpr Real pow_helper(Real b, Integer e) {
-  return (e > 0) ? ((e & 1) ? b : Real(1)) * pow_helper(b*b, e>>1) : Real(1);
-}
-
-template <class Real> inline constexpr Real pow(Real b, Integer e) {
-  return (e > 0) ? pow_helper(b, e) : 1/pow_helper(b, -e);
-}
-
-}  // end namespace
-
-namespace SCTL_NAMESPACE {
-
-//template <> inline long double const_pi<long double>() { return const_pi_generic<long double>(); }
-
-//template <> inline long double const_e<long double>() { return const_e_generic<long double>(); }
-
-template <> inline long double fabs<long double>(const long double a) { return fabs_generic(a); }
-
-template <> inline long double sqrt<long double>(const long double a) { return sqrt_generic(a); }
-
-template <> inline long double sin<long double>(const long double a) { return sin_generic(a); }
-
-template <> inline long double cos<long double>(const long double a) { return cos_generic(a); }
-
-template <> inline long double exp<long double>(const long double a) { return exp_generic(a); }
-
-//template <> inline long double log<long double>(const long double a) { return log_generic(a); }
-
-//template <> inline long double pow<long double>(const long double b, const long double e) { return pow_generic(b, e); }
-
-}  // end namespace
 
 #ifdef SCTL_QUAD_T
+template <> inline constexpr QuadReal const_pi<QuadReal>() { return const_pi_generic<QuadReal>(); }
 
-namespace SCTL_NAMESPACE {
-
-template <> inline QuadReal const_pi<QuadReal>() { return const_pi_generic<QuadReal>(); }
-
-template <> inline QuadReal const_e<QuadReal>() { return const_e_generic<QuadReal>(); }
+template <> inline constexpr QuadReal const_e<QuadReal>() { return const_e_generic<QuadReal>(); }
 
 template <> inline QuadReal fabs<QuadReal>(const QuadReal a) { return fabs_generic(a); }
 
@@ -318,28 +327,39 @@ template <> inline QuadReal sin<QuadReal>(const QuadReal a) { return sin_generic
 
 template <> inline QuadReal cos<QuadReal>(const QuadReal a) { return cos_generic(a); }
 
+template <> inline QuadReal acos<QuadReal>(const QuadReal a) { return acos_generic(a); }
+
 template <> inline QuadReal exp<QuadReal>(const QuadReal a) { return exp_generic(a); }
 
 template <> inline QuadReal log<QuadReal>(const QuadReal a) { return log_generic(a); }
 
-template <> inline QuadReal pow<QuadReal>(const QuadReal b, const QuadReal e) { return pow_generic(b, e); }
+template <class ExpType> class pow_wrapper<QuadReal,ExpType> {
+  public:
+    static QuadReal pow(QuadReal b, ExpType e) {
+      return pow_generic<QuadReal>(b, (QuadReal)e);
+    }
+};
+template <> class pow_wrapper<QuadReal,Long> {
+  public:
+    static constexpr QuadReal pow(QuadReal b, Long e) {
+      return (e > 0) ? pow_integer_exp(b, e) : 1/pow_integer_exp(b, -e);
+    }
+};
 
-inline std::ostream& operator<<(std::ostream& output, const QuadReal q) { return ostream_insertion_generic(output, q); }
-
-}  // end namespace
-
-inline std::ostream& operator<<(std::ostream& output, const SCTL_QUAD_T q) { return SCTL_NAMESPACE::ostream_insertion_generic(output, q); }
-
-#endif  // SCTL_QUAD_T
-
-
-
+inline std::ostream& operator<<(std::ostream& output, const QuadReal& q) { return ostream_insertion_generic(output, q); }
+inline std::istream& operator>>(std::istream& inputstream, QuadReal& x) {
+  long double x_;
+  inputstream>>x_;
+  x = x_;
+  return inputstream;
+}
+#endif
 
 
-//namespace SCTL_NAMESPACE {
-//template <class Real> inline unsigned int pow(const unsigned int b, const unsigned int e) {
-//  unsigned int r = 1;
-//  for (unsigned int i = 0; i < e; i++) r *= b;
-//  return r;
-//}
-//}
+
+template <class Real, class ExpType> inline Real pow(const Real b, const ExpType e) {
+  return pow_wrapper<Real,ExpType>::pow(b, e);
+}
+
+} // end namespace
+

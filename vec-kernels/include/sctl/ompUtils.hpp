@@ -1,6 +1,8 @@
 #ifndef _SCTL_OMP_UTILS_H_
 #define _SCTL_OMP_UTILS_H_
 
+#include <sctl/common.hpp>
+
 #include <iterator>
 
 namespace SCTL_NAMESPACE {

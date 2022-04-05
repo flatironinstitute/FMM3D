@@ -1,14 +1,14 @@
 #ifndef _SCTL_CHEB_UTILS_HPP_
 #define _SCTL_CHEB_UTILS_HPP_
 
-//#include SCTL_INCLUDE(kernel.hpp)
+#include <sctl/common.hpp>
 #include SCTL_INCLUDE(matrix.hpp)
-#include SCTL_INCLUDE(vector.hpp)
-#include SCTL_INCLUDE(common.hpp)
+#include SCTL_INCLUDE(math_utils.hpp)
 #include SCTL_INCLUDE(legendre_rule.hpp)
 
 #include <type_traits>
 #include <functional>
+#include <algorithm>
 
 namespace SCTL_NAMESPACE {
 
@@ -54,7 +54,7 @@ template <class ValueType, class Derived> class BasisInterface {
       static Vector<Matrix<ValueType>> precomp(1000);
       SCTL_ASSERT(order < precomp.Dim());
       if (precomp[order].Dim(0) * precomp[order].Dim(1) == 0) {
-        #pragma omp critical(BASIS_APPROX)
+        #pragma omp critical(SCTL_BASIS_APPROX)
         if (precomp[order].Dim(0) * precomp[order].Dim(1) == 0) {
           Vector<ValueType> x, p;
           Derived::Nodes1D(order, x);
@@ -104,7 +104,7 @@ template <class ValueType, class Derived> class BasisInterface {
       static Vector<Matrix<ValueType>> precomp(1000);
       SCTL_ASSERT(order < precomp.Dim());
       if (precomp[order].Dim(0) * precomp[order].Dim(1) == 0) {
-        #pragma omp critical(BASIS_APPROX)
+        #pragma omp critical(SCTL_BASIS_APPROX)
         if (precomp[order].Dim(0) * precomp[order].Dim(1) == 0) {
           Vector<ValueType> x, p;
           Derived::Nodes1D(order, x);
@@ -271,7 +271,7 @@ template <class ValueType, class Derived> class BasisInterface {
       static Vector<Matrix<ValueType>> precomp(1000);
       SCTL_ASSERT(order < precomp.Dim());
       if (precomp[order].Dim(0) * precomp[order].Dim(1) == 0) {
-        #pragma omp critical(BASIS_GRAD)
+        #pragma omp critical(SCTL_BASIS_GRAD)
         if (precomp[order].Dim(0) * precomp[order].Dim(1) == 0) {
           Matrix<ValueType> M;
           diff_1d(order, &M);
@@ -1011,7 +1011,7 @@ template <class ValueType, class Derived> class BasisInterface {
     if (!order) return;
 
     bool done = false;
-    #pragma omp critical(QUAD_RULE)
+    #pragma omp critical(SCTL_QUAD_RULE)
     if (x_lst[order].Dim()) {
       Vector<ValueType>& x_ = x_lst[order];
       Vector<ValueType>& w_ = w_lst[order];
@@ -1054,7 +1054,7 @@ template <class ValueType, class Derived> class BasisInterface {
         }
       }
     }
-    #pragma omp critical(QUAD_RULE)
+    #pragma omp critical(SCTL_QUAD_RULE)
     if (!x_lst[order].Dim()) {  // Set x_lst, w_lst
       x_lst[order].Swap(x_);
       w_lst[order].Swap(w_);

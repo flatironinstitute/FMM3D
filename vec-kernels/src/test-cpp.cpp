@@ -1,6 +1,8 @@
 #include <sctl.hpp>
 #include <kernels.h>
 
+double mydrand() { return (double)rand()/RAND_MAX; }
+
 int main() {
   constexpr int32_t COORD_DIM = 3;
 

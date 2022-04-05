@@ -113,25 +113,13 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcp_vec_cpp(const 
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = approx_rsqrt(R2);
-      if (sizeof(Real) <= 2) {
-      } else if (sizeof(Real) <= 4) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv) * 0.5; // 7 - cycles
-      } else if (sizeof(Real) <= 8) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<0>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      } else {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<1>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<1>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      }
-      Rinv &= (R2 > thresh2);
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       Vec R = R2 * Rinv;
       Vec izkR[2] = {-zk[1]*R, zk[0]*R};
       Vec sin_izkR, cos_izkR, exp_izkR;
-      sctl::sincos_intrin<Vec>(sin_izkR, cos_izkR, izkR[1]);
-      sctl::exp_intrin(exp_izkR, izkR[0]);
+      sctl::approx_sincos<-1>(sin_izkR, cos_izkR, izkR[1]);
+      exp_izkR = sctl::approx_exp<-1>(izkR[0]);
       Vec G0 = cos_izkR * exp_izkR * Rinv;
       Vec G1 = sin_izkR * exp_izkR * Rinv;
 
@@ -236,26 +224,14 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcg_vec_cpp(const 
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = approx_rsqrt(R2);
-      if (sizeof(Real) <= 2) {
-      } else if (sizeof(Real) <= 4) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv) * 0.5; // 7 - cycles
-      } else if (sizeof(Real) <= 8) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<0>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      } else {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<1>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<1>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      }
-      Rinv &= (R2 > thresh2);
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       Vec R = R2 * Rinv;
       Vec Rinv2 = Rinv * Rinv;
       Vec izkR[2] = {-zk[1]*R, zk[0]*R};
       Vec sin_izkR, cos_izkR, exp_izkR;
-      sctl::sincos_intrin<Vec>(sin_izkR, cos_izkR, izkR[1]);
-      sctl::exp_intrin(exp_izkR, izkR[0]);
+      sctl::approx_sincos<-1>(sin_izkR, cos_izkR, izkR[1]);
+      exp_izkR = sctl::approx_exp<-1>(izkR[0]);
       // exp(ikr)/r
       Vec G0 = cos_izkR * exp_izkR * Rinv;
       Vec G1 = sin_izkR * exp_izkR * Rinv;
@@ -393,26 +369,14 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectch_vec_cpp(const 
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = approx_rsqrt(R2);
-      if (sizeof(Real) <= 2) {
-      } else if (sizeof(Real) <= 4) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv) * 0.5; // 7 - cycles
-      } else if (sizeof(Real) <= 8) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<0>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      } else {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<1>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<1>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      }
-      Rinv &= (R2 > thresh2);
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       Vec R = R2 * Rinv;
       Vec Rinv2 = Rinv * Rinv;
       Vec izkR[2] = {-zk[1]*R, zk[0]*R};
       Vec sin_izkR, cos_izkR, exp_izkR;
-      sctl::sincos_intrin<Vec>(sin_izkR, cos_izkR, izkR[1]);
-      sctl::exp_intrin(exp_izkR, izkR[0]);
+      sctl::approx_sincos<-1>(sin_izkR, cos_izkR, izkR[1]);
+      exp_izkR = sctl::approx_exp<-1>(izkR[0]);
       // exp(ikr)/r
       Vec G0 = cos_izkR * exp_izkR * Rinv;
       Vec G1 = sin_izkR * exp_izkR * Rinv;
@@ -576,26 +540,14 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdp_vec_cpp(const 
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = approx_rsqrt(R2);
-      if (sizeof(Real) <= 2) {
-      } else if (sizeof(Real) <= 4) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv) * 0.5; // 7 - cycles
-      } else if (sizeof(Real) <= 8) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<0>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      } else {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<1>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<1>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      }
-      Rinv &= (R2 > thresh2);
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       Vec R = R2 * Rinv;
       Vec Rinv2 = Rinv * Rinv;
       Vec izkR[2] = {-zk[1]*R, zk[0]*R};
       Vec sin_izkR, cos_izkR, exp_izkR;
-      sctl::sincos_intrin<Vec>(sin_izkR, cos_izkR, izkR[1]);
-      sctl::exp_intrin(exp_izkR, izkR[0]);
+      sctl::approx_sincos<-1>(sin_izkR, cos_izkR, izkR[1]);
+      exp_izkR = sctl::approx_exp<-1>(izkR[0]);
       // exp(ikr)/r
       Vec G0 = cos_izkR * exp_izkR * Rinv;
       Vec G1 = sin_izkR * exp_izkR * Rinv;
@@ -716,26 +668,14 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdg_vec_cpp(const 
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = approx_rsqrt(R2);
-      if (sizeof(Real) <= 2) {
-      } else if (sizeof(Real) <= 4) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv) * 0.5; // 7 - cycles
-      } else if (sizeof(Real) <= 8) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<0>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      } else {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<1>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<1>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      }
-      Rinv &= (R2 > thresh2);
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       Vec R = R2 * Rinv;
       Vec Rinv2 = Rinv * Rinv;
       Vec izkR[2] = {-zk[1]*R, zk[0]*R};
       Vec sin_izkR, cos_izkR, exp_izkR;
-      sctl::sincos_intrin<Vec>(sin_izkR, cos_izkR, izkR[1]);
-      sctl::exp_intrin(exp_izkR, izkR[0]);
+      sctl::approx_sincos<-1>(sin_izkR, cos_izkR, izkR[1]);
+      exp_izkR = sctl::approx_exp<-1>(izkR[0]);
       // exp(ikr)/r
       Vec G0 = cos_izkR * exp_izkR * Rinv;
       Vec G1 = sin_izkR * exp_izkR * Rinv;
@@ -890,19 +830,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdh_vec_cpp(const 
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = approx_rsqrt(R2);
-      if (sizeof(Real) <= 2) {
-      } else if (sizeof(Real) <= 4) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv) * 0.5; // 7 - cycles
-      } else if (sizeof(Real) <= 8) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<0>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      } else {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<1>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<1>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      }
-      Rinv &= (R2 > thresh2);
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       Vec R = R2 * Rinv;
       Vec Rinv2 = Rinv * Rinv;
@@ -911,8 +839,8 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdh_vec_cpp(const 
       Vec Rinv6 = Rinv4 * Rinv2;
       Vec izkR[2] = {-zk[1]*R, zk[0]*R};
       Vec sin_izkR, cos_izkR, exp_izkR;
-      sctl::sincos_intrin<Vec>(sin_izkR, cos_izkR, izkR[1]);
-      sctl::exp_intrin(exp_izkR, izkR[0]);
+      sctl::approx_sincos<-1>(sin_izkR, cos_izkR, izkR[1]);
+      exp_izkR = sctl::approx_exp<-1>(izkR[0]);
       // exp(ikr)/r
       Vec G0 = cos_izkR * exp_izkR * Rinv;
       Vec G1 = sin_izkR * exp_izkR * Rinv;
@@ -1142,26 +1070,14 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdp_vec_cpp(const
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = approx_rsqrt(R2);
-      if (sizeof(Real) <= 2) {
-      } else if (sizeof(Real) <= 4) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv) * 0.5; // 7 - cycles
-      } else if (sizeof(Real) <= 8) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<0>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      } else {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<1>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<1>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      }
-      Rinv &= (R2 > thresh2);
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       Vec R = R2 * Rinv;
       Vec Rinv2 = Rinv * Rinv;
       Vec izkR[2] = {-zk[1]*R, zk[0]*R};
       Vec sin_izkR, cos_izkR, exp_izkR;
-      sctl::sincos_intrin<Vec>(sin_izkR, cos_izkR, izkR[1]);
-      sctl::exp_intrin(exp_izkR, izkR[0]);
+      sctl::approx_sincos<-1>(sin_izkR, cos_izkR, izkR[1]);
+      exp_izkR = sctl::approx_exp<-1>(izkR[0]);
       // exp(ikr)/r
       Vec G0 = cos_izkR * exp_izkR * Rinv;
       Vec G1 = sin_izkR * exp_izkR * Rinv;
@@ -1292,26 +1208,14 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdg_vec_cpp(const
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = approx_rsqrt(R2);
-      if (sizeof(Real) <= 2) {
-      } else if (sizeof(Real) <= 4) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv) * 0.5; // 7 - cycles
-      } else if (sizeof(Real) <= 8) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<0>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      } else {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<1>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<1>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      }
-      Rinv &= (R2 > thresh2);
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       Vec R = R2 * Rinv;
       Vec Rinv2 = Rinv * Rinv;
       Vec izkR[2] = {-zk[1]*R, zk[0]*R};
       Vec sin_izkR, cos_izkR, exp_izkR;
-      sctl::sincos_intrin<Vec>(sin_izkR, cos_izkR, izkR[1]);
-      sctl::exp_intrin(exp_izkR, izkR[0]);
+      sctl::approx_sincos<-1>(sin_izkR, cos_izkR, izkR[1]);
+      exp_izkR = sctl::approx_exp<-1>(izkR[0]);
       // exp(ikr)/r
       Vec G0 = cos_izkR * exp_izkR * Rinv;
       Vec G1 = sin_izkR * exp_izkR * Rinv;
@@ -1491,19 +1395,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = approx_rsqrt(R2);
-      if (sizeof(Real) <= 2) {
-      } else if (sizeof(Real) <= 4) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv) * 0.5; // 7 - cycles
-      } else if (sizeof(Real) <= 8) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<0>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      } else {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<1>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<1>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      }
-      Rinv &= (R2 > thresh2);
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       Vec R = R2 * Rinv;
       Vec Rinv2 = Rinv * Rinv;
@@ -1513,8 +1405,8 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
       Vec izkR[2] = {-zk_[1]*R, zk_[0]*R};
 
       Vec sin_izkR, cos_izkR, exp_izkR;
-      sctl::sincos_intrin<Vec>(sin_izkR, cos_izkR, izkR[1]);
-      sctl::exp_intrin(exp_izkR, izkR[0]);
+      sctl::approx_sincos<-1>(sin_izkR, cos_izkR, izkR[1]);
+      exp_izkR = sctl::approx_exp<-1>(izkR[0]);
       // exp(ikr)/r
       Vec G0 = cos_izkR * exp_izkR * Rinv;
       Vec G1 = sin_izkR * exp_izkR * Rinv;
@@ -1770,19 +1662,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcp_vec_cpp(const 
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = approx_rsqrt(R2);
-      if (sizeof(Real) <= 2) {
-      } else if (sizeof(Real) <= 4) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv) * 0.5; // 7 - cycles
-      } else if (sizeof(Real) <= 8) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<0>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      } else {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<1>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<1>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      }
-      Rinv &= (R2 > thresh2);
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       for (long i = 0; i < nd_; i++) {
         Vtrg[i] += Vsrc[s*nd_+i]*Rinv;
@@ -1878,19 +1758,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcg_vec_cpp(const 
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = approx_rsqrt(R2);
-      if (sizeof(Real) <= 2) {
-      } else if (sizeof(Real) <= 4) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv) * 0.5; // 7 - cycles
-      } else if (sizeof(Real) <= 8) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<0>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      } else {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<1>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<1>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      }
-      Rinv &= (R2 > thresh2);
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       Vec nRinv3 = -Rinv*Rinv*Rinv;
       Vec ztmp[COORD_DIM] = {nRinv3*dX[0], nRinv3*dX[1], nRinv3*dX[2]};
@@ -2002,19 +1870,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectch_vec_cpp(const 
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = approx_rsqrt(R2);
-      if (sizeof(Real) <= 2) {
-      } else if (sizeof(Real) <= 4) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv) * 0.5; // 7 - cycles
-      } else if (sizeof(Real) <= 8) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<0>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      } else {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<1>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<1>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      }
-      Rinv &= (R2 > thresh2);
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       Vec nRinv3 = -Rinv*Rinv*Rinv;
       Vec Rinv5 = -nRinv3*Rinv*Rinv;
@@ -2137,19 +1993,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdp_vec_cpp(const 
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = approx_rsqrt(R2);
-      if (sizeof(Real) <= 2) {
-      } else if (sizeof(Real) <= 4) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv) * 0.5; // 7 - cycles
-      } else if (sizeof(Real) <= 8) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<0>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      } else {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<1>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<1>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      }
-      Rinv &= (R2 > thresh2);
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       Vec Rinv3 = Rinv * Rinv * Rinv;
       // TODO: test move Dprod out, faster?
@@ -2250,19 +2094,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdg_vec_cpp(const 
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = approx_rsqrt(R2);
-      if (sizeof(Real) <= 2) {
-      } else if (sizeof(Real) <= 4) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv) * 0.5; // 7 - cycles
-      } else if (sizeof(Real) <= 8) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<0>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      } else {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<1>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<1>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      }
-      Rinv &= (R2 > thresh2);
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       Vec Rinv2 = Rinv * Rinv;
       Vec Rinv3 = Rinv * Rinv2;
@@ -2379,19 +2211,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdh_vec_cpp(const 
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = approx_rsqrt(R2);
-      if (sizeof(Real) <= 2) {
-      } else if (sizeof(Real) <= 4) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv) * 0.5; // 7 - cycles
-      } else if (sizeof(Real) <= 8) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<0>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      } else {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<1>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<1>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      }
-      Rinv &= (R2 > thresh2);
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       Vec Rinv2 = Rinv * Rinv;
       Vec Rinv3 = Rinv * Rinv2;
@@ -2524,19 +2344,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdp_vec_cpp(const
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = approx_rsqrt(R2);
-      if (sizeof(Real) <= 2) {
-      } else if (sizeof(Real) <= 4) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv) * 0.5; // 7 - cycles
-      } else if (sizeof(Real) <= 8) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<0>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      } else {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<1>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<1>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      }
-      Rinv &= (R2 > thresh2);
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       Vec Rinv3 = Rinv * Rinv * Rinv;
       for (long i = 0; i < nd_; i++) {
@@ -2641,19 +2449,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdg_vec_cpp(const
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = approx_rsqrt(R2);
-      if (sizeof(Real) <= 2) {
-      } else if (sizeof(Real) <= 4) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv) * 0.5; // 7 - cycles
-      } else if (sizeof(Real) <= 8) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<0>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      } else {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<1>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<1>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      }
-      Rinv &= (R2 > thresh2);
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       Vec Rinv2 = Rinv * Rinv;
       Vec Rinv3 = Rinv * Rinv2;
@@ -2777,19 +2573,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdh_vec_cpp(const
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = approx_rsqrt(R2);
-      if (sizeof(Real) <= 2) {
-      } else if (sizeof(Real) <= 4) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv) * 0.5; // 7 - cycles
-      } else if (sizeof(Real) <= 8) {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<0>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      } else {
-        Rinv *= ((3.0) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<0>(3)*3-1>(2.0)) - R2 * Rinv * Rinv); // 7 - cycles
-        Rinv *= ((3.0 * sctl::pow<sctl::pow<1>(3)*3-1>(2.0)) - R2 * Rinv * Rinv) * (sctl::pow<(sctl::pow<1>(3)*3-1)*3/2+1>(0.5)); // 8 - cycles
-      }
-      Rinv &= (R2 > thresh2);
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       Vec Rinv2 = Rinv * Rinv;
       Vec Rinv3 = Rinv * Rinv2;

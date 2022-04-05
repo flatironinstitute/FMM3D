@@ -39,6 +39,10 @@ template <class ValueType> Vector<ValueType>::Vector(const std::vector<ValueType
   Init(V.size(), Ptr2Itr<ValueType>((ValueType*)(V.size()?&V[0]:nullptr), V.size()));
 }
 
+template <class ValueType> Vector<ValueType>::Vector(std::initializer_list<ValueType> V) {
+  Init(V.size(), Ptr2Itr<ValueType>((ValueType*)(V.size()?&(V.begin()[0]):nullptr), V.size()));
+}
+
 template <class ValueType> Vector<ValueType>::~Vector() {
   if (own_data) {
     if (data_ptr != NullIterator<ValueType>()) {
@@ -74,7 +78,7 @@ template <class ValueType> void Vector<ValueType>::ReInit(Long dim_, Iterator<Va
 #else
   if (own_data_ && own_data && dim_ <= capacity) {
     dim = dim_;
-    if (data_ != NullIterator<ValueType>()) {
+    if (dim && (data_ptr != NullIterator<ValueType>()) && (data_ != NullIterator<ValueType>())) {
       memcopy(data_ptr, data_, dim);
     }
   } else {
@@ -94,7 +98,7 @@ template <class ValueType> void Vector<ValueType>::Write(const char* fname) cons
   dim_[0] = (uint64_t)Dim();
   dim_[1] = 1;
   fwrite(&dim_[0], sizeof(uint64_t), 2, f1);
-  if (dim_[0] * dim_[1]) fwrite(&data_ptr[0], sizeof(ValueType), dim_[0] * dim_[1], f1);
+  if (dim_[0] && dim_[1]) fwrite(&data_ptr[0], sizeof(ValueType), dim_[0] * dim_[1], f1);
   fclose(f1);
 }
 
@@ -107,10 +111,11 @@ template <class ValueType> void Vector<ValueType>::Read(const char* fname) {
   StaticArray<uint64_t, 2> dim_;
   Long readlen = fread(&dim_[0], sizeof(uint64_t), 2, f1);
   assert(readlen == 2);
+  SCTL_UNUSED(readlen);
 
-  if (Dim() != dim_[0] * dim_[1]) ReInit(dim_[0] * dim_[1]);
-  if (dim_[0] * dim_[1]) readlen = fread(&data_ptr[0], sizeof(ValueType), dim_[0] * dim_[1], f1);
-  assert(readlen == dim_[0] * dim_[1]);
+  if (Dim() != (Long)(dim_[0] * dim_[1])) ReInit(dim_[0] * dim_[1]);
+  if (dim_[0] && dim_[1]) readlen = fread(&data_ptr[0], sizeof(ValueType), dim_[0] * dim_[1], f1);
+  assert(readlen == (Long)(dim_[0] * dim_[1]));
   fclose(f1);
 }
 
@@ -161,7 +166,7 @@ template <class ValueType> inline const ValueType& Vector<ValueType>::operator[]
 // Vector-Vector operations
 
 template <class ValueType> Vector<ValueType>& Vector<ValueType>::operator=(const std::vector<ValueType>& V) {
-  if (dim != V.size()) ReInit(V.size());
+  if (dim != (Long)V.size()) ReInit(V.size());
   memcopy(data_ptr, Ptr2ConstItr<ValueType>(&V[0], V.size()), dim);
   return *this;
 }
@@ -234,66 +239,72 @@ template <class ValueType> Vector<ValueType> Vector<ValueType>::operator/(const 
   return Vr;
 }
 
+template <class ValueType> Vector<ValueType> Vector<ValueType>::operator-() const {
+  Vector<ValueType> Vr(dim);
+  for (Long i = 0; i < dim; i++) Vr[i] = -data_ptr[i];
+  return Vr;
+}
+
 // Vector-Scalar operations
 
-template <class ValueType> Vector<ValueType>& Vector<ValueType>::operator=(ValueType s) {
+template <class ValueType> template <class VType> Vector<ValueType>& Vector<ValueType>::operator=(VType s) {
   for (Long i = 0; i < dim; i++) data_ptr[i] = s;
   return *this;
 }
 
-template <class ValueType> Vector<ValueType>& Vector<ValueType>::operator+=(ValueType s) {
+template <class ValueType> template <class VType> Vector<ValueType>& Vector<ValueType>::operator+=(VType s) {
   for (Long i = 0; i < dim; i++) data_ptr[i] += s;
   Profile::Add_FLOP(dim);
   return *this;
 }
 
-template <class ValueType> Vector<ValueType>& Vector<ValueType>::operator-=(ValueType s) {
+template <class ValueType> template <class VType> Vector<ValueType>& Vector<ValueType>::operator-=(VType s) {
   for (Long i = 0; i < dim; i++) data_ptr[i] -= s;
   Profile::Add_FLOP(dim);
   return *this;
 }
 
-template <class ValueType> Vector<ValueType>& Vector<ValueType>::operator*=(ValueType s) {
+template <class ValueType> template <class VType> Vector<ValueType>& Vector<ValueType>::operator*=(VType s) {
   for (Long i = 0; i < dim; i++) data_ptr[i] *= s;
   Profile::Add_FLOP(dim);
   return *this;
 }
 
-template <class ValueType> Vector<ValueType>& Vector<ValueType>::operator/=(ValueType s) {
+template <class ValueType> template <class VType> Vector<ValueType>& Vector<ValueType>::operator/=(VType s) {
   for (Long i = 0; i < dim; i++) data_ptr[i] /= s;
   Profile::Add_FLOP(dim);
   return *this;
 }
 
-template <class ValueType> Vector<ValueType> Vector<ValueType>::operator+(ValueType s) const {
+template <class ValueType> template <class VType> Vector<ValueType> Vector<ValueType>::operator+(VType s) const {
   Vector<ValueType> Vr(dim);
   for (Long i = 0; i < dim; i++) Vr[i] = data_ptr[i] + s;
   Profile::Add_FLOP(dim);
   return Vr;
 }
 
-template <class ValueType> Vector<ValueType> Vector<ValueType>::operator-(ValueType s) const {
+template <class ValueType> template <class VType> Vector<ValueType> Vector<ValueType>::operator-(VType s) const {
   Vector<ValueType> Vr(dim);
   for (Long i = 0; i < dim; i++) Vr[i] = data_ptr[i] - s;
   Profile::Add_FLOP(dim);
   return Vr;
 }
 
-template <class ValueType> Vector<ValueType> Vector<ValueType>::operator*(ValueType s) const {
+template <class ValueType> template <class VType> Vector<ValueType> Vector<ValueType>::operator*(VType s) const {
   Vector<ValueType> Vr(dim);
   for (Long i = 0; i < dim; i++) Vr[i] = data_ptr[i] * s;
   Profile::Add_FLOP(dim);
   return Vr;
 }
 
-template <class ValueType> Vector<ValueType> Vector<ValueType>::operator/(ValueType s) const {
+template <class ValueType> template <class VType> Vector<ValueType> Vector<ValueType>::operator/(VType s) const {
   Vector<ValueType> Vr(dim);
   for (Long i = 0; i < dim; i++) Vr[i] = data_ptr[i] / s;
   Profile::Add_FLOP(dim);
   return Vr;
 }
 
-template <class ValueType> Vector<ValueType> operator+(ValueType s, const Vector<ValueType>& V) {
+template <class VType, class ValueType> Vector<ValueType> operator+(VType s, const Vector<ValueType>& V) {
   Long dim = V.Dim();
   Vector<ValueType> Vr(dim);
   for (Long i = 0; i < dim; i++) Vr[i] = s + V[i];
@@ -301,7 +312,7 @@ template <class ValueType> Vector<ValueType> operator+(ValueType s, const Vector
   return Vr;
 }
 
-template <class ValueType> Vector<ValueType> operator-(ValueType s, const Vector<ValueType>& V) {
+template <class VType, class ValueType> Vector<ValueType> operator-(VType s, const Vector<ValueType>& V) {
   Long dim = V.Dim();
   Vector<ValueType> Vr(dim);
   for (Long i = 0; i < dim; i++) Vr[i] = s - V[i];
@@ -309,7 +320,7 @@ template <class ValueType> Vector<ValueType> operator-(ValueType s, const Vector
   return Vr;
 }
 
-template <class ValueType> Vector<ValueType> operator*(ValueType s, const Vector<ValueType>& V) {
+template <class VType, class ValueType> Vector<ValueType> operator*(VType s, const Vector<ValueType>& V) {
   Long dim = V.Dim();
   Vector<ValueType> Vr(dim);
   for (Long i = 0; i < dim; i++) Vr[i] = s * V[i];
@@ -317,7 +328,7 @@ template <class ValueType> Vector<ValueType> operator*(ValueType s, const Vector
   return Vr;
 }
 
-template <class ValueType> Vector<ValueType> operator/(ValueType s, const Vector<ValueType>& V) {
+template <class VType, class ValueType> Vector<ValueType> operator/(VType s, const Vector<ValueType>& V) {
   Long dim = V.Dim();
   Vector<ValueType> Vr(dim);
   for (Long i = 0; i < dim; i++) Vr[i] = s / V[i];

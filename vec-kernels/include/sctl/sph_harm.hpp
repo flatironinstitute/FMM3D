@@ -2,15 +2,19 @@
 #define _SCTL_SPH_HARM_HPP_
 
 #define SCTL_SHMAXDEG 1024
-#ifndef M_PI
-#define M_PI 3.1415926535897932384626433832795028
-#endif
 
-#include SCTL_INCLUDE(matrix.hpp)
-#include SCTL_INCLUDE(fft_wrapper.hpp)
-#include SCTL_INCLUDE(common.hpp)
+#include <sctl/common.hpp>
+#include SCTL_INCLUDE(math_utils.hpp)
+#include SCTL_INCLUDE(mem_mgr.hpp)
+
+#include <vector>
 
 namespace SCTL_NAMESPACE {
+
+class Comm;
+template <class ValueType> class Vector;
+template <class ValueType> class Matrix;
+template <class ValueType> class FFT;
 
 enum class SHCArrange {
   // (p+1) x (p+1) complex elements in row-major order.
@@ -308,12 +312,12 @@ template <class Real> class SphericalHarmonics{
         Real R0 = (0.01 + i/20.0);
 
         Vector<Real> x(3), n(3);
-        x[0] = mydrand()-0.5;
-        x[1] = mydrand()-0.5;
-        x[2] = mydrand()-0.5;
-        n[0] = mydrand()-0.5;
-        n[1] = mydrand()-0.5;
-        n[2] = mydrand()-0.5;
+        x[0] = drand48()-0.5;
+        x[1] = drand48()-0.5;
+        x[2] = drand48()-0.5;
+        n[0] = drand48()-0.5;
+        n[1] = drand48()-0.5;
+        n[2] = drand48()-0.5;
         Real R = sqrt<Real>(x[0]*x[0]+x[1]*x[1]+x[2]*x[2]);
         x[0] *= R0 / R;
         x[1] *= R0 / R;
@@ -454,10 +458,14 @@ template <class Real> class SphericalHarmonics{
     template <bool SLayer, bool DLayer> static void StokesSingularInteg_(const Vector<Real>& X0, Long p0, Long p1, Vector<Real>& SL, Vector<Real>& DL);
 
     struct MatrixStorage{
-      MatrixStorage(){
-        const Long size = SCTL_SHMAXDEG;
-        Resize(size);
+      MatrixStorage() : Mfft_(NullIterator<FFT<Real>>()), Mfftinv_(NullIterator<FFT<Real>>()) {
+        Resize(SCTL_SHMAXDEG);
       }
+      ~MatrixStorage() {
+        Resize(0);
+      }
+      MatrixStorage(const MatrixStorage&) = delete;
+      MatrixStorage& operator=(const MatrixStorage&) = delete;
 
       void Resize(Long size){
         Qx_ .resize(size);
@@ -471,8 +479,15 @@ template <class Real> class SphericalHarmonics{
         Mfinv_ .resize(size*size);
         Mlinv_ .resize(size*size);
 
-        Mfft_.resize(size);
-        Mfftinv_.resize(size);
+        aligned_delete(Mfft_);
+        aligned_delete(Mfftinv_);
+        if (size) {
+          Mfft_ = aligned_new<FFT<Real>>(size);
+          Mfftinv_ = aligned_new<FFT<Real>>(size);
+        } else {
+          Mfft_ = NullIterator<FFT<Real>>();
+          Mfftinv_ = NullIterator<FFT<Real>>();
+        }
       }
 
       std::vector<Vector<Real>> Qx_;
@@ -486,8 +501,8 @@ template <class Real> class SphericalHarmonics{
       std::vector<Matrix<Real>> Mfinv_ ;
       std::vector<std::vector<Matrix<Real>>> Mlinv_ ;
 
-      std::vector<FFT<Real>> Mfft_;
-      std::vector<FFT<Real>> Mfftinv_;
+      Iterator<FFT<Real>> Mfft_;
+      Iterator<FFT<Real>> Mfftinv_;
     };
     static MatrixStorage& MatrixStore(){
       static MatrixStorage storage;
@@ -496,7 +511,7 @@ template <class Real> class SphericalHarmonics{
     }
 };
 
-template class SphericalHarmonics<double>;
+//template class SphericalHarmonics<double>;
 
 }  // end namespace
 
