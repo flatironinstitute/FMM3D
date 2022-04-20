@@ -4,6 +4,445 @@
 #define NDEBUG
 #include <sctl.hpp>
 
+template <class Real, class VecType, sctl::Integer DIM, sctl::Integer KDIM0, sctl::Integer KDIM1, sctl::Integer SCDIM, class uKernel, sctl::Integer digits> struct uKerHelper {
+  template <class CtxType> static inline void Eval(VecType* vt, const VecType (&dX)[DIM], const Real* vs, const sctl::Integer nd, const CtxType& ctx) {
+    VecType M[KDIM0][KDIM1][SCDIM];
+    uKernel::template uKerMatrix<digits>(M, dX, ctx);
+    for (sctl::Integer i = 0; i < nd; i++) {
+      const Real* vs_ = vs+i*SCDIM;
+      for (sctl::Integer k1 = 0; k1 < KDIM1; k1++) {
+        VecType* vt_ = vt+(k1*nd+i)*SCDIM;
+        for (sctl::Integer k0 = 0; k0 < KDIM0; k0++) {
+          const VecType vs0(vs_[(k0*nd)*SCDIM+0]);
+          vt_[0] = FMA(M[k0][k1][0], vs0, vt_[0]);
+          if (SCDIM == 2) {
+            const VecType vs1(vs_[(k0*nd)*SCDIM+1]);
+            vt_[0] = FMA(M[k0][k1][1],-vs1, vt_[0]);
+            vt_[1] = FMA(M[k0][k1][1], vs0, vt_[1]);
+            vt_[1] = FMA(M[k0][k1][0], vs1, vt_[1]);
+          }
+        }
+      }
+    }
+  }
+  template <sctl::Integer nd, class CtxType> static inline void EvalND(VecType* vt, const VecType (&dX)[DIM], const Real* vs, const CtxType& ctx) {
+    VecType M[KDIM0][KDIM1][SCDIM];
+    uKernel::template uKerMatrix<digits>(M, dX, ctx);
+    for (sctl::Integer i = 0; i < nd; i++) {
+      const Real* vs_ = vs+i*SCDIM;
+      for (sctl::Integer k1 = 0; k1 < KDIM1; k1++) {
+        VecType* vt_ = vt+(k1*nd+i)*SCDIM;
+        for (sctl::Integer k0 = 0; k0 < KDIM0; k0++) {
+          const VecType vs0(vs_[(k0*nd)*SCDIM+0]);
+          vt_[0] = FMA(M[k0][k1][0], vs0, vt_[0]);
+          if (SCDIM == 2) {
+            const VecType vs1(vs_[(k0*nd)*SCDIM+1]);
+            vt_[0] = FMA(M[k0][k1][1],-vs1, vt_[0]);
+            vt_[1] = FMA(M[k0][k1][1], vs0, vt_[1]);
+            vt_[1] = FMA(M[k0][k1][0], vs1, vt_[1]);
+          }
+        }
+      }
+    }
+  }
+};
+
+template <class uKernel> class GenericKernel : public uKernel {
+    static constexpr sctl::Integer VecLen = uKernel::VecLen;
+    using VecType = typename uKernel::VecType;
+    using Real = typename uKernel::RealType;
+
+    template <sctl::Integer K0, sctl::Integer K1, sctl::Integer Q, sctl::Integer D, class ...T> static constexpr sctl::Integer get_DIM  (void (*uKer)(VecType (&M)[K0][K1][Q], const VecType (&r)[D], T... args)) { return D;  }
+    template <sctl::Integer K0, sctl::Integer K1, sctl::Integer Q, sctl::Integer D, class ...T> static constexpr sctl::Integer get_SCDIM(void (*uKer)(VecType (&M)[K0][K1][Q], const VecType (&r)[D], T... args)) { return Q;  }
+    template <sctl::Integer K0, sctl::Integer K1, sctl::Integer Q, sctl::Integer D, class ...T> static constexpr sctl::Integer get_KDIM0(void (*uKer)(VecType (&M)[K0][K1][Q], const VecType (&r)[D], T... args)) { return K0; }
+    template <sctl::Integer K0, sctl::Integer K1, sctl::Integer Q, sctl::Integer D, class ...T> static constexpr sctl::Integer get_KDIM1(void (*uKer)(VecType (&M)[K0][K1][Q], const VecType (&r)[D], T... args)) { return K1; }
+
+    static constexpr sctl::Integer DIM   = get_DIM  (uKernel::template uKerMatrix<0,GenericKernel>);
+    static constexpr sctl::Integer SCDIM = get_SCDIM(uKernel::template uKerMatrix<0,GenericKernel>);
+    static constexpr sctl::Integer KDIM0 = get_KDIM0(uKernel::template uKerMatrix<0,GenericKernel>);
+    static constexpr sctl::Integer KDIM1 = get_KDIM1(uKernel::template uKerMatrix<0,GenericKernel>);
+
+  public:
+
+    GenericKernel() : ctx_ptr(this) {}
+
+    static constexpr sctl::Integer CoordDim() {
+      return DIM;
+    }
+    static constexpr sctl::Integer SrcDim() {
+      return KDIM0*SCDIM;
+    }
+    static constexpr sctl::Integer TrgDim() {
+      return KDIM1*SCDIM;
+    }
+
+    template <bool enable_openmp=false, sctl::Integer digits=-1> void Eval(sctl::Vector<sctl::Vector<Real>>& v_trg_, const sctl::Vector<Real>& r_trg, const sctl::Vector<Real>& r_src, const sctl::Vector<sctl::Vector<Real>>& v_src_, const sctl::Integer nd) const {
+      if      (nd == 1) EvalHelper<enable_openmp, digits, 1>(v_trg_, r_trg, r_src, v_src_, nd);
+      else if (nd == 2) EvalHelper<enable_openmp, digits, 2>(v_trg_, r_trg, r_src, v_src_, nd);
+      else if (nd == 3) EvalHelper<enable_openmp, digits, 3>(v_trg_, r_trg, r_src, v_src_, nd);
+      else if (nd == 4) EvalHelper<enable_openmp, digits, 4>(v_trg_, r_trg, r_src, v_src_, nd);
+      else if (nd == 5) EvalHelper<enable_openmp, digits, 5>(v_trg_, r_trg, r_src, v_src_, nd);
+      else if (nd == 6) EvalHelper<enable_openmp, digits, 6>(v_trg_, r_trg, r_src, v_src_, nd);
+      else if (nd == 7) EvalHelper<enable_openmp, digits, 7>(v_trg_, r_trg, r_src, v_src_, nd);
+      else if (nd == 8) EvalHelper<enable_openmp, digits, 8>(v_trg_, r_trg, r_src, v_src_, nd);
+      else  EvalHelper<enable_openmp, digits, 0>(v_trg_, r_trg, r_src, v_src_, nd);
+    }
+
+  private:
+
+    template <bool enable_openmp=false, sctl::Integer digits=-1, sctl::Integer ND=0> void EvalHelper(sctl::Vector<sctl::Vector<Real>>& v_trg_, const sctl::Vector<Real>& r_trg, const sctl::Vector<Real>& r_src, const sctl::Vector<sctl::Vector<Real>>& v_src_, const sctl::Integer nd) const {
+      static constexpr sctl::Integer digits_ = (digits==-1 ? (sctl::Integer)(sctl::TypeTraits<Real>::SigBits*0.3010299957) : digits);
+      auto uKerEval = [this](VecType* vt, const VecType (&dX)[DIM], const Real* vs, const sctl::Integer nd) {
+        if (ND > 0) uKerHelper<Real,VecType,DIM,KDIM0,KDIM1,SCDIM,uKernel,digits_>::template EvalND<ND>(vt, dX, vs, *this);
+        else uKerHelper<Real,VecType,DIM,KDIM0,KDIM1,SCDIM,uKernel,digits_>::Eval(vt, dX, vs, nd, *this);
+      };
+
+      const sctl::Long Ns = r_src.Dim() / DIM;
+      const sctl::Long Nt = r_trg.Dim() / DIM;
+      SCTL_ASSERT(r_trg.Dim() == Nt*DIM);
+      SCTL_ASSERT(r_src.Dim() == Ns*DIM);
+
+      sctl::Vector<sctl::Long> src_cnt(v_src_.Dim()), src_dsp(v_src_.Dim()); src_dsp = 0;
+      sctl::Vector<sctl::Long> trg_cnt(v_trg_.Dim()), trg_dsp(v_trg_.Dim()); trg_dsp = 0;
+      for (sctl::Integer i = 0; i < trg_cnt.Dim(); i++) {
+        trg_cnt[i] = v_trg_[i].Dim()/Nt;
+        trg_dsp[i] = (i ? trg_dsp[i-1]+trg_cnt[i-1] : 0);
+      }
+      for (sctl::Integer i = 0; i < src_cnt.Dim(); i++) {
+        src_cnt[i] = v_src_[i].Dim()/Ns;
+        src_dsp[i] = (i ? src_dsp[i-1]+src_cnt[i-1] : 0);
+      }
+      SCTL_ASSERT(src_cnt[src_cnt.Dim()-1] + src_dsp[src_dsp.Dim()-1] == SrcDim()*nd);
+      SCTL_ASSERT(trg_cnt[trg_cnt.Dim()-1] + trg_dsp[trg_dsp.Dim()-1] == TrgDim()*nd);
+
+      sctl::Vector<Real> v_src(Ns*SrcDim()*nd);
+      for (sctl::Integer j = 0; j < src_cnt.Dim(); j++) {
+        const sctl::Integer src_cnt_ = src_cnt[j];
+        const sctl::Integer src_dsp_ = src_dsp[j];
+        for (sctl::Integer k = 0; k < src_cnt_; k++) {
+          for (sctl::Long i = 0; i < Ns; i++) {
+            v_src[i*SrcDim()*nd+src_dsp_+k] = v_src_[j][i*src_cnt_+k];
+          }
+        }
+      }
+
+      const sctl::Long NNt = ((Nt + VecLen - 1) / VecLen) * VecLen;
+      //if (NNt == VecLen) {
+      //  VecType xt[DIM], vt[KDIM1], xs[DIM];
+      //  Real vs[KDIM0];
+      //  for (sctl::Integer k = 0; k < KDIM1; k++) vt[k] = VecType::Zero();
+      //  for (sctl::Integer k = 0; k < DIM; k++) {
+      //    alignas(sizeof(VecType)) sctl::StaticArray<Real,VecLen> Xt;
+      //    VecType::Zero().StoreAligned(&Xt[0]);
+      //    for (sctl::Integer i = 0; i < Nt; i++) Xt[i] = r_trg[i*DIM+k];
+      //    xt[k] = VecType::LoadAligned(&Xt[0]);
+      //  }
+      //  for (sctl::Long s = 0; s < Ns; s++) {
+      //    for (sctl::Integer k = 0; k < DIM; k++) xs[k] = VecType::Load1(&r_src[s*DIM+k]);
+      //    for (sctl::Integer k = 0; k < KDIM0; k++) vs[k] = v_src[s*KDIM0+k];
+      //    uKerEval(vt, xt, xs, vs, nd);
+      //  }
+      //  for (sctl::Integer k = 0; k < KDIM1; k++) {
+      //    alignas(sizeof(VecType)) sctl::StaticArray<Real,VecLen> out;
+      //    vt[k].StoreAligned(&out[0]);
+      //    for (sctl::Long t = 0; t < Nt; t++) {
+      //      v_trg[t*KDIM1+k] += out[t] * uKernel::uKerScaleFactor();
+      //    }
+      //  }
+      //} else
+      {
+        const sctl::Matrix<Real> Xs_(Ns, DIM, (sctl::Iterator<Real>)r_src.begin(), false);
+        const sctl::Matrix<Real> Vs_(Ns, SrcDim()*nd, (sctl::Iterator<Real>)v_src.begin(), false);
+
+        sctl::Matrix<Real> Xt_(DIM, NNt), Vt_(TrgDim()*nd, NNt);
+        for (sctl::Long k = 0; k < DIM; k++) { // Set Xt_
+          for (sctl::Long i = 0; i < Nt; i++) {
+            Xt_[k][i] = r_trg[i*DIM+k];
+          }
+          for (sctl::Long i = Nt; i < NNt; i++) {
+            Xt_[k][i] = 0;
+          }
+        }
+        if (enable_openmp) { // Compute Vt_
+          #pragma omp parallel for schedule(static)
+          for (sctl::Long t = 0; t < NNt; t += VecLen) {
+            VecType xt[DIM], vt[TrgDim()*nd];
+            for (sctl::Integer k = 0; k < TrgDim()*nd; k++) vt[k] = VecType::Zero();
+            for (sctl::Integer k = 0; k < DIM; k++) xt[k] = VecType::LoadAligned(&Xt_[k][t]);
+
+            for (sctl::Long s = 0; s < Ns; s++) {
+              VecType dX[DIM];
+              for (sctl::Integer k = 0; k < DIM; k++) dX[k] = xt[k] - Xs_[s][k];
+              uKerEval(vt, dX, &Vs_[s][0], nd);
+            }
+            for (sctl::Integer k = 0; k < TrgDim()*nd; k++) vt[k].StoreAligned(&Vt_[k][t]);
+          }
+        } else {
+          for (sctl::Long t = 0; t < NNt; t += VecLen) {
+            VecType xt[DIM], vt[TrgDim()*nd];
+            for (sctl::Integer k = 0; k < TrgDim()*nd; k++) vt[k] = VecType::Zero();
+            for (sctl::Integer k = 0; k < DIM; k++) xt[k] = VecType::LoadAligned(&Xt_[k][t]);
+
+            for (sctl::Long s = 0; s < Ns; s++) {
+              VecType dX[DIM];
+              for (sctl::Integer k = 0; k < DIM; k++) dX[k] = xt[k] - Xs_[s][k];
+              uKerEval(vt, dX, &Vs_[s][0], nd);
+            }
+            for (sctl::Integer k = 0; k < TrgDim()*nd; k++) vt[k].StoreAligned(&Vt_[k][t]);
+          }
+        }
+
+        for (sctl::Integer j = 0; j < trg_cnt.Dim(); j++) {
+          const sctl::Integer trg_cnt_ = trg_cnt[j];
+          const sctl::Integer trg_dsp_ = trg_dsp[j];
+          for (sctl::Long i = 0; i < Nt; i++) {
+            for (sctl::Integer k = 0; k < trg_cnt_; k++) {
+              v_trg_[j][i*trg_cnt_+k] += Vt_[trg_dsp_+k][i] * uKernel::uKerScaleFactor();
+            }
+          }
+        }
+      }
+
+    }
+
+    void* ctx_ptr;
+};
+
+
+template <class Real, sctl::Integer VecLen_, sctl::Integer chrg, sctl::Integer dipo, sctl::Integer poten, sctl::Integer grad> struct Helmholtz3D {
+  static constexpr sctl::Integer VecLen = VecLen_;
+  using VecType = sctl::Vec<Real, VecLen>;
+  using RealType = Real;
+
+  VecType thresh2;
+  VecType zk[2];
+
+  static constexpr Real uKerScaleFactor() {
+    return 1;
+  }
+  template <sctl::Integer digits, class CtxType> static inline void uKerMatrix(VecType (&M)[chrg+dipo][poten+grad][2], const VecType (&dX)[3], const CtxType& ctx) {
+    using RealType = typename VecType::ScalarType;
+    static constexpr sctl::Integer COORD_DIM = 3;
+
+    const VecType& thresh2 = ctx.thresh2;
+    const VecType (&zk)[2] = ctx.zk;
+
+    const VecType R2 = dX[0]*dX[0]+dX[1]*dX[1]+dX[2]*dX[2];
+    const VecType Rinv = sctl::approx_rsqrt<digits>(R2, (R2 > thresh2));
+    const VecType Rinv2 = Rinv * Rinv;
+
+    const VecType R = R2 * Rinv;
+    const VecType izkR[2] = {-zk[1]*R, zk[0]*R};
+
+    VecType sin_izkR, cos_izkR;
+    sctl::approx_sincos<digits>(sin_izkR, cos_izkR, izkR[1]);
+    const VecType exp_izkR = sctl::approx_exp<digits>(izkR[0]);
+
+    // exp(ikr)/r
+    const VecType G0 = cos_izkR * exp_izkR * Rinv;
+    const VecType G1 = sin_izkR * exp_izkR * Rinv;
+
+    // (1-ikr)*exp(ikr)/r^3
+    const VecType H0 = ((izkR[0]-(RealType)1)*G0 - izkR[1]*G1) * Rinv2;
+    const VecType H1 = ((izkR[0]-(RealType)1)*G1 + izkR[1]*G0) * Rinv2;
+
+    const VecType tmp0 = (-3.0)*(Rinv*zk[1]+Rinv2) - zk[1]*zk[1] + zk[0]*zk[0];
+    const VecType tmp1 = (3.0)*Rinv*zk[0] - zk[0]*zk[1]*(-2.0);
+    const VecType J0 = (G0 * tmp0 - G1 * tmp1)*Rinv2;
+    const VecType J1 = (G1 * tmp0 + G0 * tmp1)*Rinv2;
+
+    if (chrg && poten) { // charge potential
+      M[0][0][0] =  G0;
+      M[0][0][1] =  G1;
+    }
+
+    if (chrg && grad) { // charge gradient
+      for (sctl::Integer i = 0; i < COORD_DIM; i++){
+        M[0][poten+i][0] = H0*dX[i];
+        M[0][poten+i][1] = H1*dX[i];
+      }
+    }
+
+    if (dipo && poten) { // dipole potential
+      for (sctl::Integer i = 0; i < COORD_DIM; i++){
+        M[chrg+i][0][0] = -H0*dX[i];
+        M[chrg+i][0][1] = -H1*dX[i];
+      }
+    }
+
+    if (dipo && grad) { // dipole gradient
+      for (sctl::Integer i = 0; i < COORD_DIM; i++){
+        const VecType J0_dXi = J0*dX[i];
+        const VecType J1_dXi = J1*dX[i];
+        for (sctl::Integer j = 0; j < COORD_DIM; j++){
+          M[chrg+i][poten+j][0] = (i==j ? J0_dXi*dX[j]-H0 : J0_dXi*dX[j]);
+          M[chrg+i][poten+j][1] = (i==j ? J1_dXi*dX[j]-H1 : J1_dXi*dX[j]);
+        }
+      }
+    }
+  }
+};
+
+template <class Real, sctl::Integer VecLen, sctl::Integer chrg, sctl::Integer dipo, sctl::Integer poten, sctl::Integer grad> static void EvalHelmholtz(sctl::Vector<sctl::Vector<Real>>& v_trg, const sctl::Vector<Real>& r_trg, const sctl::Vector<Real>& r_src, const sctl::Vector<sctl::Vector<Real>>& v_src, const sctl::Integer nd, const Real* zk, const Real thresh, const sctl::Integer digits) {
+  GenericKernel<Helmholtz3D<Real,VecLen, chrg,dipo,poten,grad>> ker;
+  ker.thresh2 = thresh*thresh;
+  ker.zk[0] = zk[0];
+  ker.zk[1] = zk[1];
+
+  if (digits < 0) ker.template Eval<true, -1>(v_trg, r_trg, r_src, v_src, nd);
+  else if (digits <= 3) ker.template Eval<true, 3>(v_trg, r_trg, r_src, v_src, nd);
+  else if (digits <= 6) ker.template Eval<true, 6>(v_trg, r_trg, r_src, v_src, nd);
+  else if (digits <= 9) ker.template Eval<true, 9>(v_trg, r_trg, r_src, v_src, nd);
+  else if (digits <=12) ker.template Eval<true,12>(v_trg, r_trg, r_src, v_src, nd);
+  else if (digits <=15) ker.template Eval<true,15>(v_trg, r_trg, r_src, v_src, nd);
+  else ker.template Eval<true,-1>(v_trg, r_trg, r_src, v_src, nd);
+}
+
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void h3ddirectcdg_new_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh, const sctl::Integer digits) {
+  const sctl::Vector<Real> r_trg(nt[0]*3, (sctl::Iterator<Real>)sctl::Ptr2ConstItr<Real>(ztarg,nt[0]*3), false);
+  const sctl::Vector<Real> r_src(ns[0]*3, (sctl::Iterator<Real>)sctl::Ptr2ConstItr<Real>(sources,ns[0]*3), false);
+
+  sctl::Integer offset = 0;
+  sctl::Vector<sctl::Vector<Real>> v_src((charge?1:0)+(dipvec?1:0));
+  if (charge) {
+    v_src[offset].ReInit(ns[0]*nd[0]*2, (sctl::Iterator<Real>)sctl::Ptr2ConstItr<Real>(charge,ns[0]*nd[0]*2), false);
+    offset++;
+  }
+  if (dipvec) {
+    v_src[offset].ReInit(ns[0]*3*nd[0]*2, (sctl::Iterator<Real>)sctl::Ptr2ConstItr<Real>(dipvec,ns[0]*3*nd[0]*2), false);
+  }
+
+  offset = 0;
+  sctl::Vector<sctl::Vector<Real>> v_trg((pot?1:0)+(grad?1:0));
+  if (pot) {
+    v_trg[offset].ReInit(nt[0]*nd[0]*2, sctl::Ptr2Itr<Real>(pot,nt[0]*nd[0]*2), false);
+    offset++;
+  }
+  if (grad) {
+    v_trg[offset].ReInit(nt[0]*3*nd[0]*2, sctl::Ptr2Itr<Real>(grad,nt[0]*3*nd[0]*2), false);
+  }
+
+  if ((charge) && (!dipvec) && (pot) && (!grad)) EvalHelmholtz<Real, MaxVecLen, 1,0,1,0>(v_trg, r_trg, r_src, v_src, nd[0], zk, thresh[0], digits);
+  else if ((charge) && (!dipvec) && (pot) && (grad)) EvalHelmholtz<Real, MaxVecLen, 1,0,1,3>(v_trg, r_trg, r_src, v_src, nd[0], zk, thresh[0], digits);
+  else if ((!charge) && (dipvec) && (pot) && (!grad)) EvalHelmholtz<Real, MaxVecLen, 0,3,1,0>(v_trg, r_trg, r_src, v_src, nd[0], zk, thresh[0], digits);
+  else if ((!charge) && (dipvec) && (pot) && (grad)) EvalHelmholtz<Real, MaxVecLen, 0,3,1,3>(v_trg, r_trg, r_src, v_src, nd[0], zk, thresh[0], digits);
+  else if ((charge) && (dipvec) && (pot) && (!grad)) EvalHelmholtz<Real, MaxVecLen, 1,3,1,0>(v_trg, r_trg, r_src, v_src, nd[0], zk, thresh[0], digits);
+  else if ((charge) && (dipvec) && (pot) && (grad)) EvalHelmholtz<Real, MaxVecLen, 1,3,1,3>(v_trg, r_trg, r_src, v_src, nd[0], zk, thresh[0], digits);
+}
+
+
+
+
+template <class Real, sctl::Integer VecLen_, sctl::Integer chrg, sctl::Integer dipo, sctl::Integer poten, sctl::Integer grad> struct Laplace3D {
+  static constexpr sctl::Integer VecLen = VecLen_;
+  using VecType = sctl::Vec<Real, VecLen>;
+  using RealType = Real;
+
+  VecType thresh2;
+
+  static constexpr Real uKerScaleFactor() {
+    return 1;
+  }
+  template <sctl::Integer digits, class CtxType> static inline void uKerMatrix(VecType (&M)[chrg+dipo][poten+grad][1], const VecType (&dX)[3], const CtxType& ctx) {
+    using RealType = typename VecType::ScalarType;
+    static constexpr sctl::Integer COORD_DIM = 3;
+
+    const VecType& thresh2 = ctx.thresh2;
+
+    const VecType R2 = dX[0]*dX[0]+dX[1]*dX[1]+dX[2]*dX[2];
+    const VecType Rinv = sctl::approx_rsqrt<digits>(R2, (R2 > thresh2));
+    const VecType Rinv2 = Rinv * Rinv;
+    const VecType Rinv3 = Rinv * Rinv2;
+
+    if (chrg && poten) { // charge potential
+      M[0][0][0] = Rinv;
+    }
+
+    if (chrg && grad) { // charge gradient
+      for (sctl::Integer i = 0; i < COORD_DIM; i++){
+        M[0][poten+i][0] = -Rinv3*dX[i];
+      }
+    }
+
+    if (dipo && poten) { // dipole potential
+      for (sctl::Integer i = 0; i < COORD_DIM; i++){
+        M[chrg+i][0][0] = Rinv3*dX[i];
+      }
+    }
+
+    if (dipo && grad) { // dipole gradient
+      const VecType J0 = Rinv3 * Rinv2 * (RealType)(-3);
+      for (sctl::Integer i = 0; i < COORD_DIM; i++){
+        const VecType J0_dXi = J0*dX[i];
+        for (sctl::Integer j = 0; j < COORD_DIM; j++){
+          M[chrg+i][poten+j][0] = (i==j ? J0_dXi*dX[j]+Rinv3 : J0_dXi*dX[j]);
+        }
+      }
+    }
+  }
+};
+
+template <class Real, sctl::Integer VecLen, sctl::Integer chrg, sctl::Integer dipo, sctl::Integer poten, sctl::Integer grad> static void EvalLaplace(sctl::Vector<sctl::Vector<Real>>& v_trg, const sctl::Vector<Real>& r_trg, const sctl::Vector<Real>& r_src, const sctl::Vector<sctl::Vector<Real>>& v_src, const sctl::Integer nd, const Real thresh, const sctl::Integer digits) {
+  GenericKernel<Laplace3D<Real,VecLen, chrg,dipo,poten,grad>> ker;
+  ker.thresh2 = thresh*thresh;
+
+  if (digits < 0) ker.template Eval<true, -1>(v_trg, r_trg, r_src, v_src, nd);
+  else if (digits <= 3) ker.template Eval<true, 3>(v_trg, r_trg, r_src, v_src, nd);
+  else if (digits <= 6) ker.template Eval<true, 6>(v_trg, r_trg, r_src, v_src, nd);
+  else if (digits <= 9) ker.template Eval<true, 9>(v_trg, r_trg, r_src, v_src, nd);
+  else if (digits <=12) ker.template Eval<true,12>(v_trg, r_trg, r_src, v_src, nd);
+  else if (digits <=15) ker.template Eval<true,15>(v_trg, r_trg, r_src, v_src, nd);
+  else ker.template Eval<true,-1>(v_trg, r_trg, r_src, v_src, nd);
+}
+
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void l3ddirectcdg_new_cpp(const int32_t* nd, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh, const sctl::Integer digits) {
+  const sctl::Vector<Real> r_trg(nt[0]*3, (sctl::Iterator<Real>)sctl::Ptr2ConstItr<Real>(ztarg,nt[0]*3), false);
+  const sctl::Vector<Real> r_src(ns[0]*3, (sctl::Iterator<Real>)sctl::Ptr2ConstItr<Real>(sources,ns[0]*3), false);
+
+  sctl::Integer offset = 0;
+  sctl::Vector<sctl::Vector<Real>> v_src((charge?1:0)+(dipvec?1:0));
+  if (charge) {
+    v_src[offset].ReInit(ns[0]*nd[0], (sctl::Iterator<Real>)sctl::Ptr2ConstItr<Real>(charge,ns[0]*nd[0]), false);
+    offset++;
+  }
+  if (dipvec) {
+    v_src[offset].ReInit(ns[0]*3*nd[0], (sctl::Iterator<Real>)sctl::Ptr2ConstItr<Real>(dipvec,ns[0]*3*nd[0]), false);
+  }
+
+  offset = 0;
+  sctl::Vector<sctl::Vector<Real>> v_trg((pot?1:0)+(grad?1:0));
+  if (pot) {
+    v_trg[offset].ReInit(nt[0]*nd[0], sctl::Ptr2Itr<Real>(pot,nt[0]*nd[0]), false);
+    offset++;
+  }
+  if (grad) {
+    v_trg[offset].ReInit(nt[0]*3*nd[0], sctl::Ptr2Itr<Real>(grad,nt[0]*3*nd[0]), false);
+  }
+
+  if ((charge) && (!dipvec) && (pot) && (!grad)) EvalLaplace<Real, MaxVecLen, 1,0,1,0>(v_trg, r_trg, r_src, v_src, nd[0], thresh[0], digits);
+  else if ((charge) && (!dipvec) && (pot) && (grad)) EvalLaplace<Real, MaxVecLen, 1,0,1,3>(v_trg, r_trg, r_src, v_src, nd[0], thresh[0], digits);
+  else if ((!charge) && (dipvec) && (pot) && (!grad)) EvalLaplace<Real, MaxVecLen, 0,3,1,0>(v_trg, r_trg, r_src, v_src, nd[0], thresh[0], digits);
+  else if ((!charge) && (dipvec) && (pot) && (grad)) EvalLaplace<Real, MaxVecLen, 0,3,1,3>(v_trg, r_trg, r_src, v_src, nd[0], thresh[0], digits);
+  else if ((charge) && (dipvec) && (pot) && (!grad)) EvalLaplace<Real, MaxVecLen, 1,3,1,0>(v_trg, r_trg, r_src, v_src, nd[0], thresh[0], digits);
+  else if ((charge) && (dipvec) && (pot) && (grad)) EvalLaplace<Real, MaxVecLen, 1,3,1,3>(v_trg, r_trg, r_src, v_src, nd[0], thresh[0], digits);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 template <class Real> void h3ddirectcp_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
   static constexpr int32_t COORD_DIM = 3;
@@ -40,8 +479,8 @@ template <class Real> void h3ddirectcp_cpp(const int32_t* nd, const Real* zk, co
 }
 
 
-// charge, potential 
-template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcp_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
+// charge, potential
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void h3ddirectcp_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
   static constexpr sctl::Integer KDIM1 = 2;
@@ -144,7 +583,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcp_vec_cpp(const 
 
 
 // charge, potential and gradient
-template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcg_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void h3ddirectcg_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
   static constexpr sctl::Integer KDIM1 = 2;
@@ -280,7 +719,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcg_vec_cpp(const 
 
 
 // charge, potential, gradient and hessian
-template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectch_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void h3ddirectch_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
   static constexpr sctl::Integer KDIM1 = 2;
@@ -461,8 +900,8 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectch_vec_cpp(const 
 }
 
 
-// dipole, potential 
-template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdp_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
+// dipole, potential
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void h3ddirectdp_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
   static constexpr sctl::Integer KDIM1 = 2;
@@ -582,7 +1021,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdp_vec_cpp(const 
 
 
 // dipole, potential and gradient
-template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdg_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void h3ddirectdg_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
   static constexpr sctl::Integer KDIM1 = 2;
@@ -734,7 +1173,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdg_vec_cpp(const 
 
 
 // dipole, potential, gradient and hessian
-template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdh_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void h3ddirectdh_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
   static constexpr sctl::Integer KDIM1 = 2;
@@ -918,7 +1357,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdh_vec_cpp(const 
           Gtrg[i][dimi][0] += H0*Gsrc[si_ind+dimi*KDIM0+0] - H1*Gsrc[si_ind+dimi*KDIM0+1];
           Gtrg[i][dimi][1] += H1*Gsrc[si_ind+dimi*KDIM0+0] + H0*Gsrc[si_ind+dimi*KDIM0+1];
         }
-         
+
         // hessian
         // dipole part
         tmp0 = cdc[0]*D0 - cdc[1]*D1;
@@ -985,7 +1424,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectdh_vec_cpp(const 
 
 
 // charge and dipole, potential
-template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdp_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void h3ddirectcdp_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
   static constexpr sctl::Integer KDIM1 = 2;
@@ -1114,7 +1553,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdp_vec_cpp(const
 
 
 // charge and dipole, potential and gradient
-template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdg_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void h3ddirectcdg_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
   static constexpr sctl::Integer KDIM1 = 2;
@@ -1253,12 +1692,12 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdg_vec_cpp(const
         Vtrg[i][1] += G1 * Vsrc[s*nd_*KDIM0+i*KDIM0+0] + G0 * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
         Vtrg[i][0] += H0 * D0 - H1 * D1;
         Vtrg[i][1] += H1 * D0 + H0 * D1;
-        
+
         // gradient
         for (sctl::Integer dimi = 0; dimi < COORD_DIM; dimi++){
           Gtrg[i][dimi][0] += Zctmp[dimi][0] * Vsrc[s*nd_*KDIM0+i*KDIM0+0] - Zctmp[dimi][1] * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
           Gtrg[i][dimi][1] += Zctmp[dimi][1] * Vsrc[s*nd_*KDIM0+i*KDIM0+0] + Zctmp[dimi][0] * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
-          
+
           Gtrg[i][dimi][0] += tmp0 * dX[dimi];
           Gtrg[i][dimi][1] += tmp1 * dX[dimi];
 
@@ -1292,7 +1731,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdg_vec_cpp(const
 
 
 // charge and dipole, potential, gradient and hessian
-template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void h3ddirectcdh_vec_cpp(const int32_t* nd, const Real* zk, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
   static constexpr sctl::Integer KDIM1 = 2;
@@ -1504,12 +1943,12 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
         Vtrg[i][1] += G1 * Vsrc[s*nd_*KDIM0+i*KDIM0+0] + G0 * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
         Vtrg[i][0] += H0 * D0 - H1 * D1;
         Vtrg[i][1] += H1 * D0 + H0 * D1;
-        
+
         // gradient
         for (sctl::Integer dimi = 0; dimi < COORD_DIM; dimi++){
           Gtrg[i][dimi][0] += Zctmp[dimi][0] * Vsrc[s*nd_*KDIM0+i*KDIM0+0] - Zctmp[dimi][1] * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
           Gtrg[i][dimi][1] += Zctmp[dimi][1] * Vsrc[s*nd_*KDIM0+i*KDIM0+0] + Zctmp[dimi][0] * Vsrc[s*nd_*KDIM0+i*KDIM0+1];
-          
+
           Gtrg[i][dimi][0] += tmp0 * dX[dimi];
           Gtrg[i][dimi][1] += tmp1 * dX[dimi];
 
@@ -1519,8 +1958,8 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
         // hessian
         // charge part
         for (sctl::Integer dimi = 0; dimi < COORD_DIM*2; dimi++){
-          Htrg[i][dimi][0] += Hctmp[dimi][0]*Vsrc[s*nd_*KDIM0+i*KDIM0+0] - Hctmp[dimi][1]*Vsrc[s*nd_*KDIM0+i*KDIM0+1]; 
-          Htrg[i][dimi][1] += Hctmp[dimi][0]*Vsrc[s*nd_*KDIM0+i*KDIM0+1] + Hctmp[dimi][1]*Vsrc[s*nd_*KDIM0+i*KDIM0+0]; 
+          Htrg[i][dimi][0] += Hctmp[dimi][0]*Vsrc[s*nd_*KDIM0+i*KDIM0+0] - Hctmp[dimi][1]*Vsrc[s*nd_*KDIM0+i*KDIM0+1];
+          Htrg[i][dimi][1] += Hctmp[dimi][0]*Vsrc[s*nd_*KDIM0+i*KDIM0+1] + Hctmp[dimi][1]*Vsrc[s*nd_*KDIM0+i*KDIM0+0];
         }
 
         // dipole part
@@ -1590,8 +2029,8 @@ template <class Real, sctl::Integer MaxVecLen=4> void h3ddirectcdh_vec_cpp(const
 
 
 // Laplace kernels
-// charge, potential 
-template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcp_vec_cpp(const int32_t* nd, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
+// charge, potential
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void l3ddirectcp_vec_cpp(const int32_t* nd, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
 
   sctl::Long nd_ = nd[0];
@@ -1682,7 +2121,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcp_vec_cpp(const 
 
 
 // charge, potential and gradient
-template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcg_vec_cpp(const int32_t* nd, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void l3ddirectcg_vec_cpp(const int32_t* nd, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
 
   sctl::Long nd_ = nd[0];
@@ -1789,7 +2228,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcg_vec_cpp(const 
 
 
 // charge, potential, gradient and hessian
-template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectch_vec_cpp(const int32_t* nd, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void l3ddirectch_vec_cpp(const int32_t* nd, const Real* sources, const Real* charge, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
 
   sctl::Long nd_ = nd[0];
@@ -1920,7 +2359,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectch_vec_cpp(const 
 
 
 // dipole, potential
-template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdp_vec_cpp(const int32_t* nd, const Real* sources, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void l3ddirectdp_vec_cpp(const int32_t* nd, const Real* sources, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
 
   sctl::Long nd_ = nd[0];
@@ -2016,7 +2455,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdp_vec_cpp(const 
 
 
 // dipole, potential and gradient
-template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdg_vec_cpp(const int32_t* nd, const Real* sources, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void l3ddirectdg_vec_cpp(const int32_t* nd, const Real* sources, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
 
   sctl::Long nd_ = nd[0];
@@ -2128,7 +2567,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdg_vec_cpp(const 
 
 
 // dipole, potential, gradient and hessian
-template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdh_vec_cpp(const int32_t* nd, const Real* sources, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void l3ddirectdh_vec_cpp(const int32_t* nd, const Real* sources, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
 
   sctl::Long nd_ = nd[0];
@@ -2267,7 +2706,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectdh_vec_cpp(const 
 
 
 // charge and dipole, potential
-template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdp_vec_cpp(const int32_t* nd, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void l3ddirectcdp_vec_cpp(const int32_t* nd, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
 
   sctl::Long nd_ = nd[0];
@@ -2367,7 +2806,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdp_vec_cpp(const
 
 
 // charge and dipole, potential and gradient
-template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdg_vec_cpp(const int32_t* nd, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void l3ddirectcdg_vec_cpp(const int32_t* nd, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
 
   sctl::Long nd_ = nd[0];
@@ -2486,7 +2925,7 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdg_vec_cpp(const
 
 
 // charge and dipole, potential, gradient and hessian
-template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdh_vec_cpp(const int32_t* nd, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
+template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void l3ddirectcdh_vec_cpp(const int32_t* nd, const Real* sources, const Real* charge, const Real* dipvec, const int32_t* ns, const Real* ztarg, const int32_t* nt, Real* pot, Real* grad, Real* hess, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
 
   sctl::Long nd_ = nd[0];
@@ -2598,11 +3037,11 @@ template <class Real, sctl::Integer MaxVecLen=4> void l3ddirectcdh_vec_cpp(const
         Gtrg[i][0] += RinvDprod*dX[0] + Rinv3*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+0] + Vsrc[s*nd_+i]*ztmp[0];
         Gtrg[i][1] += RinvDprod*dX[1] + Rinv3*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+1] + Vsrc[s*nd_+i]*ztmp[1];
         Gtrg[i][2] += RinvDprod*dX[2] + Rinv3*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+2] + Vsrc[s*nd_+i]*ztmp[2];
-        Htrg[i][0] += htmp1*Vsrc[s*nd_+i] - (Dprod*(5.0*dx*dx-1.0) - 
+        Htrg[i][0] += htmp1*Vsrc[s*nd_+i] - (Dprod*(5.0*dx*dx-1.0) -
                       (Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+0]*dX[0]+Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+0]*dX[0]))*nRinv5;
-        Htrg[i][1] += htmp2*Vsrc[s*nd_+i] - (Dprod*(5.0*dy*dy-1.0) - 
+        Htrg[i][1] += htmp2*Vsrc[s*nd_+i] - (Dprod*(5.0*dy*dy-1.0) -
                       (Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+1]*dX[1]+Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+1]*dX[1]))*nRinv5;
-        Htrg[i][2] += htmp3*Vsrc[s*nd_+i] - (Dprod*(5.0*dz*dz-1.0) - 
+        Htrg[i][2] += htmp3*Vsrc[s*nd_+i] - (Dprod*(5.0*dz*dz-1.0) -
                       (Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+2]*dX[2]+Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+2]*dX[2]))*nRinv5;
         Htrg[i][3] += htmp4*Vsrc[s*nd_+i] - (Dprod*(5.0*dx*dy) -
                       (Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+1]*dX[0]+Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+0]*dX[1]))*nRinv5;
