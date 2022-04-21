@@ -1,4 +1,5 @@
 #include <omp.h>
+#include <cmath>
 #include <cstring>
 #include <cassert>
 #include <algorithm>
@@ -107,7 +108,7 @@ inline MemoryManager::MemoryManager(Long N) {
   n.mem_ptr = &buff[0];
   n.it = free_map.insert(std::make_pair(N, n_indx));
 
-  omp_init_lock(&omp_lock);
+  //omp_init_lock(&omp_lock);
 }
 
 inline MemoryManager::~MemoryManager() {
@@ -117,11 +118,12 @@ inline MemoryManager::~MemoryManager() {
   if (!n->free || n->size != buff_size || node_stack.size() != node_buff.size() - 2 || !system_malloc.empty()) {
     SCTL_WARN("memory leak detected.");
   }
-  omp_destroy_lock(&omp_lock);
+  //omp_destroy_lock(&omp_lock);
 
   {  // free buff
     SCTL_ASSERT(buff);
     ::free(buff - ((uint16_t*)buff)[-1]);
+    buff = nullptr;
   }
 }
 
@@ -154,12 +156,16 @@ inline Iterator<char> MemoryManager::malloc(const Long n_elem, const Long type_s
   size = (uintptr_t)(size + alignment) & ~(uintptr_t)alignment;
   char* base = nullptr;
 
-  omp_set_lock(&omp_lock);
   static Long alloc_ctr = 0;
+  Long head_alloc_ctr, n_indx;
+  #pragma omp critical(SCTL_MEM_MGR_CRIT)
+  {
+  //mutex_lock.lock();
+  //omp_set_lock(&omp_lock);
   alloc_ctr++;
-  Long head_alloc_ctr = alloc_ctr;
+  head_alloc_ctr = alloc_ctr;
   std::multimap<Long, Long>::iterator it = free_map.lower_bound(size);
-  Long n_indx = (it != free_map.end() ? it->second : 0);
+  n_indx = (it != free_map.end() ? it->second : 0);
   if (n_indx) {  // Allocate from buff
     Long n_free_indx = (it->first > size ? new_node() : 0);
     MemNode& n = node_buff[n_indx - 1];
@@ -190,15 +196,20 @@ inline Iterator<char> MemoryManager::malloc(const Long n_elem, const Long type_s
     free_map.erase(it);
     base = n.mem_ptr;
   }
-  omp_unset_lock(&omp_lock);
+  //omp_unset_lock(&omp_lock);
+  //mutex_lock.unlock();
+  }
   if (!base) {             // Use system malloc
     char* p = (char*)::malloc(size + 2 + alignment + end_padding);
     SCTL_ASSERT_MSG(p, "memory allocation failed.");
 #ifdef SCTL_MEMDEBUG
+    #pragma omp critical(SCTL_MEM_MGR_CRIT)
     {  // system_malloc.insert(p)
-      omp_set_lock(&omp_lock);
+      //mutex_lock.lock();
+      //omp_set_lock(&omp_lock);
       system_malloc.insert(p);
-      omp_unset_lock(&omp_lock);
+      //omp_unset_lock(&omp_lock);
+      //mutex_lock.unlock();
     }
     {  // set p[*] to init_mem_val
 #pragma omp parallel for
@@ -289,10 +300,13 @@ inline void MemoryManager::free(Iterator<char> p) const {
         SCTL_ASSERT_MSG(p_[i] == init_mem_val, "memory corruption detected.");
       }
     }
-    {  // system_malloc.erase(p_)
-      omp_set_lock(&omp_lock);
+    #pragma omp critical(SCTL_MEM_MGR_CRIT)
+    if (buff != nullptr) {  // system_malloc.erase(p_)
+      //mutex_lock.lock();
+      //omp_set_lock(&omp_lock);
       SCTL_ASSERT_MSG(system_malloc.erase(p_) == 1, "double free or corruption.");
-      omp_unset_lock(&omp_lock);
+      //omp_unset_lock(&omp_lock);
+      //mutex_lock.unlock();
     }
 #endif
     ::free(p_);
@@ -308,7 +322,10 @@ inline void MemoryManager::free(Iterator<char> p) const {
     }
 #endif
     assert(n_indx <= (Long)node_buff.size());
-    omp_set_lock(&omp_lock);
+    #pragma omp critical(SCTL_MEM_MGR_CRIT)
+    {
+    //mutex_lock.lock();
+    //omp_set_lock(&omp_lock);
     MemNode& n = node_buff[n_indx - 1];
     assert(!n.free && n.size > 0 && n.mem_ptr == base);
     if (n.prev != 0 && node_buff[n.prev - 1].free) {
@@ -338,14 +355,19 @@ inline void MemoryManager::free(Iterator<char> p) const {
     }
     n.free = true;  // Insert n to free_map
     n.it = free_map.insert(std::make_pair(n.size, n_indx));
-    omp_unset_lock(&omp_lock);
+    //omp_unset_lock(&omp_lock);
+    //mutex_lock.unlock();
+    }
   }
   Profile::Add_MEM(-n_elem * type_size);
 }
 
 inline void MemoryManager::print() const {
   if (!buff_size) return;
-  omp_set_lock(&omp_lock);
+  #pragma omp critical(SCTL_MEM_MGR_CRIT)
+  {
+  //mutex_lock.lock();
+  //omp_set_lock(&omp_lock);
 
   Long size = 0;
   Long largest_size = 0;
@@ -364,7 +386,9 @@ inline void MemoryManager::print() const {
   std::cout << "|  allocated=" << round(size * 1000.0 / buff_size) / 10 << "%";
   std::cout << "  largest_free=" << round(largest_size * 1000.0 / buff_size) / 10 << "%\n";
 
-  omp_unset_lock(&omp_lock);
+  //omp_unset_lock(&omp_lock);
+  //mutex_lock.unlock();
+  }
 }
 
 inline void MemoryManager::test() {
@@ -411,7 +435,10 @@ inline void MemoryManager::test() {
 inline void MemoryManager::Check() const {
 #ifdef SCTL_MEMDEBUG
   // print();
-  omp_set_lock(&omp_lock);
+  #pragma omp critical(SCTL_MEM_MGR_CRIT)
+  {
+  //mutex_lock.lock();
+  //omp_set_lock(&omp_lock);
   MemNode* curr_node = &node_buff[n_dummy_indx - 1];
   while (curr_node->next) {
     curr_node = &node_buff[curr_node->next - 1];
@@ -423,7 +450,9 @@ inline void MemoryManager::Check() const {
       }
     }
   }
-  omp_unset_lock(&omp_lock);
+  //omp_unset_lock(&omp_lock);
+  //mutex_lock.unlock();
+  }
 #endif
 }
 

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iomanip>
 
+#include SCTL_INCLUDE(math_utils.hpp)
 #include SCTL_INCLUDE(mat_utils.hpp)
 #include SCTL_INCLUDE(mem_mgr.hpp)
 #include SCTL_INCLUDE(profile.hpp)
@@ -16,9 +17,9 @@ template <class ValueType> std::ostream& operator<<(std::ostream& output, const 
   output << std::fixed << std::setprecision(4) << std::setiosflags(std::ios::left);
   for (Long i = 0; i < M.Dim(0); i++) {
     for (Long j = 0; j < M.Dim(1); j++) {
-      float f = ((float)M(i, j));
-      if (fabs<float>(f) < 1e-25) f = 0;
-      output << std::setw(10) << ((double)f) << ' ';
+      double f = ((double)M(i, j));
+      if (fabs(f) < 1e-25) f = 0;
+      output << std::setw(10) << f << ' ';
     }
     output << ";\n";
   }
@@ -106,7 +107,7 @@ template <class ValueType> void Matrix<ValueType>::Write(const char* fname) cons
   dim_[0] = (uint64_t)Dim(0);
   dim_[1] = (uint64_t)Dim(1);
   fwrite(&dim_[0], sizeof(uint64_t), 2, f1);
-  if (Dim(0) * Dim(1)) fwrite(&data_ptr[0], sizeof(ValueType), Dim(0) * Dim(1), f1);
+  if (Dim(0) && Dim(1)) fwrite(&data_ptr[0], sizeof(ValueType), Dim(0) * Dim(1), f1);
   fclose(f1);
 }
 
@@ -203,9 +204,9 @@ template <class ValueType> Matrix<ValueType> Matrix<ValueType>::operator*(const 
 }
 
 template <class ValueType> void Matrix<ValueType>::GEMM(Matrix<ValueType>& M_r, const Matrix<ValueType>& A, const Matrix<ValueType>& B, ValueType beta) {
-  assert(A.dim[1] == B.dim[0]);
-  assert(M_r.dim[0] == A.dim[0]);
-  assert(M_r.dim[1] == B.dim[1]);
+  SCTL_ASSERT(A.dim[1] == B.dim[0]);
+  SCTL_ASSERT(M_r.dim[0] == A.dim[0]);
+  SCTL_ASSERT(M_r.dim[1] == B.dim[1]);
   if (A.Dim(0) * A.Dim(1) == 0 || B.Dim(0) * B.Dim(1) == 0) return;
   Profile::Add_FLOP(2 * (((Long)A.dim[0]) * A.dim[1]) * B.dim[1]);
   mat::gemm<ValueType>('N', 'N', B.dim[1], A.dim[0], A.dim[1], 1.0, B.data_ptr, B.dim[1], A.data_ptr, A.dim[1], beta, M_r.data_ptr, M_r.dim[1]);
@@ -525,11 +526,7 @@ template <class ValueType> void Matrix<ValueType>::SVD(Matrix<ValueType>& tU, Ma
 }
 
 template <class ValueType> Matrix<ValueType> Matrix<ValueType>::pinv(ValueType eps) {
-  if (eps < 0) {
-    eps = 1.0;
-    while (eps + (ValueType)1.0 > 1.0) eps *= 0.5;
-    eps = sqrt<ValueType>(eps);
-  }
+  if (eps < 0) eps = sqrt<ValueType>(machine_eps<ValueType>());
   Matrix<ValueType> M_r(dim[1], dim[0]);
   mat::pinv(data_ptr, dim[0], dim[1], eps, M_r.data_ptr);
   this->ReInit(0, 0);

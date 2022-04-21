@@ -7,6 +7,31 @@
 extern "C" {
 #endif
 
+void h3ddirectcp_new_cpp_(const int32_t* nd, const double* zk, const double* sources, const double* charge, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, const double* thresh);
+
+void h3ddirectcg_new_cpp_(const int32_t* nd, const double* zk, const double* sources, const double* charge, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, double* grad, const double* thresh);
+
+void h3ddirectdp_new_cpp_(const int32_t* nd, const double* zk, const double* sources, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, const double* thresh);
+
+void h3ddirectdg_new_cpp_(const int32_t* nd, const double* zk, const double* sources, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, double* grad, const double* thresh);
+
+void h3ddirectcdp_new_cpp_(const int32_t* nd, const double* zk, const double* sources, const double* charge, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, const double* thresh);
+
+void h3ddirectcdg_new_cpp_(const int32_t* nd, const double* zk, const double* sources, const double* charge, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, double* grad, const double* thresh);
+
+void l3ddirectcp_new_cpp_(const int32_t* nd, const double* sources, const double* charge, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, const double* thresh);
+
+void l3ddirectcg_new_cpp_(const int32_t* nd, const double* sources, const double* charge, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, double* grad, const double* thresh);
+
+void l3ddirectdp_new_cpp_(const int32_t* nd, const double* sources, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, const double* thresh);
+
+void l3ddirectdg_new_cpp_(const int32_t* nd, const double* sources, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, double* grad, const double* thresh);
+
+void l3ddirectcdp_new_cpp_(const int32_t* nd, const double* sources, const double* charge, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, const double* thresh);
+
+void l3ddirectcdg_new_cpp_(const int32_t* nd, const double* sources, const double* charge, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, double* grad, const double* thresh);
+
+
 void helm3d_f_(const int32_t* nd, const float* zk, const float* sources, const float* charge, const int32_t* ns, const float* ztarg, const int32_t* nt, float* pot, const float* thresh);
 
 void helm3d_vec_f_(const int32_t* nd, const float* zk, const float* sources, const float* charge, const int32_t* ns, const float* ztarg, const int32_t* nt, float* pot, const float* thresh);
