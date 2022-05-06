@@ -1,14 +1,16 @@
 #ifndef _SCTL_VECTOR_HPP_
 #define _SCTL_VECTOR_HPP_
 
-#include SCTL_INCLUDE(mem_mgr.hpp)
-#include SCTL_INCLUDE(common.hpp)
+#include <sctl/common.hpp>
 
 #include <vector>
 #include <cstdlib>
 #include <cstdint>
+#include <initializer_list>
 
 namespace SCTL_NAMESPACE {
+
+template <class ValueType> Iterator<ValueType> NullIterator();
 
 template <class ValueType> class Vector {
  public:
@@ -22,11 +24,13 @@ template <class ValueType> class Vector {
 
   Vector();
 
-  Vector(Long dim_, Iterator<ValueType> data_ = NullIterator<ValueType>(), bool own_data_ = true);
+  explicit Vector(Long dim_, Iterator<ValueType> data_ = NullIterator<ValueType>(), bool own_data_ = true);
 
   Vector(const Vector& V);
 
-  Vector(const std::vector<ValueType>& V);
+  explicit Vector(const std::vector<ValueType>& V);
+
+  explicit Vector(std::initializer_list<ValueType> V);
 
   ~Vector();
 
@@ -82,25 +86,27 @@ template <class ValueType> class Vector {
 
   Vector operator/(const Vector& V) const;
 
+  Vector operator-() const ;
+
   // Vector-Scalar operations
 
-  Vector& operator=(ValueType s);
+  template <class VType> Vector& operator=(VType s);
 
-  Vector& operator+=(ValueType s);
+  template <class VType> Vector& operator+=(VType s);
 
-  Vector& operator-=(ValueType s);
+  template <class VType> Vector& operator-=(VType s);
 
-  Vector& operator*=(ValueType s);
+  template <class VType> Vector& operator*=(VType s);
 
-  Vector& operator/=(ValueType s);
+  template <class VType> Vector& operator/=(VType s);
 
-  Vector operator+(ValueType s) const;
+  template <class VType> Vector operator+(VType s) const;
 
-  Vector operator-(ValueType s) const;
+  template <class VType> Vector operator-(VType s) const;
 
-  Vector operator*(ValueType s) const;
+  template <class VType> Vector operator*(VType s) const;
 
-  Vector operator/(ValueType s) const;
+  template <class VType> Vector operator/(VType s) const;
 
  private:
   void Init(Long dim_, Iterator<ValueType> data_ = NullIterator<ValueType>(), bool own_data_ = true);
@@ -111,13 +117,13 @@ template <class ValueType> class Vector {
   bool own_data;
 };
 
-template <class ValueType> Vector<ValueType> operator+(ValueType s, const Vector<ValueType>& V);
+template <class VType, class ValueType> Vector<ValueType> operator+(VType s, const Vector<ValueType>& V);
 
-template <class ValueType> Vector<ValueType> operator-(ValueType s, const Vector<ValueType>& V);
+template <class VType, class ValueType> Vector<ValueType> operator-(VType s, const Vector<ValueType>& V);
 
-template <class ValueType> Vector<ValueType> operator*(ValueType s, const Vector<ValueType>& V);
+template <class VType, class ValueType> Vector<ValueType> operator*(VType s, const Vector<ValueType>& V);
 
-template <class ValueType> Vector<ValueType> operator/(ValueType s, const Vector<ValueType>& V);
+template <class VType, class ValueType> Vector<ValueType> operator/(VType s, const Vector<ValueType>& V);
 
 template <class ValueType> std::ostream& operator<<(std::ostream& output, const Vector<ValueType>& V);
 

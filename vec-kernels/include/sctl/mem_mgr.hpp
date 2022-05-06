@@ -2,6 +2,10 @@
 #ifndef _SCTL_MEM_MGR_HPP_
 #define _SCTL_MEM_MGR_HPP_
 
+//#include <mutex>
+
+#include <sctl/common.hpp>
+
 #include <omp.h>
 #include <typeinfo>
 #include <cstdlib>
@@ -11,8 +15,6 @@
 #include <stack>
 #include <map>
 #include <set>
-
-#include SCTL_INCLUDE(common.hpp)
 
 namespace SCTL_NAMESPACE {
 
@@ -43,13 +45,7 @@ template <class ValueType> class ConstIterator {
   static const Long ValueSize = sizeof(ValueType);
 
  public:
-  ConstIterator() {
-    base = nullptr;
-    len = 0;
-    offset = 0;
-    alloc_ctr = 0;
-    mem_head = nullptr;
-  }
+  ConstIterator() : base(nullptr), len(0), offset(0), alloc_ctr(0), mem_head(nullptr) {}
 
   // template <size_t LENGTH> ConstIterator(ValueType (&base_)[LENGTH]) {  // DEPRECATED (because mem_head cannot be stored)
   //   SCTL_ASSERT(false);
@@ -245,7 +241,7 @@ template <class ValueType, Long DIM> class StaticArray {
 
   StaticArray& operator=(const StaticArray&) = default;
 
-  StaticArray(std::initializer_list<ValueType> arr_) : StaticArray() {
+  explicit StaticArray(std::initializer_list<ValueType> arr_) : StaticArray() {
     // static_assert(arr_.size() <= DIM, "too many initializer values"); // allowed in C++14
     SCTL_ASSERT_MSG(arr_.size() <= DIM, "too many initializer values");
     for (Long i = 0; i < (Long)arr_.size(); i++) (*this)[i] = arr_.begin()[i];
@@ -254,9 +250,9 @@ template <class ValueType, Long DIM> class StaticArray {
   ~StaticArray() = default;
 
   // value_type* like operators
-  const ValueType& operator*() const { return *(ConstIterator<ValueType>)*this; }
+  const ValueType& operator*() const { return (*this)[0]; }
 
-  ValueType& operator*() { return *(Iterator<ValueType>)*this; }
+  ValueType& operator*() { return (*this)[0]; }
 
   const ValueType* operator->() const { return (ConstIterator<ValueType>)*this; }
 
@@ -308,6 +304,8 @@ template <class ValueType> ConstIterator<ValueType> Ptr2ConstItr(const void* ptr
 
 #else
 
+// StaticArray - forward declared in common.hpp
+
 template <class ValueType> Iterator<ValueType> Ptr2Itr(void* ptr, Long len) { return (Iterator<ValueType>) ptr; }
 template <class ValueType> ConstIterator<ValueType> Ptr2ConstItr(const void* ptr, Long len) { return (ConstIterator<ValueType>) ptr; }
 
@@ -334,13 +332,15 @@ class MemoryManager {
     Long type_size;
     Long alloc_ctr;
     TypeID type_id;
+    #ifdef SCTL_MEMDEBUG
     unsigned char check_sum;
+    #endif
   };
 
   /**
    * \brief Constructor for MemoryManager.
    */
-  MemoryManager(Long N);
+  explicit MemoryManager(Long N);
 
   /**
    * \brief Constructor for MemoryManager.
@@ -406,7 +406,8 @@ class MemoryManager {
   mutable std::vector<MemNode> node_buff;      // storage for MemNode objects, this can only grow.
   mutable std::stack<Long> node_stack;         // stack of available free MemNodes from node_buff.
   mutable std::multimap<Long, Long> free_map;  // pair (MemNode.size, MemNode_id) for all free MemNodes.
-  mutable omp_lock_t omp_lock;                 // openmp lock to prevent concurrent changes.
+  //mutable omp_lock_t omp_lock;                 // openmp lock to prevent concurrent changes.
+  //mutable std::mutex mutex_lock;
   mutable std::set<void*> system_malloc;       // track pointers allocated using system malloc.
 };
 

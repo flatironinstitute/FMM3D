@@ -1,6 +1,8 @@
 #include <sctl.hpp>
 #include <kernels.h>
 
+double mydrand() { return (double)rand()/RAND_MAX; }
+
 int main() {
   constexpr int32_t COORD_DIM = 3;
 
@@ -26,7 +28,7 @@ int main() {
     sctl::Profile::Toc();
 
     sctl::Profile::Tic("Vectorized");
-    for (long i = 0; i < 100; i++) helm3d_vec_d_(&nd, zk, &Xs[0], &F[0], &Ns, &Xt[0], &Nt, &U1[0], &thresh);
+    for (long i = 0; i < 100; i++) h3ddirectcp_new_cpp_(&nd, zk, &Xs[0], &F[0], &Ns, &Xt[0], &Nt, &U1[0], &thresh);
     sctl::Profile::Toc();
 
     sctl::Profile::print();

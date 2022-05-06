@@ -1,6 +1,8 @@
 #ifndef _SCTL_STACKTRACE_H_
 #define _SCTL_STACKTRACE_H_
 
+#include <sctl/common.hpp>
+
 #include <unistd.h>
 #include <signal.h>
 #include <stdio.h>
@@ -47,8 +49,8 @@ inline void print_stacktrace(FILE* out = stderr, int skip = 1) {
     if (!pipe) continue;
     char buffer0[10240];
     char buffer1[10240];
-    fgets(buffer0, sizeof(buffer0) - 1, pipe);
-    fgets(buffer1, sizeof(buffer1) - 1, pipe);
+    char* fgets_ret0 = fgets(buffer0, sizeof(buffer0) - 1, pipe);
+    char* fgets_ret1 = fgets(buffer1, sizeof(buffer1) - 1, pipe);
     for (int j = 0; j < (int)sizeof(buffer0) - 1; j++) {
       if (buffer0[j] == '\n') buffer0[j] = ' ';
     }
@@ -58,7 +60,7 @@ inline void print_stacktrace(FILE* out = stderr, int skip = 1) {
     pclose(pipe);
 
     // Print output
-    if (buffer0[0] != '?' && buffer0[0] != '\0') {
+    if (fgets_ret0 != nullptr && fgets_ret1 != nullptr && buffer0[0] != '?' && buffer0[0] != '\0') {
       fprintf(out, "[%d] %s: %s\n", i - skip, buffer1, buffer0);
     } else {
       fprintf(out, "[%d] %p: %s\n", i - skip, addrlist[i], symbollist[i]);
@@ -72,7 +74,7 @@ inline void abortHandler(int signum, siginfo_t* si, void* unused) {
   SCTL_UNUSED(unused);
   SCTL_UNUSED(si);
 
-#pragma omp critical(STACK_TRACE)
+#pragma omp critical(SCTL_STACK_TRACE)
   if (first_time) {
     first_time = false;
     const char* name = nullptr;

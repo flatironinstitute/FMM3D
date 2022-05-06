@@ -1,11 +1,11 @@
 #ifndef _SCTL_PROFILE_HPP_
 #define _SCTL_PROFILE_HPP_
 
+#include <sctl/common.hpp>
+
 #include <string>
 #include <vector>
 #include <stack>
-
-#include SCTL_INCLUDE(common.hpp)
 
 #ifndef SCTL_PROFILE
 #define SCTL_PROFILE -1
@@ -52,12 +52,7 @@ class Profile {
     std::vector<Long> m_log;
     std::vector<Long> max_m_log;
 
-    ProfileData() {
-      MEM = 0;
-      FLOP = 0;
-      enable_state = false;
-      enable_depth = 0;
-    }
+    ProfileData() : MEM(0), FLOP(0), enable_state(false), enable_depth(0) {}
   };
 
   static inline ProfileData& ProfData() {
