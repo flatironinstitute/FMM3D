@@ -434,7 +434,6 @@ c
 
       allocate(iaddr(2,nboxes))
       lmptemp = (nmax+1)*(2*nmax+1)*2*nd
-      allocate(mptemp(lmptemp),mptemp2(lmptemp))
 
 c
 c     allocate memory need by multipole, local expansions at all
@@ -464,7 +463,7 @@ C$    time1=omp_get_wtime()
      $   ifcharge,chargesort,
      $   ifdipole,dipvecsort,
      $   ntarg,targsort,nexpc,expcsort,radssort,
-     $   iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp,
+     $   iaddr,rmlexp,lmptot,
      $   itree,ltree,ipointer,ndiv,nlevels,
      $   nboxes,iper,boxsize,treecenters,isrcse,itargse,iexpcse,
      $   scales,itree(ipointer(1)),nterms,
