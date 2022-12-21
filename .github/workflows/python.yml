@@ -17,7 +17,7 @@ jobs:
     container: quay.io/pypa/manylinux2014_x86_64:latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     
     - name: install gfortran-7
       run: |
@@ -47,7 +47,7 @@ jobs:
         .github/workflows/python_test_posix.sh /opt/python/cp311-cp311/bin/python
 
     - name: Upload wheels
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: linux-wheels
         path: wheelhouse/*.whl
@@ -58,7 +58,7 @@ jobs:
       MACOSX_DEPLOYMENT_TARGET: 10.9
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Install gcc-8
       run: |
@@ -136,7 +136,7 @@ jobs:
         .github/workflows/python_test_posix.sh /Library/Frameworks/Python.framework/Versions/3.11/bin/python3
 
     - name: Upload wheels
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: macos-wheels
         path: wheelhouse/*.whl
@@ -145,13 +145,13 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Install GCC and make
       run: C:\msys64\usr\bin\bash.exe -lc "pacman -Sy --noconfirm make mingw-w64-x86_64-toolchain"
 
     - name: Build and Test Python 3.6
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.6'
         architecture: 'x64'
@@ -160,7 +160,7 @@ jobs:
         .\.github\workflows\python_test_win.ps1
 
     - name: Build and Test Python 3.7
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.7'
         architecture: 'x64'
@@ -169,7 +169,7 @@ jobs:
         .\.github\workflows\python_test_win.ps1
 
     - name: Build and Test Python 3.8
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.8'
         architecture: 'x64'
@@ -178,7 +178,7 @@ jobs:
         .\.github\workflows\python_test_win.ps1
 
     - name: Build and Test Python 3.9
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.9'
         architecture: 'x64'
@@ -187,7 +187,7 @@ jobs:
         .\.github\workflows\python_test_win.ps1
 
     - name: Build and Test Python 3.10
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.10'
         architecture: 'x64'
@@ -196,7 +196,7 @@ jobs:
         .\.github\workflows\python_test_win.ps1
 
     - name: Build and Test Python 3.11
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.11'
         architecture: 'x64'
@@ -205,7 +205,7 @@ jobs:
         .\.github\workflows\python_test_win.ps1
 
     - name: Upload wheels
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: windows-wheels
         path: wheelhouse\*.whl
@@ -218,10 +218,10 @@ jobs:
     
     steps:
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         
       - name: Download Artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         
       - name: Upload to PyPI
         run: |
