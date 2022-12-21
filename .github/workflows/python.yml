@@ -60,10 +60,10 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Install gcc-8
+    - name: Install gcc-10
       run: |
-        brew install gcc@8
-        ln -s `which gfortran-8` /usr/local/bin/gfortran
+        brew install gcc@10
+        ln -s `which gfortran-10` /usr/local/bin/gfortran
         cp make.inc.macos.gnu make.inc
         echo "FC=gfortran-8" >> make.inc
         echo "CC=gcc-8" >> make.inc
@@ -75,7 +75,7 @@ jobs:
         # otherwise binaries are incompatible with older systems
         echo "LIBS += -static-libgfortran -static-libgcc -static-libstdc++" >> make.inc
         # hack to make libquadmath link statically
-        sudo rm /usr/local/opt/gcc@8/lib/gcc/8/libquadmath.*dylib
+        sudo rm /usr/local/opt/gcc@8/lib/gcc/10/libquadmath.*dylib
 
     
     # Download and install Python instead of using the setup_python
