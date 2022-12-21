@@ -55,7 +55,7 @@ jobs:
   MacOS:
     runs-on: macos-latest
     env:
-      MACOSX_DEPLOYMENT_TARGET: 10.9
+      MACOSX_DEPLOYMENT_TARGET: 11.0
 
     steps:
     - uses: actions/checkout@v3
@@ -105,12 +105,12 @@ jobs:
         sudo installer -pkg python_installer.pkg -target /
 
         curl \
-          https://www.python.org/ftp/python/3.10.9/python-3.10.9-macosx10.9.pkg \
+          https://www.python.org/ftp/python/3.10.9/python-3.10.9-macosx11.pkg \
           --output python_installer.pkg
         sudo installer -pkg python_installer.pkg -target /
 
         curl \
-          https://www.python.org/ftp/python/3.11.1/python-3.11.1-macosx10.9.pkg \
+          https://www.python.org/ftp/python/3.11.1/python-3.11.1-macosx11.pkg \
           --output python_installer.pkg
         sudo installer -pkg python_installer.pkg -target /
 
