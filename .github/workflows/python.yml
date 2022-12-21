@@ -75,7 +75,7 @@ jobs:
         # otherwise binaries are incompatible with older systems
         echo "LIBS += -static-libgfortran -static-libgcc -static-libstdc++" >> make.inc
         # hack to make libquadmath link statically
-        sudo rm /usr/local/opt/gcc@8/lib/gcc/10/libquadmath.*dylib
+        sudo rm /usr/local/opt/gcc@10/lib/gcc/10/libquadmath.*dylib
 
     
     # Download and install Python instead of using the setup_python
