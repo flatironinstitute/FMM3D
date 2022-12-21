@@ -65,9 +65,9 @@ jobs:
         brew install gcc@10
         ln -s `which gfortran-10` /usr/local/bin/gfortran
         cp make.inc.macos.gnu make.inc
-        echo "FC=gfortran-8" >> make.inc
-        echo "CC=gcc-8" >> make.inc
-        echo "CXX=g++-8" >> make.inc
+        echo "FC=gfortran-10" >> make.inc
+        echo "CC=gcc-10" >> make.inc
+        echo "CXX=g++-10" >> make.inc
         echo "FFLAGS += -march=x86-64" >> make.inc
         echo "CFLAGS += -march=x86-64" >> make.inc
         echo "CXXFLAGS += -march=x86-64" >> make.inc
