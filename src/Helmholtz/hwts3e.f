@@ -110,8 +110,8 @@ ccc           endif
 c
         gamma=0
         v=u/(1+gamma*abs(dble(-ima*rk)))
-        cxs(k)=u-ima*rk+abs(imag(-ima*rk))*ima*(v/(1+v))
-        cws(k)=1+abs(imag(-ima*rk))*ima*((1+v)-v)/(1+v)**2
+        cxs(k)=u-ima*rk+abs(dimag(-ima*rk))*ima*(v/(1+v))
+        cws(k)=1+abs(dimag(-ima*rk))*ima*((1+v)-v)/(1+v)**2
      $     /(1+gamma*abs(dble(-ima*rk)))
         cws(k)=cws(k)*ws(k)*uweight
         endif
@@ -237,7 +237,7 @@ c
         cy(24)=16*pi
 c
         rkrea=dble(rk)
-        rkima=imag(rk)
+        rkima=dimag(rk)
 c
         idomain = 0
         ier = 0
@@ -369,7 +369,8 @@ c
         n = 0
         iquadtype = 0
 c
-        INCLUDE 'hwts_3d_iprec0.txt'
+c        INCLUDE 'hwts_3d_iprec0.txt'
+        INCLUDE 'src/Helmholtz/hwts_3d_iprec0.txt'
 c
         return
         end
@@ -385,7 +386,8 @@ c
         n = 0
         iquadtype = 0
 c
-        INCLUDE 'hwts_3d_iprec1.txt'
+c        INCLUDE 'hwts_3d_iprec1.txt'
+        INCLUDE 'src/Helmholtz/hwts_3d_iprec1.txt'
 c
         return
         end
@@ -401,7 +403,8 @@ c
         n = 0
         iquadtype = 0
 c
-        INCLUDE 'hwts_3d_iprec2.txt'
+c        INCLUDE 'hwts_3d_iprec2.txt'
+        INCLUDE 'src/Helmholtz/hwts_3d_iprec2.txt'
 c
         return
         end        
@@ -417,7 +420,8 @@ c
         n = 0
         iquadtype = 0
 c
-        INCLUDE 'hwts_3d_iprec3.txt'
+c        INCLUDE 'hwts_3d_iprec3.txt'
+        INCLUDE 'src/Helmholtz/hwts_3d_iprec3.txt'
 c
         return
         end
@@ -433,7 +437,8 @@ c
         n = 0
         iquadtype = 0
 c
-        INCLUDE 'hwts_3d_iprec4.txt'
+c        INCLUDE 'hwts_3d_iprec4.txt'
+        INCLUDE 'src/Helmholtz/hwts_3d_iprec4.txt'
 c
         return
         end

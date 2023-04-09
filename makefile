@@ -15,6 +15,7 @@ FC=gfortran
 
 # set compiler flags for c and fortran
 FFLAGS= -fPIC -O3 -march=native -funroll-loops -std=legacy
+FFLAGS_DYN= -shared -fPIC
 CFLAGS= -fPIC -O3 -march=native -funroll-loops -std=c99
 CXXFLAGS= -std=c++11 -DSCTL_PROFILE=-1 -fPIC -O3 -march=native -funroll-loops
 
@@ -224,7 +225,7 @@ $(STATICLIB): $(OBJS)
 	ar rcs $(STATICLIB) $(OBJS)
 	mv $(STATICLIB) lib-static/
 $(DYNAMICLIB): $(OBJS)
-	$(FC) -shared -fPIC $(OBJS) -o $(DYNAMICLIB) $(DYLIBS)
+	$(FC) $(FFLAGS_DYN) $(OBJS) -o $(DYNAMICLIB) $(DYLIBS)
 	mv $(DYNAMICLIB) lib/
 	[ ! -f $(LIMPLIB) ] || mv $(LIMPLIB) lib/
 

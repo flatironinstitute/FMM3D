@@ -377,7 +377,7 @@ c
 
       zkiupbound = 12*pi
       zkrupbound = 16*pi
-      zi = imag(zkfmm)
+      zi = dimag(zkfmm)
 
       ilevcutoff = -1
 
@@ -391,7 +391,7 @@ c
 
       do ilev=2,nlevels
         zk2 = zkfmm*boxsize(ilev)
-        if(real(zk2).le.zkrupbound.and.imag(zk2).lt.zkiupbound.and.
+        if(real(zk2).le.zkrupbound.and.dimag(zk2).lt.zkiupbound.and.
      1     ilev.gt.ilevcutoff) then
 
           ier = 0

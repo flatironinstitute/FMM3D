@@ -406,7 +406,7 @@ c
               pot(idim,itarg)=pot(idim,itarg)+rtmp1*rtmp2
               ur(idim) = ur(idim) + rtmp4*rtmp2
               utheta(idim) = utheta(idim)+rtmp5*rtmp2
-              rtmp2 = 2*imag(mpole(idim,n,m)*ephi(m))
+              rtmp2 = 2*dimag(mpole(idim,n,m)*ephi(m))
               uphi(idim) = uphi(idim) + rtmp6*rtmp2
             enddo
           enddo
@@ -1272,7 +1272,7 @@ c
               pot(idim,itarg)=pot(idim,itarg)+rtmp1*rtmp2
               ur(idim) = ur(idim) + rtmp4*rtmp2
               utheta(idim) = utheta(idim)+rtmp5*rtmp2
-              rtmp2 = 2*imag(mpole(idim,n,m)*ephi(m))
+              rtmp2 = 2*dimag(mpole(idim,n,m)*ephi(m))
               uphi(idim) = uphi(idim) + rtmp6*rtmp2
             enddo
           enddo

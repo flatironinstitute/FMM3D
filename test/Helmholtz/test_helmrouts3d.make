@@ -1,5 +1,6 @@
 #HOST = gcc
-HOST = gcc-openmp
+#HOST = gcc-openmp
+HOST = nag
 
 PROJECT = int2-helmrouts3d
 
@@ -14,6 +15,14 @@ endif
 ifeq ($(HOST),gcc-openmp)
     FC = gfortran 
     FFLAGS=-fPIC -O3 -funroll-loops -march=native -fopenmp -std=legacy
+endif
+
+ifeq ($(HOST),nag)
+    FC=nagfor
+    FFLAGS=-PIC -O3 -Ounroll=1 -f90_sign -dcfuns -dusty -w=x77 -w=unreffed -w=unused -ieee=full -openmp
+    OMPFLAGS= -openmp
+    OMPLIBS = -lf71omp64 
+    CLIBS = -lm -ldl
 endif
 
 # Test objects
