@@ -54,7 +54,7 @@ c
       write(*,*) "=========================================="
       write(*,*) "Testing suite for laprouts3d"
 
-      lw7 = 100000
+      lw7 = 200000
       ll = lw7
       allocate(wlege(ll))
       allocate(scarray_mp(ll),scarray_loc(ll))
@@ -173,7 +173,7 @@ c
       call l3dterms(eps, nterms2)
       call l3dterms(eps, nterms3)
 
-      nterms2 = nterms + 5
+      nterms2 = nterms - 5
       nterms3 = nterms + 10
 
       nmax = max(nterms,nterms2)
