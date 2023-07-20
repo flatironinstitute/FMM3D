@@ -1112,6 +1112,31 @@ mxWrapReturnZDef_single   (mxWrapReturn_single_dcomplex, dcomplex,
 #define MWF77_stfmm3d stfmm3d_
 #define MWF77_st3ddirectstokg st3ddirectstokg_
 #define MWF77_st3ddirectstokstrsg st3ddirectstokstrsg_
+#elif defined(MWF77_UNDERSCORE0)
+#define MWF77_hndiv hndiv
+#define MWF77_hfmm3d_ndiv hfmm3d_ndiv
+#define MWF77_h3ddirectcp h3ddirectcp
+#define MWF77_h3ddirectdp h3ddirectdp
+#define MWF77_h3ddirectcdp h3ddirectcdp
+#define MWF77_h3ddirectcg h3ddirectcg
+#define MWF77_h3ddirectdg h3ddirectdg
+#define MWF77_h3ddirectcdg h3ddirectcdg
+#define MWF77_lndiv lndiv
+#define MWF77_lfmm3d_ndiv lfmm3d_ndiv
+#define MWF77_l3ddirectcp l3ddirectcp
+#define MWF77_l3ddirectdp l3ddirectdp
+#define MWF77_l3ddirectcdp l3ddirectcdp
+#define MWF77_l3ddirectcg l3ddirectcg
+#define MWF77_l3ddirectdg l3ddirectdg
+#define MWF77_l3ddirectcdg l3ddirectcdg
+#define MWF77_l3ddirectch l3ddirectch
+#define MWF77_l3ddirectdh l3ddirectdh
+#define MWF77_l3ddirectcdh l3ddirectcdh
+#define MWF77_emfmm3d emfmm3d
+#define MWF77_em3ddirect em3ddirect
+#define MWF77_stfmm3d stfmm3d
+#define MWF77_st3ddirectstokg st3ddirectstokg
+#define MWF77_st3ddirectstokstrsg st3ddirectstokstrsg
 #else /* f2c convention */
 #define MWF77_hndiv hndiv_
 #define MWF77_hfmm3d_ndiv hfmm3d_ndiv__

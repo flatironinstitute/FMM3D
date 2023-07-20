@@ -122,10 +122,10 @@ c
 
       if(nterms2.ge.30) then
         call rotviaproj(nd,-theta,nterms2,nterms2,nterms2,marray1,
-     1        nterms2,marray,ldc)
+     1        ldc,marray,ldc)
       else
         call rotviarecur(nd,-theta,nterms2,nterms2,nterms2,marray1,
-     1        nterms2,marray,ldc)
+     1        ldc,marray,ldc)
       endif
 c
 c
@@ -330,7 +330,7 @@ c      the Z-axis.
 c
       rshift = d
       call l3dmploczshift(nd,marray,sc1,ldc,nterms,marray1,
-     1      sc2,nterms2,nterms2,rshift,dc,lca)
+     1      sc2,ldc,nterms2,rshift,dc,lca)
 
 c
 c     reverse THETA rotation. 
@@ -556,7 +556,7 @@ c      the Z-axis.
 c
       rshift = d
        call l3dlocloczshift(nd,sc1,marray,ldc,nterms,sc2,marray1,
-     1           nterms2,nterms2,rshift,dc,lda)
+     1           ldc,nterms2,rshift,dc,lda)
 c
 c     reverse THETA rotation. 
 c     I.e. rotation of -THETA radians about the Yprime axis.
