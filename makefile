@@ -261,7 +261,7 @@ mex:  $(STATICLIB)
 #python
 python: $(STATICLIB)
 	cd python && \
-	FMM_FLIBS='$(LIBS) $(OMPFLAGS)' $(PYTHON) -m pip install -e . --verbose
+	FMM_FLIBS='$(LIBS) $(OMPFLAGS)' $(PYTHON) -m pip install . --verbose
 #	FMM_FLIBS='$(LIBS) $(OMPFLAGS)' $(PYTHON) -m pip install -e . && \
 #	$(PYTHON) -m pytest test/ -s
 
