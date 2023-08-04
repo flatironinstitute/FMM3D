@@ -3,11 +3,11 @@ disp("Source to target, stokeslet+stresslet (1-vec), vel pot only...");
 % Barnett 8/4/23
 
 clear
-ns = 10000;
-nt = 10000;
+ns = 100000;
+nt = 100000;
 eps = 1e-3;
-ifstrs = 1;   % include stresslets?
-ifppreg = 0; % no source eval
+ifstrs = 1;       % include stresslets?
+ifppreg = 0;      % no eval at sources
 ifppregtarg = 1;  % just vel out
 
 rng(0)
@@ -17,7 +17,7 @@ if ifstrs
   srcinfo.strslet = rand(3,ns);   % optional stresslet strengths and n-vecs
   srcinfo.strsvec = rand(3,ns);
 end
-targ = rand(3,nt);
+targ = rand(3,nt);         % targs and srcs in same unit cube
 
 tic;
 U = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg);
@@ -28,17 +28,17 @@ i = randi(nt);   % which targ
 fprintf("velpot targ(i=%d) =\n",i);
 disp(u(:,i))
 
-% check vs direct formula
+% check u (velocity potential) vs direct formula
 ui = zeros(3,1);
 for j=1:ns
-  R = srcinfo.sources(:,j) - targ(:,i);  % vec
+  R = targ(:,i) - srcinfo.sources(:,j);  % x-y with std sign (targ-src).
   r = sqrt(sum(R.^2));                   % dist
-  f = srcinfo.stoklet(:,j);   % this Sto strength
+  f = srcinfo.stoklet(:,j);              % strength
   ui = ui + (1/r)*f + (1/r^3)*R*dot(f,R);
   if ifstrs
     mu = srcinfo.strslet(:,j);   % this stresslet strength
     nu = srcinfo.strsvec(:,j);   % this stresslet source vector (normal)
-    ui = ui + (6/r^5)*R*dot(mu,R)*dot(nu,R);     % apply T_{ijk}
+    ui = ui - (6/r^5)*R*dot(mu,R)*dot(nu,R);  % apply T_{ijk}, sign matches
   end
 end
 ui = 0.5 * ui;   % FMM3D is 1/4pi off from true 1/8pi prefactor
