@@ -51,11 +51,11 @@ c     stresslet charge, and nu^{(m)} is the stresslet orientation
 c     (note that each of these is a 3 vector per source point y^{(m)}).
 c     For x a source point, the self-interaction in the sum is omitted. 
 c
-c     Optionally, the associated pressure p(x) and gradient grad u(x)
-c     are returned
+c     Optionally, the associated pressure p(x) and 3x3 gradient tensor
+c     grad u(x) are returned
 c
 c       p(x) = sum_m P_j(x,y^m) sigma^{(m)}_j
-c          + sum_m T_{ijk}(x,y^{(m)}) PI_{jk} mu^{(m)}_j nu^{(m)}_k
+c          + sum_m PI_{jk}(x,y{(m)}) mu^{(m)}_j nu^{(m)}_k
 c
 c       grad u(x) = grad[sum_m G_{ij}(x,y^m) sigma^{(m)}_j
 c                + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k]
