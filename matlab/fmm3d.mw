@@ -1,6 +1,6 @@
 % ---------------------------------------------------------------------
 @function [U,varargout] = hfmm3d(eps,zk,srcinfo,pg,varargin)
-% HFMM3D.  FMM in 3D for Helmholtz (acoustic frequency-domain) kernel
+% HFMM3D    FMM in 3D for Helmholtz (acoustic frequency-domain) kernel.
 %
 % [U,varargout] = hfmm3d(eps,zk,srcinfo,pg,varargin)
 %
@@ -207,7 +207,7 @@ end
 
 % ---------------------------------------------------------------------
 @function [U] = h3ddir(zk,srcinfo,targ,pgt)
-% H3DDIR.   Direct (slow) 3D Helmholtz kernel sums (reference for HFMM3D)
+% H3DDIR   Direct (slow) 3D Helmholtz kernel sums (reference for HFMM3D).
 %
 %  U = h3ddir(zk,srcinfo,targ,pgt)
 %
@@ -331,7 +331,7 @@ end
 
 % ---------------------------------------------------------------------
 @function [U,varargout] = lfmm3d(eps,srcinfo,pg,varargin)
-% LFMM3D.  FMM in 3D for Laplace (electrostatic) kernels
+% LFMM3D    FMM in 3D for Laplace (electrostatic) kernels.
 %
 %  [U,varargout] = lfmm3d(eps,srcinfo,pg,varargin)
 %
@@ -542,7 +542,7 @@ end
 
 % ---------------------------------------------------------------------
 @function [U] = l3ddir(srcinfo,targ,pgt)
-% L3DDIR.   Direct (slow) 3D Laplace kernel sum (reference for LFMM3D)
+% L3DDIR    Direct (slow) 3D Laplace kernel sums (reference for LFMM3D).
 %
 % U = l3ddir(srcinfo,targ,pgt)
 %
@@ -682,7 +682,7 @@ end
 
 % ---------------------------------------------------------------------
 @function [U] = emfmm3d(eps,zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
-% EMFMM3D.  FMM in 3D for Maxwell (frequency-domain electromagnetic) kernels
+% EMFMM3D   FMM in 3D for Maxwell (frequency-domain electromagnetic) kernels.
 %
 %  U = emfmm3d(eps,zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
 %
@@ -834,7 +834,7 @@ end
 
 % ---------------------------------------------------------------------
 @function [U] = em3ddir(zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
-% EM3DDIR.  Slow direct Maxwell kernel evaluations (reference for EMFMM3D)
+% EM3DDIR    Slow direct Maxwell kernel sums (reference for EMFMM3D).
 %
 % U = em3ddir(zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
 %
@@ -943,7 +943,7 @@ end
 
 % ---------------------------------------------------------------------
 @function [U] = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
-% STFMM3D.  FMM in 3D for Stokes (viscous fluid hydrodynamic) kernels
+% STFMM3D    FMM in 3D for Stokes (viscous fluid hydrodynamic) kernels.
 %
 % U = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
 %
@@ -1136,7 +1136,7 @@ end
 
 % ---------------------------------------------------------------------
 @function [U] = st3ddir(srcinfo,targ,ifppregtarg)
-% ST3DDIR.  Stokes 3D direct slow kernel evaluation (reference for STFMM3D)
+% ST3DDIR    Direct (slow) 3D Stokes kernel sums (reference for STFMM3D).
 %
 %  U = st3ddir(srcinfo,targ,ifppregtarg)
 %

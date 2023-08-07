@@ -1,0 +1,35 @@
+% FMM3D: MATLAB/Octave wrappers to 3D fast multipole methods.
+%        Center for Computational Mathematics, Flatiron Institute.
+%
+% Functions:
+%   lfmm3d   - FMM in 3D for Laplace (electrostatic) kernels.
+%   l3ddir   - Direct (slow) 3D Laplace kernel sums (reference for LFMM3D).
+%   hfmm3d   - FMM in 3D for Helmholtz (acoustic frequency-domain) kernel.
+%   h3ddir   - Direct (slow) 3D Helmholtz kernel sums (reference for HFMM3D).
+%   emfmm3d  - FMM in 3D for Maxwell (frequency-domain electromagnetic) kernels.
+%   em3ddir  - Direct (slow) 3D Maxwell kernel sums (reference for EMFMM3D).
+%   stfmm3d  - FMM in 3D for Stokes (viscous fluid hydrodynamic) kernels.
+%   st3ddir  - Direct (slow) 3D Stokes kernel sums (reference for STFMM3D).
+%
+% For tester driver scripts see:
+%   test_lfmm3d
+%   test_hfmm3d
+%   test_emfmm3d
+%   test_stfmm3d
+%
+% For examples of use see:
+%   lfmm3d_example
+%   lfmm3d_big_example
+%   hfmm3d_example
+%   hfmm3d_big_example
+%   emfmm3d_example
+%   stfmm3d_example
+%   stfmm3d_simpletest
+%
+% Legacy codes/interfaces (from the Gimbutas-Greengard CMCL 2012 library):
+%   lfmm3dpart       - Laplace particle targ FMM in R^3.
+%   l3dpartdirect    - Laplace interactions in R^3, direct (slow) evaluation.
+%   hfmm3dpart       - Helmholtz particle targ FMM in R^3.
+%   h3dpartdirect    - Helmholtz interactions in R^3, direct (slow) evaluation.
+%   test_lfmm3dpart_direct - Test Laplace particle FMMs in R^3
+%   test_hfmm3dpart_direct - Test Helmholtz particle FMMs in R^3

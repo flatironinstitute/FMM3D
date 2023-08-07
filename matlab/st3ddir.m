@@ -1,18 +1,20 @@
 function [U] = st3ddir(srcinfo,targ,ifppregtarg)
-% ST3DDIR - Stokes 3D direct slow kernel evaluation (tester for STFMM3D) 
+% ST3DDIR    Direct (slow) 3D Stokes kernel sums (reference for STFMM3D).
 %
 %  U = st3ddir(srcinfo,targ,ifppregtarg)
 %
 %  Stokes direct evaluation in R^3: evaluate all pairwise particle
-%  interactions (ignoring self-interactions) and
-%  interactions with targs. This is the slow O(N^2) direct code used
+%  interactions with targets. This is the slow O(N^2) direct code used
 %  as a reference for testing the (fast) code stfmm3d.
 %
 %  Kernel definitions, input and outputs arguments are identical to
 %  stfmm3d (see that function for all definitions), apart from:
-%  1) there are currently no outputs at sources (ie, as if ifppreg=0)
+%  1) the first argument (eps) is absent.
+%  2) there are currently no outputs at sources, meaning that U.pot, U.pre,
+%     and U.grad are missing (as if ifppreg=0). In other words,
+%     just targets for now, and targ is thus not an optional argument.
 %
-% See also: stfmm3d
+% See also: STFMM3D
 
   sources = srcinfo.sources;
   [m,ns] = size(sources);

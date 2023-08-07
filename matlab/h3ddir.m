@@ -1,9 +1,11 @@
 function [U] = h3ddir(zk,srcinfo,targ,pgt)
+% H3DDIR   Direct (slow) 3D Helmholtz kernel sums (reference for HFMM3D).
 %
+%  U = h3ddir(zk,srcinfo,targ,pgt)
 %
 %  This subroutine computes the N-body Helmholtz
-%  interactions and its gradients in three dimensions where 
-%  the interaction kernel is given by $e^{ikr}/r$
+%  interactions and its gradients in three dimensions, where 
+%  the interaction kernel is given by $e^{ikr}/r$,
 % 
 %    u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} - 
 %      v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)   
@@ -14,15 +16,15 @@ function [U] = h3ddir(zk,srcinfo,targ,pgt)
 %  When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped
 %  from the sum.
 %  
-%  The sum is evaluated directly - (slow code for testing)
-% 
+%  The sum is evaluated directly (slow code for testing).
+%  Note: currently no self-interactions, just sum at targets.
+%
 %  Args:
 %
 %  -  zk: complex
 %        Helmholtz parameter, k
 %  -  srcinfo: structure
-%        structure containing sourceinfo
-%     
+%        structure containing the following info about the sources:     
 %     *  srcinfo.sources: double(3,n)    
 %           source locations, $x_{j}$
 %     *  srcinfo.nd: integer
@@ -34,7 +36,6 @@ function [U] = h3ddir(zk,srcinfo,targ,pgt)
 %     *  srcinfo.dipoles: complex(nd,3,n) 
 %           dipole orientation vectors, $v_{j}$ (optional
 %           default - term corresponding to dipoles dropped) 
-%  
 %  -  targ: double(3,nt)
 %        target locations, $t_{i}$ 
 %  -  pgt: integer
@@ -46,8 +47,8 @@ function [U] = h3ddir(zk,srcinfo,targ,pgt)
 %  
 %  -  U.pottarg: potential at target locations, if requested, $u(t_{i})$
 %  -  U.gradtarg: gradient at target locations, if requested, $\nabla u(t_{i})$
- 
-
+%
+% See also: HFMM3D
 
   sources = srcinfo.sources;
   [m,ns] = size(sources);

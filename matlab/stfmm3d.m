@@ -1,5 +1,5 @@
 function [U] = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
-% STFMM3D - Stokes 3D FMM
+% STFMM3D    FMM in 3D for Stokes (viscous fluid hydrodynamic) kernels.
 %
 % U = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
 %
@@ -100,7 +100,7 @@ function [U] = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
 %  -  U.pretarg: pressure at target locations if requested
 %  -  U.gradtarg: gradient of velocity at target locations if requested
 %
-% See also: st3ddir
+% See also: ST3DDIR
 
   sources = srcinfo.sources;
   [m,ns] = size(sources);

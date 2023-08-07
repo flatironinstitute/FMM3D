@@ -1,16 +1,25 @@
 function [U] = emfmm3d(eps,zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
+% EMFMM3D   FMM in 3D for Maxwell (frequency-domain electromagnetic) kernels.
 %
+%  U = emfmm3d(eps,zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
 %
-%  This subroutine computes
-%      E = curl S_{k}[h_current] + S_{k}[e_current] + grad S_{k}[e_charge]  -- (1)
-%  using the vector Helmholtz fmm.
-%  The subroutine also computes divE, curlE
-%  with appropriate flags
+%  Frequency-domain Maxwell FMM in R^3: evaluate all pairwise particle
+%  interactions (ignoring self-interactions) and
+%  interactions with targets, using the fast multipole method
+%  with precision eps.
+%
+%  This subroutine evaluates sums implied by the operator representation
+%
+%      E = curl S_{k}[h_current] + S_{k}[e_current] + grad S_{k}[e_charge]
+%
+%  by calling the vector Helmholtz FMM.
+%  With appropriate input flags, the subroutine also computes divE, curlE.
+%
 %  Remark: the subroutine uses a stabilized representation
 %  for computing the divergence by using integration by parts
 %  wherever possible. If the divergence is not requested, then the
-%  helmholtz fmm is called with 3*nd densities, while if the divergence
-%  is requested, then the helmholtz fmm is calld with 4*nd densities
+%  Helmholtz FMM is called with 3*nd densities, while if the divergence
+%  is requested, then the Helmholtz FMM is called with 4*nd densities
 % 
 %  Args:
 %
@@ -19,8 +28,7 @@ function [U] = emfmm3d(eps,zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
 %  -  zk: complex
 %        Helmholtz parameter, k
 %  -  srcinfo: structure
-%        structure containing sourceinfo
-%     
+%        structure containing the following info about the sources:
 %     *  srcinfo.sources: double(3,n)    
 %           source locations, $x_{j}$
 %     *  srcinfo.nd: integer
@@ -43,11 +51,14 @@ function [U] = emfmm3d(eps,zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
 %        curl E is returned at the target locations if ifcurlE = 1
 %  -  ifdivE: integer
 %        div E is returned at the target locations if ifdivE = 1
+%
 %  Returns:
 %  
-%  -  U.E: E field defined in (1) above at target locations if requested
+%  -  U.E:     E field defined in above equation at targets if requested
 %  -  U.curlE: curl of E field at target locations if requested
-%  -  U.divE: divergence of E at target locations if requested
+%  -  U.divE:  divergence of E at target locations if requested
+%
+% See also: HFMM3D, EM3DDIR
 
   if(nargin<5)
     return;
