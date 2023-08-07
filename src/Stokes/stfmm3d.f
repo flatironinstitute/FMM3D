@@ -46,21 +46,21 @@ c     Stokes FMM in R^{3}: evaluate all pairwise particle
 c     interactions (ignoring self-interactions) and
 c     interactions with targs.
 c      
-c     This routine computes the sum for the velocity,
+c     This routine computes the sum for the velocity vector,
 c
 c       u_i(x) = sum_m G_{ij}(x,y^{(m)}) sigma^{(m)}_j
 c                + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k
 c
-c     for x at all of the target locations,
+c     for x at all of the target locations, and i=1,2,3,
 c     where sigma^{(m)} is the Stokeslet force, mu^{(m)} is the
 c     stresslet strength, and nu^{(m)} is the stresslet orientation
 c     (note that each of these is a 3 vector per source point y^{(m)}).
-c     The vector output index is i=1,2,3, and repeated indices are
-c     taken as summed over 1,2,3, ie, Einstein convention.
-c     For x a source point, the self-interaction in the sum is omitted. 
+c     Repeated indices are taken as summed over 1,2,3, ie, Einstein
+c     convention. For x a source point, the self-interaction in the
+c     sum is omitted. 
 c
 c     Optionally, the associated pressure p(x) and 3x3 gradient tensor
-c     (grad u(x))_{li} are returned
+c     grad u(x) are returned
 c
 c       p(x) = sum_m P_j(x,y^m) sigma^{(m)}_j
 c          + sum_m PI_{jk}(x,y{(m)}) mu^{(m)}_j nu^{(m)}_k
@@ -68,7 +68,7 @@ c
 c       grad_l u_i(x) = grad_l [sum_m G_{ij}(x,y^m) sigma^{(m)}_j
 c                + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k]
 c
-c     Note that by combining these two the stress tensor may be gotten.
+c     Note that these two may be combined to get the stress tensor.
 c
 c-----------------------------------------------------------------------
 c     INPUT PARAMETERS:
