@@ -120,6 +120,3 @@ rel_error_fldtarg = ...
     norm(F.fldtarg,2)
 end
 %%%break;
-
-
-exit;
