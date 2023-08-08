@@ -20,6 +20,7 @@ function [U] = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
 %  The stokeslet kernel G and stresslet kernel T are defined below.
 %  Repeated indices are taken as summed over 1,2,3, ie, Einstein
 %  convention.
+%
 %  There are two options for the evaluation points $x$. These
 %  can be the sources themselves (ifppreg > 0; see below) or other
 %  target points of interest (ifppregtarg > 0; see below). Both options
