@@ -3,17 +3,31 @@ function [U] = emfmm3d(eps,zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
 %
 %  U = emfmm3d(eps,zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
 %
-%  Frequency-domain Maxwell FMM in R^3: evaluate all pairwise particle
-%  interactions (ignoring self-interactions) and
-%  interactions with targets, using the fast multipole method
-%  with precision eps.
+%  Frequency-domain Maxwell FMM in R^3: evaluate all pair-wise
+%  particle interactions with targets using the fast multipole
+%  method with precision eps.
 %
-%  This subroutine evaluates sums implied by the operator representation
+%  Specifically, this subroutine computes a sum for the electric field
 %
-%      E = curl S_{k}[h_current] + S_{k}[e_current] + grad S_{k}[e_charge]
+%      E(x) = sum_m curl G_k(x,y^{(m)}) h_current_m
+%                 + G_k(x,y^{(m)}) e_current_m 
+%                 + grad G_k(x,y^{(m)}) e_charge_m
 %
-%  by calling the vector Helmholtz FMM.
-%  With appropriate input flags, the subroutine also computes divE, curlE.
+%  for each requested evaluation point x, where h_current and e_current
+%  are 3-vector densities and e_charge is a scalar density supplied
+%  at each source point y^{(m)}. G_k is the Helmholtz Green function
+%  without the 1/(4pi) scaling:
+%
+%      G_k(x,y) = e^(ik|x-y|)/|x-y|.
+%
+%  In contrast with other FMM routines in the library, this routine
+%  has only 1 option for the evaluation points: they are specified
+%  as targets. If a target x coincides with a source point y^{(m)}
+%  that term in the sum is omitted. 
+%
+%  The electric field is, naturally, a 3-vector at each point x.
+%  With appropriate input flags, the subroutine also computes divE,
+%  curlE. 
 %
 %  Remark: the subroutine uses a stabilized representation
 %  for computing the divergence by using integration by parts
