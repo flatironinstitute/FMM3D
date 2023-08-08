@@ -7,7 +7,7 @@
 CC=icc
 CXX=icpc
 FC=ifort
-FFLAGS= -fPIC -O3 -march=native -funroll-loops -mkl -std=legacy 
+FFLAGS= -fPIC -O3 -march=native -funroll-loops -qmkl
 LIBS=
 #CLIBS = -lm -ldl -lifcore
 CLIBS = -lm -ldl
@@ -26,6 +26,6 @@ endif
 #  -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
 
 OMPFLAGS = -qopenmp
-OMPLIBS = 
+OMPLIBS = -qopenmp
 
 
