@@ -12,10 +12,11 @@
 %   st3ddir  - Direct (slow) 3D Stokes kernel sums (reference for STFMM3D).
 %
 % For tester driver scripts see:
-%   test_lfmm3d
-%   test_hfmm3d
-%   test_emfmm3d
-%   test_stfmm3d
+%   lfmm3dTest
+%   hfmm3dTest
+%   emfmm3dTest
+%   stfmm3dTest
+%   stfmm3dPerfTest
 %
 % For examples of use see:
 %   lfmm3d_example
@@ -24,12 +25,11 @@
 %   hfmm3d_big_example
 %   emfmm3d_example
 %   stfmm3d_example
-%   stfmm3d_simpletest
 %
 % Legacy codes/interfaces (from the Gimbutas-Greengard CMCL 2012 library):
 %   lfmm3dpart       - Laplace particle targ FMM in R^3.
 %   l3dpartdirect    - Laplace interactions in R^3, direct (slow) evaluation.
 %   hfmm3dpart       - Helmholtz particle targ FMM in R^3.
 %   h3dpartdirect    - Helmholtz interactions in R^3, direct (slow) evaluation.
-%   test_lfmm3dpart_direct - Test Laplace particle FMMs in R^3
-%   test_hfmm3dpart_direct - Test Helmholtz particle FMMs in R^3
+%   lfmm3dLegacyTest - Test Laplace particle FMMs in R^3
+%   hfmm3dLegacyTest - Test Helmholtz particle FMMs in R^3
