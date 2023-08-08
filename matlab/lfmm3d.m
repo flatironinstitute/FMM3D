@@ -18,6 +18,11 @@ function [U,varargout] = lfmm3d(eps,srcinfo,pg,varargin)
 %  where $c_{j}$ are the charge densities,
 %  $v_{j}$ are the dipole orientation vectors, and
 %  $x_{j}$ are the source locations.
+%
+%  There are two options for the evaluation points $x$. These
+%  can be the sources themselves (pg > 0; see below) or other
+%  target points of interest (pgt > 0; see below). Both options
+%  can be selected in one call.
 %  When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped
 %  from the sum.
 % 

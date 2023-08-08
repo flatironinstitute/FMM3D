@@ -13,14 +13,19 @@ function [U] = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
 %       u_i(x) = sum_m G_{ij}(x,y^{(m)}) sigma^{(m)}_j
 %                + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k
 %
-%  for x at all of the target locations, and i=1,2,3,
+%  for each requested evaluation point x and i=1,2,3,
 %  where sigma^{(m)} is the Stokeslet force, mu^{(m)} is the
 %  stresslet strength, and nu^{(m)} is the stresslet orientation
 %  (note that each of these is a 3 vector per source point y^{(m)}).
 %  The stokeslet kernel G and stresslet kernel T are defined below.
 %  Repeated indices are taken as summed over 1,2,3, ie, Einstein
-%  convention. For x a source point, the self-interaction in the
-%  sum is omitted.
+%  convention.
+%  There are two options for the evaluation points $x$. These
+%  can be the sources themselves (ifppreg > 0; see below) or other
+%  target points of interest (ifppregtarg > 0; see below). Both options
+%  can be selected in one call.
+%  When $x=y_{(m)}$, the term corresponding to $y^{(m)}$ is dropped
+%  from the sum.
 %
 %  Optionally, the associated pressure p(x) and 3x3 gradient tensor
 %  grad u(x) are returned,
