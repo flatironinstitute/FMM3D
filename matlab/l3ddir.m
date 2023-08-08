@@ -1,50 +1,20 @@
 function [U] = l3ddir(srcinfo,targ,pgt)
+% L3DDIR    Direct (slow) 3D Laplace kernel sums (reference for LFMM3D).
 %
+% U = l3ddir(srcinfo,targ,pgt)
 %
-%  This subroutine computes the N-body Laplace
-%  interactions and its gradients in three dimensions where 
-%  the interaction kernel is given by $1/r$
-% 
-%    u(x) = \sum_{j=1}^{N} c_{j} \frac{1}{\|x-x_{j}\|} - 
-%      v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)   
+%  Laplace direct evaluation in R^3: evaluate all pairwise particle
+%  interactions with targets. This is the slow O(N^2) direct code used
+%  as a reference for testing the (fast) code lfmm3d.
 %
-%  where $c_{j}$ are the charge densities
-%  $v_{j}$ are the dipole orientation vectors, and
-%  $x_{j}$ are the source locations.
-%  When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped
-%  from the sum.
-% 
-%  The sum is evaluated directly - (slow code for testing)
+%  Kernel definitions, input and outputs arguments are identical to
+%  lfmm3d (see that function for all definitions), apart from:
+%  1) the first argument (eps) is absent.
+%  2) there are currently no outputs at sources, meaning that U.pot, U.grad,
+%     and U.hess are missing (as if pg=0). In other words,
+%     just targets for now, and targ is thus not an optional argument.
 %
-%  Args:
-%
-%  -  srcinfo: structure
-%        structure containing sourceinfo
-%     
-%     *  srcinfo.sources: double(3,n)    
-%           source locations, $x_{j}$
-%     *  srcinfo.nd: integer
-%           number of charge/dipole vectors (optional, 
-%           default - nd = 1)
-%     *  srcinfo.charges: double(nd,n) 
-%           charge densities, $c_{j}$ (optional, 
-%           default - term corresponding to charges dropped)
-%     *  srcinfo.dipoles: double(nd,3,n) 
-%           dipole orientation vectors, $v_{j}$ (optional
-%           default - term corresponding to dipoles dropped) 
-%  
-%  -  targ: double(3,nt)
-%        target locations, $t_{i}$ (optional)
-%  -  pgt: integer
-%        | target eval flag (optional)
-%        | potential at targets evaluated if pgt = 1
-%        | potential and gradient at targets evaluated if pgt=2 
-%        | potential, gradient and hessian at targets evaluated if pgt=3
-%  
-%  Returns:
-%  -  U.pottarg: potential at target locations, if requested, $u(t_{i})$
-%  -  U.gradtarg: gradient at target locations, if requested, $\nabla u(t_{i})$
-%  -  U.hesstarg: hessian at target locations, if requested, $\nabla^2 u(t_{i})$
+% See also: LFMM3D
 
   sources = srcinfo.sources;
   [m,ns] = size(sources);

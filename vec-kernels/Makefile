@@ -1,11 +1,11 @@
 AR = ar cru
 
-FC = gfortran
+FC = gfortran-9
 #FC = ifort
 FFLAGS = -Ofast -fopenmp -march=native -Wall -unroll-aggressive
 #FFLAGS = -Ofast -unroll-aggressive -xCORE-AVX512 -qopt-report:5 -qopt-zmm-usage=high -fopenmp
 
-CXX = g++
+CXX = g++-9
 #CXX = icpc
 CXXFLAGS = -Ofast -fopenmp -march=native -Wall -std=c++11 -unroll-aggressive # need C++11
 #CXXFLAGS = -Ofast -unroll-aggressive -xCORE-AVX512 -qopt-report:5 -qopt-zmm-usage=high -fopenmp -Wall -std=c++11# need C++11
