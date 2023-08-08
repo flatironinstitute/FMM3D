@@ -4,7 +4,7 @@ function [U] = em3ddir(zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
 % U = em3ddir(zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
 %
 %  Maxwell direct evaluation in R^3: evaluate all pairwise particle
-%  interactions with targs. This is the slow O(N^2) direct code used
+%  interactions with targets. This is the slow O(N^2) direct code used
 %  as a reference for testing the fast code emfmm3d.
 %
 %  Kernel definitions, input and outputs arguments are identical to

@@ -18,7 +18,7 @@ function [U,varargout] = hfmm3d(eps,zk,srcinfo,pg,varargin)
 %  where $c_{j}$ are the charge densities
 %  $v_{j}$ are the dipole orientation vectors, and
 %  $x_{j}$ are the source locations.
-%  
+%
 %  There are two options for the evaluation points $x$. These
 %  can be the sources themselves (pg > 0; see below) or other
 %  target points of interest (pgt > 0; see below). Both options

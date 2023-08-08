@@ -19,6 +19,11 @@
 %  where $c_{j}$ are the charge densities
 %  $v_{j}$ are the dipole orientation vectors, and
 %  $x_{j}$ are the source locations.
+%
+%  There are two options for the evaluation points $x$. These
+%  can be the sources themselves (pg > 0; see below) or other
+%  target points of interest (pgt > 0; see below). Both options
+%  can be selected in one call.
 %  When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped
 %  from the sum.
 % 
@@ -211,50 +216,16 @@ end
 %
 %  U = h3ddir(zk,srcinfo,targ,pgt)
 %
-%  This subroutine computes the N-body Helmholtz
-%  interactions and its gradients in three dimensions, where 
-%  the interaction kernel is given by $e^{ikr}/r$,
-% 
-%    u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} - 
-%      v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)   
+%  Helmholtz direct evaluation in R^3: evaluate all pairwise particle
+%  interactions with targets. This is the slow O(N^2) direct code used
+%  as a reference for testing the (fast) code hfmm3d.
 %
-%  where $c_{j}$ are the charge densities
-%  $v_{j}$ are the dipole orientation vectors, and
-%  $x_{j}$ are the source locations.
-%  When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped
-%  from the sum.
-%  
-%  The sum is evaluated directly (slow code for testing).
-%  Note: currently no self-interactions, just sum at targets.
-%
-%  Args:
-%
-%  -  zk: complex
-%        Helmholtz parameter, k
-%  -  srcinfo: structure
-%        structure containing the following info about the sources:     
-%     *  srcinfo.sources: double(3,n)    
-%           source locations, $x_{j}$
-%     *  srcinfo.nd: integer
-%           number of charge/dipole vectors (optional, 
-%           default - nd = 1)
-%     *  srcinfo.charges: complex(nd,n) 
-%           charge densities, $c_{j}$ (optional, 
-%           default - term corresponding to charges dropped)
-%     *  srcinfo.dipoles: complex(nd,3,n) 
-%           dipole orientation vectors, $v_{j}$ (optional
-%           default - term corresponding to dipoles dropped) 
-%  -  targ: double(3,nt)
-%        target locations, $t_{i}$ 
-%  -  pgt: integer
-%        | target eval flag 
-%        | potential at targets evaluated if pgt = 1
-%        | potential and gradient at targets evaluated if pgt=2  
-%  
-%  Returns:
-%  
-%  -  U.pottarg: potential at target locations, if requested, $u(t_{i})$
-%  -  U.gradtarg: gradient at target locations, if requested, $\nabla u(t_{i})$
+%  Kernel definitions, input and outputs arguments are identical to
+%  hfmm3d (see that function for all definitions), apart from:
+%  1) the first argument (eps) is absent.
+%  2) there are currently no outputs at sources, meaning that U.pot
+%     and U.grad are missing (as if pg=0). In other words,
+%     just targets for now, and targ is thus not an optional argument.
 %
 % See also: HFMM3D
 
@@ -350,6 +321,11 @@ end
 %  where $c_{j}$ are the charge densities,
 %  $v_{j}$ are the dipole orientation vectors, and
 %  $x_{j}$ are the source locations.
+%
+%  There are two options for the evaluation points $x$. These
+%  can be the sources themselves (pg > 0; see below) or other
+%  target points of interest (pgt > 0; see below). Both options
+%  can be selected in one call.
 %  When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped
 %  from the sum.
 % 
@@ -546,49 +522,16 @@ end
 %
 % U = l3ddir(srcinfo,targ,pgt)
 %
-%  This subroutine computes the N-body Laplace
-%  interactions and its gradients in three dimensions where 
-%  the interaction kernel is given by $1/r$, namely
-% 
-%    u(x) = \sum_{j=1}^{N} c_{j} \frac{1}{\|x-x_{j}\|} - 
-%      v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)   
+%  Laplace direct evaluation in R^3: evaluate all pairwise particle
+%  interactions with targets. This is the slow O(N^2) direct code used
+%  as a reference for testing the (fast) code lfmm3d.
 %
-%  where $c_{j}$ are the charge densities,
-%  $v_{j}$ are the dipole orientation vectors, and
-%  $x_{j}$ are the source locations.
-%  When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped
-%  from the sum.
-% 
-%  The sum is evaluated directly (slow code for testing).
-%  Note: currently no self-interactions, just sum at targets.
-%
-%  Args:
-%
-%  -  srcinfo: structure
-%        structure containing the following info about the sources:
-%     *  srcinfo.sources: double(3,n)    
-%           source locations, $x_{j}$
-%     *  srcinfo.nd: integer
-%           number of charge/dipole vectors (optional, 
-%           default - nd = 1)
-%     *  srcinfo.charges: double(nd,n) 
-%           charge densities, $c_{j}$ (optional, 
-%           default - term corresponding to charges dropped)
-%     *  srcinfo.dipoles: double(nd,3,n) 
-%           dipole orientation vectors, $v_{j}$ (optional
-%           default - term corresponding to dipoles dropped) 
-%  -  targ: double(3,nt)
-%        target locations, $t_{i}$ (optional)
-%  -  pgt: integer
-%        | target eval flag (optional)
-%        | potential at targets evaluated if pgt = 1
-%        | potential and gradient at targets evaluated if pgt=2 
-%        | potential, gradient and hessian at targets evaluated if pgt=3
-%  
-%  Returns:
-%  -  U.pottarg:  potential at target locations, if requested, $u(t_{i})$
-%  -  U.gradtarg: gradient at target locations, if requested, $\nabla u(t_{i})$
-%  -  U.hesstarg: hessian at target locations, if requested, $\nabla^2 u(t_{i})$
+%  Kernel definitions, input and outputs arguments are identical to
+%  lfmm3d (see that function for all definitions), apart from:
+%  1) the first argument (eps) is absent.
+%  2) there are currently no outputs at sources, meaning that U.pot, U.grad,
+%     and U.hess are missing (as if pg=0). In other words,
+%     just targets for now, and targ is thus not an optional argument.
 %
 % See also: LFMM3D
 
@@ -691,12 +634,27 @@ end
 %  interactions with targets, using the fast multipole method
 %  with precision eps.
 %
-%  This subroutine evaluates sums implied by the operator representation
+%  Specifically, this subroutine computes a sum for the electric field
 %
-%      E = curl S_{k}[h_current] + S_{k}[e_current] + grad S_{k}[e_charge]
+%      E(x) = sum_m curl G_k(x,y^{(m)}) h_current_m
+%                 + G_k(x,y^{(m)}) e_current_m 
+%                 + grad G_k(x,y^{(m)}) e_charge_m
 %
-%  by calling the vector Helmholtz FMM.
-%  With appropriate input flags, the subroutine also computes divE, curlE.
+%  for each requested evaluation point x, where h_current and e_current
+%  are 3-vector densities and e_charge is a scalar density supplied
+%  at each source point y^{(m)}. G_k is the Helmholtz Green function
+%  without the 1/(4pi) scaling:
+%
+%      G_k(x,y) = e^(ik|x-y|)/|x-y|.
+%
+%  In contrast with other FMM routines in the library, this routine
+%  has only 1 option for the evaluation points: they are specified
+%  as targets. If a target x coincides with a source point y^{(m)}
+%  that term in the sum is omitted. 
+%
+%  The electric field is, naturally, a 3-vector at each point x.
+%  With appropriate input flags, the subroutine also computes divE,
+%  curlE. 
 %
 %  Remark: the subroutine uses a stabilized representation
 %  for computing the divergence by using integration by parts
@@ -839,8 +797,7 @@ end
 % U = em3ddir(zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
 %
 %  Maxwell direct evaluation in R^3: evaluate all pairwise particle
-%  interactions (ignoring self-interactions) and
-%  interactions with targs. This is the slow O(N^2) direct code used
+%  interactions with targets. This is the slow O(N^2) direct code used
 %  as a reference for testing the fast code emfmm3d.
 %
 %  Kernel definitions, input and outputs arguments are identical to
@@ -957,14 +914,20 @@ end
 %       u_i(x) = sum_m G_{ij}(x,y^{(m)}) sigma^{(m)}_j
 %                + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k
 %
-%  for x at all of the target locations, and i=1,2,3,
+%  for each requested evaluation point x and i=1,2,3,
 %  where sigma^{(m)} is the Stokeslet force, mu^{(m)} is the
 %  stresslet strength, and nu^{(m)} is the stresslet orientation
 %  (note that each of these is a 3 vector per source point y^{(m)}).
 %  The stokeslet kernel G and stresslet kernel T are defined below.
 %  Repeated indices are taken as summed over 1,2,3, ie, Einstein
-%  convention. For x a source point, the self-interaction in the
-%  sum is omitted.
+%  convention.
+%
+%  There are two options for the evaluation points $x$. These
+%  can be the sources themselves (ifppreg > 0; see below) or other
+%  target points of interest (ifppregtarg > 0; see below). Both options
+%  can be selected in one call.
+%  When $x=y_{(m)}$, the term corresponding to $y^{(m)}$ is dropped
+%  from the sum.
 %
 %  Optionally, the associated pressure p(x) and 3x3 gradient tensor
 %  grad u(x) are returned,
@@ -999,7 +962,6 @@ end
 %   
 %     T_{ijk}(x,y) = -3 r_i r_j r_k/ r^5
 %     PI_{jk}(x,y) = -2 delta_{jk}/r^3 + 6 r_j r_k/r^5      
-%
 % 
 %  Args:
 %

@@ -3,9 +3,10 @@ function [U] = emfmm3d(eps,zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
 %
 %  U = emfmm3d(eps,zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
 %
-%  Frequency-domain Maxwell FMM in R^3: evaluate all pair-wise
-%  particle interactions with targets using the fast multipole
-%  method with precision eps.
+%  Frequency-domain Maxwell FMM in R^3: evaluate all pairwise particle
+%  interactions (ignoring self-interactions) and
+%  interactions with targets, using the fast multipole method
+%  with precision eps.
 %
 %  Specifically, this subroutine computes a sum for the electric field
 %
