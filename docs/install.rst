@@ -19,7 +19,7 @@ For the basic libraries
 
 Optional:
 
-* for building Python wrappers you will need ``python3`` and ``pip3`` 
+* for building Python wrappers you will need ``python3``, ``pip3`` and ``numpy``.
 * for building standard MATLAB wrappers: MATLAB
 * for modifying MATLAB wrappers (experts only): ``mwrap``
 
@@ -159,7 +159,7 @@ Analogous C sample drivers can be found in ``c/``.
 Building Python wrappers
 ****************************
 
-First make sure you have python (version 3 or higher) and pip installed. 
+First make sure you have python (version 3 or higher), pip and numpy installed. 
 
 You may then execute ``make python`` (after copying over the
 operating system specific make.inc.* file to make.inc) which calls
@@ -198,6 +198,11 @@ There can be confusion and conflicts between various versions of Python and inst
 
 Now you are in a virtual environment that starts from scratch. All pip installed packages will go inside the env1 directory. (You can get out of the environment by typing ``deactivate``)
 
+It's advisable to install numpy into a virtual environment using pip as.
+
+  virtualenv -p /usr/bin/python3 env1
+  . env1/bin/activate
+  pip install numpy
 
 
 Building the MATLAB wrappers

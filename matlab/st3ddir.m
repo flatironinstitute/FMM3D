@@ -1,62 +1,20 @@
 function [U] = st3ddir(srcinfo,targ,ifppregtarg)
+% ST3DDIR    Direct (slow) 3D Stokes kernel sums (reference for STFMM3D).
 %
+%  U = st3ddir(srcinfo,targ,ifppregtarg)
 %
-%  Stokes FMM in R^{3}: evaluate all pairwise particle
-%  interactions (ignoring self-interactions) and
-%  interactions with targs.
+%  Stokes direct evaluation in R^3: evaluate all pairwise particle
+%  interactions with targets. This is the slow O(N^2) direct code used
+%  as a reference for testing the (fast) code stfmm3d.
 %
-%  This routine computes sums of the form
+%  Kernel definitions, input and outputs arguments are identical to
+%  stfmm3d (see that function for all definitions), apart from:
+%  1) the first argument (eps) is absent.
+%  2) there are currently no outputs at sources, meaning that U.pot, U.pre,
+%     and U.grad are missing (as if ifppreg=0). In other words,
+%     just targets for now, and targ is thus not an optional argument.
 %
-%  u(x) = sum_m G_{ij}(x,y^{(m)}) sigma^{(m)}_j
-%       + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k
-%
-%  where sigma^{(m)} is the Stokeslet charge, mu^{(m)} is the
-%  stresslet charge, and nu^{(m)} is the stresslet orientation
-%  (note that each of these is a 3 vector per source point y^{(m)}).
-%  For x a source point, the self-interaction in the sum is omitted.
-%
-%  Optionally, the associated pressure p(x) and gradient grad u(x)
-%  are returned
-%
-%    p(x) = sum_m P_j(x,y^m) sigma^{(m)}_j
-%         + sum_m T_{ijk}(x,y^{(m)}) PI_{jk} mu^{(m)}_j nu^{(m)}_k
-%
-%    grad u(x) = grad[sum_m G_{ij}(x,y^m) sigma^{(m)}_j
-%              + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k]
-% 
-%  Args:
-%
-%  -  srcinfo: structure
-%        structure containing sourceinfo
-%     
-%     *  srcinfo.sources: double(3,n)    
-%           source locations, $x_{j}$
-%     *  srcinfo.nd: integer
-%           number of densities (optional, 
-%           default - nd = 1)
-%     *  srcinfo.stoklet: double(nd,3,n) 
-%           Stokeslet charge strengths, $sigma_{j}$ (optional, 
-%           default - term corresponding to Stokeslet charge strengths dropped)
-%     *  srcinfo.strslet: double(nd,3,n) 
-%           stresslet strengths, $mu_{j}$ (optional
-%           default - term corresponding to stresslet strengths dropped) 
-%     *  srcinfo.strsvec: double(nd,3,n) 
-%           stresslet orientations, $nu_{j}$ (optional
-%           default - term corresponding to stresslet orientations dropped) 
-%
-%  -  targ: double(3,nt)
-%        target locations, $t_{i}$ (optional)
-%  -  ifppregtarg: integer
-%        | target eval flag (optional)
-%        | potential at targets evaluated if ifppregtarg = 1
-%        | potential and pressure at targets evaluated if ifppregtarg = 2 
-%        | potential, pressure and gradient at targets evaluated if ifppregtarg = 3
-%  
-%  Returns:
-%  
-%  -  U.pottarg: velocity at target locations if requested
-%  -  U.pretarg: pressure at target locations if requested
-%  -  U.gradtarg: gradient of velocity at target locations if requested
+% See also: STFMM3D
 
   sources = srcinfo.sources;
   [m,ns] = size(sources);

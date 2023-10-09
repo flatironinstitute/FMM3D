@@ -17,7 +17,7 @@ jobs:
     container: quay.io/pypa/manylinux2014_x86_64:latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     
     - name: install gfortran-7
       run: |
@@ -33,6 +33,8 @@ jobs:
         .github/workflows/python_build_posix.sh /opt/python/cp37-cp37m/bin/python
         .github/workflows/python_build_posix.sh /opt/python/cp38-cp38/bin/python
         .github/workflows/python_build_posix.sh /opt/python/cp39-cp39/bin/python
+        .github/workflows/python_build_posix.sh /opt/python/cp310-cp310/bin/python
+        .github/workflows/python_build_posix.sh /opt/python/cp311-cp311/bin/python
         ls python/dist/*.whl | xargs -n1 auditwheel repair
 
     - name: Test python bindings
@@ -41,29 +43,31 @@ jobs:
         .github/workflows/python_test_posix.sh /opt/python/cp37-cp37m/bin/python
         .github/workflows/python_test_posix.sh /opt/python/cp38-cp38/bin/python
         .github/workflows/python_test_posix.sh /opt/python/cp39-cp39/bin/python
+        .github/workflows/python_test_posix.sh /opt/python/cp310-cp310/bin/python
+        .github/workflows/python_test_posix.sh /opt/python/cp311-cp311/bin/python
 
     - name: Upload wheels
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: linux-wheels
         path: wheelhouse/*.whl
 
   MacOS:
-    runs-on: macos-latest
+    runs-on: macos-11
     env:
       MACOSX_DEPLOYMENT_TARGET: 10.9
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-    - name: Install gcc-8
+    - name: Install gcc-10
       run: |
-        brew install gcc@8
-        ln -s `which gfortran-8` /usr/local/bin/gfortran
+        brew install gcc@10
+        ln -s `which gfortran-10` /usr/local/bin/gfortran
         cp make.inc.macos.gnu make.inc
-        echo "FC=gfortran-8" >> make.inc
-        echo "CC=gcc-8" >> make.inc
-        echo "CXX=g++-8" >> make.inc
+        echo "FC=gfortran-10" >> make.inc
+        echo "CC=gcc-10" >> make.inc
+        echo "CXX=g++-10" >> make.inc
         echo "FFLAGS += -march=x86-64" >> make.inc
         echo "CFLAGS += -march=x86-64" >> make.inc
         echo "CXXFLAGS += -march=x86-64" >> make.inc
@@ -71,7 +75,7 @@ jobs:
         # otherwise binaries are incompatible with older systems
         echo "LIBS += -static-libgfortran -static-libgcc -static-libstdc++" >> make.inc
         # hack to make libquadmath link statically
-        sudo rm /usr/local/opt/gcc@8/lib/gcc/8/libquadmath.*dylib
+        sudo rm /usr/local/opt/gcc@10/lib/gcc/10/libquadmath.*dylib
 
     
     # Download and install Python instead of using the setup_python
@@ -100,12 +104,24 @@ jobs:
           --output python_installer.pkg
         sudo installer -pkg python_installer.pkg -target /
 
+        curl \
+          https://www.python.org/ftp/python/3.10.9/python-3.10.9-macos11.pkg \
+          --output python_installer.pkg
+        sudo installer -pkg python_installer.pkg -target /
+
+        curl \
+          https://www.python.org/ftp/python/3.11.1/python-3.11.1-macos11.pkg \
+          --output python_installer.pkg
+        sudo installer -pkg python_installer.pkg -target /
+
     - name: Compile python bindings
       run: |
         .github/workflows/python_build_posix.sh /Library/Frameworks/Python.framework/Versions/3.6/bin/python3
         .github/workflows/python_build_posix.sh /Library/Frameworks/Python.framework/Versions/3.7/bin/python3
         .github/workflows/python_build_posix.sh /Library/Frameworks/Python.framework/Versions/3.8/bin/python3
         .github/workflows/python_build_posix.sh /Library/Frameworks/Python.framework/Versions/3.9/bin/python3
+        .github/workflows/python_build_posix.sh /Library/Frameworks/Python.framework/Versions/3.10/bin/python3
+        .github/workflows/python_build_posix.sh /Library/Frameworks/Python.framework/Versions/3.11/bin/python3
         PYTHON_BIN=/Library/Frameworks/Python.framework/Versions/3.7/bin/
         $PYTHON_BIN/python3 -m pip install delocate
         ls python/dist/*.whl | xargs -n1 $PYTHON_BIN/delocate-wheel -w wheelhouse/
@@ -116,9 +132,11 @@ jobs:
         .github/workflows/python_test_posix.sh /Library/Frameworks/Python.framework/Versions/3.7/bin/python3
         .github/workflows/python_test_posix.sh /Library/Frameworks/Python.framework/Versions/3.8/bin/python3
         .github/workflows/python_test_posix.sh /Library/Frameworks/Python.framework/Versions/3.9/bin/python3
+        .github/workflows/python_test_posix.sh /Library/Frameworks/Python.framework/Versions/3.10/bin/python3
+        .github/workflows/python_test_posix.sh /Library/Frameworks/Python.framework/Versions/3.11/bin/python3
 
     - name: Upload wheels
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: macos-wheels
         path: wheelhouse/*.whl
@@ -127,13 +145,13 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Install GCC and make
       run: C:\msys64\usr\bin\bash.exe -lc "pacman -Sy --noconfirm make mingw-w64-x86_64-toolchain"
 
     - name: Build and Test Python 3.6
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.6'
         architecture: 'x64'
@@ -142,7 +160,7 @@ jobs:
         .\.github\workflows\python_test_win.ps1
 
     - name: Build and Test Python 3.7
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.7'
         architecture: 'x64'
@@ -151,7 +169,7 @@ jobs:
         .\.github\workflows\python_test_win.ps1
 
     - name: Build and Test Python 3.8
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.8'
         architecture: 'x64'
@@ -160,7 +178,7 @@ jobs:
         .\.github\workflows\python_test_win.ps1
 
     - name: Build and Test Python 3.9
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.9'
         architecture: 'x64'
@@ -168,8 +186,26 @@ jobs:
         .\.github\workflows\python_build_win.ps1
         .\.github\workflows\python_test_win.ps1
 
+    - name: Build and Test Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
+        architecture: 'x64'
+    - run: |
+        .\.github\workflows\python_build_win.ps1
+        .\.github\workflows\python_test_win.ps1
+
+    - name: Build and Test Python 3.11
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.11'
+        architecture: 'x64'
+    - run: |
+        .\.github\workflows\python_build_win.ps1
+        .\.github\workflows\python_test_win.ps1
+
     - name: Upload wheels
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: windows-wheels
         path: wheelhouse\*.whl
@@ -182,10 +218,10 @@ jobs:
     
     steps:
       - name: Setup Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         
       - name: Download Artifacts
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         
       - name: Upload to PyPI
         run: |

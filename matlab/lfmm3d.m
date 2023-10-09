@@ -1,16 +1,28 @@
 function [U,varargout] = lfmm3d(eps,srcinfo,pg,varargin)
+% LFMM3D    FMM in 3D for Laplace (electrostatic) kernels.
 %
+%  [U,varargout] = lfmm3d(eps,srcinfo,pg,varargin)
+%
+%  Laplace FMM in R^3: evaluate all pairwise particle
+%  interactions (ignoring self-interactions) and possibly
+%  interactions with targets, using the fast multipole method
+%  with precision eps.
 %
 %  This subroutine computes the N-body Laplace
 %  interactions and its gradients in three dimensions where 
-%  the interaction kernel is given by $1/r$
+%  the interaction kernel is given by $1/r$, namely
 % 
 %    u(x) = \sum_{j=1}^{N} c_{j} \frac{1}{\|x-x_{j}\|} - 
 %      v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)   
 %
-%  where $c_{j}$ are the charge densities
+%  where $c_{j}$ are the charge densities,
 %  $v_{j}$ are the dipole orientation vectors, and
 %  $x_{j}$ are the source locations.
+%
+%  There are two options for the evaluation points $x$. These
+%  can be the sources themselves (pg > 0; see below) or other
+%  target points of interest (pgt > 0; see below). Both options
+%  can be selected in one call.
 %  When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped
 %  from the sum.
 % 
@@ -19,8 +31,7 @@ function [U,varargout] = lfmm3d(eps,srcinfo,pg,varargin)
 %  -  eps: double   
 %        precision requested
 %  -  srcinfo: structure
-%        structure containing sourceinfo
-%     
+%        structure containing the following info about the sources:     
 %     *  srcinfo.sources: double(3,n)    
 %           source locations, $x_{j}$
 %     *  srcinfo.nd: integer
@@ -32,7 +43,6 @@ function [U,varargout] = lfmm3d(eps,srcinfo,pg,varargin)
 %     *  srcinfo.dipoles: double(nd,3,n) 
 %           dipole orientation vectors, $v_{j}$ (optional
 %           default - term corresponding to dipoles dropped) 
-%  
 %  -  pg: integer
 %        | source eval flag
 %        | potential at sources evaluated if pg = 1
@@ -57,15 +67,15 @@ function [U,varargout] = lfmm3d(eps,srcinfo,pg,varargin)
 %  
 %  Returns:
 %  
-%  -  U.pot: potential at source locations, if requested, $u(x_{j})$
-%  -  U.grad: gradient at source locations, if requested, $\nabla u(x_{j})$
-%  -  U.hess: hessian at source locations, if requested, $\nabla^2 u(x_{j})$
-%  -  U.pottarg: potential at target locations, if requested, $u(t_{i})$
+%  -  U.pot:      potential at source locations, if requested, $u(x_{j})$
+%  -  U.grad:     gradient at source locations, if requested, $\nabla u(x_{j})$
+%  -  U.hess:     hessian at source locations, if requested, $\nabla^2 u(x_{j})$
+%  -  U.pottarg:  potential at target locations, if requested, $u(t_{i})$
 %  -  U.gradtarg: gradient at target locations, if requested, $\nabla u(t_{i})$
 %  -  U.hesstarg: hessian at target locations, if requested, $\nabla^2 u(t_{i})$
 %
-%  - ier: error code for fmm run
-%  - timeinfo: time taken in each step of the fmm
+%  - ier: error code for FMM run
+%  - timeinfo: time taken in each step of the FMM
 %       timeinfo(1): form multipole step
 %       timeinfo(2): multipole->multipole translation step
 %       timeinfo(3): multipole to local translation, form local + multipole eval step
@@ -90,7 +100,7 @@ function [U,varargout] = lfmm3d(eps,srcinfo,pg,varargin)
 %     Call the FMM for sources only with default arguments, returns
 %     the error code for the FMM as well and the time split
 %      
-
+% See also: L3DDIR
 
 
   sources = srcinfo.sources;

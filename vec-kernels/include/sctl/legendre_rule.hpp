@@ -10,6 +10,8 @@
 # include <cstring>
 # include <cassert>
 
+namespace SCTL_NAMESPACE {
+
 void cdgqf(int nt, int kind, double alpha, double beta, double t[], double wts[]);
 void cgqf(int nt, int kind, double alpha, double beta, double a, double b, double t[], double wts[]);
 double class_matrix(int kind, int m, double alpha, double beta, double aj[], double bj[]);
@@ -18,8 +20,8 @@ void parchk(int kind, int m, double alpha, double beta);
 double r8_abs(double x);
 double r8_epsilon();
 double r8_sign(double x);
-void r8mat_write(std::string output_filename, int m, int n, double table[]);
-void rule_write(int order, std::string filename, double x[], double w[], double r[]);
+void r8mat_write(std::string& output_filename, int m, int n, double table[]);
+void rule_write(int order, std::string& filename, double x[], double w[], double r[]);
 void scqf(int nt, double t[], int mlt[], double wts[], int nwts, int ndx[], double swts[], double st[], int kind, double alpha, double beta, double a, double b);
 void sgqf(int nt, double aj[], double bj[], double zemu, double t[], double wts[]);
 
@@ -1030,7 +1032,7 @@ inline double r8_sign ( double x )
 }
 //****************************************************************************80
 
-inline void r8mat_write ( std::string output_filename, int m, int n, double table[] )
+inline void r8mat_write ( const std::string& output_filename, int m, int n, double table[] )
 
 //****************************************************************************80
 //
@@ -1096,7 +1098,7 @@ inline void r8mat_write ( std::string output_filename, int m, int n, double tabl
 }
 //****************************************************************************80
 
-inline void rule_write ( int order, std::string filename, double x[], double w[],
+inline void rule_write ( int order, const std::string& filename, double x[], double w[],
   double r[] )
 
 //****************************************************************************80
@@ -1482,5 +1484,7 @@ inline void sgqf ( int nt, double aj[], double bj[], double zemu, double t[],
   return;
 }
 //****************************************************************************80
+
+} // end namespace
 
 #endif

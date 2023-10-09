@@ -3,23 +3,28 @@ c     This file contains the Stokes FMM wrappers
 c
 c**********************************************************************
 c      
-c     We take the following conventions for the Stokes kernels
+c     We take the following conventions for the Stokes kernels.
 c
-c     For a source y and target x, let r_i = x_i-y_i
+c     1) The dynamic viscosity (mu) is assumed to be 1.
+c     2) All kernels are a factor 4pi larger than standard definitions
+c        (this is for historical reasons).
+c     Thus, in general, divide the velocity (potential or grad) outputs
+c     by 4pi.mu, and pressure by 4pi, to recover standard definitions.
+c
+c     For a source y and target x, let r_i = x_i-y_i     (note sign)
 c     and let r = sqrt(r_1^2 + r_2^2 + r_3^2)
 c
 c     The Stokeslet, G_{ij}, and its associated pressure tensor, P_j,
-c     (without the 1/4pi scaling) are
+c     we define as
 c
-c     G_{ij}(x,y) = (r_i r_j)/(2r^3) + delta_{ij}/(2r)
+c     G_{ij}(x,y) = ( delta_{ij}/r  + r_i r_j / r^3 )/2
 c     P_j(x,y) = r_j/r^3
 c
 c     The (Type I) stresslet, T_{ijk}, and its associated pressure
-c     tensor, PI_{jk}, (without the 1/4pi scaling) are
+c     tensor, PI_{jk}, we define as
 c     
 c     T_{ijk}(x,y) = -3 r_i r_j r_k/ r^5
-c     PI_{jk} = -2 delta_{jk} + 6 r_j r_k/r^5      
-c
+c     PI_{jk}(x,y) = -2 delta_{jk}/r^3 + 6 r_j r_k/r^5      
       
 
       subroutine stfmm3d(nd, eps, 
@@ -41,24 +46,29 @@ c     Stokes FMM in R^{3}: evaluate all pairwise particle
 c     interactions (ignoring self-interactions) and
 c     interactions with targs.
 c      
-c     This routine computes sums of the form
+c     This routine computes the sum for the velocity vector,
 c
-c       u(x) = sum_m G_{ij}(x,y^{(m)}) sigma^{(m)}_j
+c       u_i(x) = sum_m G_{ij}(x,y^{(m)}) sigma^{(m)}_j
 c                + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k
 c
-c     where sigma^{(m)} is the Stokeslet charge, mu^{(m)} is the
-c     stresslet charge, and nu^{(m)} is the stresslet orientation
+c     for x at all of the target locations, and i=1,2,3,
+c     where sigma^{(m)} is the Stokeslet force, mu^{(m)} is the
+c     stresslet strength, and nu^{(m)} is the stresslet orientation
 c     (note that each of these is a 3 vector per source point y^{(m)}).
-c     For x a source point, the self-interaction in the sum is omitted. 
+c     Repeated indices are taken as summed over 1,2,3, ie, Einstein
+c     convention. For x a source point, the self-interaction in the
+c     sum is omitted. 
 c
-c     Optionally, the associated pressure p(x) and gradient grad u(x)
-c     are returned
+c     Optionally, the associated pressure p(x) and 3x3 gradient tensor
+c     grad u(x) are returned
 c
 c       p(x) = sum_m P_j(x,y^m) sigma^{(m)}_j
-c          + sum_m T_{ijk}(x,y^{(m)}) PI_{jk} mu^{(m)}_j nu^{(m)}_k
+c          + sum_m PI_{jk}(x,y{(m)}) mu^{(m)}_j nu^{(m)}_k
 c
-c       grad u(x) = grad[sum_m G_{ij}(x,y^m) sigma^{(m)}_j
+c       grad_l u_i(x) = grad_l [sum_m G_{ij}(x,y^m) sigma^{(m)}_j
 c                + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k]
+c
+c     Note that these two may be combined to get the stress tensor.
 c
 c-----------------------------------------------------------------------
 c     INPUT PARAMETERS:

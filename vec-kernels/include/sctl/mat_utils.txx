@@ -1,5 +1,5 @@
-
 #include SCTL_INCLUDE(matrix.hpp)
+#include SCTL_INCLUDE(math_utils.hpp)
 
 #if defined(SCTL_HAVE_CUDA)
 #include <cuda_runtime_api.h>
@@ -26,6 +26,7 @@ namespace mat {
 
 template <class ValueType> inline void gemm(char TransA, char TransB, int M, int N, int K, ValueType alpha, Iterator<ValueType> A, int lda, Iterator<ValueType> B, int ldb, ValueType beta, Iterator<ValueType> C, int ldc) {
   if ((TransA == 'N' || TransA == 'n') && (TransB == 'N' || TransB == 'n')) {
+    #pragma omp parallel for schedule(static)
     for (Long n = 0; n < N; n++) {    // Columns of C
       for (Long m = 0; m < M; m++) {  // Rows of C
         ValueType AxB = 0;
@@ -36,6 +37,7 @@ template <class ValueType> inline void gemm(char TransA, char TransB, int M, int
       }
     }
   } else if (TransA == 'N' || TransA == 'n') {
+    #pragma omp parallel for schedule(static)
     for (Long n = 0; n < N; n++) {    // Columns of C
       for (Long m = 0; m < M; m++) {  // Rows of C
         ValueType AxB = 0;
@@ -46,6 +48,7 @@ template <class ValueType> inline void gemm(char TransA, char TransB, int M, int
       }
     }
   } else if (TransB == 'N' || TransB == 'n') {
+    #pragma omp parallel for schedule(static)
     for (Long n = 0; n < N; n++) {    // Columns of C
       for (Long m = 0; m < M; m++) {  // Rows of C
         ValueType AxB = 0;
@@ -56,6 +59,7 @@ template <class ValueType> inline void gemm(char TransA, char TransB, int M, int
       }
     }
   } else {
+    #pragma omp parallel for schedule(static)
     for (Long n = 0; n < N; n++) {    // Columns of C
       for (Long m = 0; m < M; m++) {  // Rows of C
         ValueType AxB = 0;
@@ -106,7 +110,7 @@ template <> inline void cublasgemm<double>(char TransA, char TransB, int M, int 
 
 //#define SCTL_SVD_DEBUG
 
-template <class ValueType> static inline void GivensL(Iterator<ValueType> S_, StaticArray<Long, 2> &dim, Long m, ValueType a, ValueType b) {
+template <class ValueType> static inline void GivensL(Iterator<ValueType> S_, const StaticArray<Long, 2> &dim, Long m, ValueType a, ValueType b) {
   auto S = [S_,dim](Long i, Long j) -> ValueType& { return S_[(i) * dim[1] + (j)]; };
 
   ValueType r = sqrt<ValueType>(a * a + b * b);
@@ -126,7 +130,7 @@ template <class ValueType> static inline void GivensL(Iterator<ValueType> S_, St
   }
 }
 
-template <class ValueType> static inline void GivensR(Iterator<ValueType> S_, StaticArray<Long, 2> &dim, Long m, ValueType a, ValueType b) {
+template <class ValueType> static inline void GivensR(Iterator<ValueType> S_, const StaticArray<Long, 2> &dim, Long m, ValueType a, ValueType b) {
   auto S = [S_,dim](Long i, Long j) -> ValueType& { return S_[(i) * dim[1] + (j)]; };
 
   ValueType r = sqrt<ValueType>(a * a + b * b);
@@ -146,7 +150,7 @@ template <class ValueType> static inline void GivensR(Iterator<ValueType> S_, St
   }
 }
 
-template <class ValueType> static inline void SVD(StaticArray<Long, 2> &dim, Iterator<ValueType> U_, Iterator<ValueType> S_, Iterator<ValueType> V_, ValueType eps = -1) {
+template <class ValueType> static inline void SVD(const StaticArray<Long, 2> &dim, Iterator<ValueType> U_, Iterator<ValueType> S_, Iterator<ValueType> V_, ValueType eps = -1) {
   auto U = [U_,dim](Long i, Long j) -> ValueType& { return U_[(i) * dim[0] + (j)]; };
   auto S = [S_,dim](Long i, Long j) -> ValueType& { return S_[(i) * dim[1] + (j)]; };
   auto V = [V_,dim](Long i, Long j) -> ValueType& { return V_[(i) * dim[1] + (j)]; };
@@ -291,7 +295,7 @@ template <class ValueType> static inline void SVD(StaticArray<Long, 2> &dim, Ite
       ValueType b = -(C[0 * 2 + 0] + C[1 * 2 + 1]) / 2;
       ValueType c = C[0 * 2 + 0] * C[1 * 2 + 1] - C[0 * 2 + 1] * C[1 * 2 + 0];
       ValueType d = 0;
-      if (b * b - c > 0)
+      if (fabs(b * b - c) > eps*b*b)
         d = sqrt<ValueType>(b * b - c);
       else {
         ValueType b = (C[0 * 2 + 0] - C[1 * 2 + 1]) / 2;
@@ -516,7 +520,7 @@ template <class ValueType> inline void pinv(Iterator<ValueType> M, int n1, int n
     if (tS[i] < eps_)
       tS[i] = 0;
     else
-      tS[i] = 1.0 / tS[i];
+      tS[i] = 1 / tS[i];
 
   for (int i = 0; i < m; i++) {
     for (int j = 0; j < k; j++) {

@@ -985,8 +985,8 @@ C$    time1=omp_get_wtime()
       enddo
       if(ifprint.ge.1) print *,"nboxes:",nboxes,"cntlist4:",cntlist4
       allocate(pgboxwexp(nd,nexptotp,cntlist4,6))
-      allocate(gboxmexp(nd*(nterms(ilev)+1)*
-     1                   (2*nterms(ilev)+1),8,cntlist4))
+      allocate(gboxmexp(nd*(nterms(nlevels)+1)*
+     1                   (2*nterms(nlevels)+1),8,cntlist4))
 
 
 

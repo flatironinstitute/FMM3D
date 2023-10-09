@@ -11,6 +11,59 @@
 extern "C" {
 #endif
 
+void h3ddirectcp_new_cpp_(const int32_t* nd, const double* zk, const double* sources, const double* charge, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, const double* thresh) {
+  h3ddirectcdg_new_cpp<double>(nd, zk, sources, charge, nullptr, ns, ztarg, nt, pot, nullptr, thresh, -1);
+}
+
+void h3ddirectcg_new_cpp_(const int32_t* nd, const double* zk, const double* sources, const double* charge, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, double* grad, const double* thresh) {
+  h3ddirectcdg_new_cpp<double>(nd, zk, sources, charge, nullptr, ns, ztarg, nt, pot, grad, thresh, -1);
+}
+
+void h3ddirectdp_new_cpp_(const int32_t* nd, const double* zk, const double* sources, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, const double* thresh) {
+  h3ddirectcdg_new_cpp<double>(nd, zk, sources, nullptr, dipvec, ns, ztarg, nt, pot, nullptr, thresh, -1);
+}
+
+void h3ddirectdg_new_cpp_(const int32_t* nd, const double* zk, const double* sources, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, double* grad, const double* thresh) {
+  h3ddirectcdg_new_cpp<double>(nd, zk, sources, nullptr, dipvec, ns, ztarg, nt, pot, grad, thresh, -1);
+}
+
+void h3ddirectcdp_new_cpp_(const int32_t* nd, const double* zk, const double* sources, const double* charge, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, const double* thresh) {
+  h3ddirectcdg_new_cpp<double>(nd, zk, sources, charge, dipvec, ns, ztarg, nt, pot, nullptr, thresh, -1);
+}
+
+void h3ddirectcdg_new_cpp_(const int32_t* nd, const double* zk, const double* sources, const double* charge, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, double* grad, const double* thresh) {
+  h3ddirectcdg_new_cpp<double>(nd, zk, sources, charge, dipvec, ns, ztarg, nt, pot, grad, thresh, -1);
+}
+
+void l3ddirectcp_new_cpp_(const int32_t* nd, const double* sources, const double* charge, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, const double* thresh) {
+  l3ddirectcdg_new_cpp<double>(nd, sources, charge, nullptr, ns, ztarg, nt, pot, nullptr, thresh, -1);
+}
+
+void l3ddirectcg_new_cpp_(const int32_t* nd, const double* sources, const double* charge, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, double* grad, const double* thresh) {
+  l3ddirectcdg_new_cpp<double>(nd, sources, charge, nullptr, ns, ztarg, nt, pot, grad, thresh, -1);
+}
+
+void l3ddirectdp_new_cpp_(const int32_t* nd, const double* sources, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, const double* thresh) {
+  l3ddirectcdg_new_cpp<double>(nd, sources, nullptr, dipvec, ns, ztarg, nt, pot, nullptr, thresh, -1);
+}
+
+void l3ddirectdg_new_cpp_(const int32_t* nd, const double* sources, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, double* grad, const double* thresh) {
+  l3ddirectcdg_new_cpp<double>(nd, sources, nullptr, dipvec, ns, ztarg, nt, pot, grad, thresh, -1);
+}
+
+void l3ddirectcdp_new_cpp_(const int32_t* nd, const double* sources, const double* charge, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, const double* thresh) {
+  l3ddirectcdg_new_cpp<double>(nd, sources, charge, dipvec, ns, ztarg, nt, pot, nullptr, thresh, -1);
+}
+
+void l3ddirectcdg_new_cpp_(const int32_t* nd, const double* sources, const double* charge, const double* dipvec, const int32_t* ns, const double* ztarg, const int32_t* nt, double* pot, double* grad, const double* thresh) {
+  l3ddirectcdg_new_cpp<double>(nd, sources, charge, dipvec, ns, ztarg, nt, pot, grad, thresh, -1);
+}
+
+
+
+
+
+
 void helm3d_f_(const int64_t* nd, const float* zk, const float* sources, const float* charge, const int64_t* ns, const float* ztarg, const int64_t* nt, float* pot, const float* thresh) {
   h3ddirectcp_cpp<float>(nd, zk, sources, charge, ns, ztarg, nt, pot, thresh);
 }

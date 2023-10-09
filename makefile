@@ -2,9 +2,9 @@
 # # This is the only makefile; there are no makefiles in subdirectories.
 # Users should not need to edit this makefile (doing so would make it
 # hard to stay up to date with repo version). Rather in order to
-# change OS/environment-specific compilers and flags, create 
-# the file make.inc, which overrides the defaults below (which are 
-# for ubunutu linux/gcc system). 
+# change OS/environment-specific compilers and flags, create
+# the file make.inc, which overrides the defaults below (which are
+# for ubunutu linux/gcc system).
 
 
 # compiler, and linking from C, fortran
@@ -14,17 +14,17 @@ FC=gfortran
 
 
 # set compiler flags for c and fortran
-FFLAGS= -fPIC -O3 -march=native -funroll-loops -std=legacy 
-CFLAGS= -fPIC -O3 -march=native -funroll-loops -std=c99 
+FFLAGS= -fPIC -O3 -march=native -funroll-loops -std=legacy
+CFLAGS= -fPIC -O3 -march=native -funroll-loops -std=c99
 CXXFLAGS= -std=c++11 -DSCTL_PROFILE=-1 -fPIC -O3 -march=native -funroll-loops
 
 # set linking libraries
-CLIBS = -lgfortran -lm -ldl 
+CLIBS = -lgfortran -lm -ldl
 LIBS = -lm
 
 # extra flags for multithreaded: C/Fortran, MATLAB
 OMPFLAGS =-fopenmp
-OMPLIBS =-lgomp 
+OMPLIBS =-lgomp
 
 # Python Exetucable
 PYTHON=python
@@ -156,25 +156,35 @@ $(SRCDIR)/libkernels.o: $(SRCDIR)/libkernels.cpp
 		$(CXX) $(CXXFLAGS) -I$(INCDIR) -c $^ -o $@
 
 usage:
+	@echo "------------------------------------------------------------------------"
 	@echo "Makefile for FMM3D. Specify what to make:"
-	@echo "  make install - compile and install the main library"
-	@echo "  make install PREFIX=(INSTALL_DIR) - compile and install the main library at custom location given by PREFIX"
-	@echo "  make lib - compile the main library (in lib/ and lib-static/)"
-	@echo "  make test - compile and run validation tests (will take a couple of mins)"
-	@echo "  make matlab - compile matlab interfaces"
-	@echo "  make python - compile and test python interfaces"
-	@echo "  make test-dyn - test successful installation by validation tests linked to dynamic library (will take a couple of mins)"
-	@echo "  make matlab-dyn - compile matlab interfaces with dynamic library linking"
-	@echo "  make python-dyn - compile and test python interfaces with dynamic library linking"
-	@echo "  make python-dist - compile python interfaces for distribution"
-	@echo "  make examples - compile and run fortran examples in examples/"
-	@echo "  make c-examples - compile and run c examples in c/"
-	@echo "  make objclean - removal all object files, preserving lib & MEX"
-	@echo "  make clean - also remove lib, MEX, py, and demo executables"
-	@echo "  make mex - generate matlab interfaces (for expert users only, requires mwrap)"
+	@echo ""
+	@echo "  make install        compile and install the main library"
+	@echo "  make install PREFIX=(INSTALL_DIR)  "
+	@echo "                      compile and install the main library at custom"
+	@echo "                      location given by PREFIX"
+	@echo "  make lib            compile the main library (in lib/ and lib-static/)"
+	@echo "  make test           compile and run validation tests"
+	@echo "                      (will take a couple of mins)"
+	@echo "  make matlab         compile matlab interfaces"
+	@echo "  make python         compile and test python interfaces"
+	@echo "  make test-dyn       test successful installation by validation tests"
+	@echo "                      linked to dynamic library (will take a couple of mins)"
+	@echo "  make matlab-dyn     compile matlab interfaces with dynamic library linking"
+	@echo "  make python-dyn     compile and test python interfaces with dynamic library linking"
+	@echo "  make python-dist    compile python interfaces for distribution"
+	@echo "  make examples       compile and run fortran examples in examples/"
+	@echo "  make c-examples     compile and run c examples in c/"
+	@echo "  make objclean       removal all object files, preserving lib & MEX"
+	@echo "  make clean          also remove lib, MEX, py, and demo executables"
+	@echo "  make mex            generate matlab interfaces"
+	@echo "                      (for expert users only, requires mwrap)"
+	@echo ""
 	@echo "For faster (multicore) making, append the flag -j"
-	@echo "  'make [task] OMP=OFF' for single-threaded"
-	@echo "  'make [task] FAST_KER=ON' for using vectorized kernel evaluation and multi-threading (needs c++)"
+	@echo " 'make [task] OMP=OFF'        for single-threaded"
+	@echo " 'make [task] FAST_KER=ON'    for using vectorized kernel evaluation and"
+	@echo "                              multi-threading (needs c++)"
+	@echo "------------------------------------------------------------------------"
 
 
 # implicit rules for objects (note -o ensures writes to correct dir)
@@ -184,7 +194,7 @@ usage:
 	$(CC) -c $(CFLAGS) $< -o $@
 %.o: %.f %.h
 	$(FC) -c $(FFLAGS) $< -o $@
-%.o: %.f90 
+%.o: %.f90
 	$(FC) -c $(FFLAGS) $< -o $@
 
 # build the library...
@@ -210,11 +220,11 @@ install: $(STATICLIB) $(DYNAMICLIB)
 	@echo "In order to link against the dynamic library, use -L"$(FMM_INSTALL_DIR) " -lfmm3d"
 
 
-$(STATICLIB): $(OBJS) 
+$(STATICLIB): $(OBJS)
 	ar rcs $(STATICLIB) $(OBJS)
 	mv $(STATICLIB) lib-static/
-$(DYNAMICLIB): $(OBJS) 
-	$(FC) -shared -fPIC $(OBJS) -o $(DYNAMICLIB) $(DYLIBS) 
+$(DYNAMICLIB): $(OBJS)
+	$(FC) -shared -fPIC $(OBJS) -o $(DYNAMICLIB) $(DYLIBS)
 	mv $(DYNAMICLIB) lib/
 	[ ! -f $(LIMPLIB) ] || mv $(LIMPLIB) lib/
 
@@ -227,13 +237,13 @@ GATEWAY2 = $(MWRAPFILE2)
 
 matlab:	$(STATICLIB) matlab/$(GATEWAY).c matlab/$(GATEWAY2).c
 	$(MEX) matlab/$(GATEWAY).c lib-static/$(STATICLIB) $(MFLAGS) \
-	-output matlab/fmm3d $(MEXLIBS) 
+	-output matlab/fmm3d $(MEXLIBS)
 	$(MEX) matlab/$(GATEWAY2).c lib-static/$(STATICLIB) $(MFLAGS) \
-	-output matlab/fmm3d_legacy $(MEXLIBS) 
+	-output matlab/fmm3d_legacy $(MEXLIBS)
 
 matlab-dyn:	$(DYNAMICLIB) matlab/$(GATEWAY).c matlab/$(GATEWAY2).c
 	$(MEX) matlab/$(GATEWAY).c $(MFLAGS) \
-	-output matlab/fmm3d $(MEXLIBS) -L$(FMM_INSTALL_DIR) $(LLINKLIB) 
+	-output matlab/fmm3d $(MEXLIBS) -L$(FMM_INSTALL_DIR) $(LLINKLIB)
 	$(MEX) matlab/$(GATEWAY2).c $(MFLAGS) \
 	-output matlab/fmm3d_legacy $(MEXLIBS) -L$(FMM_INSTALL_DIR) $(LLINKLIB)
 
@@ -251,7 +261,7 @@ mex:  $(STATICLIB)
 #python
 python: $(STATICLIB)
 	cd python && \
-	FMM_FLIBS='$(LIBS) $(OMPFLAGS)' $(PYTHON) -m pip install -e . --verbose 
+	FMM_FLIBS='$(LIBS) $(OMPFLAGS)' $(PYTHON) -m pip install . --verbose
 #	FMM_FLIBS='$(LIBS) $(OMPFLAGS)' $(PYTHON) -m pip install -e . && \
 #	$(PYTHON) -m pytest test/ -s
 
@@ -262,7 +272,7 @@ python-dist: $(STATICLIB)
 
 # testing routines
 #
-test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale test/stfmm3d test/stokkernels test/emfmm3d 
+test: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/hfmm3d_scale test/laprouts test/lfmm3d test/lfmm3d_vec test_hfmm3d_mps test/lfmm3d_scale test/stfmm3d test/stokkernels test/emfmm3d
 	(cd test/Helmholtz; ./run_helmtest.sh)
 	(cd test/Laplace; ./run_laptest.sh)
 	(cd test/Stokes; ./run_stoktest.sh)
@@ -292,8 +302,8 @@ test-ext: $(STATICLIB) $(TOBJS) test/helmrouts test/hfmm3d test/hfmm3d_vec test/
 	rm print_testreshelm.txt
 	rm print_testreslap.txt
 
-test/helmrouts: 
-	$(FC) $(FFLAGS) test/Helmholtz/test_helmrouts3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/int2-test-helmrouts3d $(LIBS) 
+test/helmrouts:
+	$(FC) $(FFLAGS) test/Helmholtz/test_helmrouts3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/int2-test-helmrouts3d $(LIBS)
 
 test/hfmm3d:
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/int2-test-hfmm3d $(LIBS)
@@ -317,16 +327,16 @@ test/lfmm3d_scale:
 	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_scale.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/int2-test-lfmm3d-scale $(LIBS)
 
 test/lfmm3d_vec:
-	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_vec.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/int2-test-lfmm3d-vec $(LIBS) 
+	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_vec.f $(TOBJS) $(COMOBJS) $(LOBJS) -o test/Laplace/int2-test-lfmm3d-vec $(LIBS)
 
-test/stfmm3d: 
-	$(FC) $(FFLAGS) test/Stokes/test_stfmm3d.f $(TOBJS) $(COMOBJS) $(LOBJS) $(STOBJS) -o test/Stokes/int2-test-stfmm3d $(LIBS) 
+test/stfmm3d:
+	$(FC) $(FFLAGS) test/Stokes/test_stfmm3d.f $(TOBJS) $(COMOBJS) $(LOBJS) $(STOBJS) -o test/Stokes/int2-test-stfmm3d $(LIBS)
 
-test/stokkernels: 
+test/stokkernels:
 	$(FC) $(FFLAGS) test/Stokes/test_stokkernels.f $(TOBJS) $(COMOBJS) $(LOBJS) $(STOBJS) -o test/Stokes/int2-test-stokkernels $(LIBS)
 
-test/emfmm3d: 
-	$(FC) $(FFLAGS) test/Maxwell/test_emfmm3d.f $(TOBJS) $(COMOBJS) $(HOBJS) $(EMOBJS) -o test/Maxwell/int2-test-emfmm3d $(LIBS) 
+test/emfmm3d:
+	$(FC) $(FFLAGS) test/Maxwell/test_emfmm3d.f $(TOBJS) $(COMOBJS) $(HOBJS) $(EMOBJS) -o test/Maxwell/int2-test-emfmm3d $(LIBS)
 
 test_hfmm3d_mps: $(STATICLIB) $(TOBJS)
 	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_mps.f90 \
@@ -337,29 +347,29 @@ test_hfmm3d_mps: $(STATICLIB) $(TOBJS)
 ## Linking against dynamic libraries
 #
 #
-test/helmrouts-dyn: 
-	$(FC) $(FFLAGS) test/Helmholtz/test_helmrouts3d.f $(TOBJS) -o test/Helmholtz/int2-test-helmrouts3d -L$(FMM_INSTALL_DIR) $(LLINKLIB) 
+test/helmrouts-dyn:
+	$(FC) $(FFLAGS) test/Helmholtz/test_helmrouts3d.f $(TOBJS) -o test/Helmholtz/int2-test-helmrouts3d -L$(FMM_INSTALL_DIR) $(LLINKLIB)
 
 test/hfmm3d-dyn:
-	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d.f $(TOBJS) -o test/Helmholtz/int2-test-hfmm3d -L$(FMM_INSTALL_DIR) $(LLINKLIB)  
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d.f $(TOBJS) -o test/Helmholtz/int2-test-hfmm3d -L$(FMM_INSTALL_DIR) $(LLINKLIB)
 
 test/hfmm3d_scale-dyn:
-	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_scale.f $(TOBJS) -o test/Helmholtz/int2-test-hfmm3d-scale -L$(FMM_INSTALL_DIR) $(LLINKLIB) 
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_scale.f $(TOBJS) -o test/Helmholtz/int2-test-hfmm3d-scale -L$(FMM_INSTALL_DIR) $(LLINKLIB)
 
 test/hfmm3d_vec-dyn:
-	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_vec.f $(TOBJS) -o test/Helmholtz/int2-test-hfmm3d-vec -L$(FMM_INSTALL_DIR) $(LLINKLIB) 
+	$(FC) $(FFLAGS) test/Helmholtz/test_hfmm3d_vec.f $(TOBJS) -o test/Helmholtz/int2-test-hfmm3d-vec -L$(FMM_INSTALL_DIR) $(LLINKLIB)
 
 test/laprouts-dyn:
-	$(FC) $(FFLAGS) test/Laplace/test_laprouts3d.f $(TOBJS) -o test/Laplace/int2-test-laprouts3d -L$(FMM_INSTALL_DIR) $(LLINKLIB) 
+	$(FC) $(FFLAGS) test/Laplace/test_laprouts3d.f $(TOBJS) -o test/Laplace/int2-test-laprouts3d -L$(FMM_INSTALL_DIR) $(LLINKLIB)
 
 test/lfmm3d-dyn:
-	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d.f $(TOBJS) -o test/Laplace/int2-test-lfmm3d -L$(FMM_INSTALL_DIR) $(LLINKLIB) 
+	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d.f $(TOBJS) -o test/Laplace/int2-test-lfmm3d -L$(FMM_INSTALL_DIR) $(LLINKLIB)
 
 test/lfmm3d_scale-dyn:
 	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_scale.f $(TOBJS) -o test/Laplace/int2-test-lfmm3d-scale -L$(FMM_INSTALL_DIR) $(LLINKLIB)
-	 
+
 test/lfmm3d_vec-dyn:
-	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_vec.f $(TOBJS) -o test/Laplace/int2-test-lfmm3d-vec -L$(FMM_INSTALL_DIR) $(LLINKLIB) 
+	$(FC) $(FFLAGS) test/Laplace/test_lfmm3d_vec.f $(TOBJS) -o test/Laplace/int2-test-lfmm3d-vec -L$(FMM_INSTALL_DIR) $(LLINKLIB)
 
 
 test_hfmm3d_mps-dyn: $(DYNAMICLIB) $(TOBJS)
@@ -416,7 +426,7 @@ c/hfmm3d:
 
 
 # C examples
-c-examples: $(COBJS) $(OBJS) $(CHEADERS) c/ex1_lap c/ex2_lap c/ex1_helm c/ex2_helm 
+c-examples: $(COBJS) $(OBJS) $(CHEADERS) c/ex1_lap c/ex2_lap c/ex1_helm c/ex2_helm
 	c/int2-lfmm3d-example
 	c/int2-lfmm3d-vec-example
 	c/int2-hfmm3d-example
@@ -427,7 +437,7 @@ c/ex1_lap:
 	$(CC) $(CFLAGS) c/lfmm3d_example.c $(COBJS) $(OBJS) -o c/int2-lfmm3d-example $(CLIBS)
 
 c/ex2_lap:
-	$(CC) $(CFLAGS) c/lfmm3d_vec_example.c $(COBJS) $(OBJS) -o c/int2-lfmm3d-vec-example $(CLIBS) 
+	$(CC) $(CFLAGS) c/lfmm3d_vec_example.c $(COBJS) $(OBJS) -o c/int2-lfmm3d-vec-example $(CLIBS)
 
 c/ex1_helm:
 	$(CC) $(CFLAGS) c/hfmm3d_example.c $(COBJS) $(OBJS) -o c/int2-hfmm3d-example $(CLIBS)
@@ -467,7 +477,7 @@ test/test_lap_big:
 test/test_helm_pw:
 	$(FC) $(FFLAGS) test/Helmholtz/test_pwrep_hfmm3d.f $(TOBJS) $(COMOBJS) $(HOBJS) -o test/Helmholtz/test_hfmm3d_pw
 
-debug: $(STATICLIB) $(TOBJS) examples/lfmm3d_deb 
+debug: $(STATICLIB) $(TOBJS) examples/lfmm3d_deb
 	time -p examples/lfmm3d_debug
 
 examples/hfmm3d_deb:
@@ -478,6 +488,6 @@ examples/lfmm3d_deb:
 
 
 
-objclean: 
+objclean:
 	rm -f $(OBJS) $(COBJS) $(TOBJS)
 	rm -f test/*.o examples/*.o c/*.o

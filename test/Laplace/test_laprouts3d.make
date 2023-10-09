@@ -8,12 +8,12 @@ PROJECT = int2-laprouts3d
 
 ifeq ($(HOST),gcc)
     FC=gfortran 
-    FFLAGS=-fPIC -O3 -funroll-loops -march=native -std=legacy 
+    FFLAGS=-fPIC -O3 -funroll-loops -march=x86-64 -std=legacy 
 endif
 
 ifeq ($(HOST),gcc-openmp)
     FC = gfortran 
-    FFLAGS=-fPIC -O3 -funroll-loops -march=native -fopenmp -std=legacy
+    FFLAGS=-fPIC -O3 -funroll-loops -march=x86-64 -fopenmp -std=legacy
 endif
 
 # Test objects

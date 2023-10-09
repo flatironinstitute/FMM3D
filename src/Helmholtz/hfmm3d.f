@@ -158,9 +158,8 @@ c
       double precision, allocatable :: scales(:)
       double precision, allocatable :: rmlexp(:)
 
-      integer(8) lmptemp,nmax
+      integer(8) nmax
       integer(8) lmptot
-      double precision, allocatable :: mptemp(:),mptemp2(:)
 
 c
 cc       temporary variables not used in particle code
@@ -438,14 +437,11 @@ c     Multipole and local expansions will be held in workspace
 c     in locations pointed to by array iaddr(2,nboxes).
 c
 c     iiaddr is pointer to iaddr array, itself contained in workspace.
-c     imptemp is pointer for single expansion (dimensioned by nmax)
 c
 c       ... allocate iaddr and temporary arrays
 c
 
       allocate(iaddr(2,nboxes))
-      lmptemp = (nmax+1)*(2*nmax+1)*2*nd
-      allocate(mptemp(lmptemp),mptemp2(lmptemp))
 
 c
 c     allocate memory need by multipole, local expansions at all
@@ -475,7 +471,7 @@ C$    time1=omp_get_wtime()
      $   ifcharge,chargesort,
      $   ifdipole,dipvecsort,
      $   ntarg,targsort,nexpc,expcsort,radssort,
-     $   iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp,
+     $   iaddr,rmlexp,lmptot,
      $   itree,ltree,ipointer,ndiv,nlevels,
      $   nboxes,iper,boxsize,treecenters,isrcse,itargse,iexpcse,
      $   scales,itree(ipointer(1)),nterms,
@@ -530,7 +526,7 @@ c
      $     ifcharge,chargesort,
      $     ifdipole,dipvecsort,
      $     ntarg,targsort,nexpc,expcsort,radssort,
-     $     iaddr,rmlexp,lmptot,mptemp,mptemp2,lmptemp,
+     $     iaddr,rmlexp,lmptot,
      $     itree,ltree,ipointer,ndiv,nlevels, 
      $     nboxes,iper,boxsize,centers,isrcse,itargse,iexpcse,
      $     rscales,laddr,nterms,ifpgh,pot,grad,hess,
@@ -567,11 +563,8 @@ c
       double complex jsort(nd,0:ntj,-ntj:ntj,nexpc)
 
 
-      integer(8) lmptemp
       integer(8) iaddr(2,nboxes), lmptot
       double precision rmlexp(lmptot)
-      double precision mptemp(lmptemp)
-      double precision mptemp2(lmptemp)
        
       double precision timeinfo(6)
       double precision centers(3,nboxes)

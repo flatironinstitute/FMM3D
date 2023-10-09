@@ -1,0 +1,16 @@
+CC=nvc
+CXX=nvc++
+FC=nvfortran
+FFLAGS= -fPIC -O3
+LIBS=-lm 
+CLIBS = -lm -ldl -lifcore
+
+ifeq ($(FAST_KER),ON)
+
+CXXFLAGS = $(FFLAGS)
+CXXFLAGS += -std=c++11 -DSCTL_HAVE_SVML -DSCTL_PROFILE=-1
+LIBS += -cxxlib
+endif
+
+OMPLIBS = 
+OMPFLAGS = -mp
