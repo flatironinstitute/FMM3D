@@ -3,7 +3,7 @@ program test_hfmm3d_mp2loc
   
   character(len=72) str1
   
-  integer(8) :: ns, nt, nc, nlege, ns1, n1, ntm
+  integer(8) :: ns, nt, nc, nlege, ns1, n1, ntm, npts
   integer(8) :: i,j,k,ntest,nd,idim,ntot,ijk,lw,lused
   integer(8) :: ifcharge,ifdipole,ifpgh,ifpghtarg
   integer(8) :: ipass(18),len1,ntests,isum

@@ -3149,7 +3149,7 @@ C$      ithd=omp_get_thread_num()
             call subdividebox(sourcesort(1,istart),npts,
      1           centers(1,ibox),boxsize,
      2           gboxind,gboxfl,gboxsubcenters)
-            call dreorderf(3,npts,sourcesort(1,istart),
+            call dreorderf(int8(3),npts,sourcesort(1,istart),
      1           gboxsort,gboxind)
             if(ifcharge.eq.1) then
               allocate(gboxcgsort(nd,npts))

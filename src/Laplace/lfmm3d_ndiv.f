@@ -393,7 +393,7 @@ c
 c
 cc     reorder sources 
 c
-      call dreorderf(3,nsource,source,sourcesort,isrc)
+      call dreorderf(int8(3),nsource,source,sourcesort,isrc)
 
 c
 c       rescale sources to be contained in unit box
@@ -416,7 +416,7 @@ c
 c
 cc      reorder and rescale targs
 c
-      call dreorderf(3,ntarg,targ,targsort,itarg)
+      call dreorderf(int8(3),ntarg,targ,targsort,itarg)
       call drescale(3*ntarg,targsort,b0inv)
 
 

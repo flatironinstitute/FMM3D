@@ -377,7 +377,7 @@ C$OMP END PARALLEL DO
 c
 cc       reorder sources
 c
-      call dreorderf(3,nsource,source,sourcesort,isrc)
+      call dreorderf(int8(3),nsource,source,sourcesort,isrc)
       call drescale(3*nsource,sourcesort,b0inv)
       if(ifcharge.eq.1) then
         call dreorderf(2*nd,nsource,charge,chargesort,isrc)
@@ -392,7 +392,7 @@ c
 c
 cc      reorder targs
 c
-      call dreorderf(3,ntarg,targ,targsort,itarg)
+      call dreorderf(int8(3),ntarg,targ,targsort,itarg)
       call drescale(3*ntarg,targsort,b0inv)
 c
 c  update tree centers and boxsize
