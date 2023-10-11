@@ -1207,7 +1207,7 @@ MWF77_RETURN MWF77_st3ddirectstokstrsg(int64_t*, double*, double*, int64_t*, dou
 } /* end extern C */
 #endif
 
-/* ---- fmm3d.mw: 171 ----
+/* ---- fmm3d.mw: 181 ----
  * hndiv(double[1] eps, int64_t[1] ns, int64_t[1] nt, int64_t[1] ifcharge, int64_t[1] ifdipole, int64_t[1] pg, int64_t[1] pgt, inout int64_t[1] ndiv, inout int64_t[1] idivflag);
  */
 static const char* stubids1_ = "hndiv(i double[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], io int64_t[x], io int64_t[x])";
@@ -1361,7 +1361,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 186 ----
+/* ---- fmm3d.mw: 196 ----
  * hfmm3d_ndiv(int64_t[1] nd, double[1] eps, dcomplex[1] zk, int64_t[1] ns, double[3, ns] sources, int64_t[1] ifcharge, dcomplex[nd, ns] charges, int64_t[1] ifdipole, dcomplex[nd3, ns] dipoles, int64_t[1] iper, int64_t[1] pg, inout dcomplex[nd, ns] pot, inout dcomplex[nd3, ns] grad, inout dcomplex[nd6, ns] hess, int64_t[1] nt, double[3, ntuse] targ, int64_t[1] pgt, inout dcomplex[nd, ntuse] pottarg, inout dcomplex[nd3, ntuse] gradtarg, inout dcomplex[nd6, ntuse] hesstarg, int64_t[1] ndiv, int64_t[1] idivflag, int64_t[1] ifnear, inout double[6] timeinfo, inout int64_t[1] ier);
  */
 static const char* stubids2_ = "hfmm3d_ndiv(i int64_t[x], i double[x], i dcomplex[x], i int64_t[x], i double[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i int64_t[x], io dcomplex[xx], io dcomplex[xx], io dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], io dcomplex[xx], io dcomplex[xx], i int64_t[x], i int64_t[x], i int64_t[x], io double[x], io int64_t[x])";
@@ -1826,7 +1826,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 301 ----
+/* ---- fmm3d.mw: 278 ----
  * h3ddirectcp(int64_t[1] nd, dcomplex[1] zk, double[3, ns] sources, dcomplex[nd, ns] charges, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout dcomplex[nd, nt] pottarg, double[1] thresh);
  */
 static const char* stubids3_ = "h3ddirectcp(i int64_t[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], i double[x])";
@@ -2011,7 +2011,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 304 ----
+/* ---- fmm3d.mw: 281 ----
  * h3ddirectdp(int64_t[1] nd, dcomplex[1] zk, double[3, ns] sources, dcomplex[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout dcomplex[nd, nt] pottarg, double[1] thresh);
  */
 static const char* stubids4_ = "h3ddirectdp(i int64_t[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], i double[x])";
@@ -2196,7 +2196,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 307 ----
+/* ---- fmm3d.mw: 284 ----
  * h3ddirectcdp(int64_t[1] nd, dcomplex[1] zk, double[3, ns] sources, dcomplex[nd, ns] charges, dcomplex[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout dcomplex[nd, nt] pottarg, double[1] thresh);
  */
 static const char* stubids5_ = "h3ddirectcdp(i int64_t[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], i double[x])";
@@ -2402,7 +2402,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 313 ----
+/* ---- fmm3d.mw: 290 ----
  * h3ddirectcg(int64_t[1] nd, dcomplex[1] zk, double[3, ns] sources, dcomplex[nd, ns] charges, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg, double[1] thresh);
  */
 static const char* stubids6_ = "h3ddirectcg(i int64_t[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], io dcomplex[xx], i double[x])";
@@ -2610,7 +2610,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 316 ----
+/* ---- fmm3d.mw: 293 ----
  * h3ddirectdg(int64_t[1] nd, dcomplex[1] zk, double[3, ns] sources, dcomplex[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg, double[1] thresh);
  */
 static const char* stubids7_ = "h3ddirectdg(i int64_t[x], i dcomplex[x], i double[xx], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], io dcomplex[xx], i double[x])";
@@ -2818,7 +2818,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 319 ----
+/* ---- fmm3d.mw: 296 ----
  * h3ddirectcdg(int64_t[1] nd, dcomplex[1] zk, double[3, ns] sources, dcomplex[nd, ns] charges, dcomplex[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout dcomplex[nd, nt] pottarg, inout dcomplex[nd3, nt] gradtarg, double[1] thresh);
  */
 static const char* stubids8_ = "h3ddirectcdg(i int64_t[x], i dcomplex[x], i double[xx], i dcomplex[xx], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], io dcomplex[xx], i double[x])";
@@ -3047,7 +3047,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 498 ----
+/* ---- fmm3d.mw: 485 ----
  * lndiv(double[1] eps, int64_t[1] ns, int64_t[1] nt, int64_t[1] ifcharge, int64_t[1] ifdipole, int64_t[1] pg, int64_t[1] pgt, inout int64_t[1] ndiv, inout int64_t[1] idivflag);
  */
 static const char* stubids9_ = "lndiv(i double[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], io int64_t[x], io int64_t[x])";
@@ -3201,7 +3201,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 513 ----
+/* ---- fmm3d.mw: 500 ----
  * lfmm3d_ndiv(int64_t[1] nd, double[1] eps, int64_t[1] ns, double[3, ns] sources, int64_t[1] ifcharge, double[nd, ns] charges, int64_t[1] ifdipole, double[nd3, ns] dipoles, int64_t[1] iper, int64_t[1] pg, inout double[nd, ns] pot, inout double[nd3, ns] grad, inout double[nd6, ns] hess, int64_t[1] nt, double[3, ntuse] targ, int64_t[1] pgt, inout double[nd, ntuse] pottarg, inout double[nd3, ntuse] gradtarg, inout double[nd6, ntuse] hesstarg, int64_t[1] ndiv, int64_t[1] idivflag, int64_t[1] ifnear, inout double[6] timeinfo, inout int64_t[1] ier);
  */
 static const char* stubids10_ = "lfmm3d_ndiv(i int64_t[x], i double[x], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i int64_t[x], i int64_t[x], io double[xx], io double[xx], io double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i int64_t[x], i int64_t[x], i int64_t[x], io double[x], io int64_t[x])";
@@ -3633,7 +3633,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 630 ----
+/* ---- fmm3d.mw: 587 ----
  * l3ddirectcp(int64_t[1] nd, double[3, ns] sources, double[nd, ns] charges, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd, nt] pottarg, double[1] thresh);
  */
 static const char* stubids11_ = "l3ddirectcp(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], i double[x])";
@@ -3799,7 +3799,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 633 ----
+/* ---- fmm3d.mw: 590 ----
  * l3ddirectdp(int64_t[1] nd, double[3, ns] sources, double[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd, nt] pottarg, double[1] thresh);
  */
 static const char* stubids12_ = "l3ddirectdp(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], i double[x])";
@@ -3965,7 +3965,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 636 ----
+/* ---- fmm3d.mw: 593 ----
  * l3ddirectcdp(int64_t[1] nd, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd, nt] pottarg, double[1] thresh);
  */
 static const char* stubids13_ = "l3ddirectcdp(i int64_t[x], i double[xx], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], i double[x])";
@@ -4153,7 +4153,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 642 ----
+/* ---- fmm3d.mw: 599 ----
  * l3ddirectcg(int64_t[1] nd, double[3, ns] sources, double[nd, ns] charges, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg, double[1] thresh);
  */
 static const char* stubids14_ = "l3ddirectcg(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], i double[x])";
@@ -4339,7 +4339,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 645 ----
+/* ---- fmm3d.mw: 602 ----
  * l3ddirectdg(int64_t[1] nd, double[3, ns] sources, double[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg, double[1] thresh);
  */
 static const char* stubids15_ = "l3ddirectdg(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], i double[x])";
@@ -4525,7 +4525,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 648 ----
+/* ---- fmm3d.mw: 605 ----
  * l3ddirectcdg(int64_t[1] nd, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg, double[1] thresh);
  */
 static const char* stubids16_ = "l3ddirectcdg(i int64_t[x], i double[xx], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], i double[x])";
@@ -4733,7 +4733,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 655 ----
+/* ---- fmm3d.mw: 612 ----
  * l3ddirectch(int64_t[1] nd, double[3, ns] sources, double[nd, ns] charges, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg, inout double[nd6, nt] hesstarg, double[1] thresh);
  */
 static const char* stubids17_ = "l3ddirectch(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])";
@@ -4939,7 +4939,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 658 ----
+/* ---- fmm3d.mw: 615 ----
  * l3ddirectdh(int64_t[1] nd, double[3, ns] sources, double[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg, inout double[nd6, nt] hesstarg, double[1] thresh);
  */
 static const char* stubids18_ = "l3ddirectdh(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])";
@@ -5145,7 +5145,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 661 ----
+/* ---- fmm3d.mw: 618 ----
  * l3ddirectcdh(int64_t[1] nd, double[3, ns] sources, double[nd, ns] charges, double[nd3, ns] dipoles, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd, nt] pottarg, inout double[nd3, nt] gradtarg, inout double[nd6, nt] hesstarg, double[1] thresh);
  */
 static const char* stubids19_ = "l3ddirectcdh(i int64_t[x], i double[xx], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])";
@@ -5373,7 +5373,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 797 ----
+/* ---- fmm3d.mw: 780 ----
  * emfmm3d(int64_t[1] nd, double[1] eps, dcomplex[1] zk, int64_t[1] ns, double[3, ns] sources, int64_t[1] ifh_current, dcomplex[nd3, ns_h_current] h_current, int64_t[1] ife_current, dcomplex[nd3, ns_e_current] e_current, int64_t[1] ife_charge, dcomplex[nd, ns_e_charge] e_charge, int64_t[1] nt, double[3, nt] targ, int64_t[1] ifE, inout dcomplex[nd3, nt_E] E, int64_t[1] ifcurlE, inout dcomplex[nd3, nt_curlE] curlE, int64_t[1] ifdivE, inout dcomplex[nd, nt_divE] divE, inout int64_t[1] ier);
  */
 static const char* stubids20_ = "emfmm3d(i int64_t[x], i double[x], i dcomplex[x], i int64_t[x], i double[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], i int64_t[x], io dcomplex[xx], i int64_t[x], io dcomplex[xx], io int64_t[x])";
@@ -5746,7 +5746,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 938 ----
+/* ---- fmm3d.mw: 887 ----
  * em3ddirect(int64_t[1] nd, dcomplex[1] zk, int64_t[1] ns, double[3, ns] sources, int64_t[1] ifh_current, dcomplex[nd3, ns_h_current] h_current, int64_t[1] ife_current, dcomplex[nd3, ns_e_current] e_current, int64_t[1] ife_charge, dcomplex[nd, ns_e_charge] e_charge, int64_t[1] nt, double[3, nt] targ, int64_t[1] ifE, inout dcomplex[nd3, nt_E] E, int64_t[1] ifcurlE, inout dcomplex[nd3, nt_curlE] curlE, int64_t[1] ifdivE, inout dcomplex[nd, nt_divE] divE, double[1] thresh);
  */
 static const char* stubids21_ = "em3ddirect(i int64_t[x], i dcomplex[x], i int64_t[x], i double[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], i int64_t[x], io dcomplex[xx], i int64_t[x], io dcomplex[xx], i double[x])";
@@ -6103,7 +6103,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 1094 ----
+/* ---- fmm3d.mw: 1082 ----
  * stfmm3d(int64_t[1] nd, double[1] eps, int64_t[1] ns, double[3, ns] sources, int64_t[1] ifstoklet, double[nd3, ns_stok] stoklet, int64_t[1] ifstrslet, double[nd3, ns_strs] strslet, double[nd3, ns_strs] strsvec, int64_t[1] ifppreg, inout double[nd3, ns_pot] pot, inout double[nd, ns_pre] pre, inout double[nd9, ns_grad] grad, int64_t[1] nt, double[3, nt] targ, int64_t[1] ifppregtarg, inout double[nd3, nt_pot] pottarg, inout double[nd, nt_pre] pretarg, inout double[nd9, nt_grad] gradtarg, inout int64_t[1] ier);
  */
 static const char* stubids22_ = "stfmm3d(i int64_t[x], i double[x], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], io int64_t[x])";
@@ -6485,7 +6485,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 1233 ----
+/* ---- fmm3d.mw: 1179 ----
  * st3ddirectstokg(int64_t[1] nd, double[3, ns] sources, double[nd3, ns_stok] stoklet, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd3, nt] pottarg, inout double[nd, nt] pretarg, inout double[nd9, nt] gradtarg, double[1] thresh);
  */
 static const char* stubids23_ = "st3ddirectstokg(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])";
@@ -6691,7 +6691,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 1236 ----
+/* ---- fmm3d.mw: 1182 ----
  * st3ddirectstokstrsg(int64_t[1] nd, double[3, ns] sources, double[nd3, ns_stok] stoklet, int64_t[1] istress, double[nd3, ns_strs] strslet, double[nd3, ns_strs] strsvec, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd3, nt] pottarg, inout double[nd, nt] pretarg, inout double[nd9, nt] gradtarg, double[1] thresh);
  */
 static const char* stubids24_ = "st3ddirectstokstrsg(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])";
