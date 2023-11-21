@@ -50,7 +50,7 @@ function lower_level_routs() end
 # fortran input/return types
 
 Fd = Ref{Float64}
-Fi = Ref{Int32}
+Fi = Ref{Int64}
 Fc = Ref{ComplexF64}
 
 # common input types
