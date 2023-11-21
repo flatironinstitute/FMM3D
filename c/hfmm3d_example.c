@@ -4,6 +4,7 @@
 #include "hfmm3d_c.h"
 #include "complex.h"
 #include "cprini.h"
+#include "stdint.h"
 
 int main(int argc, char **argv)
 {
@@ -11,8 +12,8 @@ int main(int argc, char **argv)
   cprin_skipline(2);
 
 
-  int ns=2000;
-  int ier=0;
+  int64_t ns=2000;
+  int64_t ier=0;
   double *source = (double *)malloc(3*ns*sizeof(double));
 
   CPX *charge = (CPX *)malloc(ns*sizeof(CPX));
