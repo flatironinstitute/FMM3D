@@ -12,6 +12,7 @@ c
 c
       program testhelm
       implicit real *8 (a-h,o-z)
+      implicit integer *8 (i-n)
       real *8, allocatable :: source(:,:),dipvec(:,:)
       complex *16, allocatable :: charge(:),dipstr(:)
       complex *16, allocatable :: pot(:),fld(:,:)

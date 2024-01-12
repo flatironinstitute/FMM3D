@@ -5,6 +5,7 @@ c
 
 c$    use omp_lib
       implicit real *8 (a-h,o-z)
+      implicit integer *8 (i-n)
       
       real *8, allocatable :: pot(:,:), pre(:), grad(:,:,:)
       real *8, allocatable :: source(:,:), targ(:,:)
@@ -13,7 +14,7 @@ c$    use omp_lib
       real *8, allocatable :: stoklet(:,:), strslet(:,:)
       real *8, allocatable :: strsvec(:,:)
       
-      integer ipass(10)
+      integer *8 ipass(10)
       complex *16 eye
 c
       data eye/(0.0d0,1.0d0)/

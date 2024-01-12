@@ -45,7 +45,7 @@ c
       real *8, allocatable :: wlege(:)
       integer ipass(5)
       complex *16 eye
-      integer(8) nd,ns,nt,nterms,nterms2,nterms3,nn,nlege
+      integer *8 nd,ns,nt,nterms,nterms2,nterms3,nn,nlege
 c
       data eye/(0.0d0,1.0d0)/
 c
@@ -445,7 +445,7 @@ c
 c
       subroutine errprinth(nd,nt,pot,opot,fld,ofld,hess,ohess,errs)
       implicit real *8 (a-h,o-z)
-      integer(8) nd, nt, i, j, idim
+      integer *8 nd, nt, i, j, idim
       real *8 pot(nd,nt),opot(nd,nt),fld(nd,3,nt)
       real *8 ofld(nd,3,nt),hess(nd,6,nt),ohess(nd,6,nt)
       real *8 errs(3)

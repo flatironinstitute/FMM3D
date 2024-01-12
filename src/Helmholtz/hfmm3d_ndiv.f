@@ -16,7 +16,7 @@ c-----------------------------------------------------------
 c-----------------------------------------------------------------------
 c   INPUT PARAMETERS:
 c
-c   nd:    in: integer(8)
+c   nd:    in: integer *8
 c             number of densities
 c   
 c   eps:   in: double precision
@@ -25,14 +25,14 @@ c
 c   zk:    in: double complex
 c               helmholtz parameter                
 c
-c   nsource in: integer(8)  
+c   nsource in: integer *8  
 c                number of sources
 c
 c   source  in: double precision (3,nsource)
 c                source(k,j) is the kth component of the jth
 c                source locations
 c
-c   ifcharge  in: integer(8)  
+c   ifcharge  in: integer *8  
 c             charge computation flag
 c              ifcharge = 1   =>  include charge contribution
 c                                     otherwise do not
@@ -40,29 +40,29 @@ c
 c   charge    in: double complex (nd,nsource) 
 c              charge strengths
 c
-c   ifdipole   in: integer(8)
+c   ifdipole   in: integer *8
 c              dipole computation flag
 c              ifdipole = 1   =>  include dipole contribution
 c                                     otherwise do not
 c
 c   dipvec   in: double precision (nd,3,nsource) 
 c              dipole orientation vectors
-c   iper    in: integer(8)
+c   iper    in: integer *8
 c             flag for periodic implmentations. Currently unused
-c   ifpgh   in: integer(8)
+c   ifpgh   in: integer *8
 c              flag for evaluating potential/gradient at the sources
 c              ifpgh = 1, only potential is evaluated
 c              ifpgh = 2, potential and gradients are evaluated
 c
 c
-c   ntarg  in: integer(8)  
+c   ntarg  in: integer *8  
 c                 number of targs 
 c
 c   targ  in: double precision (3,ntarg)
 c               targ(k,j) is the kth component of the jth
 c               targ location
 c
-c   ifpghtarg   in: integer(8)
+c   ifpghtarg   in: integer *8
 c              flag for evaluating potential/gradient at the targs
 c              ifpghtarg = 1, only potential is evaluated
 c              ifpghtarg = 2, potential and gradient are evaluated
@@ -88,7 +88,7 @@ c
 c   hesstarg    out: double complex(nd,6,ntarg)
 c                hessian at the target locations
 c
-c   ier         out: integer(8)
+c   ier         out: integer *8
 c                error flag
 c                ier = 0, for successful execution
 c                ier = 4, if failed to allocate workspace
@@ -101,17 +101,17 @@ c------------------------------------------------------------------
 
       implicit none
 
-      integer(8) nd
-      integer(8) iper
-      integer(8) ier
+      integer *8 nd
+      integer *8 iper
+      integer *8 ier
 
       double complex zk
       double precision eps
 
-      integer(8) ifcharge,ifdipole
-      integer(8) ifpgh,ifpghtarg
+      integer *8 ifcharge,ifdipole
+      integer *8 ifpgh,ifpghtarg
 
-      integer(8) nsource,ntarg
+      integer *8 nsource,ntarg
 
       double precision source(3,nsource),targ(3,ntarg)
       double complex charge(nd,nsource)
@@ -124,16 +124,16 @@ c------------------------------------------------------------------
       double precision timeinfo(6)
 
 c       Tree variables
-      integer(8) mhung,idivflag,ndiv,isep,nboxes,nbmax,nlevels
-      integer(8) nlmax
-      integer(8) mnbors
-      integer(8) ifunif,nlmin
-      integer(8) ipointer(8),ltree
-      integer(8), allocatable :: itree(:)
-      integer(8), allocatable :: isrcse(:,:),itargse(:,:),isrc(:)
-      integer(8), allocatable :: itarg(:)
-      integer(8), allocatable :: iexpcse(:,:)
-      integer(8) iexpc
+      integer *8 mhung,idivflag,ndiv,isep,nboxes,nbmax,nlevels
+      integer *8 nlmax
+      integer *8 mnbors
+      integer *8 ifunif,nlmin
+      integer *8 ipointer(8),ltree
+      integer *8, allocatable :: itree(:)
+      integer *8, allocatable :: isrcse(:,:),itargse(:,:),isrc(:)
+      integer *8, allocatable :: itarg(:)
+      integer *8, allocatable :: iexpcse(:,:)
+      integer *8 iexpc
       double precision, allocatable :: treecenters(:,:),boxsize(:)
       double precision b0,b0inv,b0inv2,b0inv3
       double complex zkfmm
@@ -154,13 +154,13 @@ c
 cc       temporary fmm arrays
 c
       double precision epsfmm
-      integer(8), allocatable :: nterms(:)
-      integer(8), allocatable :: iaddr(:,:)
+      integer *8, allocatable :: nterms(:)
+      integer *8, allocatable :: iaddr(:,:)
       double precision, allocatable :: scales(:)
       double precision, allocatable :: rmlexp(:)
 
-      integer(8) lmptemp,nmax
-      integer(8) lmptot
+      integer *8 lmptemp,nmax
+      integer *8 lmptot
       double precision, allocatable :: mptemp(:),mptemp2(:)
 
 c
@@ -169,12 +169,12 @@ c
       double precision expc(3),scjsort(1),radexp
       double complex texpssort(100)
       double precision expcsort(3),radssort(1)
-      integer(8) ntj,nexpc,nadd,ifnear
+      integer *8 ntj,nexpc,nadd,ifnear
 
 c
 cc        other temporary variables
 c
-      integer(8) i,iert,ifprint,ilev,idim
+      integer *8 i,iert,ifprint,ilev,idim
       double precision time1,time2,omp_get_wtime,second
 
        

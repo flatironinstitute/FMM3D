@@ -9,7 +9,7 @@ c-----------------------------------------------------------
 c-----------------------------------------------------------------------
 c   INPUT PARAMETERS:
 c
-c   nd:    in: integer(8)
+c   nd:    in: integer *8
 c             number of densities
 c   
 c   eps:   in: double precision
@@ -18,38 +18,38 @@ c
 c   zk:    in: double complex
 c               helmholtz parameter                
 c
-c   nsource in: integer(8)  
+c   nsource in: integer *8  
 c                number of sources
 c
 c   source  in: double precision (3,nsource)
 c                source(k,j) is the kth component of the jth
 c                source locations
 c
-c   ifcharge  in: integer(8)  
+c   ifcharge  in: integer *8  
 c             charge computation flag
 c              ifcharge = 1   =>  include charge contribution
 c                                     otherwise do not
 c 
-c   ifdipole   in: integer(8)
+c   ifdipole   in: integer *8
 c              dipole computation flag
 c              ifdipole = 1   =>  include dipole contribution
 c                                     otherwise do not
-c   iper    in: integer(8)
+c   iper    in: integer *8
 c             flag for periodic implmentations. Currently unused
-c   ifpgh   in: integer(8)
+c   ifpgh   in: integer *8
 c              flag for evaluating potential/gradient at the sources
 c              ifpgh = 1, only potential is evaluated
 c              ifpgh = 2, potential and gradients are evaluated
 c
 c
-c   ntarg  in: integer(8)  
+c   ntarg  in: integer *8  
 c                 number of targs 
 c
 c   targ  in: double precision (3,ntarg)
 c               targ(k,j) is the kth component of the jth
 c               targ location
 c
-c   ifpghtarg   in: integer(8)
+c   ifpghtarg   in: integer *8
 c              flag for evaluating potential/gradient at the targs
 c              ifpghtarg = 1, only potential is evaluated
 c              ifpghtarg = 2, potential and gradient are evaluated
@@ -64,59 +64,59 @@ c------------------------------------------------------------------
 
       implicit none
 
-      integer(8) nd
-      integer(8) iper
-      integer(8) ier
+      integer *8 nd
+      integer *8 iper
+      integer *8 ier
 
       double complex zk
       double precision eps
 
-      integer(8) ifcharge,ifdipole
-      integer(8) ifpgh,ifpghtarg
+      integer *8 ifcharge,ifdipole
+      integer *8 ifpgh,ifpghtarg
 
-      integer(8) nsource,ntarg
+      integer *8 nsource,ntarg
 
       double precision source(3,nsource),targ(3,ntarg)
       double precision rmem
 
 
 c       Tree variables
-      integer(8) mhung,idivflag,ndiv,isep,nboxes,nbmax,nlevels
-      integer(8) nlmax
-      integer(8) mnbors
-      integer(8) ifunif,nlmin
-      integer(8) ipointer(8),ltree,lmem8,bigint,bigint0
-      integer(8), allocatable :: itree(:)
-      integer(8), allocatable :: isrcse(:,:),itargse(:,:),isrc(:)
-      integer(8), allocatable :: itarg(:)
-      integer(8), allocatable :: iexpcse(:,:)
-      integer(8) iexpc
+      integer *8 mhung,idivflag,ndiv,isep,nboxes,nbmax,nlevels
+      integer *8 nlmax
+      integer *8 mnbors
+      integer *8 ifunif,nlmin
+      integer *8 ipointer(8),ltree,lmem8,bigint,bigint0
+      integer *8, allocatable :: itree(:)
+      integer *8, allocatable :: isrcse(:,:),itargse(:,:),isrc(:)
+      integer *8, allocatable :: itarg(:)
+      integer *8, allocatable :: iexpcse(:,:)
+      integer *8 iexpc
       double precision, allocatable :: treecenters(:,:),boxsize(:)
       double precision b0,b0inv,b0inv2,b0inv3
-      integer(8) mnlist1,mnlist2,mnlist3,mnlist4
+      integer *8 mnlist1,mnlist2,mnlist3,mnlist4
       
 
 
 c
 cc       temporary fmm arrays
 c
-      integer(8) ilevcutoff
+      integer *8 ilevcutoff
       double complex zkfmm,zk2
       double precision epsfmm
-      integer(8), allocatable :: nterms(:)
-      integer(8), allocatable :: iaddr(:,:)
+      integer *8, allocatable :: nterms(:)
+      integer *8, allocatable :: iaddr(:,:)
       double precision rz,zi,zkiupbound,zkrupbound
 
-      integer(8) lmptemp,nmax
-      integer(8) lmptot
+      integer *8 lmptemp,nmax
+      integer *8 lmptot
 c
 c    plane wave arrays
 c
-      integer(8) nlams,nphmax,ntmax,nthmax
+      integer *8 nlams,nphmax,ntmax,nthmax
       double complex, allocatable :: rlams(:),whts(:)
-      integer(8), allocatable :: nfourier(:), nphysical(:)
-      integer(8) nexptot, nexptotp, nn
-      integer(8) nexptot_max, nexptotp_max, nn_max
+      integer *8, allocatable :: nfourier(:), nphysical(:)
+      integer *8 nexptot, nexptotp, nn
+      integer *8 nexptot_max, nexptotp_max, nn_max
 
 
 c
@@ -125,15 +125,15 @@ c
       double precision expc(3),scjsort(1),radexp
       double complex texpssort(100)
       double precision expcsort(3),radssort(1)
-      integer(8) ntj,nexpc,nadd,ifnear
+      integer *8 ntj,nexpc,nadd,ifnear
 
 c
 cc        other temporary variables
 c
-      integer(8) i,iert,ifprint,ilev,idim
-      integer(8) nthread
+      integer *8 i,iert,ifprint,ilev,idim
+      integer *8 nthread
       double precision time1,time2,omp_get_wtime,second
-      integer(8) omp_get_max_threads,ntread
+      integer *8 omp_get_max_threads,ntread
       double precision done,pi
 
 

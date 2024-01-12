@@ -6,14 +6,14 @@ c  routines:
 c
 c  * cumsum:
 c      computes the cumulative sum (aka prefix
-c      sum or scan) of an array of integer(8)s. This code
+c      sum or scan) of an array of integer *8s. This code
 c      does some memory management and basic decision
 c      making around parallelism, which is hidden from
 c      the caller
 c      
 c     Advanced user interfaces:
 c******************************
-c     Note for developers: the prefix sum for integer(8)
+c     Note for developers: the prefix sum for integer *8
 c     arrays on a shared memory machine can be memory
 c     bound and performance changes significantly depending
 c     on the speed and size of the L1,L2, and L3 cache
@@ -51,27 +51,27 @@ c  cumsum_para in parallel
 c
 c  Input arguments:
 c   
-c    - n: integer(8)
+c    - n: integer *8
 c        length of a and b
-c    - a: integer(8)(n)
+c    - a: integer *8(n)
 c        the array to perform cumulative sum on
 c
 c  Output arguments:
 c 
-c    - b: integer(8)(n)
+c    - b: integer *8(n)
 c        the resulting cumulative sum array
 c--------------------------
 c
 c
       implicit none
-      integer(8), intent(in) :: n,a(n)
-      integer(8), intent(out) :: b(n)
+      integer *8, intent(in) :: n,a(n)
+      integer *8, intent(out) :: b(n)
       
-      integer(8) lend, nsmall, maxth, offset
+      integer *8 lend, nsmall, maxth, offset
       parameter (lend = 200)
-      integer(8) d(lend)
-      integer(8), allocatable :: d2(:)
-c$    integer(8) omp_get_max_threads
+      integer *8 d(lend)
+      integer *8, allocatable :: d2(:)
+c$    integer *8 omp_get_max_threads
       data nsmall / 10000 /
 
 c     if small problem, don't do parallel
@@ -119,23 +119,23 @@ c  This is the serial version of the code.
 c 
 c  Input arguments:
 c   
-c    - n: integer(8)
+c    - n: integer *8
 c        length of a and b
-c    - a: integer(8)(n)
+c    - a: integer *8(n)
 c        the array to perform cumulative sum on
 c
 c  Output arguments:
 c 
-c    - b: integer(8)(n)
+c    - b: integer *8(n)
 c        the resulting cumulative sum array
 c--------------------------
 c      
       
       implicit none
-      integer(8), intent(in) :: n,a(n)
-      integer(8), intent(out) :: b(n)
+      integer *8, intent(in) :: n,a(n)
+      integer *8, intent(out) :: b(n)
 
-      integer(8) i,isum
+      integer *8 i,isum
 
       isum = 0
 
@@ -162,19 +162,19 @@ c  This is the openmp parallel version of the code
 c
 c  Input arguments:
 c   
-c    - n: integer(8)
+c    - n: integer *8
 c        length of a and b
-c    - a: integer(8)(n)
+c    - a: integer *8(n)
 c        the array to perform cumulative sum on
-c    - nd: integer(8)
+c    - nd: integer *8
 c        length of the work array d, nd should be larger
 c        than the number of threads to be used
 c
 c  Output arguments:
 c
-c    - b: integer(8)(n)
+c    - b: integer *8(n)
 c        the resulting cumulative sum array
-c    - d: integer(8)(nd)
+c    - d: integer *8(nd)
 c        work array of length nd, nd should be larger than
 c        the number of threads to be used
 c--------------------------
@@ -190,12 +190,12 @@ c  region. Changing the schedule will make the code non
 c  conforming.
 c
       implicit none
-      integer(8), intent(in) :: n,a(n),nd
-      integer(8), intent(out) :: b(n),d(nd)
+      integer *8, intent(in) :: n,a(n),nd
+      integer *8, intent(out) :: b(n),d(nd)
 
-      integer(8) i,isum,offset
-      integer(8) nth, id, inext
-c$    integer(8) omp_get_thread_num, omp_get_num_threads      
+      integer *8 i,isum,offset
+      integer *8 nth, id, inext
+c$    integer *8 omp_get_thread_num, omp_get_num_threads      
 
 
 c$OMP PARALLEL DEFAULT(none) SHARED(a,b,n,d)

@@ -1,4 +1,5 @@
       implicit real *8 (a-h,o-z)
+      implicit integer *8 (i-n)
       double precision, allocatable :: source(:,:),targ(:,:)
       double complex zk,ier
       call prini(6,13)

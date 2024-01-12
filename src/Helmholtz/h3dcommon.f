@@ -97,7 +97,7 @@ c     hder    : the derivatives of the spherical Hankel functions
 c
 c-----------------------------------------------------------------------
       implicit real *8 (a-h,o-z)
-      integer(8) nterms,ifder
+      integer *8 nterms,ifder
       complex *16 hvec(0:*),hder(0:*)
       complex *16 zk2,z,zinv,ztmp,fhextra
 c
@@ -169,7 +169,7 @@ c     add mpole to mpole2
 c
 c----------------------------------------------------------------------
       implicit real *8 (a-h,o-z)
-      integer(8) nd,nterms
+      integer *8 nd,nterms
       complex *16 mpole(nd,0:nterms,-nterms:nterms)
       complex *16 mpole2(nd,0:nterms,-nterms:nterms)
 c
@@ -193,7 +193,7 @@ c     add mpole to mpole2
 c
 c----------------------------------------------------------------------
       implicit real *8 (a-h,o-z)
-      integer(8) nterms
+      integer *8 nterms
       complex *16 mpole(0:nterms,-nterms:nterms)
       complex *16 mpole2(0:ldc,-ldc:ldc)
 c

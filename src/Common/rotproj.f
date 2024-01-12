@@ -51,8 +51,8 @@ c
 c
 c
       implicit none
-      integer(8) idim,nd
-      integer(8) nquad,ier,m1,m2,nterms,lmp,lmpn, next235_cproj_vec
+      integer *8 idim,nd
+      integer *8 nquad,ier,m1,m2,nterms,lmp,lmpn, next235_cproj_vec
       double precision beta
       double complex mpole(nd,0:lmp,-lmp:lmp)
       double complex marray2(nd,0:lmpn,-lmpn:lmpn)
@@ -101,10 +101,10 @@ c
 c
       function next235_cproj_vec(base)
       implicit none
-      integer(8) next235_cproj_vec, numdiv
+      integer *8 next235_cproj_vec, numdiv
       real*8 base
 c ----------------------------------------------------------------------
-c     integer(8) function next235_cproj returns a multiple of 2, 3, and 5
+c     integer *8 function next235_cproj returns a multiple of 2, 3, and 5
 c
 c     next235_cproj = 2^p 3^q 5^r >= base  where p>=1, q>=0, r>=0
 ************************************************************************
@@ -157,7 +157,7 @@ C                    nquad equispaced nodes
 C
 C***********************************************************************
       implicit double precision (a-h,o-z)
-      integer(8) nquad,i,im1
+      integer *8 nquad,i,im1
       double precision cthetas(nquad)
       double precision sthetas(nquad)
       double precision cphis(nquad)
@@ -227,9 +227,9 @@ C                 of multipole terms of order j at ith quad node.
 C
 C***********************************************************************
       implicit double precision (a-h,o-z)
-      integer(8) nd,idim,lmp,nterms
-      integer(8) jj,i,jjr
-      integer(8) ndeg,morder, nquad,nquad2,nquad4
+      integer *8 nd,idim,lmp,nterms
+      integer *8 jj,i,jjr
+      integer *8 ndeg,morder, nquad,nquad2,nquad4
       double precision cthetas(nquad),cphis(nquad)
       double precision sthetas(nquad),sphis(nquad)
       double precision ynm(0:nterms,0:nterms)
@@ -412,9 +412,9 @@ C
 C
 C***********************************************************************
       implicit double precision (a-h,o-z)
-      integer(8) nquad, norder,nterms,lmpn,m2
-      integer(8) nd,idim
-      integer(8) nquad_4
+      integer *8 nquad, norder,nterms,lmpn,m2
+      integer *8 nd,idim
+      integer *8 nquad_4
       double complex ephi,ephi1,uval(nd,nquad,0:1)
       double complex uder(nd,nquad,0:1)
       double complex utheta,uphi,ztmp1,ztmp2

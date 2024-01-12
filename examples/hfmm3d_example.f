@@ -1,5 +1,5 @@
       implicit none
-      integer ns
+      integer *8 ns
       double precision, allocatable :: source(:,:)
       double complex, allocatable :: charge(:)
       double complex, allocatable :: pot(:)
@@ -7,7 +7,7 @@
 
       double precision eps
       double complex eye,zk
-      integer i,j,k,ier
+      integer *8 i,j,k,ier
       double precision hkrand
       
 

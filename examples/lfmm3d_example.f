@@ -1,5 +1,5 @@
       implicit none
-      integer ns
+      integer *8 ns
       double precision, allocatable :: source(:,:)
       double precision, allocatable :: charge(:)
       double precision, allocatable :: pot(:)
@@ -7,7 +7,7 @@
       double precision, allocatable :: hess(:,:)
 
       double precision eps
-      integer i,j,k,l,ier
+      integer *8 i,j,k,l,ier
       double precision hkrand,omp_get_wtime,t1,t2
       
 

@@ -63,11 +63,11 @@ c                 Total length of expansions array required
 c------------------------------------------------------------------
 
       implicit none
-      integer(8) nlevels,nterms(0:nlevels),nd
-      integer(8) iaddr(2,*), lmptot 
-      integer(8) laddr(2,0:nlevels)
-      integer(8) ibox,i,iptr
-      integer(8) istart,nn,itmp
+      integer *8 nlevels,nterms(0:nlevels),nd
+      integer *8 iaddr(2,*), lmptot 
+      integer *8 laddr(2,0:nlevels)
+      integer *8 ibox,i,iptr
+      integer *8 istart,nn,itmp
 
       istart = 1
       do i = 0,nlevels
@@ -105,9 +105,9 @@ c                                       i=1,2,\ldots n
 c
 
       implicit none
-      integer(8) ndim,idim,i,n
+      integer *8 ndim,idim,i,n
       double precision arr(ndim,*),arrsort(ndim,*)
-      integer(8) iarr(*)
+      integer *8 iarr(*)
 
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)      
       do i=1,n
@@ -135,9 +135,9 @@ c                                       i=1,2,\ldots n
 c
 
       implicit none
-      integer(8) i,idim,ndim,n
+      integer *8 i,idim,ndim,n
       double precision arr(ndim,*),arrsort(ndim,*)
-      integer(8) iarr(*)
+      integer *8 iarr(*)
 
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)      
       do i=1,n
@@ -166,9 +166,9 @@ c                                       i=1,2,\ldots n
 c
 
       implicit none
-      integer(8) ndim,idim,i,n
-      integer(8) arr(ndim,*),arrsort(ndim,*)
-      integer(8) iarr(*)
+      integer *8 ndim,idim,i,n
+      integer *8 arr(ndim,*),arrsort(ndim,*)
+      integer *8 iarr(*)
 
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)      
       do i=1,n
@@ -196,9 +196,9 @@ c                                       i=1,2,\ldots n
 c
 
       implicit none
-      integer(8) i,idim,ndim,n
-      integer(8) arr(ndim,*),arrsort(ndim,*)
-      integer(8) iarr(*)
+      integer *8 i,idim,ndim,n
+      integer *8 arr(ndim,*),arrsort(ndim,*)
+      integer *8 iarr(*)
 
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,idim)      
       do i=1,n
@@ -219,7 +219,7 @@ c
       subroutine drescale(n,a,r)
       implicit none
       real *8 a(n),r
-      integer(8) i,n
+      integer *8 i,n
 
 C$OMP PARALLEL DO DEFAULT(SHARED)
       do i=1,n
@@ -243,10 +243,10 @@ cc      this subroutine zeros out a collection of
 c       multipole expansions
 c
 c       input:
-c       nd     in:integer(8)
+c       nd     in:integer *8
 c              number of expansions
 c
-c       nterms in:integer(8)
+c       nterms in:integer *8
 c              number of terms in the expansions
 c
 c       inout:
@@ -254,7 +254,7 @@ c       mpole  inout: double complex(nd,0:nterms,-nterms:nterms)
 c              multipole expansions to be zeroed out
 c
       implicit none
-      integer(8) nd, i,j,nterms,idim
+      integer *8 nd, i,j,nterms,idim
       double complex mpole(nd,0:nterms,-nterms:nterms)
 
       do i=-nterms,nterms
@@ -277,10 +277,10 @@ c
 cc      this subroutine add mpolein to mpoleout 
 c
 c       input:
-c       nd     in:integer(8)
+c       nd     in:integer *8
 c              number of expansions
 c
-c       nterms in:integer(8)
+c       nterms in:integer *8
 c              number of terms in the expansions
 c
 c       mpolein in: complex *16(nd,0;nterms,-nterms:nterms)
@@ -291,7 +291,7 @@ c       mpoleout  inout: double complex(nd,0:nterms,-nterms:nterms)
 c              multipole expansions to which mpolein is to be added
 c
       implicit none
-      integer(8) nd, i,j,nterms,idim
+      integer *8 nd, i,j,nterms,idim
       double complex mpolein(nd,0:nterms,-nterms:nterms)
       double complex mpoleout(nd,0:nterms,-nterms:nterms)
 
@@ -313,10 +313,10 @@ cc      this subroutine rescales a multipole
 c       expansion where mpoleout(i,j) = mpolein(i,j)*rscalepow(i)
 c
 c       input
-c       nd      in: integer(8)
+c       nd      in: integer *8
 c               number of multipole expansions
 c
-c       nterms  in: integer(8)
+c       nterms  in: integer *8
 c               number of terms in the expansion
 c    
 c       rsc     in: double precision(0:nterms)
@@ -330,7 +330,7 @@ c       mpoleout  out: double complex(nd,0:nterms,-nterms:nterms)
 c                output multipole expansions
 c
       implicit none
-      integer(8) nd,nterms,i,j,idim
+      integer *8 nd,nterms,i,j,idim
       double precision rsc(0:nterms)
       double complex mpolein(nd,0:nterms,-nterms:nterms)
       double complex mpoleout(nd,0:nterms,-nterms:nterms)
@@ -393,7 +393,7 @@ c
 c
       subroutine getsqrtbinomialcoeffs(n,dc)
       implicit none
-      integer(8) i,j,n
+      integer *8 i,j,n
       real *8 dc(0:n,0:n)
       real *8, allocatable :: d(:,:)
       allocate(d(0:n,0:n))
@@ -428,7 +428,7 @@ c***********************************************************************
      1   dc)
 c***********************************************************************
       implicit double precision (a-h,o-z)
-      integer(8) nterms
+      integer *8 nterms
       double precision pi
       double precision carray(0:4*nterms,0:4*nterms)
       double precision dc(0:4*nterms,0:4*nterms)
@@ -458,7 +458,7 @@ c***********************************************************************
       subroutine zflip(nterms,mpole,mrotate)
 c***********************************************************************
       implicit double precision (a-h,o-z)
-      integer(8) nterms,l,m
+      integer *8 nterms,l,m
       double complex mpole(0:nterms,0:nterms)
       double complex mrotate(0:nterms,0:nterms)
 c
@@ -484,7 +484,7 @@ c     printing routine displays multipole moments one degree (l)
 c     at a time , from m = 0 to m = l  .
 c
 c***********************************************************************
-      integer(8) nterms,l,ll,m
+      integer *8 nterms,l,ll,m
       double complex mpole(0:nterms,0:nterms)
 c
       do 100 l = 0,ll
@@ -506,7 +506,7 @@ c     usage:
 c           computes the binomial coefficients c_nterms^n, where
 c           n=0,1,2,...,nterms.
 c     input:
-c           nterms: an integer(8) indicates the number we are going
+c           nterms: an integer *8 indicates the number we are going
 c                 to choose from.
 c     output:
 c           c:    an array consists of the binomial coefficients.
@@ -516,7 +516,7 @@ c
 c***********************************************************************
 c
       implicit double precision (a-h,o-z)
-      integer(8) nterms,n,m
+      integer *8 nterms,n,m
       double precision c(0:nterms,0:nterms)
       double precision sqc(0:nterms,0:nterms)
 c
@@ -544,7 +544,7 @@ c     usage:
 c           implement the fast version of rotation matrices from
 c           the recurrences formulas.
 c     input:
-c           nterms: an integer(8) indicates the dimension of d.
+c           nterms: an integer *8 indicates the dimension of d.
 c           sqc:    an array contains the square root of the
 c                   binormial coefficients.
 c           theta:  the rotate angle about the y-axis.
@@ -558,7 +558,7 @@ c
 c---------------declares of fstrtn--------------------------------------
 c
       implicit double precision (a-h,o-z)
-      integer(8) nterms,ij,im,imp
+      integer *8 nterms,ij,im,imp
 c
 ccc     parameter (nterms=8)
 ccc     double precision d(0:nterms,-nterms:nterms,-nterms:nterms)
@@ -679,7 +679,7 @@ c
 c-------------------------------------------------------
       subroutine geterrstr(ifcharge,ifdipole,ifpgh,ifpghtarg,str1,len1)
       implicit real *8 (a-h,o-z)
-      integer(8) ifcharge,ifdipole,ifpgh,ifpghtarg,len1
+      integer *8 ifcharge,ifdipole,ifpgh,ifpghtarg,len1
       character(len=*) str1
       character(len=13) str2
       character(len=14) str3

@@ -28,8 +28,8 @@ c
      $     ifcharge,charge,ifdipole,dipstr,dipvec,
      $     ifpot,pot,iffld,fld)
         implicit real *8 (a-h,o-z)
-        integer(8) ier,iprec,nsource,ifcharge,ifdipole
-        integer(8) ifpot,iffld,ifpottarg,iffldtarg,ntarg
+        integer *8 ier,iprec,nsource,ifcharge,ifdipole
+        integer *8 ifpot,iffld,ifpottarg,iffldtarg,ntarg
 c              
 c              
 c       Helmholtz FMM in R^3: evaluate all pairwise particle
@@ -97,8 +97,8 @@ c
 c       See below for explanation of calling sequence arguments.
 c  
 c
-        integer(8) ier,iprec,nsource,ifcharge,ifdipole
-        integer(8) ifpot,iffld,ntarg,ifpottarg,iffldtarg
+        integer *8 ier,iprec,nsource,ifcharge,ifdipole
+        integer *8 ifpot,iffld,ntarg,ifpottarg,iffldtarg
         dimension source(3,1)
         complex *16 charge(1),zk
         complex *16 dipstr(1)
@@ -161,7 +161,7 @@ c                  4 => tolerance =.5d-12
 c                  5 => tolerance =.5d-15
 c
 c       zk: complex *16: Helmholtz parameter
-c       nsource: integer(8):  number of sources
+c       nsource: integer *8:  number of sources
 c       source: real *8 (3,nsource):  source locations
 c       ifcharge:  charge computation flag
 c                  ifcharge = 1   =>  include charge contribution
@@ -175,7 +175,7 @@ c       dipvec: real *8 (3,nsource): dipole orientation vectors.
 c
 c       ifpot:  potential flag (1=compute potential, otherwise no)
 c       iffld:  field flag (1=compute field, otherwise no)
-c       ntarget: integer(8):  number of targets
+c       ntarget: integer *8:  number of targets
 c       target: real *8 (3,ntarget):  target locations
 c       ifpottarg:  target potential flag 
 c                   (1=compute potential, otherwise no)
@@ -191,20 +191,20 @@ c       fld: complex *16 (3,nsource): field (-gradient) at source locations
 c       pottarg: complex *16 (ntarget): potential at target locations 
 c       fldtarg: complex *16 (3,ntarget): field (-gradient) at target locations 
 c
-      integer(8) ier,iprec,nsource,iper
-      integer(8) ifcharge,ifdipole
+      integer *8 ier,iprec,nsource,iper
+      integer *8 ifcharge,ifdipole
       double complex zk
       double precision source(3,nsource)
       
       double complex charge(nsource),dipstr(nsource)
       double precision dipvec(3,nsource)
 
-      integer(8) ifpot,iffld,ifpottarg,iffldtarg
+      integer *8 ifpot,iffld,ifpottarg,iffldtarg
       double complex  pot(nsource),fld(3,nsource)
       double complex  pottarg(ntarg),fldtarg(3,ntarg)
 
-      integer(8) nd,ifpgh,ifpghtarg
-      integer(8) ntarg
+      integer *8 nd,ifpgh,ifpghtarg
+      integer *8 ntarg
       double precision targ(3,ntarg)
       double complex, allocatable :: dipvec_in(:,:)
       double complex, allocatable :: pottmp(:),gradtmp(:,:)
@@ -213,7 +213,7 @@ c
       double complex hess(6),hesstarg(6)
       double precision eps
 
-      integer(8) i
+      integer *8 i
      
 c     set fmm tolerance based on iprec flag.
 c
@@ -356,7 +356,7 @@ c
 c       INPUT PARAMETERS:
 c
 c       zk: complex *16: Helmholtz parameter
-c       ns: integer(8):  number of sources
+c       ns: integer *8:  number of sources
 c       source: real *8 (3,nsource):  source locations
 c       ifcharge:  charge computation flag
 c                  ifcharge = 1   =>  include charge contribution
@@ -370,7 +370,7 @@ c       dipvec: real *8 (3,nsource): dipole orientation vectors.
 c
 c       ifpot:  potential flag (1=compute potential, otherwise no)
 c       iffld:  field flag (1=compute field, otherwise no)
-c       nt: integer(8):  number of targets
+c       nt: integer *8:  number of targets
 c       targ: real *8 (3,nt):  target locations
 c       ifpottarg:  target potential flag 
 c                   (1=compute potential, otherwise no)
@@ -385,8 +385,8 @@ c       pottarg: complex *16 (nt): potential at target locations
 c       fldtarg: complex *16 (3,nt): field (-gradient) at target locations 
 c
       double complex zk
-      integer(8) ns,ifcharge,ifdipole,ifpot,iffld,nt
-      integer(8) ifpottarg,iffldtarg
+      integer *8 ns,ifcharge,ifdipole,ifpot,iffld,nt
+      integer *8 ifpottarg,iffldtarg
       double precision source(3,*), targ(3,*)
       double complex charge(*),dipstr(*)
       double precision dipvec(3,*)
@@ -398,8 +398,8 @@ c
       double complex, allocatable :: dipvec_in(:,:)
       double precision thresh
 
-      integer(8) i,j,nd,n
-      integer(8) ifpgh,ifpghtarg
+      integer *8 i,j,nd,n
+      integer *8 ifpgh,ifpghtarg
 
       double precision xmin,xmax,ymin,ymax,zmin,zmax
       double precision bsize,btmp,sizex,sizey,sizez

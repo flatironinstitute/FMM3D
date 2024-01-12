@@ -1,5 +1,6 @@
       implicit real *8 (a-h,o-z)
-      integer ns,nt
+      implicit integer *8 (i-n)
+      integer *8 ns,nt
       double complex zk
       double precision, allocatable :: sources(:,:),targs(:,:)
       double complex, allocatable :: h_current(:,:,:),e_charge(:,:)

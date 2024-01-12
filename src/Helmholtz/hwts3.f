@@ -3,7 +3,7 @@ c         Plane wave quadrature weights
 cc
         subroutine hwts3(ier,iprec,rk,cxs,cws,n)
         implicit real *8 (a-h,o-z)
-        integer(8) ier,iprec,n,nx,ny,iquad,ix,iy
+        integer *8 ier,iprec,n,nx,ny,iquad,ix,iy
         real *8 cx(1000),cy(1000)
         complex *16 cxs(*),cws(*)
         complex *16 rk,ima
@@ -150,7 +150,7 @@ c
 c
         subroutine hwts3iquad(ier,iprec,rk,iquad,cxs,cws,n)
         implicit real *8 (a-h,o-z)
-        integer(8) ier,iprec,n,iquad,k
+        integer *8 ier,iprec,n,iquad,k
         real *8 cx(1000),cy(1000)
         complex *16 cxs(*),cws(*)
         complex *16 rk,ima
@@ -286,7 +286,7 @@ c
 
         subroutine hwts3getd(ier,rk,nx,ny,cx,cy,iquad,ix,iy)
         implicit real *8 (a-h,o-z)
-        integer(8) ier,nx,ny,iquad,ix,iy,i
+        integer *8 ier,nx,ny,iquad,ix,iy,i
         complex *16 ima,rk
         dimension cx(*),cy(*)
         data ima/(0.0d0,1.0d0)/
@@ -334,7 +334,7 @@ c
 c
         subroutine hwts3p0(iquad,xs,ws,n)
         implicit real *8 (a-h,o-z)
-        integer(8) iquad,n,idomain,ierq
+        integer *8 iquad,n,idomain,ierq
         dimension xs(*), ws(*)
 c
 c       2 digit exponential representation tables for
@@ -4802,7 +4802,7 @@ c
 
         subroutine hwts3p1(iquad,xs,ws,n)
         implicit real *8 (a-h,o-z)
-        integer(8) iquad,n,idomain,ierq
+        integer *8 iquad,n,idomain,ierq
         dimension xs(*), ws(*)
 c
 c       3 digit exponential representation tables for
@@ -10092,7 +10092,7 @@ c
 c
         subroutine hwts3p2(iquad,xs,ws,n)
         implicit real *8 (a-h,o-z)
-        integer(8) iquad,n,idomain,ierq
+        integer *8 iquad,n,idomain,ierq
         dimension xs(*), ws(*)
 c
 c       6 digit exponential representation tables for
@@ -17883,7 +17883,7 @@ c
 c
         subroutine hwts3p3(iquad,xs,ws,n)
         implicit real *8 (a-h,o-z)
-        integer(8) iquad,n,idomain,ierq
+        integer *8 iquad,n,idomain,ierq
         dimension xs(*), ws(*)
 c
 c       9 digit exponential representation tables for
@@ -27875,7 +27875,7 @@ c
 c
         subroutine hwts3p4(iquad,xs,ws,n)
         implicit real *8 (a-h,o-z)
-        integer(8) iquad,n,idomain,ierq
+        integer *8 iquad,n,idomain,ierq
         dimension xs(*), ws(*)
 c
 c       12 digit exponential representation tables for

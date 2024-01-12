@@ -1,5 +1,5 @@
       implicit real *8 (a-h,o-z)
-      integer(8) i1,i2
+      integer *8 i1,i2
 
       done = 1
       pi = atan(done)*4
@@ -26,17 +26,17 @@
       subroutine test_lfmm3d_scale(rsc,isuccess)
       
       implicit none
-      integer(8) ns
+      integer *8 ns
       double precision, allocatable :: source(:,:)
       double precision, allocatable :: charge(:),dipvec(:,:)
       double precision, allocatable :: pot(:),potex(:)
       double precision, allocatable :: grad(:,:),gradex(:,:)
 
       double precision eps,rsc
-      integer(8) i,j,k,ntest,ier
+      integer *8 i,j,k,ntest,ier
       double precision hkrand,thresh,erra,ra
-      integer(8) isuccess
-      integer(8) ione
+      integer *8 isuccess
+      integer *8 ione
       
 
 c
