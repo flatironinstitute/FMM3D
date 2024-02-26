@@ -4530,7 +4530,8 @@ c
 c
 	subroutine numthetasix(numtets,nlams)
         implicit none
-	integer numtets(nlams),nlams 
+	integer nlams 
+	integer numtets(nlams)
 c
 c       This routine returns the number of Fourier modes needed in the
 c       phi integral for each of the discrete lambda values given

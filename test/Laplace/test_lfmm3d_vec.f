@@ -989,6 +989,7 @@ c
       double complex zk
       integer ns,nt,ifcharge,ifdipole,ifpgh,ifpghtarg
       
+      integer nd
       double precision source(3,*),targ(3,*)
       double precision dipvec(nd,3,*)
       double precision charge(nd,*)
@@ -997,7 +998,7 @@ c
       double precision gradtarg(nd,3,*)
       double precision hess(nd,6,*),hesstarg(nd,6,*)
 
-      integer i,j,ntest,nd,l,idim
+      integer i,j,ntest,l,idim
 
       double precision err,ra
       

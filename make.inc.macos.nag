@@ -1,0 +1,30 @@
+# make.inc for NAG Fortran compiler
+# Online documentation: https://www.nag.com/nagware/np/r71_doc/manual/compiler_2_4.html#OPTIONS
+
+FC=nagfor
+
+# The path of libraries by NAG compiler
+LIB_NAG = /usr/local/lib/NAG_Fortran
+
+# Brief descriptions of specified options below:
+# -PIC: produce position-independent code
+# -O2: optimization at a normal level
+# -Ounroll=2: the depth of loo-unrolling
+# -f90_sign: use the Fortran 77/90 version of the SIGN intrinsic instead of the Fortran 95 one 
+# -dcfuns: enable recognition of non-standard double precision complex intrinsic functions.  
+# -dusty: allows the compilation and execution of legacy software.
+# -w=x77: suppresses extension warnings for obsolete but common extensions to Fortran 77.
+# -w=unreffed: suppresses warning messages about variables set but never referenced.
+# -w=unused: suppresses warning messages about unused entities. 
+# -ieee=full: set the mode of IEEE arithmetic operation according to full mode.
+
+# Main compile command for NAG Fortran compiler
+FFLAGS = -PIC -O2 -Ounroll=1 -f90_sign -dcfuns -dusty -w=obs -w=x77 -w=unreffed -w=unused -ieee=full 
+
+# Flags overwritten in makefile
+OMPFLAGS = -openmp
+# OMPLIBS = -lf71omp64 -L$(LIB_NAG)
+OMPLIBS = -lf71omp64 -lf71rts -L$(LIB_NAG)
+LIBS = -lf71rts -L$(LIB_NAG)
+CLIBS = -lm -ldl -L$(LIB_NAG)
+FFLAGS_DYN = -PIC

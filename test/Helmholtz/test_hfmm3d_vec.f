@@ -701,6 +701,7 @@ c
       double complex zk
       integer ns,nt,ifcharge,ifdipole,ifpgh,ifpghtarg
       
+      integer nd
       double precision source(3,*),targ(3,*)
       double complex dipvec(nd,3,*)
       double complex charge(nd,*)
@@ -708,7 +709,7 @@ c
       double complex pot(nd,*),pottarg(nd,*),grad(nd,3,*),
      1    gradtarg(nd,3,*)
 
-      integer i,j,ntest,nd,idim
+      integer i,j,ntest,idim
 
       double precision err,ra
       

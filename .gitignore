@@ -22,3 +22,4 @@ lib/*
 *.log
 *.sh
 sbatch*
+make.inc

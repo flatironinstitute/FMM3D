@@ -427,7 +427,7 @@ c
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
         do i=1,ns
           charge_in(1,i) = real(charge(i))
-          charge_in(2,i) = imag(charge(i))
+          charge_in(2,i) = dimag(charge(i))
         enddo
 C$OMP END PARALLEL DO
         if(ifdipole.ne.1) allocate(dipvec_in(2,3,1))
@@ -439,11 +439,11 @@ C$OMP END PARALLEL DO
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i)
         do i=1,ns
           dipvec_in(1,1,i) = real(dipstr(i))*dipvec(1,i)
-          dipvec_in(2,1,i) = imag(dipstr(i))*dipvec(1,i)
+          dipvec_in(2,1,i) = dimag(dipstr(i))*dipvec(1,i)
           dipvec_in(1,2,i) = real(dipstr(i))*dipvec(2,i)
-          dipvec_in(2,2,i) = imag(dipstr(i))*dipvec(2,i)
+          dipvec_in(2,2,i) = dimag(dipstr(i))*dipvec(2,i)
           dipvec_in(1,3,i) = real(dipstr(i))*dipvec(3,i)
-          dipvec_in(2,3,i) = imag(dipstr(i))*dipvec(3,i)
+          dipvec_in(2,3,i) = dimag(dipstr(i))*dipvec(3,i)
         enddo
 C$OMP END PARALLEL DO
         if(ifcharge.ne.1) allocate(charge_in(2,1))

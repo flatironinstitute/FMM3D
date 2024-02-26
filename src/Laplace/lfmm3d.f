@@ -572,6 +572,7 @@ c
       double complex tsort(nd,0:ntj,-ntj:ntj,nexpc)
       double precision scjsort(nexpc)
 
+      integer nboxes
       integer *8 iaddr(2,nboxes), lmptot
       integer lmptemp
       double precision rmlexp(lmptot)
@@ -588,7 +589,6 @@ c
       integer nterms(0:nlevels)
       integer *8 ipointer(8),ltree
       integer itree(ltree)
-      integer nboxes
       double precision rscales(0:nlevels)
       double precision boxsize(0:nlevels)
       integer isrcse(2,nboxes),itargse(2,nboxes),iexpcse(2,nboxes)
