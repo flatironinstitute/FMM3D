@@ -1,8 +1,6 @@
 # make.inc for NAG Fortran compiler
 # Online documentation: https://www.nag.com/nagware/np/r71_doc/manual/compiler_2_4.html#OPTIONS
 
-CC=gcc-9
-CXX=g++-9
 FC=nagfor
 
 # The path of libraries by NAG compiler

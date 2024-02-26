@@ -369,8 +369,7 @@ c
         n = 0
         iquadtype = 0
 c
-c        INCLUDE 'hwts_3d_iprec0.txt'
-        INCLUDE 'src/Helmholtz/hwts_3d_iprec0.txt'
+        INCLUDE 'hwts_3d_iprec0.txt'
 c
         return
         end
@@ -386,8 +385,7 @@ c
         n = 0
         iquadtype = 0
 c
-c        INCLUDE 'hwts_3d_iprec1.txt'
-        INCLUDE 'src/Helmholtz/hwts_3d_iprec1.txt'
+        INCLUDE 'hwts_3d_iprec1.txt'
 c
         return
         end
@@ -403,8 +401,7 @@ c
         n = 0
         iquadtype = 0
 c
-c        INCLUDE 'hwts_3d_iprec2.txt'
-        INCLUDE 'src/Helmholtz/hwts_3d_iprec2.txt'
+        INCLUDE 'hwts_3d_iprec2.txt'
 c
         return
         end        
@@ -420,8 +417,7 @@ c
         n = 0
         iquadtype = 0
 c
-c        INCLUDE 'hwts_3d_iprec3.txt'
-        INCLUDE 'src/Helmholtz/hwts_3d_iprec3.txt'
+        INCLUDE 'hwts_3d_iprec3.txt'
 c
         return
         end
@@ -437,8 +433,7 @@ c
         n = 0
         iquadtype = 0
 c
-c        INCLUDE 'hwts_3d_iprec4.txt'
-        INCLUDE 'src/Helmholtz/hwts_3d_iprec4.txt'
+        INCLUDE 'hwts_3d_iprec4.txt'
 c
         return
         end

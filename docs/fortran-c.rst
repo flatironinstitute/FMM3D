@@ -355,7 +355,7 @@ and the associated pressure
 Here $x_{j}$ are the source locations,
 $\sigma_{j}$ are the Stokeslet densities,
 $\nu_{j}$ are the stresslet orientation vectors, $\mu_{j}$ 
-are the stresslet densities, and rhw xollwxrion of $x$ 
+are the stresslet densities, and the locations $x$ 
 at which the velocity and its gradient are evaluated are referred to
 as the evaluation points.
 
