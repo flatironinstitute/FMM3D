@@ -1,51 +1,17 @@
 function [U] = em3ddir(zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
+% EM3DDIR    Slow direct Maxwell kernel sums (reference for EMFMM3D).
 %
+% U = em3ddir(zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
 %
-%  This subroutine computes
-%      E = curl S_{k}[h_current] + S_{k}[e_current] + grad S_{k}[e_charge]  -- (1)
-%  using the vector Helmholtz fmm.
-%  The subroutine also computes divE, curlE
-%  with appropriate flags
-%  Remark: the subroutine uses a stabilized representation
-%  for computing the divergence by using integration by parts
-%  wherever possible. If the divergence is not requested, then the
-%  helmholtz fmm is called with 3*nd densities, while if the divergence
-%  is requested, then the helmholtz fmm is calld with 4*nd densities
-% 
-%  Args:
+%  Maxwell direct evaluation in R^3: evaluate all pairwise particle
+%  interactions with targets. This is the slow O(N^2) direct code used
+%  as a reference for testing the fast code emfmm3d.
 %
-%  -  zk: complex
-%        Helmholtz parameter, k
-%  -  srcinfo: structure
-%        structure containing sourceinfo
-%     
-%     *  srcinfo.sources: double(3,n)    
-%           source locations, $x_{j}$
-%     *  srcinfo.nd: integer
-%           number of charge/dipole vectors (optional, 
-%           default - nd = 1)
-%     *  srcinfo.h_current: complex(nd,3,n) 
-%           a vector source (optional,
-%           default - term corresponding to h_current dropped) 
-%     *  srcinfo.e_current: complex(nd,3,n) 
-%           b vector source (optional,
-%           default - term corresponding to e_current dropped) 
-%     *  srcinfo.e_charge: complex(nd,n) 
-%           e_charge source (optional, 
-%           default - term corresponding to e_charge dropped)
-%  -  targ: double(3,nt)
-%        target locations, $t_{i}$
-%  -  ifE: integer
-%        E is returned at the target locations if ifE = 1
-%  -  ifcurlE: integer
-%        curl E is returned at the target locations if ifcurlE = 1
-%  -  ifdivE: integer
-%        div E is returned at the target locations if ifdivE = 1
-%  Returns:
-%  
-%  -  U.E: E field defined in (1) above at target locations if requested
-%  -  U.curlE: curl of E field at target locations if requested
-%  -  U.divE: divergence of E at target locations if requested
+%  Kernel definitions, input and outputs arguments are identical to
+%  emfmm3d (see that function for all definitions), except that the first
+%  argument (eps) is absent.
+%
+%  See also: EMFMM3D
 
   if(nargin<4)
     return;

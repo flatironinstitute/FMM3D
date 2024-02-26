@@ -1,6 +1,3 @@
-c Copyright (C) 2020-2021: The Simons Fonudation, Inc., Travis Askham,
-c Michael O'Neil, and Felipe Vico. 
-c
 c  This file contains the following user callable
 c  routines:
 c

@@ -47,7 +47,6 @@ srcinfo.sources = rand(3,ns);
 srcinfo.stoklet = rand(nd,3,ns);
 srcinfo.strslet = rand(nd,3,ns);
 srcinfo.strsvec = rand(nd,3,ns);
-srcinfo.dipoles = rand(nd,3,ns);
 
 targ = rand(3,nt);
 eps = 1e-5;

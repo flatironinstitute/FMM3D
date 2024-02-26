@@ -196,14 +196,14 @@ c
         do n=1,nterms
           ztmp1 = fhs(n)*ynm(n,0)
           do idim=1,nd
-   	        pot(idim,itarg)=pot(idim,itarg)+mpole(idim,n,0)*ztmp1
+            pot(idim,itarg)=pot(idim,itarg)+mpole(idim,n,0)*ztmp1
           enddo
           do m=1,n
-	        ztmp1=fhs(n)*ynm(n,m)
+            ztmp1=fhs(n)*ynm(n,m)
             do idim=1,nd
-	          ztmp2 = mpole(idim,n,m)*ephi(m) 
-	          ztmp3 = mpole(idim,n,-m)*ephi(-m)
-	          ztmpsum = ztmp2+ztmp3
+              ztmp2 = mpole(idim,n,m)*ephi(m) 
+              ztmp3 = mpole(idim,n,-m)*ephi(-m)
+              ztmpsum = ztmp2+ztmp3
               pot(idim,itarg)=pot(idim,itarg)+ztmp1*ztmpsum
             enddo
           enddo
@@ -372,24 +372,24 @@ c
           ztmp3 = -fhs(n)*ynmd(n,0)*stheta
           do idim=1,nd
             pot(idim,itarg)=pot(idim,itarg)+mpole(idim,n,0)*ztmp1
-	        ur(idim) = ur(idim) + mpole(idim,n,0)*ztmp2
+            ur(idim) = ur(idim) + mpole(idim,n,0)*ztmp2
             utheta(idim) = utheta(idim) + mpole(idim,n,0)*ztmp3
           enddo
           do m=1,n
-	        ztmp1=fhs(n)*ynm(n,m)*stheta
+            ztmp1=fhs(n)*ynm(n,m)*stheta
             ztmp4 = fhder(n)*ynm(n,m)*stheta
             ztmp5 = -fhs(n)*ynmd(n,m)
             ztmp6 = eye*m*fhs(n)*ynm(n,m)
 
             do idim=1,nd
               ztmp2 = mpole(idim,n,m)*ephi(m) 
-	          ztmp3 = mpole(idim,n,-m)*ephi(-m)
-	          ztmpsum = ztmp2+ztmp3
-	          pot(idim,itarg)=pot(idim,itarg)+ztmp1*ztmpsum
+              ztmp3 = mpole(idim,n,-m)*ephi(-m)
+              ztmpsum = ztmp2+ztmp3
+              pot(idim,itarg)=pot(idim,itarg)+ztmp1*ztmpsum
               ur(idim) = ur(idim) + ztmp4*ztmpsum
-	          utheta(idim) = utheta(idim) + ztmp5*ztmpsum
-	          ztmpsum = ztmp2 - ztmp3
-	          uphi(idim) = uphi(idim) + ztmp6*ztmpsum
+              utheta(idim) = utheta(idim) + ztmp5*ztmpsum
+              ztmpsum = ztmp2 - ztmp3
+              uphi(idim) = uphi(idim) + ztmp6*ztmpsum
             enddo
           enddo
         enddo

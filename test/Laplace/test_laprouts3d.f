@@ -38,9 +38,11 @@ c
       complex *16, allocatable :: mpole1(:,:,:),mpole2(:,:,:)
       complex *16, allocatable :: locexp1(:,:,:),locexp2(:,:,:)
       real *8, allocatable :: charge(:,:),dipvec(:,:,:)
-      real *8 wlege(100000),errs(3,5),err_exp(5)
-      real *8 scarray_loc(100000)
-      real *8 scarray_mp(100000)
+      real *8  errs(3,5),err_exp(5)
+      real *8, allocatable :: scarray_loc(:),scarray_mp(:)
+      real *8, allocatable :: scarray_loc2(:),scarray_mp2(:)
+      real *8, allocatable :: scarray_loc3(:),scarray_mp3(:)
+      real *8, allocatable :: wlege(:)
       integer ipass(5)
       complex *16 eye
 c
@@ -51,6 +53,13 @@ c
       call prini(6,13)
       write(*,*) "=========================================="
       write(*,*) "Testing suite for laprouts3d"
+
+      lw7 = 200000
+      ll = lw7
+      allocate(wlege(ll))
+      allocate(scarray_mp(ll),scarray_loc(ll))
+      allocate(scarray_mp2(ll),scarray_loc2(ll))
+      allocate(scarray_mp3(ll),scarray_loc3(ll))
 
       open(unit=33,file='print_testres.txt',access='append')
 
@@ -164,6 +173,14 @@ c
       call l3dterms(eps, nterms2)
       call l3dterms(eps, nterms3)
 
+      nterms2 = nterms - 5
+      nterms3 = nterms + 10
+
+      nmax = max(nterms,nterms2)
+      nmax = max(nmax,nterms3) 
+
+      print *, "nmax=",nmax
+
 
       rconv1 = 1.0d0/sqrt(3.0d0)
       rconv2 = sqrt(3.0d0)/2.0d0
@@ -171,11 +188,16 @@ c
 
 
       nlege = 100
-      lw7 = 100000
       call ylgndrfwini(nlege,wlege,lw7,lused7)
+
       call l3dmpevalhessdini(nterms,scarray_mp)
       call l3dtaevalhessdini(nterms,scarray_loc)
 
+      call l3dmpevalhessdini(nterms2,scarray_mp2)
+      call l3dtaevalhessdini(nterms2,scarray_loc2)
+
+      call l3dmpevalhessdini(nterms3,scarray_mp3)
+      call l3dtaevalhessdini(nterms3,scarray_loc3)
 c
 c
 c       create multipole expansion:
@@ -245,9 +267,10 @@ c
         enddo
       enddo
 
-      call l3dmpevalh(nd,rscale2,c1,mpole2,nterms,ztrgs,nt,pots,
-     1      flds,hesss,thresh,scarray_mp)
-      err_exp(2) = 10*max(rconv2**(nterms),eps)
+      call l3dmpevalh(nd,rscale2,c1,mpole2,nterms2,ztrgs,nt,pots,
+     1      flds,hesss,thresh,scarray_mp2)
+      nn2 = min(nterms,nterms2)
+      err_exp(2) = 10*max(rconv2**(nn2),eps)
       write(*,'(a,e11.4)') 'Testing mpmp, expected error='
      1   ,err_exp(2)
       call errprinth(nd,nt,pots,opots,flds,oflds,hesss,ohesss,
@@ -282,9 +305,10 @@ c
       enddo
 
       call l3dtaevalh(nd,rscale2,c2,locexp2,nterms2,ztrgs,nt,
-     1      pots,flds,hesss,scarray_loc)
+     1      pots,flds,hesss,scarray_loc2)
+      nn2 = min(nterms,nterms2)
 
-      err_exp(3) = 10*max(rconv3**(nterms),eps)
+      err_exp(3) = 10*max(rconv3**(nn2),eps)
       write(*,'(a,e11.4)') 'Testing mploc, expected error='
      1   ,err_exp(3)
       call errprinth(nd,nt,pots,opots,flds,oflds,hesss,ohesss,
@@ -320,10 +344,10 @@ cc    shift local
       enddo
 
       call l3dtaevalh(nd,rscale1,c3,locexp1,nterms3,ztrgs,nt,
-     1      pots,flds,hesss,scarray_loc)
+     1      pots,flds,hesss,scarray_loc3)
 
-
-      err_exp(4) = 10*max(rconv3**(nterms),eps)
+      nn2 = min(nterms,nterms3)
+      err_exp(4) = 10*max(rconv3**(nn2),eps)
       write(*,'(a,e11.4)') 'Testing locloc, expected error='
      1   ,err_exp(4)
 
@@ -360,9 +384,9 @@ c    create local exp from sources
       enddo
 
       call l3dtaevalh(nd,rscale1,c3,locexp1,nterms3,ztrgs,nt,
-     1      pots,flds,hesss,scarray_loc)
-
-      err_exp(5) = 10*max(rconv3**(nterms),eps)
+     1      pots,flds,hesss,scarray_loc3)
+      nn = min(nterms,nterms3)
+      err_exp(5) = 10*max(rconv3**(nn),eps)
       write(*,'(a,e11.4)') 'Testing formta and taeval, expected error='
      1   ,err_exp(5)
       call errprinth(nd,nt,pots,opots,flds,oflds,hesss,ohesss,

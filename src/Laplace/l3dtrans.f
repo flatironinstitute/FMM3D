@@ -122,10 +122,10 @@ c
 
       if(nterms2.ge.30) then
         call rotviaproj(nd,-theta,nterms2,nterms2,nterms2,marray1,
-     1        nterms2,marray,ldc)
+     1        ldc,marray,ldc)
       else
         call rotviarecur(nd,-theta,nterms2,nterms2,nterms2,marray1,
-     1        nterms2,marray,ldc)
+     1        ldc,marray,ldc)
       endif
 c
 c
@@ -151,7 +151,7 @@ c**********************************************************************
 c***********************************************************************
 c
 c     This subroutine converts a multipole expansion centered at the 
-c     origin to a multipole expansion centered at (0,0,zhift).
+c     origin to a multipole expansion centered at (0,0,zshift).
 c     The expansion is rescaled to that of the shifted expansion.
 c
 c     INPUT:
@@ -208,9 +208,9 @@ c
         l0 = max(0,jnew-nterms)
         do knew = -jnew,jnew
           do idim=1,nd
-	        mpolen(idim,jnew,knew) = 0.0d0
+            mpolen(idim,jnew,knew) = 0.0d0
           enddo
-	      do l=l0,jnew-iabs(knew)
+          do l=l0,jnew-iabs(knew)
             do idim=1,nd
               mpolen(idim,jnew,knew)=mpolen(idim,jnew,knew)+
      1              mpole(idim,jnew-l,knew)*fr(l)*dc(jnew-knew,l)*
@@ -330,7 +330,7 @@ c      the Z-axis.
 c
       rshift = d
       call l3dmploczshift(nd,marray,sc1,ldc,nterms,marray1,
-     1      sc2,nterms2,nterms2,rshift,dc,lca)
+     1      sc2,ldc,nterms2,rshift,dc,lca)
 
 c
 c     reverse THETA rotation. 
@@ -423,7 +423,7 @@ c
       do jnew = 0,nterms2
         do knew = -jnew,jnew
           do idim=1,nd
-   	        local(idim,jnew,knew) = 0.0d0
+            local(idim,jnew,knew) = 0.0d0
           enddo
           kk  =iabs(knew)
           msign = (-1)**(jnew+knew)
@@ -556,7 +556,7 @@ c      the Z-axis.
 c
       rshift = d
        call l3dlocloczshift(nd,sc1,marray,ldc,nterms,sc2,marray1,
-     1           nterms2,nterms2,rshift,dc,lda)
+     1           ldc,nterms2,rshift,dc,lda)
 c
 c     reverse THETA rotation. 
 c     I.e. rotation of -THETA radians about the Yprime axis.
@@ -639,15 +639,21 @@ c
 
       d = scale2/scale
       rscpow(1) = d
-      do l=2,nterms
+      do l=2,nterms2
         rscpow(l) = rscpow(l-1)*d
       enddo
 
       do jnew = 0,nterms2
         do knew = -jnew,jnew
-          do idim=1,nd
-            local(idim,jnew,knew) = locold(idim,jnew,knew)
-          enddo
+          if(jnew.le.nterms) then
+            do idim=1,nd
+              local(idim,jnew,knew) = locold(idim,jnew,knew)
+            enddo
+          else
+            do idim=1,nd
+              local(idim,jnew,knew) = 0.0d0 
+            enddo
+          endif
 
           do l=1,nterms-jnew
             ll = l+jnew

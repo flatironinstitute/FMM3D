@@ -1,40 +1,77 @@
 function [U] = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
+% STFMM3D    FMM in 3D for Stokes (viscous fluid hydrodynamic) kernels.
 %
+% U = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
 %
-%  Stokes FMM in R^{3}: evaluate all pairwise particle
-%  interactions (ignoring self-interactions) and
-%  interactions with targs.
+%  Stokes FMM in R^3: evaluate all pairwise particle
+%  interactions (ignoring self-interactions) and, possibly,
+%  interactions with targets, to precision eps, using the fast
+%  multipole method (linear scaling in number of points).
+%      
+%  This routine computes the sum for the velocity vector,
 %
-%  This routine computes sums of the form
+%       u_i(x) = sum_m G_{ij}(x,y^{(m)}) sigma^{(m)}_j
+%                + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k
 %
-%  u(x) = sum_m G_{ij}(x,y^{(m)}) sigma^{(m)}_j
-%       + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k
-%
-%  where sigma^{(m)} is the Stokeslet charge, mu^{(m)} is the
-%  stresslet charge, and nu^{(m)} is the stresslet orientation
+%  for each requested evaluation point x and i=1,2,3,
+%  where sigma^{(m)} is the Stokeslet force, mu^{(m)} is the
+%  stresslet strength, and nu^{(m)} is the stresslet orientation
 %  (note that each of these is a 3 vector per source point y^{(m)}).
-%  For x a source point, the self-interaction in the sum is omitted.
+%  The stokeslet kernel G and stresslet kernel T are defined below.
+%  Repeated indices are taken as summed over 1,2,3, ie, Einstein
+%  convention.
 %
-%  Optionally, the associated pressure p(x) and gradient grad u(x)
-%  are returned
+%  There are two options for the evaluation points $x$. These
+%  can be the sources themselves (ifppreg > 0; see below) or other
+%  target points of interest (ifppregtarg > 0; see below). Both options
+%  can be selected in one call.
+%  When $x=y_{(m)}$, the term corresponding to $y^{(m)}$ is dropped
+%  from the sum.
 %
-%    p(x) = sum_m P_j(x,y^m) sigma^{(m)}_j
-%         + sum_m T_{ijk}(x,y^{(m)}) PI_{jk} mu^{(m)}_j nu^{(m)}_k
+%  Optionally, the associated pressure p(x) and 3x3 gradient tensor
+%  grad u(x) are returned,
 %
-%    grad u(x) = grad[sum_m G_{ij}(x,y^m) sigma^{(m)}_j
-%              + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k]
+%      p(x) = sum_m P_j(x,y^m) sigma^{(m)}_j
+%          + sum_m PI_{jk}(x,y{(m)}) mu^{(m)}_j nu^{(m)}_k
+%
+%      grad_l u_i(x) = grad_l [sum_m G_{ij}(x,y^m) sigma^{(m)}_j
+%                + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k]
+%
+%  where the pressure stokeslet P and pressure stresslet PI are defined
+%  below. Note that these two may be combined to get the stress tensor.
+%
+%  We use the following as the kernel definitions, noting that:
+%     1) The dynamic viscosity (mu) is assumed to be 1.
+%     2) All kernels are a factor 4pi larger than standard definitions
+%        (this is for historical reasons).
+%     Thus, in general, divide the velocity (potential or grad) outputs
+%     by 4pi.mu, and pressure by 4pi, to recover standard definitions.
+%
+%  For a source y and target x, let r_i = x_i-y_i     (note sign)
+%  and let r = sqrt(r_1^2 + r_2^2 + r_3^2)
+%
+%  The Stokeslet, G_{ij}, and its associated pressure tensor, P_j,
+%  we define as
+%
+%     G_{ij}(x,y) = ( delta_{ij}/r  + r_i r_j / r^3 )/2
+%     P_j(x,y) = r_j/r^3
+%
+%  The (Type I) stresslet, T_{ijk}, and its associated pressure
+%  tensor, PI_{jk}, we define as
+%   
+%     T_{ijk}(x,y) = -3 r_i r_j r_k/ r^5
+%     PI_{jk}(x,y) = -2 delta_{jk}/r^3 + 6 r_j r_k/r^5      
 % 
 %  Args:
 %
 %  -  eps: double   
 %        precision requested
 %  -  srcinfo: structure
-%        structure containing sourceinfo
-%     
+%        structure containing the following info about sources:
 %     *  srcinfo.sources: double(3,n)    
 %           source locations, $x_{j}$
 %     *  srcinfo.nd: integer
-%           number of densities (optional, 
+%           number of density vectors for the same points (optional, 
 %           default - nd = 1)
 %     *  srcinfo.stoklet: double(nd,3,n) 
 %           Stokeslet charge strengths, $sigma_{j}$ (optional, 
@@ -50,14 +87,14 @@ function [U] = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
 %        | potential at sources evaluated if ifppreg = 1
 %        | potential and pressure at sources evaluated if ifppreg=2
 %        | potential, pressure and gradient at sources evaluated if ifppreg=3
-%
 %  -  targ: double(3,nt)
 %        target locations, $t_{i}$ (optional)
 %  -  ifppregtarg: integer
 %        | target eval flag (optional)
 %        | potential at targets evaluated if ifppregtarg = 1
 %        | potential and pressure at targets evaluated if ifppregtarg = 2 
-%        | potential, pressure and gradient at targets evaluated if ifppregtarg = 3
+%        | potential, pressure and gradient at targets evaluated if
+%        |   ifppregtarg = 3
 %  
 %  Returns:
 %  
@@ -67,6 +104,8 @@ function [U] = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
 %  -  U.pottarg: velocity at target locations if requested
 %  -  U.pretarg: pressure at target locations if requested
 %  -  U.gradtarg: gradient of velocity at target locations if requested
+%
+% See also: ST3DDIR
 
   sources = srcinfo.sources;
   [m,ns] = size(sources);

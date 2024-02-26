@@ -1,13 +1,17 @@
-Authors of FMM3D:
+FMM3D development team
 
-Zydrunas Gimbutas 
+Travis Askham
+Alex Barnett
+Zydrunas Gimbutas
 Leslie Greengard <lgreengard@flatironinstitute.org>
 Libin Lu
+Jeremy Magland 
+Dhairya Malhotra
 Manas Rachh <mrachh@flatironinstitute.org>
 Vladimir Rokhlin
+Michael O'Neil 
 
-Jeremy Magland contributed support for python interface
+The contributions of Alex Barnett, Leslie Greengard, 
+Libin Lu, Jeremy Magland, Dhairya Malhotra, and Manas Rachh are 
+works made for hire for The Simons Foundation, Inc.
 
-Michael O'Neil contributed multiple scattering codes
-
-Dhairya Malhotra contributed [Scientific computing template library SCTL] (https://github.com/dmalhotra/SCTL)
