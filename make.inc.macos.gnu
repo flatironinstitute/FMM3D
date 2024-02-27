@@ -1,6 +1,6 @@
 # makefile overrides
 # OS:       macOS
-# Compiler: gfortran X.X
+# Compiler: gfortran X.X/Clang
 # OpenMP:   enabled
 #
 
@@ -22,8 +22,6 @@ OMPLIBS = -lgomp
 # MATLAB interface:
 FDIR=$$(dirname `gfortran --print-file-name libgfortran.dylib`)
 MFLAGS +=-L${FDIR}
-MEX = $(shell ls -d /Applications/MATLAB_R20**.app)/bin/mex
-#LIBS = -lm -lstdc++.6
-#MEXLIBS= -lm -lstdc++.6 -lgfortran -ldl
+MEX = $(shell ls -d /Applications/MATLAB_R* | sort | tail -1)/bin/mex
 
 

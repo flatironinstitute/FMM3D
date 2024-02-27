@@ -14,7 +14,8 @@ FC=gfortran
 
 
 # set compiler flags for c and fortran
-FFLAGS= -fPIC -O3 -march=native -funroll-loops -std=legacy
+FFLAGS= -fPIC -O3 -march=native -funroll-loops -std=legacy -w
+FFLAGS_DYN= -shared -fPIC
 CFLAGS= -fPIC -O3 -march=native -funroll-loops -std=c99
 CXXFLAGS= -std=c++11 -DSCTL_PROFILE=-1 -fPIC -O3 -march=native -funroll-loops
 
@@ -86,6 +87,7 @@ endif
 # vectorized kernel directory
 SRCDIR = ./vec-kernels/src
 INCDIR = ./vec-kernels/include
+FINCDIR = ./src/Helmholtz
 LIBDIR = lib-static
 
 # objects to compile
@@ -192,10 +194,10 @@ usage:
 	$(CXX) -c $(CXXFLAGS) $< -o $@
 %.o: %.c %.h
 	$(CC) -c $(CFLAGS) $< -o $@
-%.o: %.f %.h
-	$(FC) -c $(FFLAGS) $< -o $@
+%.o: %.f 
+	$(FC) -c $(FFLAGS) -I$(FINCDIR) $< -o $@
 %.o: %.f90
-	$(FC) -c $(FFLAGS) $< -o $@
+	$(FC) -c $(FFLAGS) -I$(FINCDIR) $< -o $@
 
 # build the library...
 lib: $(STATICLIB) $(DYNAMICLIB)
@@ -224,7 +226,7 @@ $(STATICLIB): $(OBJS)
 	ar rcs $(STATICLIB) $(OBJS)
 	mv $(STATICLIB) lib-static/
 $(DYNAMICLIB): $(OBJS)
-	$(FC) -shared -fPIC $(OBJS) -o $(DYNAMICLIB) $(DYLIBS)
+	$(FC) $(FFLAGS_DYN) $(OBJS) -o $(DYNAMICLIB) $(DYLIBS)
 	mv $(DYNAMICLIB) lib/
 	[ ! -f $(LIMPLIB) ] || mv $(LIMPLIB) lib/
 

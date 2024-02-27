@@ -1,7 +1,7 @@
 CC=icc
 CXX=icpc
 FC=ifort
-FFLAGS= -fPIC -O3 -march=native -funroll-loops -mkl 
+FFLAGS= -fPIC -O3 -march=native -funroll-loops -mkl -w 
 LIBS=-lm 
 CLIBS = -lm -ldl -lifcore
 

@@ -145,33 +145,33 @@ c
          do 200 mth = 1,numphys(nl)
             u = (mth-1)*hu
             ncurrent = ntot+mth
-            zs(1,ncurrent) = cdexp(-rlams(nl) )
-            zs(2,ncurrent) = cdexp(-2.0d0*rlams(nl) )
-            zs(3,ncurrent) = cdexp(-3.0d0*rlams(nl) )
-            zs(4,ncurrent) = cdexp(-4.0d0*rlams(nl) )
-            zs(5,ncurrent) = cdexp(-5.0d0*rlams(nl) )
-            xs(-1,ncurrent) = cdexp(-ima*rk*cos(u))
-            xs(-2,ncurrent) = cdexp(-ima*rk*2.0d0*cos(u))
-            xs(-3,ncurrent) = cdexp(-ima*rk*3.0d0*cos(u))
-            xs(-4,ncurrent) = cdexp(-ima*rk*4.0d0*cos(u))
-            xs(-5,ncurrent) = cdexp(-ima*rk*5.0d0*cos(u))
+            zs(1,ncurrent) = exp(-rlams(nl) )
+            zs(2,ncurrent) = exp(-2.0d0*rlams(nl) )
+            zs(3,ncurrent) = exp(-3.0d0*rlams(nl) )
+            zs(4,ncurrent) = exp(-4.0d0*rlams(nl) )
+            zs(5,ncurrent) = exp(-5.0d0*rlams(nl) )
+            xs(-1,ncurrent) = exp(-ima*rk*cos(u))
+            xs(-2,ncurrent) = exp(-ima*rk*2.0d0*cos(u))
+            xs(-3,ncurrent) = exp(-ima*rk*3.0d0*cos(u))
+            xs(-4,ncurrent) = exp(-ima*rk*4.0d0*cos(u))
+            xs(-5,ncurrent) = exp(-ima*rk*5.0d0*cos(u))
             xs(0,ncurrent) = 1
-            xs(1,ncurrent) = cdexp(ima*rk*cos(u))
-            xs(2,ncurrent) = cdexp(ima*rk*2.0d0*cos(u))
-            xs(3,ncurrent) = cdexp(ima*rk*3.0d0*cos(u))
-            xs(4,ncurrent) = cdexp(ima*rk*4.0d0*cos(u))
-            xs(5,ncurrent) = cdexp(ima*rk*5.0d0*cos(u))
-            ys(-1,ncurrent) = cdexp(-ima*rk*dsin(u))
-            ys(-2,ncurrent) = cdexp(-ima*rk*2.0d0*dsin(u))
-            ys(-3,ncurrent) = cdexp(-ima*rk*3.0d0*dsin(u))
-            ys(-4,ncurrent) = cdexp(-ima*rk*4.0d0*dsin(u))
-            ys(-5,ncurrent) = cdexp(-ima*rk*5.0d0*dsin(u))
+            xs(1,ncurrent) = exp(ima*rk*cos(u))
+            xs(2,ncurrent) = exp(ima*rk*2.0d0*cos(u))
+            xs(3,ncurrent) = exp(ima*rk*3.0d0*cos(u))
+            xs(4,ncurrent) = exp(ima*rk*4.0d0*cos(u))
+            xs(5,ncurrent) = exp(ima*rk*5.0d0*cos(u))
+            ys(-1,ncurrent) = exp(-ima*rk*dsin(u))
+            ys(-2,ncurrent) = exp(-ima*rk*2.0d0*dsin(u))
+            ys(-3,ncurrent) = exp(-ima*rk*3.0d0*dsin(u))
+            ys(-4,ncurrent) = exp(-ima*rk*4.0d0*dsin(u))
+            ys(-5,ncurrent) = exp(-ima*rk*5.0d0*dsin(u))
             ys(0,ncurrent) = 1
-            ys(1,ncurrent) = cdexp(ima*rk*dsin(u))
-            ys(2,ncurrent) = cdexp(ima*rk*2.0d0*dsin(u))
-            ys(3,ncurrent) = cdexp(ima*rk*3.0d0*dsin(u))
-            ys(4,ncurrent) = cdexp(ima*rk*4.0d0*dsin(u))
-            ys(5,ncurrent) = cdexp(ima*rk*5.0d0*dsin(u))
+            ys(1,ncurrent) = exp(ima*rk*dsin(u))
+            ys(2,ncurrent) = exp(ima*rk*2.0d0*dsin(u))
+            ys(3,ncurrent) = exp(ima*rk*3.0d0*dsin(u))
+            ys(4,ncurrent) = exp(ima*rk*4.0d0*dsin(u))
+            ys(5,ncurrent) = exp(ima*rk*5.0d0*dsin(u))
 200      continue
          ntot = ntot+numphys(nl)
 400   continue
@@ -2599,10 +2599,11 @@ c--------------------------------------------------------------------
      1   whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot)
       implicit none
       integer nd
+      integer ntarg,nlam
       real *8 center(3),boxsize,targ(3,ntarg)
       complex *16 rlams(nlam),pot(nd,ntarg)
       complex *16 whts(nlam),zk2
-      integer ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      integer nphys(nlam),nexptotp,nphmax
       complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       complex *16 ima
       complex *16, allocatable :: cc(:),cc2(:)
@@ -2672,10 +2673,11 @@ c--------------------------------------------------------------------
      1   rlams,whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot)
       implicit none
       integer nd
+      integer ntarg,nlam
       real *8 center(3),boxsize,targ(3,ntarg)
       complex *16 rlams(nlam),pot(nd,ntarg)
       complex *16 whts(nlam),zk2
-      integer ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      integer nphys(nlam),nexptotp,nphmax
       complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       complex *16 ima
       complex *16, allocatable :: cc(:),cc2(:)
@@ -2745,10 +2747,11 @@ c--------------------------------------------------------------------
      1   rlams,whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot)
       implicit none
       integer nd
+      integer ntarg,nlam
       real *8 center(3),boxsize,targ(3,ntarg)
       complex *16 rlams(nlam),pot(nd,ntarg)
       complex *16 whts(nlam),zk2
-      integer ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      integer nphys(nlam),nexptotp,nphmax
       complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       complex *16 ima
       complex *16, allocatable :: cc(:),cc2(:)
@@ -2819,10 +2822,11 @@ c--------------------------------------------------------------------
      2   grad)
       implicit none
       integer nd
+      integer ntarg,nlam
       real *8 center(3),boxsize,targ(3,ntarg)
       complex *16 rlams(nlam),pot(nd,ntarg)
       complex *16 grad(nd,3,ntarg),whts(nlam),zk2
-      integer ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      integer nphys(nlam),nexptotp,nphmax
       complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       complex *16 ima
       complex *16, allocatable :: cc(:),crc(:),crs(:),cc2(:)
@@ -2903,10 +2907,11 @@ c--------------------------------------------------------------------
      2  grad)
       implicit none
       integer nd
+      integer ntarg,nlam
       real *8 center(3),boxsize,targ(3,ntarg)
       complex *16 rlams(nlam),pot(nd,ntarg)
       complex *16 grad(nd,3,ntarg),whts(nlam),zk2
-      integer ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      integer nphys(nlam),nexptotp,nphmax
       complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       complex *16 ima
       complex *16, allocatable :: cc(:),crc(:),crs(:),cc2(:)
@@ -2985,10 +2990,11 @@ c--------------------------------------------------------------------
      2  grad)
       implicit none
       integer nd
+      integer ntarg,nlam
       real *8 center(3),boxsize,targ(3,ntarg)
       complex *16 rlams(nlam),pot(nd,ntarg)
       complex *16 grad(nd,3,ntarg),whts(nlam),zk2
-      integer ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      integer nphys(nlam),nexptotp,nphmax
       complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       complex *16 ima
       complex *16, allocatable :: cc(:),crc(:),crs(:),cc2(:)

@@ -7,7 +7,8 @@
 CC=icc
 CXX=icpc
 FC=ifort
-FFLAGS= -fPIC -O3 -march=native -funroll-loops -qmkl
+
+FFLAGS= -fPIC -O3 -march=native -funroll-loops -mkl -std=legacy -w 
 LIBS=
 #CLIBS = -lm -ldl -lifcore
 CLIBS = -lm -ldl
@@ -27,5 +28,10 @@ endif
 
 OMPFLAGS = -qopenmp
 OMPLIBS = -qopenmp
+
+# MATLAB interface:
+FDIR=$$(dirname `gfortran --print-file-name libgfortran.dylib`)
+MFLAGS +=-L${FDIR}
+MEX = $(shell ls -d /Applications/MATLAB_R* | sort | tail -1)/bin/mex
 
 

@@ -23,3 +23,4 @@ lib/*
 *.sh
 sbatch*
 *.obj
+make.inc

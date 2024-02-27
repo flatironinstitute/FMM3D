@@ -148,8 +148,8 @@ ccc           endif
 c
         gamma=0
         v=u/(1+gamma*abs(dble(-ima*rk)))
-        cxs(k)=u-ima*rk+abs(imag(-ima*rk))*ima*(v/(1+v))
-        cws(k)=1+abs(imag(-ima*rk))*ima*((1+v)-v)/(1+v)**2
+        cxs(k)=u-ima*rk+abs(dimag(-ima*rk))*ima*(v/(1+v))
+        cws(k)=1+abs(dimag(-ima*rk))*ima*((1+v)-v)/(1+v)**2
      $     /(1+gamma*abs(dble(-ima*rk)))
         cws(k)=cws(k)*ws(k)*uweight
         endif
@@ -275,7 +275,7 @@ c
         cy(24)=16*pi
 c
         rkrea=dble(rk)
-        rkima=imag(rk)
+        rkima=dimag(rk)
 c
         idomain = 0
         ier = 0
