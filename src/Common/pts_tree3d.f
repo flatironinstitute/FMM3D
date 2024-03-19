@@ -11,13 +11,20 @@ c    an existing tree based on resolving a function,
 c      this functionality tree will be added in later
 c
 c   This code has the following user callable routines
-c
 c      pts_tree_mem -> returns memory requirements for creating
 c         a tree based on max number of sources/targets
 c         in a box (tree length
 c         number of boxes, number of levels)
-c      pts_tree -> Make the actual tree, returns centers of boxes,
+c      pts_tree_mem_bbox -> same as pts_tree_mem, but 
+c         the center and boxsize at level0 are specified. 
+c         pts_tree_mem, under the hood calls pts_tree_mem_lev0.
+c         The purpose of this routine is to allow a specfied 
+c         bounding box, independent of input source and target
+c         locations.
+c      pts_tree_build -> Make the actual tree, returns centers of boxes,
 c        colleague info, pts sorted on leaf boxes
+c      pts_tree_build_bbox -> Same as pts_tree_build, but bounding
+c        box at root level specified
 c
 c      iptr(1) - laddr
 c      iptr(2) - ilevel
@@ -31,99 +38,34 @@ c
 c 
 
 
-      subroutine pts_tree_mem(src,ns,targ,nt,idivflag,ndiv,nlmin,nlmax,
-     1    ifunif,iper,nlevels,nboxes,ltree)
-c
-c
-c
+      subroutine estimate_bounding_box(src, ns, targ, nt, bs0, cen0)
 c----------------------------------------
-c  get memory requirements for the tree
-c
+c  estimate bounding box for a given collection of sources and targets 
 c
 c  input parameters:
 c    - src: real *8 (3,ns)
 c        source locations
+c    - ns: integer
+c        number of sources
 c    - targ: real *8 (3,nt) 
 c        target locations
-c    - idivflag: integer
-c        subdivision criterion
-c          * divflag = 0 -> subdivide on sources only
-c          * idivflag = 1 -> subdivide on targets only
-c          * idivflag = 2 -> subdivide on max(sources+targets)
-c    - ndiv: integer
-c        subdivide if relevant number of particles
-c        per box is greater than ndiv
-c    - nlmin: integer
-c        minimum number of levels of uniform refinement.
-c        Note that empty boxes are not pruned along the way
-c    - nlmax: integer
-c        max number of levels
-c    - ifunif: integer
-c        flag for creating uniform pruned tree
-c        Tree is uniform if ifunif=1 (Currently pruned part
-c        under construction)
-c    - iper: integer
-c        flag for periodic implementations. Currently unused.
-c        Feature under construction
-c
-c        
-c  output parameters
-c    - nlevels: integer
-c        number of levels
-c    - nboxes: integer
-c        number of boxes
-c    - ltree: integer
-c        length of tree
-c----------------------------------
-c
-     
-
+c    - nt: integer
+c        number of targets
+c   
+c  output parameters:
+c    - bs0: real *8
+c        size of bounding box at root level
+c    - cen0: real *8 (3)
+c        center of bounding box at root level
+c------------------------------------------
       implicit none
-      integer nlevels,nboxes,idivflag
-      integer *8 ltree,nboxes8
-      integer nbmax,nbtot
-      integer ns,nt,ndiv
-      integer nlmin,iper,ifunif
-      double precision src(3,ns),targ(3,nt)
+      integer, intent(in) :: ns, nt
+      real *8, intent(in) :: src(3,ns), targ(3,nt)
+      real *8, intent(out) :: bs0, cen0(3)
 
-
-      integer, allocatable :: laddr(:,:),ilevel(:),iparent(:),nchild(:)
-      integer, allocatable :: ichild(:,:),ncoll(:),icoll(:,:)
-      double precision, allocatable :: centers(:,:)
-      integer, allocatable :: nbors(:,:),nnbors(:)
-
-      integer, allocatable :: isrc(:),itarg(:),isrcse(:,:),itargse(:,:)
-
-      integer, allocatable :: ilevel2(:),iparent2(:),nchild2(:),
-     1    ichild2(:,:),isrcse2(:,:),itargse2(:,:)
-      double precision, allocatable :: centers2(:,:)
-
-      integer nlmax
-      integer i,itype,j
-
-      double precision, allocatable :: centerstmp(:,:,:)
-      double precision, allocatable :: boxsize(:)
-      integer, allocatable :: irefinebox(:)
-
-      double precision rsc
-      integer nbloc,nbctr,nbadd,irefine,ilev,ifirstbox,ilastbox
-      integer iii
-      integer ibox,nn,nss,ntt
-      double precision sizey,sizez
-
-      double precision xmin,xmax,ymin,ymax,zmin,zmax
-      double precision dfac
-
-      nbmax = 100000
-
-      allocate(boxsize(0:nlmax))
-
-      
-      allocate(laddr(2,0:nlmax),ilevel(nbmax),iparent(nbmax))
-      allocate(nchild(nbmax),ichild(8,nbmax))
-
-      allocate(centers(3,nbmax),isrcse(2,nbmax),itargse(2,nbmax))
-      allocate(isrc(ns),itarg(nt))
+      integer i
+      real *8 sizey, sizez
+      real *8 xmin, xmax, ymin, ymax, zmin, zmax
 
 c
 c     step 1: find enclosing box
@@ -160,11 +102,207 @@ C$OMP$REDUCTION(max:xmax,ymax,zmax)
       enddo
 C$OMP END PARALLEL DO      
 
-      boxsize(0) = (xmax - xmin)
+      bs0 = (xmax - xmin)
       sizey = (ymax - ymin)
       sizez = (zmax - zmin)
-      if(sizey.gt.boxsize(0)) boxsize(0) = sizey
-      if(sizez.gt.boxsize(0)) boxsize(0) = sizez
+      if(sizey.gt.bs0) bs0 = sizey
+      if(sizez.gt.bs0) bs0 = sizez
+      
+      cen0(1) = (xmin + xmax)/2
+      cen0(2) = (ymin + ymax)/2
+      cen0(3) = (zmin + zmax)/2
+
+
+      
+      return
+      end
+c
+c
+c
+c
+c
+c
+      subroutine pts_tree_mem(src, ns, targ, nt, idivflag, ndiv,
+     1    nlmin, nlmax, ifunif, iper, nlevels, nboxes, ltree)
+c
+c
+c
+c----------------------------------------
+c  get memory requirements for the tree, where bounding box is 
+c  determined from the src and target locations
+c
+c  input parameters:
+c    - src: real *8 (3,ns)
+c        source locations
+c    - ns: integer
+c        number of sources
+c    - targ: real *8 (3,nt) 
+c        target locations
+c    - nt: integer
+c        number of targets
+c    - idivflag: integer
+c        subdivision criterion
+c          * divflag = 0 -> subdivide on sources only
+c          * idivflag = 1 -> subdivide on targets only
+c          * idivflag = 2 -> subdivide on max(sources+targets)
+c    - ndiv: integer
+c        subdivide if relevant number of particles
+c        per box is greater than ndiv
+c    - nlmin: integer
+c        minimum number of levels of uniform refinement.
+c        Note that empty boxes are not pruned along the way
+c    - nlmax: integer
+c        max number of levels
+c    - ifunif: integer
+c        flag for creating uniform pruned tree
+c        Tree is uniform if ifunif=1 (Currently pruned part
+c        under construction)
+c    - iper: integer
+c        flag for periodic implementations. Currently unused.
+c        Feature under construction
+c
+c        
+c  output parameters
+c    - nlevels: integer
+c        number of levels
+c    - nboxes: integer
+c        number of boxes
+c    - ltree: integer *8
+c        length of tree
+c----------------------------------
+c
+     
+
+      implicit none
+      integer, intent(in) :: ns, nt, idivflag, ndiv, nlmin, nlmax
+      integer, intent(in) :: ifunif, iper
+      integer, intent(out) :: nboxes, nlevels
+      integer *8, intent(out) :: ltree
+      double precision, intent(in) :: src(3,ns),targ(3,nt)
+      double precision bs0, cen0(3)
+
+      call estimate_bounding_box(src, ns, targ, nt, bs0, cen0)
+
+      call pts_tree_mem_bbox(src, ns, targ, nt, idivflag, ndiv,
+     1    nlmin, nlmax, ifunif, iper, bs0, cen0, nlevels, nboxes,
+     2    ltree)
+      
+
+      return
+      end
+c
+c
+c
+c
+c
+      subroutine pts_tree_mem_bbox(src, ns, targ, nt, idivflag, ndiv,
+     1    nlmin, nlmax, ifunif, iper, bs0, cen0, nlevels, nboxes,
+     2    ltree)
+c
+c
+c
+c----------------------------------------
+c  get memory requirements for the tree, where bounding box is user
+c  specifed
+c
+c  input parameters:
+c    - src: real *8 (3,ns)
+c        source locations
+c    - ns: integer
+c        number of sources
+c    - targ: real *8 (3,nt) 
+c        target locations
+c    - nt: integer
+c        number of targets
+c    - idivflag: integer
+c        subdivision criterion
+c          * divflag = 0 -> subdivide on sources only
+c          * idivflag = 1 -> subdivide on targets only
+c          * idivflag = 2 -> subdivide on max(sources+targets)
+c    - ndiv: integer
+c        subdivide if relevant number of particles
+c        per box is greater than ndiv
+c    - nlmin: integer
+c        minimum number of levels of uniform refinement.
+c        Note that empty boxes are not pruned along the way
+c    - nlmax: integer
+c        max number of levels
+c    - ifunif: integer
+c        flag for creating uniform pruned tree
+c        Tree is uniform if ifunif=1 (Currently pruned part
+c        under construction)
+c    - iper: integer
+c        flag for periodic implementations. Currently unused.
+c        Feature under construction
+c    - bs0: real *8
+c        size of bounding box at root level
+c    - cen0: real *8 (3)
+c        center of bounding box at root level
+c
+c        
+c  output parameters
+c    - nlevels: integer
+c        number of levels
+c    - nboxes: integer
+c        number of boxes
+c    - ltree: integer *8
+c        length of tree
+c----------------------------------
+c
+     
+
+      implicit none
+      integer nlevels,nboxes,idivflag
+      integer *8 ltree,nboxes8
+      integer nbmax,nbtot
+      integer ns,nt,ndiv
+      integer nlmin,iper,ifunif
+      integer nlmax
+      double precision src(3,ns),targ(3,nt)
+      double precision bs0, cen0(3)
+
+
+      integer, allocatable :: laddr(:,:),ilevel(:),iparent(:),nchild(:)
+      integer, allocatable :: ichild(:,:),ncoll(:),icoll(:,:)
+      double precision, allocatable :: centers(:,:)
+      integer, allocatable :: nbors(:,:),nnbors(:)
+
+      integer, allocatable :: isrc(:),itarg(:),isrcse(:,:),itargse(:,:)
+
+      integer, allocatable :: ilevel2(:),iparent2(:),nchild2(:),
+     1    ichild2(:,:),isrcse2(:,:),itargse2(:,:)
+      double precision, allocatable :: centers2(:,:)
+
+      integer i,itype,j
+
+      double precision, allocatable :: centerstmp(:,:,:)
+      double precision, allocatable :: boxsize(:)
+      integer, allocatable :: irefinebox(:)
+
+      double precision rsc
+      integer nbloc,nbctr,nbadd,irefine,ilev,ifirstbox,ilastbox
+      integer iii
+      integer ibox,nn,nss,ntt
+      double precision sizey,sizez
+
+      double precision xmin,xmax,ymin,ymax,zmin,zmax
+      double precision dfac
+
+      nbmax = 100000
+
+      allocate(boxsize(0:nlmax))
+
+      
+      allocate(laddr(2,0:nlmax),ilevel(nbmax),iparent(nbmax))
+      allocate(nchild(nbmax),ichild(8,nbmax))
+
+      allocate(centers(3,nbmax),isrcse(2,nbmax),itargse(2,nbmax))
+      allocate(isrc(ns),itarg(nt))
+
+      boxsize(0) = bs0
+      centers(1,1) = cen0(1)
+      centers(2,1) = cen0(2)
+      centers(3,1) = cen0(3)
 
 c
 c      set tree info for level 0
@@ -178,9 +316,6 @@ c
         ichild(i,1) = -1
       enddo
 
-      centers(1,1) = (xmin+xmax)/2
-      centers(2,1) = (ymin+ymax)/2
-      centers(3,1) = (zmin+zmax)/2
 
       isrcse(1,1) = 1
       isrcse(2,1) = ns
@@ -422,21 +557,25 @@ c
 c
 c
 
-      subroutine pts_tree_build(src,ns,targ,nt,idivflag,ndiv,
-     1  nlmin,nlmax,ifunif,iper,nlevels,nboxes,ltree,itree,iptr,centers,
-     2  boxsize)
+      subroutine pts_tree_build(src, ns, targ, nt, idivflag, ndiv,
+     1  nlmin, nlmax, ifunif, iper, nlevels, nboxes, ltree, 
+     2  itree, iptr, centers, boxsize)
 c
 c
 c
 c----------------------------------------
-c  build tree
+c  build tree with prespecified bounding box
 c
 c
 c  input parameters:
 c    - src: real *8 (3,ns)
 c        source locations
+c    - ns: integer
+c        number of sources
 c    - targ: real *8 (3,nt) 
 c        target locations
+c    - nt: integer
+c        number of targets
 c    - idivflag: integer
 c        subdivision criterion
 c          * divflag = 0 -> subdivide on sources only
@@ -461,12 +600,108 @@ c    - nlevels: integer
 c        number of levels
 c    - nboxes: integer
 c        number of boxes
-c    - ltree: integer
+c    - ltree: integer *8
+c        length of tree array
 c
 c  output:
 c    - itree: integer(ltree)
 c        tree info
-c    - iptr: integer(8)
+c    - iptr: integer *8 (8)
+c        * iptr(1) - laddr
+c        * iptr(2) - ilevel
+c        * iptr(3) - iparent
+c        * iptr(4) - nchild
+c        * iptr(5) - ichild
+c        * iptr(6) - ncoll
+c        * iptr(7) - coll
+c        * iptr(8) - ltree
+c    - centers: double precision (3,nboxes)
+c        xy coordinates of box centers in the oct tree
+c    - boxsize: double precision (0:nlevels)
+c        size of box at each of the levels
+c
+      implicit none
+      integer, intent(in) :: ns, nt, idivflag, ndiv, nlmin, nlmax
+      integer, intent(in) :: ifunif, iper, nlevels, nboxes
+      integer *8, intent(in) :: ltree
+      real *8, intent(in) :: src(3,ns), targ(3,nt)
+
+      integer *8, intent(out) :: iptr(8)
+      integer, intent(out) :: itree(ltree)
+      real *8, intent(out) :: boxsize(0:nlevels), centers(3,nboxes)
+      
+      real *8 bs0, cen0
+      
+      
+      call estimate_bounding_box(src, ns, targ, nt, bs0, cen0)
+
+      call pts_tree_build_bbox(src, ns, targ, nt, idivflag, ndiv,
+     1  nlmin, nlmax, ifunif, iper, nlevels, nboxes, bs0, cen0, ltree, 
+     2  itree, iptr, centers, boxsize)
+
+
+      return
+      end
+c
+c
+c
+c
+c
+
+      subroutine pts_tree_build_bbox(src, ns, targ, nt, idivflag, ndiv,
+     1  nlmin, nlmax, ifunif, iper, nlevels, nboxes, bs0, cen0, ltree, 
+     2  itree, iptr, centers, boxsize)
+c
+c
+c
+c----------------------------------------
+c  build tree with prespecified bounding box
+c
+c
+c  input parameters:
+c    - src: real *8 (3,ns)
+c        source locations
+c    - ns: integer
+c        number of sources
+c    - targ: real *8 (3,nt) 
+c        target locations
+c    - nt: integer
+c        number of targets
+c    - idivflag: integer
+c        subdivision criterion
+c          * divflag = 0 -> subdivide on sources only
+c          * idivflag = 1 -> subdivide on targets only
+c          * idivflag = 2 -> subdivide on max(sources+targets)
+c    - ndiv: integer
+c        subdivide if relevant number of particles
+c        per box is greater than ndiv
+c    - nlmin: integer
+c        minimum number of levels of uniform refinement.
+c        Note that empty boxes are not pruned along the way
+c    - nlmax: integer
+c        max number of levels
+c    - ifunif: integer
+c        flag for creating uniform pruned tree
+c        Tree is uniform if ifunif=1 (Currently pruned part
+c        under construction)
+c    - iper: integer
+c        flag for periodic implementations. Currently unused.
+c        Feature under construction
+c    - nlevels: integer
+c        number of levels
+c    - nboxes: integer
+c        number of boxes
+c    - bs0: real *8
+c        size of bounding box at root level
+c    - cen0: real *8 (3)
+c        center of bounding box at root level
+c    - ltree: integer *8
+c        length of tree array
+c
+c  output:
+c    - itree: integer(ltree)
+c        tree info
+c    - iptr: integer *8 (8)
 c        * iptr(1) - laddr
 c        * iptr(2) - ilevel
 c        * iptr(3) - iparent
@@ -489,6 +724,7 @@ c
       double precision centers(3,nboxes),src(3,ns),targ(3,nt)
       integer, allocatable :: irefinebox(:)
       double precision boxsize(0:nlevels)
+      double precision bs0, cen0(3)
       integer, allocatable :: isrc(:),itarg(:),isrcse(:,:),itargse(:,:)
 
       integer i,ilev,irefine,itype,nbmax,npbox,npc,ii
@@ -510,47 +746,11 @@ c
       iptr(6) = iptr(5) + 8*nboxes
       iptr(7) = iptr(6) + nboxes
       iptr(8) = iptr(7) + 27*nboxes
-c
-c     step 1: find enclosing box
-c
-      xmin = src(1,1)
-      xmax = src(1,1)
-      ymin = src(2,1)
-      ymax = src(2,1)
-      zmin = src(3,1)
-      zmax = src(3,1)
-C$OMP PARALLEL DO DEFAULT(SHARED)
-C$OMP$REDUCTION(min:xmin,ymin,zmin)
-C$OMP$REDUCTION(max:xmax,ymax,zmax)
-      do i=1,ns
-        if(src(1,i).lt.xmin) xmin = src(1,i)
-        if(src(1,i).gt.xmax) xmax = src(1,i)
-        if(src(2,i).lt.ymin) ymin = src(2,i)
-        if(src(2,i).gt.ymax) ymax = src(2,i)
-        if(src(3,i).lt.zmin) zmin = src(3,i)
-        if(src(3,i).gt.zmax) zmax = src(3,i)
-      enddo
-C$OMP END PARALLEL DO      
 
-C$OMP PARALLEL DO DEFAULT(SHARED)
-C$OMP$REDUCTION(min:xmin,ymin,zmin)
-C$OMP$REDUCTION(max:xmax,ymax,zmax)
-      do i=1,nt
-        if(targ(1,i).lt.xmin) xmin = targ(1,i)
-        if(targ(1,i).gt.xmax) xmax = targ(1,i)
-        if(targ(2,i).lt.ymin) ymin = targ(2,i)
-        if(targ(2,i).gt.ymax) ymax = targ(2,i)
-        if(targ(3,i).lt.zmin) zmin = targ(3,i)
-        if(targ(3,i).gt.zmax) zmax = targ(3,i)
-      enddo
-C$OMP END PARALLEL DO      
-
-      boxsize(0) = (xmax - xmin)
-      sizey = (ymax - ymin)
-      sizez = (zmax - zmin)
-      if(sizey.gt.boxsize(0)) boxsize(0) = sizey
-      if(sizez.gt.boxsize(0)) boxsize(0) = sizez
-
+      boxsize(0) = bs0 
+      centers(1,1) = cen0(1) 
+      centers(2,1) = cen0(2)  
+      centers(3,1) = cen0(3) 
 
       allocate(isrc(ns),itarg(nt),isrcse(2,nboxes),itargse(2,nboxes))
 
@@ -566,9 +766,6 @@ c
         itree(iptr(5)+i-1) = -1
       enddo
 
-      centers(1,1) = (xmin+xmax)/2
-      centers(2,1) = (ymin+ymax)/2
-      centers(3,1) = (zmin+zmax)/2
 
       isrcse(1,1) = 1
       isrcse(2,1) = ns
@@ -704,8 +901,10 @@ C$OMP END PARALLEL DO
 c
 c
 c
-      subroutine sort_pts_to_children(ibox,nboxes,centers,
-     1   ichild,src,ns,isrc,isrcse)
+c
+c
+      subroutine sort_pts_to_children(ibox, nboxes, centers,
+     1   ichild, src, ns, isrc, isrcse)
       implicit double precision (a-h,o-z)
       integer nboxes
       double precision centers(3,nboxes),src(3,ns)
