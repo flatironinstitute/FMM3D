@@ -283,9 +283,7 @@ c
       integer nbloc,nbctr,nbadd,irefine,ilev,ifirstbox,ilastbox
       integer iii
       integer ibox,nn,nss,ntt
-      double precision sizey,sizez
 
-      double precision xmin,xmax,ymin,ymax,zmin,zmax
       double precision dfac
 
       nbmax = 100000
@@ -630,7 +628,7 @@ c
       integer, intent(out) :: itree(ltree)
       real *8, intent(out) :: boxsize(0:nlevels), centers(3,nboxes)
       
-      real *8 bs0, cen0
+      real *8 bs0, cen0(3)
       
       
       call estimate_bounding_box(src, ns, targ, nt, bs0, cen0)
@@ -734,8 +732,6 @@ c
       double precision ra
       integer j,nboxes0
       integer ibox,nn,nss,ntt
-
-      double precision xmin,xmax,ymin,ymax,zmin,zmax,sizey,sizez
 
 c
       iptr(1) = 1
