@@ -59,13 +59,17 @@ program helmkernels_omp_dr
      end do
   end do
 
-
+  ! set the number of threads to test against
   nthreads = 12
 
   print *, 'number of sources = ', nsrc
   print *, 'number of targets = ', ntarg
   print *, 'vec param nd = ', nd
-  
+
+
+  ! for each of the below routines, run single threaded and
+  ! multithreaded and compare the solutions, they should be identical,
+  ! and compute the speedup factor
   print *
   print *
   print *, '- - - - - - - testing h3ddirectcp - - - - - - -'
@@ -73,12 +77,6 @@ program helmkernels_omp_dr
   call setzero(pot, grad, hess, nd, ntarg)
   call setzero(pot2, grad2, hess2, nd, ntarg)
 
-  !call prin2('zk = *', zk, 2)
-  !call prin2('sources = *', sources, 3*nd*nsrc)
-  !call prin2('charge = *', charge, 2*nd*nsrc)
-  !call prin2('targ = *', targ, 3*ntarg)
-
-  
   call omp_set_num_threads(1)
   t0 = omp_get_wtime()
   call h3ddirectcp(nd, zk, sources, charge, nsrc, targ, ntarg, pot, thresh)
@@ -116,12 +114,6 @@ program helmkernels_omp_dr
   call setzero(pot, grad, hess, nd, ntarg)
   call setzero(pot2, grad2, hess2, nd, ntarg)
 
-  !call prin2('zk = *', zk, 2)
-  !call prin2('sources = *', sources, 3*nd*nsrc)
-  !call prin2('charge = *', charge, 2*nd*nsrc)
-  !call prin2('targ = *', targ, 3*ntarg)
-
-  
   call omp_set_num_threads(1)
   t0 = omp_get_wtime()
   call h3ddirectcg(nd, zk, sources, charge, nsrc, targ, ntarg, pot, &
@@ -170,12 +162,6 @@ program helmkernels_omp_dr
   call setzero(pot, grad, hess, nd, ntarg)
   call setzero(pot2, grad2, hess2, nd, ntarg)
 
-  !call prin2('zk = *', zk, 2)
-  !call prin2('sources = *', sources, 3*nd*nsrc)
-  !call prin2('charge = *', charge, 2*nd*nsrc)
-  !call prin2('targ = *', targ, 3*ntarg)
-
-  
   call omp_set_num_threads(1)
   t0 = omp_get_wtime()
   call h3ddirectcp(nd, zk, sources, dipvec, nsrc, targ, ntarg, pot, thresh)
@@ -213,12 +199,6 @@ program helmkernels_omp_dr
   call setzero(pot, grad, hess, nd, ntarg)
   call setzero(pot2, grad2, hess2, nd, ntarg)
 
-  !call prin2('zk = *', zk, 2)
-  !call prin2('sources = *', sources, 3*nd*nsrc)
-  !call prin2('charge = *', charge, 2*nd*nsrc)
-  !call prin2('targ = *', targ, 3*ntarg)
-
-  
   call omp_set_num_threads(1)
   t0 = omp_get_wtime()
   call h3ddirectdg(nd, zk, sources, dipvec, nsrc, targ, ntarg, pot, &
@@ -266,12 +246,6 @@ program helmkernels_omp_dr
   call setzero(pot, grad, hess, nd, ntarg)
   call setzero(pot2, grad2, hess2, nd, ntarg)
 
-  !call prin2('zk = *', zk, 2)
-  !call prin2('sources = *', sources, 3*nd*nsrc)
-  !call prin2('charge = *', charge, 2*nd*nsrc)
-  !call prin2('targ = *', targ, 3*ntarg)
-
-  
   call omp_set_num_threads(1)
   t0 = omp_get_wtime()
   call h3ddirectcdp(nd, zk, sources, charge, dipvec, nsrc, targ, ntarg, &
@@ -311,12 +285,6 @@ program helmkernels_omp_dr
   call setzero(pot, grad, hess, nd, ntarg)
   call setzero(pot2, grad2, hess2, nd, ntarg)
 
-  !call prin2('zk = *', zk, 2)
-  !call prin2('sources = *', sources, 3*nd*nsrc)
-  !call prin2('charge = *', charge, 2*nd*nsrc)
-  !call prin2('targ = *', targ, 3*ntarg)
-
-  
   call omp_set_num_threads(1)
   t0 = omp_get_wtime()
   call h3ddirectcdg(nd, zk, sources, charge, dipvec, nsrc, targ, ntarg, pot, &
@@ -355,250 +323,10 @@ program helmkernels_omp_dr
      print *, 'i = ', i, ' grad err = ', err
   end do
 
-
-  
-
-  ! call setzero(pot,grad,hess,nd,nt)
-  ! call h3ddirectcg(nd,zk,sources,charge,ns,ztarg,nt, &
-  !      pot,grad,thresh)
-  ! write(6,*) ' dir cp '
-  ! do i = 1,nt
-  !    write(6,*)pot(1,i)
-  ! enddo
-  ! write(6,*) ' analytic grad ', grad(1,icomp,1)
-  ! egrad = abs( grad(1,icomp,1)- zfd)/abs(grad(1,icomp,1))
-  ! write(6,*) ' egrad  ', egrad
-  ! v1 = grad(1,1,2)
-  ! v2 = grad(1,1,3)
-  ! zfd1 = (v1-v2)/(2*hh)
-  ! v1 = grad(1,2,2)
-  ! v2 = grad(1,2,3)
-  ! zfd2 = (v1-v2)/(2*hh)
-  ! v1 = grad(1,3,2)
-  ! v2 = grad(1,3,3)
-  ! zfd3 = (v1-v2)/(2*hh)
-  ! write(6,*) ' FD deriv of p_x ', zfd1 
-  ! write(6,*) ' FD deriv of p_y ', zfd2
-  ! write(6,*) ' FD deriv of p_z ', zfd3
-
-  ! !  call setzero(pot,grad,hess,nd,nt)
-  ! !  call h3ddirectch(nd,zk,sources,charge,ns,ztarg,nt,
-  ! ! 1            pot,grad,hess,thresh)
-  ! !  write(6,*) ' dir cp '
-  ! !  do i = 1,nt
-  ! !     write(6,*)pot(1,i)
-  ! !  enddo
-  ! !  write(6,*) ' analytic grad ', grad(1,icomp,1)
-  ! !  egrad = abs( grad(1,icomp,1)- zfd)/abs(grad(1,icomp,1))
-  ! !  write(6,*) ' egrad  ', egrad
-  ! !  if (icomp.eq.1) then
-  ! !     write(6,*) ' dir pxx ', hess(1,1,1)
-  ! !     write(6,*) ' dir pxy ', hess(1,4,1)
-  ! !     write(6,*) ' dir pxz ', hess(1,5,1)
-  ! !     exx = abs( hess(1,1,1)- zfd1)/abs(hess(1,1,1))
-  ! !     exy = abs( hess(1,4,1)- zfd2)/abs(hess(1,4,1))
-  ! !     exz = abs( hess(1,5,1)- zfd3)/abs(hess(1,5,1))
-  ! !     write(6,*) ' exx  ', exx
-  ! !     write(6,*) ' exy  ', exy
-  ! !     write(6,*) ' exz  ', exz
-  ! !  else if (icomp.eq.2) then
-  ! !     write(6,*) ' dir pxy ', hess(1,4,1)
-  ! !     write(6,*) ' dir pyy ', hess(1,2,1)
-  ! !     write(6,*) ' dir pyz ', hess(1,6,1)
-  ! !     exy = abs( hess(1,4,1)- zfd1)/abs(hess(1,4,1))
-  ! !     eyy = abs( hess(1,2,1)- zfd2)/abs(hess(1,2,1))
-  ! !     eyz = abs( hess(1,6,1)- zfd3)/abs(hess(1,6,1))
-  ! !     write(6,*) ' exy  ', exy
-  ! !     write(6,*) ' eyy  ', eyy
-  ! !     write(6,*) ' eyz  ', eyz
-  ! !  else if (icomp.eq.3) then
-  ! !     write(6,*) ' dir pxz ', hess(1,4,1)
-  ! !     write(6,*) ' dir pyz ', hess(1,6,1)
-  ! !     write(6,*) ' dir pzz ', hess(1,3,1)
-  ! !     exz = abs( hess(1,5,1)- zfd1)/abs(hess(1,5,1))
-  ! !     eyz = abs( hess(1,6,1)- zfd2)/abs(hess(1,6,1))
-  ! !     ezz = abs( hess(1,3,1)- zfd3)/abs(hess(1,3,1))
-  ! !     write(6,*) ' exz  ', exz
-  ! !     write(6,*) ' eyz  ', eyz
-  ! !     write(6,*) ' ezz  ', ezz
-  ! !  endif
-
-
-  ! write(6,*) ' directd  tests -------------------------------'
-
-  ! call setzero(pot,grad,hess,nd,nt)
-  ! call h3ddirectdp(nd,zk,sources, &
-  !      dipvec,ns,ztarg,nt,pot,thresh)
-  ! write(6,*) ' dir cp '
-  ! do i = 1,nt
-  !    write(6,*)pot(1,i)
-  ! enddo
-  ! zfd =  (pot(1,2) - pot(1,3))/(2*hh)
-  ! write(6,*) ' FD deriv ', zfd
-  ! call setzero(pot,grad,hess,nd,nt)
-  ! call h3ddirectdg(nd,zk,sources, &
-  !      dipvec,ns,ztarg,nt,pot,grad,thresh)
-  ! write(6,*) ' dir cp '
-  ! do i = 1,nt
-  !    write(6,*)pot(1,i)
-  ! enddo
-  ! write(6,*) ' analytic grad ', grad(1,icomp,1)
-  ! egrad = abs( grad(1,icomp,1)- zfd)/abs(grad(1,icomp,1))
-  ! write(6,*) ' egrad  ', egrad
-  ! v1 = grad(1,1,2)
-  ! v2 = grad(1,1,3)
-  ! zfd1 = (v1-v2)/(2*hh)
-  ! v1 = grad(1,2,2)
-  ! v2 = grad(1,2,3)
-  ! zfd2 = (v1-v2)/(2*hh)
-  ! v1 = grad(1,3,2)
-  ! v2 = grad(1,3,3)
-  ! zfd3 = (v1-v2)/(2*hh)
-  ! write(6,*) ' FD x deriv of p_x ', zfd1
-  ! write(6,*) ' FD x deriv of p_y ', zfd2
-  ! write(6,*) ' FD x deriv of p_z ', zfd3
-
-  ! !  call setzero(pot,grad,hess,nd,nt)
-  ! !  call h3ddirectdh(nd,zk,sources,
-  ! ! 1            dipvec,ns,ztarg,nt,pot,grad,hess,thresh)
-  ! !  write(6,*) ' dir cp '
-  ! !  do i = 1,nt
-  ! !     write(6,*)pot(1,i)
-  ! !  enddo
-  ! !  write(6,*) ' analytic grad ', grad(1,icomp,1)
-  ! !  egrad = abs( grad(1,icomp,1)- zfd)/abs(grad(1,icomp,1))
-  ! !  write(6,*) ' egrad  ', egrad
-  ! !  if (icomp.eq.1) then
-  ! !     write(6,*) ' dir pxx ', hess(1,1,1)
-  ! !     write(6,*) ' dir pxy ', hess(1,4,1)
-  ! !     write(6,*) ' dir pxz ', hess(1,5,1)
-  ! !     exx = abs( hess(1,1,1)- zfd1)/abs(hess(1,1,1))
-  ! !     exy = abs( hess(1,4,1)- zfd2)/abs(hess(1,4,1))
-  ! !     exz = abs( hess(1,5,1)- zfd3)/abs(hess(1,5,1))
-  ! !     write(6,*) ' exx  ', exx
-  ! !     write(6,*) ' exy  ', exy
-  ! !     write(6,*) ' exz  ', exz
-  ! !  else if (icomp.eq.2) then
-  ! !     write(6,*) ' dir pxy ', hess(1,4,1)
-  ! !     write(6,*) ' dir pyy ', hess(1,2,1)
-  ! !     write(6,*) ' dir pyz ', hess(1,6,1)
-  ! !     exy = abs( hess(1,4,1)- zfd1)/abs(hess(1,4,1))
-  ! !     eyy = abs( hess(1,2,1)- zfd2)/abs(hess(1,2,1))
-  ! !     eyz = abs( hess(1,6,1)- zfd3)/abs(hess(1,6,1))
-  ! !     write(6,*) ' exy  ', exy
-  ! !     write(6,*) ' eyy  ', eyy
-  ! !     write(6,*) ' eyz  ', eyz
-  ! !  else if (icomp.eq.3) then
-  ! !     write(6,*) ' dir pxz ', hess(1,4,1)
-  ! !     write(6,*) ' dir pyz ', hess(1,6,1)
-  ! !     write(6,*) ' dir pzz ', hess(1,3,1)
-  ! !     exz = abs( hess(1,5,1)- zfd1)/abs(hess(1,5,1))
-  ! !     eyz = abs( hess(1,6,1)- zfd2)/abs(hess(1,6,1))
-  ! !     ezz = abs( hess(1,3,1)- zfd3)/abs(hess(1,3,1))
-  ! !     write(6,*) ' exz  ', exz
-  ! !     write(6,*) ' eyz  ', eyz
-  ! !     write(6,*) ' ezz  ', ezz
-  ! !  endif
-
-
-  ! write(6,*) ' directcd  tests -------------------------------'
-
-  ! call setzero(pot,grad,hess,nd,nt)
-  ! call h3ddirectcdp(nd,zk,sources,charge, &
-  !      dipvec,ns,ztarg,nt,pot,thresh)
-  ! write(6,*) ' dir cp '
-  ! do i = 1,nt
-  !    write(6,*)pot(1,i)
-  ! enddo
-  ! zfd =  (pot(1,2) - pot(1,3))/(2*hh)
-  ! write(6,*) ' FD deriv ', zfd
-  ! call setzero(pot,grad,hess,nd,nt)
-  ! call h3ddirectcdg(nd,zk,sources,charge, &
-  !      dipvec,ns,ztarg,nt,pot,grad,thresh)
-  ! write(6,*) ' dir cp '
-  ! do i = 1,nt
-  !    write(6,*)pot(1,i)
-  ! enddo
-  ! write(6,*) ' analytic grad ', grad(1,icomp,1)
-  ! egrad = abs( grad(1,icomp,1)- zfd)/abs(grad(1,icomp,1))
-  ! write(6,*) ' egrad  ', egrad
-  ! v1 = grad(1,1,2)
-  ! v2 = grad(1,1,3)
-  ! zfd1 = (v1-v2)/(2*hh)
-  ! v1 = grad(1,2,2)
-  ! v2 = grad(1,2,3)
-  ! zfd2 = (v1-v2)/(2*hh)
-  ! v1 = grad(1,3,2)
-  ! v2 = grad(1,3,3)
-  ! zfd3 = (v1-v2)/(2*hh)
-  ! write(6,*) ' FD deriv of p_x ', zfd1
-  ! write(6,*) ' FD deriv of p_y ', zfd2
-  ! write(6,*) ' FD deriv of p_z ', zfd3
-
-
-  ! !  call setzero(pot,grad,hess,nd,nt)
-  ! !  call h3ddirectcdh(nd,zk,sources,charge,
-  ! ! 1            dipvec,ns,ztarg,nt,pot,grad,hess,thresh)
-  ! !  write(6,*) ' dir cp '
-  ! !  do i = 1,nt
-  ! !     write(6,*)pot(1,i)
-  ! !  enddo
-  ! !  write(6,*) ' analytic grad ', grad(1,icomp,1)
-  ! !  egrad = abs( grad(1,icomp,1)- zfd)/abs(grad(1,icomp,1))
-  ! !  write(6,*) ' egrad  ', egrad
-  ! !  if (icomp.eq.1) then
-  ! !     write(6,*) ' dir pxx ', hess(1,1,1)
-  ! !     write(6,*) ' dir pxy ', hess(1,4,1)
-  ! !     write(6,*) ' dir pxz ', hess(1,5,1)
-  ! !     exx = abs( hess(1,1,1)- zfd1)/abs(hess(1,1,1))
-  ! !     exy = abs( hess(1,4,1)- zfd2)/abs(hess(1,4,1))
-  ! !     exz = abs( hess(1,5,1)- zfd3)/abs(hess(1,5,1))
-  ! !     write(6,*) ' exx  ', exx
-  ! !     write(6,*) ' exy  ', exy
-  ! !     write(6,*) ' exz  ', exz
-  ! !  else if (icomp.eq.2) then
-  ! !     write(6,*) ' dir pxy ', hess(1,4,1)
-  ! !     write(6,*) ' dir pyy ', hess(1,2,1)
-  ! !     write(6,*) ' dir pyz ', hess(1,6,1)
-  ! !     exy = abs( hess(1,4,1)- zfd1)/abs(hess(1,4,1))
-  ! !     eyy = abs( hess(1,2,1)- zfd2)/abs(hess(1,2,1))
-  ! !     eyz = abs( hess(1,6,1)- zfd3)/abs(hess(1,6,1))
-  ! !     write(6,*) ' exy  ', exy
-  ! !     write(6,*) ' eyy  ', eyy
-  ! !     write(6,*) ' eyz  ', eyz
-  ! !  else if (icomp.eq.3) then
-  ! !     write(6,*) ' dir pxz ', hess(1,4,1)
-  ! !     write(6,*) ' dir pyz ', hess(1,6,1)
-  ! !     write(6,*) ' dir pzz ', hess(1,3,1)
-  ! !     exz = abs( hess(1,5,1)- zfd1)/abs(hess(1,5,1))
-  ! !     eyz = abs( hess(1,6,1)- zfd2)/abs(hess(1,6,1))
-  ! !     ezz = abs( hess(1,3,1)- zfd3)/abs(hess(1,3,1))
-  ! !     write(6,*) ' exz  ', exz
-  ! !     write(6,*) ' eyz  ', eyz
-  ! !     write(6,*) ' ezz  ', ezz
-  ! !  endif
-
 end program helmkernels_omp_dr
 
 
 
-
-
-subroutine errl2(nd, n, x, y, errs)
-  implicit double precision (a-h,o-z)
-  double precision :: errs(nd)
-  double complex :: x(nd,n), y(nd,n)
-
-  do i = 1,nd
-     errs(i) = 0
-     do j = 1,n
-        errs(i) = errs(i) + abs(x(i,j)-y(i,j))
-     end do
-     errs(i) = sqrt(errs(i))
-  end do
-
-  return
-end subroutine errl2
 
 
 
