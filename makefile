@@ -1,4 +1,4 @@
-# Makefile for FMM3D
+
 # # This is the only makefile; there are no makefiles in subdirectories.
 # Users should not need to edit this makefile (doing so would make it
 # hard to stay up to date with repo version). Rather in order to
@@ -16,7 +16,7 @@ FC=gfortran
 # set compiler flags for c and fortran
 FFLAGS= -fPIC -O3 -march=native -funroll-loops -std=legacy -w
 FFLAGS_DYN= -shared -fPIC
-CFLAGS= -fPIC -O3 -march=native -funroll-loops -std=c99
+CFLAGS= -fPIC -O3 -march=native -funroll-loops -std=gnu17
 CXXFLAGS= -std=c++11 -DSCTL_PROFILE=-1 -fPIC -O3 -march=native -funroll-loops
 
 # set linking libraries
@@ -32,7 +32,7 @@ PYTHON=python
 
 
 # flags for MATLAB MEX compilation..
-MFLAGS=-compatibleArrayDims -DMWF77_UNDERSCORE1
+MFLAGS=-compatibleArrayDims -DMWF77_UNDERSCORE1 "CFLAGS=-std=gnu17"
 MWFLAGS=-c99complex
 MOMPFLAGS = -D_OPENMP
 
