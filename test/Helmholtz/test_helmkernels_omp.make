@@ -1,8 +1,8 @@
 #HOST = gcc
-#HOST = gcc-openmp
-HOST = nag
+HOST = gcc-openmp
+#HOST = nag
 
-PROJECT = int2-hfmm3d-vec
+PROJECT = int2-helmkernels-omp
 
 # FC - fortran compiler
 # FFLAGS - fortran compiler flags
@@ -35,34 +35,7 @@ HELM = ../../src/Helmholtz
 default: all
 
 
-OBJECTS = test_hfmm3d_vec.o \
-    $(COM)/hkrand.o \
-    $(COM)/dlaran.o \
-    $(COM)/prini.o \
-    $(COM)/rotgen.o \
-    $(COM)/legeexps.o \
-    $(COM)/rotviarecur.o \
-    $(COM)/yrecursion.o \
-    $(COM)/besseljs3d.o \
-    $(COM)/rotproj.o \
-    $(COM)/dfft.o \
-    $(COM)/fmmcommon.o \
-    $(COM)/tree_routs3d.o \
-    $(COM)/pts_tree3d.o \
-    $(COM)/cumsum.o \
-    $(HELM)/h3dterms.o \
-    $(HELM)/h3dtrans.o \
-    $(HELM)/helmrouts3d.o \
-    $(HELM)/helmkernels.o \
-    $(HELM)/projections.o \
-    $(HELM)/h3dcommon.o \
-    $(HELM)/hfmm3d.o \
-    $(HELM)/hfmm3dwrap_vec.o \
-    $(HELM)/hpwrouts.o \
-    $(HELM)/hwts3e.o \
-    $(HELM)/hnumphys.o \
-    $(HELM)/hnumfour.o \
-    $(HELM)/hndiv.o \
+OBJECTS = test_helmkernels_omp.o ../../src/Helmholtz/helmkernels.o
 
 all: $(OBJECTS) 
 	$(FC) $(FFLAGS)  -o $(PROJECT) $(OBJECTS) 
@@ -70,6 +43,9 @@ all: $(OBJECTS)
 
 
 # implicit rules for objects (note -o ensures writes to correct dir)
+%.o: %.f90
+	$(FC) -c $(FFLAGS) $< -o $@
+
 %.o: %.f %.h
 	$(FC) -c $(FFLAGS) $< -o $@
 
