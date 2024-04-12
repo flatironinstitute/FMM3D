@@ -16,7 +16,7 @@
 %   hfmm3dTest
 %   emfmm3dTest
 %   stfmm3dTest
-%   stfmm3dPerfTest
+%   stfmm3dPerfTest - demo and math test for stokeslet & stresslet, traction
 %
 % For examples of use see:
 %   lfmm3d_example
