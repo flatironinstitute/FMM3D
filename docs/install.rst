@@ -114,7 +114,8 @@ In order to disable multi-threading, append ``OMP=OFF`` to the make task.
 
 In order to use the optimized direct evaluation kernels (this
 automatically turns on multithreading as well), append ``FAST_KER=ON`` to
-the make task. This option is currently *not* supported on Windows.
+the make task. The optimized direct kernel evaluation rotuines require
+gcc version 9 or higher. This option is currently *not* supported on Windows.
 
 
 All of these different libraries are
@@ -175,7 +176,7 @@ usage examples for the Python wrappers.
 .. note::
    On windows, you will need to update ``distutils.cfg`` located in 
    ``(PYTHON_INSTALL_DIR)\Lib\distutils`` and set it to::
-
+ 
        [build]
        compiler=mingw32
 
@@ -212,13 +213,20 @@ First make sure you have MATLAB installed.
 
 Then run ``make matlab`` (after copying over the operating
 system specific make.inc.* file to make.inc) which links the .m files to
-the .c file in the matlab folder.
+the .c file in the matlab folder. 
 
 To run tests, you can run ``matlab test_hfmm3d.m`` and 
 ``matlab test_lfmm3d.m`` and it should return with $0$ crashes.
 
 Example codes for demonstrating the Helmholtz and Laplace
 interfaces are ``hfmm3d_example.m`` and ``lfmm3d_example.m``.
+
+In order to build the MATLAB routines with the optimized direct kernel 
+evaluation routines on a Mac, we recommend building mex with gcc
+instead of clang. The relevant xml files for configuring mex to use
+gcc can be found at https://github.com/danfortunato/matlab-gcc.
+Follow the instructions there to configure mex with gcc, and set
+CC = ``gcc-<version number>`` in your make.inc file. 
 
 
 Tips for installing dependencies
@@ -262,16 +270,16 @@ Then do::
 On Windows
 ~~~~~~~~~~~~~~~
 
-Download 64 bit mingw (available `here <https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release/>`_).
+Download 64 bit mingw (Available at https://sourceforge.net/projects/mingw-w64/files/mingw-w64/mingw-w64-release/).
 Recommended version is ``gcc-8.1.0``, ``x86_64-posix-seh``.
 Follow the install instructions and append to the environment variable ``PATH`` the
 location of the bin directory of your mingw installation.
 
 Download  and install ``make`` for windows 
-(Available `here <http://gnuwin32.sourceforge.net/packages/make.htm>`_).
+(Available at http://gnuwin32.sourceforge.net/packages/make.htm).
 
 Download and install ``git`` for windows
-(Available `here <https://git-scm.com/download/win>`_).
+(Available at https://git-scm.com/download/win).
 
 Tips for installing optional dependencies
 ******************************************
