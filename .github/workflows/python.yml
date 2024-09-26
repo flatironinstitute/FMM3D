@@ -1,15 +1,6 @@
 name: Python Build
 
-on:
-  push:
-    branches:
-      - master
-    tags:
-      - v*
-      - py_v*
-  pull_request:
-    branches:
-      - master
+on: workflow_dispatch
 
 jobs:
   Linux:

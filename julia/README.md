@@ -6,7 +6,20 @@ Flatiron Institute's `FMM3D` library.
 
 ## Using FMM3D.jl
 
-For now, FMM3D.jl can be obtained by downloading this
+`FMM3D.jl` is now registered in the Julia General registry, so you can install it in Julia 1.6 or later.
+Press `]` in Julia REPL to enter the package manager and then enter:
+```julia
+pkg> add FMM3D
+```
+then the package should be installed automatically.
+
+You can then use the package with
+
+```julia
+julia> using FMM3D
+```
+
+It can also be obtained by downloading this
 git repository and a recent version of julia
 (1.6 or later is required). Then, from the
 root directory (the parent directory of the
@@ -14,13 +27,15 @@ julia subdirectory) run the following in
 julia:
 
 ```julia
- Pkg.add(url=".",subdir="julia")
+julia> using Pkg
+
+julia> Pkg.add(url=".",subdir="julia")
  ```
 
 You can test the package with
 
 ```julia
-Pkg.test("FMM3D")
+julia> Pkg.test("FMM3D")
 ```
 
 ## Contributing
