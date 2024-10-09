@@ -59,7 +59,7 @@ function [U] = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
 %  The (Type I) stresslet, T_{ijk}, and its associated pressure
 %  tensor, PI_{jk}, we define as
 %   
-%     T_{ijk}(x,y) = -3 r_i r_j r_k/ r^5
+%     T_{ijk}(x,y) = 3 r_i r_j r_k/ r^5
 %     PI_{jk}(x,y) = -2 delta_{jk}/r^3 + 6 r_j r_k/r^5      
 % 
 %  Args:

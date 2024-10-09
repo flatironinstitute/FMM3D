@@ -40,7 +40,7 @@ for j=1:ns
   if ifstrs
     mu = srcinfo.strslet(:,j);   % this stresslet strength
     nu = srcinfo.strsvec(:,j);   % this stresslet source vector (normal)
-    ui = ui - (6/r^5)*R*dot(mu,R)*dot(nu,R);  % apply T_{ijk}, sign matches
+    ui = ui + (6/r^5)*R*dot(mu,R)*dot(nu,R);  % apply T_{ijk}, sign matches
   end
 end
 ui = 0.5 * ui;   % FMM3D is 1/4pi off from true 1/8pi prefactor

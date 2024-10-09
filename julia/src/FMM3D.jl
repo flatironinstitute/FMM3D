@@ -1251,7 +1251,7 @@ pressure tensor, ``\\Pi_{jk}``, (without the ``1/4\\pi``
  scaling) are
          
 ```math
- T_{ijk}(x,y) = -3 r_i r_j r_k/ r^5 \\; , \\quad
+ T_{ijk}(x,y) = 3 r_i r_j r_k/ r^5 \\; , \\quad
  PI_{jk} = -2 \\delta_{jk} + 6 r_j r_k/r^5   
 ```
 
@@ -1476,7 +1476,7 @@ pressure tensor, ``\\Pi_{jk}``, (without the ``1/4\\pi``
  scaling) are
          
 ```math
- T_{ijk}(x,y) = -3 r_i r_j r_k/ r^5 \\; , \\quad
+ T_{ijk}(x,y) = 3 r_i r_j r_k/ r^5 \\; , \\quad
  PI_{jk} = -2 \\delta_{jk} + 6 r_j r_k/r^5   
 ```
 
