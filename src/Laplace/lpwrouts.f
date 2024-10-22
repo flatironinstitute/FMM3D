@@ -155,11 +155,11 @@ c***********************************************************************
         do j=1,nalpha
           alpha=(j-1)*halpha
 	      do mm = 2,numfour(i),2
-            fexpe(nexte)  = cdexp(ima*(mm-1)*alpha)
+            fexpe(nexte)  = exp(ima*(mm-1)*alpha)
 	        nexte = nexte + 1
           enddo
 	      do mm = 3,numfour(i),2
-            fexpo(nexto)  = cdexp(ima*(mm-1)*alpha)
+            fexpo(nexto)  = exp(ima*(mm-1)*alpha)
 	        nexto = nexto + 1
           enddo
         enddo
@@ -172,7 +172,7 @@ c***********************************************************************
 	    do mm = 2,numfour(i)
           do j=1,nalpha
             alpha=(j-1)*halpha
-            fexpback(next)  = cdexp(-ima*(mm-1)*alpha)
+            fexpback(next)  = exp(-ima*(mm-1)*alpha)
 	        next = next + 1
           enddo
         enddo
@@ -641,7 +641,7 @@ c
           enddo
           do mm = 2,numfour(i),2
             do idim=1,nd
-              rtmp = 2*imag(fexpe(nexte)*mexpf(idim,nftot+mm))
+              rtmp = 2*dimag(fexpe(nexte)*mexpf(idim,nftot+mm))
               mexpphys(idim,nptot+ival) = mexpphys(idim,nptot+ival) +
      1                dcmplx(0.0d0,rtmp)
             enddo
@@ -2488,9 +2488,10 @@ c--------------------------------------------------------------------
      1   whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot)
       implicit none
       integer *8 nd
+      integer *8 ntarg,nlam
       real *8 center(3),boxsize,targ(3,ntarg),rlams(nlam),pot(nd,ntarg)
       real *8 whts(nlam)
-      integer *8 ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      integer *8 nphys(nlam),nexptotp,nphmax
       complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       complex *16 ima
       complex *16, allocatable :: cc(:)
@@ -2555,9 +2556,10 @@ c--------------------------------------------------------------------
      1   whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot)
       implicit none
       integer *8 nd
+      integer *8 ntarg,nlam
       real *8 center(3),boxsize,targ(3,ntarg),rlams(nlam),pot(nd,ntarg)
       real *8 whts(nlam)
-      integer *8 ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      integer *8 nphys(nlam),nexptotp,nphmax
       complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       complex *16 ima
       complex *16, allocatable :: cc(:)
@@ -2620,9 +2622,10 @@ c--------------------------------------------------------------------
      1   whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot)
       implicit none
       integer *8 nd
+      integer *8 ntarg,nlam
       real *8 center(3),boxsize,targ(3,ntarg),rlams(nlam),pot(nd,ntarg)
       real *8 whts(nlam)
-      integer *8 ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      integer *8 nphys(nlam),nexptotp,nphmax
       complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       complex *16 ima
       complex *16, allocatable :: cc(:)
@@ -2685,10 +2688,11 @@ c--------------------------------------------------------------------
      1   whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot,grad)
       implicit none
       integer *8 nd
+      integer *8 ntarg,nlam
       real *8 center(3),boxsize,targ(3,ntarg),rlams(nlam),pot(nd,ntarg)
       real *8 grad(nd,3,ntarg)
       real *8 whts(nlam)
-      integer *8 ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      integer *8 nphys(nlam),nexptotp,nphmax
       complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       complex *16 ima
       complex *16, allocatable :: cc(:),crc(:),crs(:)
@@ -2766,10 +2770,11 @@ c--------------------------------------------------------------------
      1   whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot,grad)
       implicit none
       integer *8 nd
+      integer *8 ntarg,nlam
       real *8 center(3),boxsize,targ(3,ntarg),rlams(nlam),pot(nd,ntarg)
       real *8 grad(nd,3,ntarg)
       real *8 whts(nlam)
-      integer *8 ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      integer *8 nphys(nlam),nexptotp,nphmax
       complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       complex *16 ima
       complex *16, allocatable :: cc(:),crc(:),crs(:)
@@ -2845,10 +2850,11 @@ c--------------------------------------------------------------------
      1   whts,nphys,nexptotp,nphmax,mexpupphys,mexpdownphys,pot,grad)
       implicit none
       integer *8 nd
+      integer *8 ntarg,nlam
       real *8 center(3),boxsize,targ(3,ntarg),rlams(nlam),pot(nd,ntarg)
       real *8 grad(nd,3,ntarg)
       real *8 whts(nlam)
-      integer *8 ntarg,nlam,nphys(nlam),nexptotp,nphmax
+      integer *8 nphys(nlam),nexptotp,nphmax
       complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
       complex *16 ima
       complex *16, allocatable :: cc(:),crc(:),crs(:)

@@ -396,7 +396,7 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
   integer *8 :: impolesort(nmpole)
 
   ! storage stuff for tree and multipole expansions
-  integer *8 :: lmptemp
+  integer *8 :: lmptemp, nboxes
   integer *8 :: iaddr(2,nboxes), lmptot
   double precision :: rmlexp(lmptot)
   double precision :: mptemp(lmptemp)
@@ -409,7 +409,6 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
   integer *8 :: nterms(0:nlevels)
   integer *8 :: ipointer(8)
   integer *8 :: itree(ltree)
-  integer *8 :: nboxes
   integer *8 :: mnbors,mnlist1, mnlist2,mnlist3,mnlist4
   integer *8 :: isrcse(2,nmpole)
   integer *8, allocatable :: nlist1(:),list1(:,:)
@@ -822,7 +821,7 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
 
       ! load the necessary quadrature for plane waves
       zk2 = zk*boxsize(ilev)
-      if ( (real(zk2).le.16*pi) .and. (imag(zk2).le.12*pi) &
+      if ( (real(zk2).le.16*pi) .and. (dimag(zk2).le.12*pi) &
           .and. (ifmp .eq. 0) ) then
         ier = 0
 

@@ -563,6 +563,7 @@ c
       double complex jsort(nd,0:ntj,-ntj:ntj,nexpc)
 
 
+      integer *8 nboxes
       integer *8 iaddr(2,nboxes), lmptot
       double precision rmlexp(lmptot)
        
@@ -576,7 +577,6 @@ c
       integer *8 nterms(0:nlevels)
       integer *8 ipointer(8),ltree
       integer *8 itree(ltree)
-      integer *8 nboxes
       double precision rscales(0:nlevels)
       double precision boxsize(0:nlevels)
       integer *8 isrcse(2,nboxes),itargse(2,nboxes),iexpcse(2,nboxes)
@@ -754,7 +754,7 @@ c
 
       zkiupbound = 12*pi
       zkrupbound = 16*pi
-      zi = imag(zk)
+      zi = dimag(zk)
 
       ilevcutoff = -1
 
@@ -1056,7 +1056,7 @@ C$OMP END PARALLEL DO
         allocate(iboxlexp(nd*(nterms(ilev)+1)*
      1           (2*nterms(ilev)+1),8,nthd))
         zk2 = zk*boxsize(ilev)
-        if(real(zk2).le.zkrupbound.and.imag(zk2).lt.zkiupbound.and.
+        if(real(zk2).le.zkrupbound.and.dimag(zk2).lt.zkiupbound.and.
      1        ilev.gt.ilevcutoff) then
 c             get new pw quadrature
             
@@ -1564,7 +1564,7 @@ C$OMP END PARALLEL DO
           deallocate(pgboxwexp)
 
 
-        else if((real(zk2).gt.zkrupbound.or.imag(zk2).gt.zkiupbound).
+        else if((real(zk2).gt.zkrupbound.or.dimag(zk2).gt.zkiupbound).
      1            and.ilev.gt.ilevcutoff) then
           nquad2 = nterms(ilev)*2.2
           if(ifprint.ge.1) print *, "In point and shoot regime"
@@ -1721,7 +1721,7 @@ c
       if(ifcharge.eq.1.and.ifdipole.eq.0) then
         do ilev=1,nlevels
           zk2 = zk*boxsize(ilev)
-          if((real(zk2).gt.zkrupbound.or.imag(zk2).gt.zkiupbound).
+          if((real(zk2).gt.zkrupbound.or.dimag(zk2).gt.zkiupbound).
      1            and.ilev.gt.ilevcutoff) then
 
 C$OMP PARALLEL DO DEFAULT(SHARED)
@@ -1756,7 +1756,7 @@ C$OMP END PARALLEL DO
       if(ifcharge.eq.0.and.ifdipole.eq.1) then
         do ilev=1,nlevels
           zk2 = zk*boxsize(ilev)
-          if((real(zk2).gt.zkrupbound.or.imag(zk2).gt.zkiupbound).
+          if((real(zk2).gt.zkrupbound.or.dimag(zk2).gt.zkiupbound).
      1            and.ilev.gt.ilevcutoff) then
 
 C$OMP PARALLEL DO DEFAULT(SHARED)
@@ -1791,7 +1791,7 @@ C$OMP END PARALLEL DO
       if(ifcharge.eq.1.and.ifdipole.eq.1) then
         do ilev=1,nlevels
           zk2 = zk*boxsize(ilev)
-          if((real(zk2).gt.zkrupbound.or.imag(zk2).gt.zkiupbound).
+          if((real(zk2).gt.zkrupbound.or.dimag(zk2).gt.zkiupbound).
      1            and.ilev.gt.ilevcutoff) then
 
 C$OMP PARALLEL DO DEFAULT(SHARED)

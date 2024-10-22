@@ -7,8 +7,8 @@ c      l3ddirectcg: direct calculation of potential and gradients
 c                   for a collection of charge sources to a 
 c                   collection of targets
 c 
-c      l3ddirectch: direct calculation of potential and gradients 
-c                   for a collection of charge sources to a 
+c      l3ddirectch: direct calculation of potential, gradients and
+c                   hessians for a collection of charge sources to a
 c                   collection of targets
 c 
 c      l3ddirectdp: direct calculation of potential for a collection
@@ -18,21 +18,21 @@ c      l3ddirectdg: direct calculation of potential and gradients
 c                   for a collection of dipole sources to a 
 c                   collection of targets
 c 
-c      l3ddirectdh: direct calculation of potential and gradients 
-c                   for a collection of dipole sources to a 
+c      l3ddirectdh: direct calculation of potential, gradients and
+c                   hessians for a collection of dipole sources to a
 c                   collection of targets
 c 
 c      l3ddirectcdp: direct calculation of potential for a collection
 c                     of charge and dipole sources to a collection 
 c                     of targets
 c 
-c      l3ddirectdg: direct calculation of potential and gradients 
+c      l3ddirectcdg: direct calculation of potential and gradients 
 c                   for a collection of charge and dipole sources to 
 c                   a collection of targets
 c
-c      l3ddirectdh: direct calculation of potential and gradients 
-c                   for a collection of charge and dipole sources to 
-c                   a collection of targets
+c      l3ddirectcdh: direct calculation of potential, gradients and
+c                   hessians for a collection of charge and dipole
+c                   sources to a collection of targets
 c
 c
 c

@@ -199,12 +199,12 @@ c
       double complex charge(nsource),dipstr(nsource)
       double precision dipvec(3,nsource)
 
+      integer *8 ntarg
       integer *8 ifpot,iffld,ifpottarg,iffldtarg
       double complex  pot(nsource),fld(3,nsource)
       double complex  pottarg(ntarg),fldtarg(3,ntarg)
 
       integer *8 nd,ifpgh,ifpghtarg
-      integer *8 ntarg
       double precision targ(3,ntarg)
       double complex, allocatable :: dipvec_in(:,:)
       double complex, allocatable :: pottmp(:),gradtmp(:,:)

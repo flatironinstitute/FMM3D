@@ -1430,7 +1430,8 @@ c
 c     branch cut at (0,+i), select the lower branch 
 c     of complex square root
 c
-      if( imag(1-z*z) .gt. 0 .and. real(1-z*z) .lt. 0) u=+sqrt(1-z*z)
+c      if( imag(1-z*z) .gt. 0 .and. real(1-z*z) .lt. 0) u=+sqrt(1-z*z)
+      if( dimag(1-z*z) .gt. 0 .and. real(1-z*z) .lt. 0) u=+sqrt(1-z*z)
 ccc      call prin2('in zylgndrbr, u=*', -u, 2)
 ccc      call prin2('in zylgndrbr, 1-z^2=*', 1-z*z, 2)
 c
@@ -1498,8 +1499,10 @@ c
 c
       ztmp = 1-z*z
       u=-sqrt(ztmp)
-      if(abs(imag(z)).le.1.0d-16.and.abs(real(z)).gt.1) then
-        if(imag(u).lt.0) u = dconjg(u)
+c      if(abs(imag(z)).le.1.0d-16.and.abs(real(z)).gt.1) then
+c        if(imag(u).lt.0) u = dconjg(u)
+      if(abs(dimag(z)).le.1.0d-16.and.abs(real(z)).gt.1) then
+        if(dimag(u).lt.0) u = dconjg(u)
       endif
       ysc(0,0)=1
       do m=0, nmax

@@ -90,6 +90,8 @@ c
 
       zkeye = zk*eye
 
+c$omp parallel do default(shared) 
+c$omp$     private(i, zdiff, j, dd, d, ztmp, idim)
       do i=1,nt
         do j=1,ns
           zdiff(1) = ztarg(1,i)-sources(1,j)
@@ -107,6 +109,7 @@ c
  1000     continue
         enddo
       enddo
+c$omp end parallel do      
 
 
       return
@@ -183,6 +186,9 @@ c
 
       zkeye = zk*eye
 
+c$omp parallel do default(shared)
+c$omp$    private(i, j, zdiff, dd, d, cd, cd1, ztmp1)
+c$omp$    private(ztmp2, ztmp3, idim)
       do i=1,nt
         do j=1,ns
           zdiff(1) = ztarg(1,i)-sources(1,j)
@@ -206,6 +212,7 @@ c
  1000     continue
         enddo
       enddo
+c$omp end parallel do      
 
 
       return
@@ -285,6 +292,8 @@ c
 
       zkeye = zk*eye
 
+c$omp parallel do default(shared)
+c$omp$   private(i, j, zdiff, dd, d, dinv, cd, cd1, idim, dotprod)
       do i=1,nt
         do j=1,ns
           zdiff(1) = ztarg(1,i)-sources(1,j)
@@ -309,6 +318,7 @@ c
  1000     continue
         enddo
       enddo
+c$omp end parallel do      
 
 
       return
@@ -394,6 +404,9 @@ c
 
       zkeye = zk*eye
 
+c$omp parallel do default(shared)
+c$omp$   private(i, j, zdiff, dd, d, dinv, dinv2, cd, cd2)
+c$omp$   private(cd3, idim, dotprod, cd4)      
       do i=1,nt
         do j=1,ns
           zdiff(1) = ztarg(1,i)-sources(1,j)
@@ -428,6 +441,7 @@ c
  1000     continue
         enddo
       enddo
+c$omp end parallel do      
 
 
       return
@@ -506,6 +520,8 @@ c
 
       zkeye = zk*eye
 
+c$omp parallel do default(shared)
+c$omp$    private(i, j, zdiff, dd, d, dinv, cd, cd1, idim, dotprod)
       do i=1,nt
         do j=1,ns
           zdiff(1) = ztarg(1,i)-sources(1,j)
@@ -532,6 +548,7 @@ c
  1000     continue
         enddo
       enddo
+c$omp end parallel do      
 
 
 
@@ -619,6 +636,9 @@ c
 
       zkeye = zk*eye
 
+c$omp parallel do default(shared)
+c$omp$   private(i, j, zdiff, dd, d, dinv, dinv2, cd, cd2, cd3)
+c$omp$   private(idim, dotprod, cd4)      
       do i=1,nt
         do j=1,ns
           zdiff(1) = ztarg(1,i)-sources(1,j)
@@ -657,6 +677,7 @@ c
  1000     continue
         enddo
       enddo
+c$omp end parallel do      
 
 
       return

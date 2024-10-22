@@ -218,8 +218,8 @@ c
 c
       subroutine drescale(n,a,r)
       implicit none
-      real *8 a(n),r
       integer *8 i,n
+      real *8 a(n),r
 
 C$OMP PARALLEL DO DEFAULT(SHARED)
       do i=1,n

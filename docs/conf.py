@@ -12,16 +12,11 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
-import os
-import sphinx.ext.autodoc
+#import sphinx.ext.autodoc
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('..'))
-sys.path.append(os.path.abspath('sphinxext'))
-sys.path.insert(0,os.path.abspath('../../texext'))
 
 # -- General configuration ------------------------------------------------
 
@@ -33,12 +28,11 @@ needs_sphinx = '1.3'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
+#    'sphinx.ext.autodoc',
     'sphinx.ext.todo',
     'sphinx.ext.napoleon',
     'sphinx.ext.mathjax',
-#    'sphinx.ext.autosectionlabel',   # needs v 1.4; can :ref: other files w/o this; removed 7/29/18
-    'texext',
+    'sphinx_math_dollar',
     'sphinxcontrib.bibtex',
 ]
 
@@ -77,7 +71,7 @@ release = u'1.0.0'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:

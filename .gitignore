@@ -22,3 +22,5 @@ lib/*
 *.log
 *.sh
 sbatch*
+*.obj
+make.inc

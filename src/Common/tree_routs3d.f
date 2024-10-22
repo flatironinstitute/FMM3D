@@ -1125,11 +1125,11 @@ c
       subroutine subdividebox(pos,npts,center,boxsize,
      1           isorted,iboxfl,subcenters)
       implicit none
+      integer *8 npts
       double precision pos(3,npts)
       double precision center(3)
       double precision subcenters(3,8)
       double precision boxsize
-      integer *8 npts
       integer *8 isorted(*)
       integer *8 iboxfl(2,8)
 
