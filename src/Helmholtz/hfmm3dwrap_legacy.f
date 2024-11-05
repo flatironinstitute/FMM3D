@@ -34,8 +34,8 @@ c
 c              
 c       Helmholtz FMM in R^3: evaluate all pairwise particle
 c       interactions (ignoring self-interaction). 
-c       We use (exp(ikr)/r) for the Green's function, without the 
-c       (1/4 pi) scaling. Self-interactions are not included.
+c       We use 1/(4\pi) (exp(ikr)/r) for the Green's function.
+c       Self-interactions are not included.
 c   
 c       The main FMM routine permits both evaluation at sources
 c       and at a collection of targets. 
@@ -84,9 +84,9 @@ c
 c              
 c              
 c       Helmholtz FMM in R^3: evaluate all pairwise particle
-c       interactions (ignoring self-interaction). 
-c       We use (exp(ikr)/r) for the Green's function, without the 
-c       (1/4 pi) scaling. Self-interactions are not included.
+c       interactions (ignoring self-interaction).
+c       We use 1/(4\pi) (exp(ikr)/r) for the Green's function.
+c       Self-interactions are not included.
 c   
 c       The main FMM routine permits both evaluation at sources
 c       and at a collection of targets. 
@@ -141,8 +141,8 @@ c       Helmholtz FMM in R^3: evaluate all pairwise particle
 c       interactions (ignoring self-interaction) 
 c       and interactions with targets.
 c
-c       We use (exp(ikr)/r) for the Green's function,
-c       without the (1/4 pi) scaling.  Self-interactions are not included.
+c       We use 1/(4\pi) (exp(ikr)/r) for the Green's function.
+c       Self-interactions are not included.
 c   
 c       This is primarily a memory management code. 
 c       The actual work is carried out in subroutine hfmm3dparttargmain.
@@ -350,8 +350,8 @@ c       Helmholtz interactions in R^3: evaluate all pairwise particle
 c       interactions (ignoring self-interaction) 
 c       and interactions with targets via direct O(N^2) algorithm.
 c
-c       We use (exp(ikr)/r) for the Green's function,
-c       without the (1/4 pi) scaling.  Self-interactions are not-included.
+c       We use 1/(4\pi) (exp(ikr)/r) for the Green's function.
+c       Self-interactions are not-included.
 c   
 c       INPUT PARAMETERS:
 c

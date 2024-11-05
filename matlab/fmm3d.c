@@ -47,6 +47,14 @@
  */
 int* mexprofrecord_= NULL;
 
+double mxWrapGetChar(const mxArray* a, const char** e)
+{
+    if (!a || mxGetClassID(a) != mxCHAR_CLASS || mxGetM(a)*mxGetN(a) != 1) {
+        *e = "Invalid char argument";
+        return 0;
+    }
+    return (char) (*mxGetChars(a));
+}
 
 /*
  * Support routines for copying data into and out of the MEX stubs, R2018a
@@ -5373,7 +5381,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 780 ----
+/* ---- fmm3d.mw: 779 ----
  * emfmm3d(int64_t[1] nd, double[1] eps, dcomplex[1] zk, int64_t[1] ns, double[3, ns] sources, int64_t[1] ifh_current, dcomplex[nd3, ns_h_current] h_current, int64_t[1] ife_current, dcomplex[nd3, ns_e_current] e_current, int64_t[1] ife_charge, dcomplex[nd, ns_e_charge] e_charge, int64_t[1] nt, double[3, nt] targ, int64_t[1] ifE, inout dcomplex[nd3, nt_E] E, int64_t[1] ifcurlE, inout dcomplex[nd3, nt_curlE] curlE, int64_t[1] ifdivE, inout dcomplex[nd, nt_divE] divE, inout int64_t[1] ier);
  */
 static const char* stubids20_ = "emfmm3d(i int64_t[x], i double[x], i dcomplex[x], i int64_t[x], i double[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], i int64_t[x], io dcomplex[xx], i int64_t[x], io dcomplex[xx], io int64_t[x])";
@@ -5746,7 +5754,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 887 ----
+/* ---- fmm3d.mw: 886 ----
  * em3ddirect(int64_t[1] nd, dcomplex[1] zk, int64_t[1] ns, double[3, ns] sources, int64_t[1] ifh_current, dcomplex[nd3, ns_h_current] h_current, int64_t[1] ife_current, dcomplex[nd3, ns_e_current] e_current, int64_t[1] ife_charge, dcomplex[nd, ns_e_charge] e_charge, int64_t[1] nt, double[3, nt] targ, int64_t[1] ifE, inout dcomplex[nd3, nt_E] E, int64_t[1] ifcurlE, inout dcomplex[nd3, nt_curlE] curlE, int64_t[1] ifdivE, inout dcomplex[nd, nt_divE] divE, double[1] thresh);
  */
 static const char* stubids21_ = "em3ddirect(i int64_t[x], i dcomplex[x], i int64_t[x], i double[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], i int64_t[x], io dcomplex[xx], i int64_t[x], io dcomplex[xx], i double[x])";
@@ -6103,7 +6111,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 1082 ----
+/* ---- fmm3d.mw: 1078 ----
  * stfmm3d(int64_t[1] nd, double[1] eps, int64_t[1] ns, double[3, ns] sources, int64_t[1] ifstoklet, double[nd3, ns_stok] stoklet, int64_t[1] ifstrslet, double[nd3, ns_strs] strslet, double[nd3, ns_strs] strsvec, int64_t[1] ifppreg, inout double[nd3, ns_pot] pot, inout double[nd, ns_pre] pre, inout double[nd9, ns_grad] grad, int64_t[1] nt, double[3, nt] targ, int64_t[1] ifppregtarg, inout double[nd3, nt_pot] pottarg, inout double[nd, nt_pre] pretarg, inout double[nd9, nt_grad] gradtarg, inout int64_t[1] ier);
  */
 static const char* stubids22_ = "stfmm3d(i int64_t[x], i double[x], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], io int64_t[x])";
@@ -6485,7 +6493,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 1179 ----
+/* ---- fmm3d.mw: 1175 ----
  * st3ddirectstokg(int64_t[1] nd, double[3, ns] sources, double[nd3, ns_stok] stoklet, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd3, nt] pottarg, inout double[nd, nt] pretarg, inout double[nd9, nt] gradtarg, double[1] thresh);
  */
 static const char* stubids23_ = "st3ddirectstokg(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])";
@@ -6691,7 +6699,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 1182 ----
+/* ---- fmm3d.mw: 1178 ----
  * st3ddirectstokstrsg(int64_t[1] nd, double[3, ns] sources, double[nd3, ns_stok] stoklet, int64_t[1] istress, double[nd3, ns_strs] strslet, double[nd3, ns_strs] strsvec, int64_t[1] ns, double[3, nt] targ, int64_t[1] nt, inout double[nd3, nt] pottarg, inout double[nd, nt] pretarg, inout double[nd9, nt] gradtarg, double[1] thresh);
  */
 static const char* stubids24_ = "st3ddirectstokstrsg(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])";
@@ -7050,11 +7058,11 @@ void mexFunction(int nlhs, mxArray* plhs[],
         mexPrintf("%d calls to fmm3d.mw:612\n", mexprofrecord_[17]);
         mexPrintf("%d calls to fmm3d.mw:615\n", mexprofrecord_[18]);
         mexPrintf("%d calls to fmm3d.mw:618\n", mexprofrecord_[19]);
-        mexPrintf("%d calls to fmm3d.mw:780\n", mexprofrecord_[20]);
-        mexPrintf("%d calls to fmm3d.mw:887\n", mexprofrecord_[21]);
-        mexPrintf("%d calls to fmm3d.mw:1082\n", mexprofrecord_[22]);
-        mexPrintf("%d calls to fmm3d.mw:1179\n", mexprofrecord_[23]);
-        mexPrintf("%d calls to fmm3d.mw:1182\n", mexprofrecord_[24]);
+        mexPrintf("%d calls to fmm3d.mw:779\n", mexprofrecord_[20]);
+        mexPrintf("%d calls to fmm3d.mw:886\n", mexprofrecord_[21]);
+        mexPrintf("%d calls to fmm3d.mw:1078\n", mexprofrecord_[22]);
+        mexPrintf("%d calls to fmm3d.mw:1175\n", mexprofrecord_[23]);
+        mexPrintf("%d calls to fmm3d.mw:1178\n", mexprofrecord_[24]);
     } else if (strcmp(id, "*profile log*") == 0) {
         FILE* logfp;
         if (nrhs != 2 || mxGetString(prhs[1], id, sizeof(id)) != 0)
@@ -7083,11 +7091,11 @@ void mexFunction(int nlhs, mxArray* plhs[],
         fprintf(logfp, "%d calls to fmm3d.mw:612\n", mexprofrecord_[17]);
         fprintf(logfp, "%d calls to fmm3d.mw:615\n", mexprofrecord_[18]);
         fprintf(logfp, "%d calls to fmm3d.mw:618\n", mexprofrecord_[19]);
-        fprintf(logfp, "%d calls to fmm3d.mw:780\n", mexprofrecord_[20]);
-        fprintf(logfp, "%d calls to fmm3d.mw:887\n", mexprofrecord_[21]);
-        fprintf(logfp, "%d calls to fmm3d.mw:1082\n", mexprofrecord_[22]);
-        fprintf(logfp, "%d calls to fmm3d.mw:1179\n", mexprofrecord_[23]);
-        fprintf(logfp, "%d calls to fmm3d.mw:1182\n", mexprofrecord_[24]);
+        fprintf(logfp, "%d calls to fmm3d.mw:779\n", mexprofrecord_[20]);
+        fprintf(logfp, "%d calls to fmm3d.mw:886\n", mexprofrecord_[21]);
+        fprintf(logfp, "%d calls to fmm3d.mw:1078\n", mexprofrecord_[22]);
+        fprintf(logfp, "%d calls to fmm3d.mw:1175\n", mexprofrecord_[23]);
+        fprintf(logfp, "%d calls to fmm3d.mw:1178\n", mexprofrecord_[24]);
         fclose(logfp);
     } else
         mexErrMsgTxt("Unknown identifier");

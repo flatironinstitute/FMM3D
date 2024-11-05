@@ -16,8 +16,7 @@
 ! It is assume that all multipole expansions are well-separated, so
 ! that even those in LIST 1 can be translated.
 !
-! We use exp(ikr)/r for the Green's function., without the 1/4\pi
-! scaling.
+! We use 1/(4\pi) exp(ikr)/r for the Green's function.
 !
 !--------------------------------------------------------------------
 !

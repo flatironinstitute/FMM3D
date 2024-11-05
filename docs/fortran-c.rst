@@ -20,7 +20,7 @@ gradient
 
 .. math::
  
-    u(x) = \sum_{j=1}^{N} \frac{c_{j}}{\|x-x_{j}\|}   - v_{j} \cdot \nabla  \left( \frac{1}{\|x-x_{j}\|} \right)  \, .
+    u(x) = \sum_{j=1}^{N} \frac{c_{j}}{4\pi\|x-x_{j}\|}   - v_{j} \cdot \nabla  \left( \frac{1}{4\pi\|x-x_{j}\|} \right)  \, .
      
 Here $x_{j}$ are the source locations, $c_{j}$ are the 
 charge strengths and $v_{j}$ are the dipole strengths, 
@@ -52,7 +52,7 @@ In general, the subroutine names take the following form::
     - t: Evaluate $u$ and its gradient at $t_{i}$, a collection of target locations specified  by the user.
     - st: Evaluate $u$ and its gradient at both source and target locations $x_{i}$ and $t_{i}$.
 
-- <int-ker>: kernel of interaction (charges/dipoles/both). The charge interactions are given by $c_{j}/\|x-x_{j}\| $, and the dipole interactions are given by $-v_{j} \cdot \nabla (1/\|x-x_{j}\|)$
+- <int-ker>: kernel of interaction (charges/dipoles/both). The charge interactions are given by $c_{j}/4\pi\|x-x_{j}\| $, and the dipole interactions are given by $-v_{j} \cdot \nabla (1/4\pi\|x-x_{j}\|)$
 
     - c: charges
     - d: dipoles
@@ -175,7 +175,7 @@ gradient
 
 .. math::
  
-    u(x) = \sum_{j=1}^{N} \frac{c_{j} e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}   - v_{j} \cdot \nabla  \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} \right) \, .
+    u(x) = \sum_{j=1}^{N} \frac{c_{j} e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|}   - v_{j} \cdot \nabla  \left( \frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|} \right) \, .
      
 Here $x_{j}$ are the source locations, $c_{j}$ are the 
 charge strengths and $v_{j}$ are the dipole strengths, 
@@ -207,7 +207,7 @@ In general, the subroutine names take the following form::
     - t: Evaluate $u$ and its gradient at $t_{i}$, a collection of target locations specified  by the user.
     - st: Evaluate $u$ and its gradient at both source and target locations $x_{i}$ and $t_{i}$.
 
-- <int-ker>: kernel of interaction (charges/dipoles/both). The charge interactions are given by $c_{j}/\|x-x_{j}\| $, and the dipole interactions are given by $-v_{j} \cdot \nabla (1/\|x-x_{j}\|)$
+- <int-ker>: kernel of interaction (charges/dipoles/both). The charge interactions are given by $c_{j}/4\pi\|x-x_{j}\| $, and the dipole interactions are given by $-v_{j} \cdot \nabla (1/4\pi\|x-x_{j}\|)$
 
     - c: charges
     - d: dipoles
@@ -320,7 +320,7 @@ denote the Stokeslet given by
 
 
 .. math::
-   \mathcal{G}^{\textrm{stok}}(x,y)=\frac{1}{2 \|x-y\|^3}
+   \mathcal{G}^{\textrm{stok}}(x,y)=\frac{1}{8\pi \|x-y\|^3}
    \begin{bmatrix}
    (x_{1}-y_{1})^2 + \|x-y \|^2 & (x_{1}-y_{1})(x_{2}-y_{2}) &
    (x_{1}-y_{1})(x_{3}-y_{3}) \\ 
@@ -335,7 +335,7 @@ a vector $v$ is given by
 
 .. math::
    v\cdot \mathcal{T}^{\textrm{stok}}(x,y)  = 
-   \frac{3 v \cdot (x-y)}{\|x-y \|^5}
+   \frac{3 v \cdot (x-y)}{4\pi\|x-y \|^5}
    \begin{bmatrix}
    (x_{1}-y_{1})^2 & (x_{1}-y_{1})(x_{2}-y_{2}) &
    (x_{1}-y_{1})(x_{3}-y_{3}) \\ 
@@ -451,7 +451,7 @@ divergence
  
 .. math::
 
-    E(x) = \sum_{j=1}^{N} \nabla \times \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} M_{j} + \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} J_{j} +  \nabla \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} \rho_{j}  \, .     
+    E(x) = \sum_{j=1}^{N} \nabla \times \frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|} M_{j} + \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} J_{j} +  \nabla \frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|} \rho_{j}  \, .     
 
 Here $x_{j}$ are the source locations,
 $M_{j}$ are the magnetic current densities,

@@ -10,10 +10,10 @@ function [U,varargout] = lfmm3d(eps,srcinfo,pg,varargin)
 %
 %  This subroutine computes the N-body Laplace
 %  interactions and its gradients in three dimensions where 
-%  the interaction kernel is given by $1/r$, namely
+%  the interaction kernel is given by $1/(4\pi r)$, namely
 % 
-%    u(x) = \sum_{j=1}^{N} c_{j} \frac{1}{\|x-x_{j}\|} - 
-%      v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)   
+%    u(x) = \sum_{j=1}^{N} c_{j} \frac{1}{4\pi\|x-x_{j}\|} - 
+%      v_{j} \cdot \nabla \left( \frac{1}{4\pi\|x-x_{j}\|}\right)   
 %
 %  where $c_{j}$ are the charge densities,
 %  $v_{j}$ are the dipole orientation vectors, and

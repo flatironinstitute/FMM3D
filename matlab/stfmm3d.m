@@ -42,10 +42,7 @@ function [U] = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
 %
 %  We use the following as the kernel definitions, noting that:
 %     1) The dynamic viscosity (mu) is assumed to be 1.
-%     2) All kernels are a factor 4pi larger than standard definitions
-%        (this is for historical reasons).
-%     Thus, in general, divide the velocity (potential or grad) outputs
-%     by 4pi.mu, and pressure by 4pi, to recover standard definitions.
+%     2) All kernels are using the standard definitions with 1/4pi scaling.
 %
 %  For a source y and target x, let r_i = x_i-y_i     (note sign)
 %  and let r = sqrt(r_1^2 + r_2^2 + r_3^2)
@@ -53,14 +50,14 @@ function [U] = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
 %  The Stokeslet, G_{ij}, and its associated pressure tensor, P_j,
 %  we define as
 %
-%     G_{ij}(x,y) = ( delta_{ij}/r  + r_i r_j / r^3 )/2
-%     P_j(x,y) = r_j/r^3
+%     G_{ij}(x,y) = ( delta_{ij}/r  + r_i r_j / r^3 )/(8\pi)
+%     P_j(x,y) = r_j/(4\pi r^3)
 %
 %  The (Type I) stresslet, T_{ijk}, and its associated pressure
 %  tensor, PI_{jk}, we define as
 %   
-%     T_{ijk}(x,y) = -3 r_i r_j r_k/ r^5
-%     PI_{jk}(x,y) = -2 delta_{jk}/r^3 + 6 r_j r_k/r^5      
+%     T_{ijk}(x,y) = -3 r_i r_j r_k/ (4\pi r^5)
+%     PI_{jk}(x,y) = 1/2\pi delta_{jk}/r^3 - 3 r_j r_k/ (2\pi r^5)
 % 
 %  Args:
 %

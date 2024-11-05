@@ -16,10 +16,9 @@ function [U] = emfmm3d(eps,zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
 %
 %  for each requested evaluation point x, where h_current and e_current
 %  are 3-vector densities and e_charge is a scalar density supplied
-%  at each source point y^{(m)}. G_k is the Helmholtz Green function
-%  without the 1/(4pi) scaling:
+%  at each source point y^{(m)}. G_k is the Helmholtz Green function:
 %
-%      G_k(x,y) = e^(ik|x-y|)/|x-y|.
+%      G_k(x,y) = e^(ik|x-y|)/(4\pi |x-y|).
 %
 %  In contrast with other FMM routines in the library, this routine
 %  has only 1 option for the evaluation points: they are specified

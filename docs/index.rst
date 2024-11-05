@@ -22,7 +22,7 @@ with corresponding real numbers $c_j$, and
 $N$ arbitrary points $x_{j} \in \mathbb{R}^{3}$, the Laplace FMM
 evaluates the $N$ real numbers
 
-.. math:: u_{\ell} = \sum_{j=1}^M \frac{c_j}{\| x_{\ell} - y_{j}\|} ~, 
+.. math:: u_{\ell} = \sum_{j=1}^M \frac{c_j}{4\pi\| x_{\ell} - y_{j}\|} ~, 
    \qquad \mbox{ for } \; \ell=1,2,\ldots N ~.
    :label: lapcp
 

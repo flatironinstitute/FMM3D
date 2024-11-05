@@ -10,10 +10,10 @@ function [U,varargout] = hfmm3d(eps,zk,srcinfo,pg,varargin)
 %
 %  This subroutine computes the N-body Helmholtz
 %  interactions and its gradients in three dimensions, where 
-%  the interaction kernel is given by $e^{ikr}/r$,
+%  the interaction kernel is given by $e^{ikr}/(4\pi r)$,
 % 
-%    u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} - 
-%      v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)   
+%    u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|} - 
+%      v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|}\right)   
 %
 %  where $c_{j}$ are the charge densities
 %  $v_{j}$ are the dipole orientation vectors, and

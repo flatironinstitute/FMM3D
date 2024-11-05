@@ -20,7 +20,7 @@ given by
 .. math::
     :label: lap_nbody
 
-    u(x) = \sum_{j=1}^{N} \frac{c_{j}}{\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)  \, , 
+    u(x) = \sum_{j=1}^{N} \frac{c_{j}}{4\pi\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{1}{4\pi\|x-x_{j}\|}\right)  \, , 
 
 at the source and target locations. When $x=x_{j}$, the term
 corresponding to $x_{j}$ is dropped from the sum.
@@ -42,7 +42,7 @@ given by
 .. math::
    :label: helm_nbody
 
-    u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)  \, , 
+    u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|}\right)  \, , 
 
 at the source and target locations. When $x=x_{j}$, the term
 corresponding to $x_{j}$ is dropped from the sum.
@@ -64,7 +64,7 @@ and its gradients $\nabla u_{\ell}(x)$ defined by the formula
 .. math::
     :label: lap_nbody_vec
 
-    u_{\ell}(x) = \sum_{j=1}^{N} \frac{c_{\ell,j}}{\|x-x_{j}\|} - v_{\ell,j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)  \, , \quad \ell=1,2,\ldots n_{d}\,
+    u_{\ell}(x) = \sum_{j=1}^{N} \frac{c_{\ell,j}}{4\pi\|x-x_{j}\|} - v_{\ell,j} \cdot \nabla \left( \frac{1}{4\pi\|x-x_{j}\|}\right)  \, , \quad \ell=1,2,\ldots n_{d}\,
 
 at the source and target locations. 
 
@@ -78,7 +78,7 @@ and its gradients $\nabla u_{\ell}(x)$ defined by the formula
 .. math::
     :label: helm_nbody_vec
 
-    u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} - v_{\ell,j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)  \, ,\quad \ell =1,2,\ldots n_{d}  
+    u_{\ell}(x) = \sum_{j=1}^{N} c_{\ell,j} \frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|} - v_{\ell,j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|}\right)  \, ,\quad \ell =1,2,\ldots n_{d}  
 
 at the source and target locations. 
 

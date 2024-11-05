@@ -43,7 +43,7 @@ for j=1:ns
     ui = ui - (6/r^5)*R*dot(mu,R)*dot(nu,R);  % apply T_{ijk}, sign matches
   end
 end
-ui = 0.5 * ui;   % FMM3D is 1/4pi off from true 1/8pi prefactor
+ui = 0.125/pi * ui;   % FMM3D is now true 1/8pi prefactor
 fprintf("rel err vs direct at ith targ: %.3g\n\n",norm(u(:,i)-ui)/norm(ui))
 
 
@@ -77,6 +77,6 @@ for j=1:ns
   f = srcinfo.stoklet(:,j);              % strength
   Ti = Ti - (3/(4*pi))*(1/r^5)*R*dot(nori,R)*dot(f,R);  %  true T_{ijk} n_j f_k
 end
-Ti = Ti * (4*pi);   % FMM3D has 1/4pi missing in prefactor
+%Ti = Ti * (4*pi);   % FMM3D has 1/4pi missing in prefactor
 fprintf("rel err vs direct at ith targ: %.3g\n",norm(T(:,i)-Ti)/norm(Ti))
 

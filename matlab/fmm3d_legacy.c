@@ -47,6 +47,14 @@
  */
 int* mexprofrecord_= NULL;
 
+double mxWrapGetChar(const mxArray* a, const char** e)
+{
+    if (!a || mxGetClassID(a) != mxCHAR_CLASS || mxGetM(a)*mxGetN(a) != 1) {
+        *e = "Invalid char argument";
+        return 0;
+    }
+    return (char) (*mxGetChars(a));
+}
 
 /*
  * Support routines for copying data into and out of the MEX stubs, R2018a

@@ -27,12 +27,12 @@ def hfmm3d(*,eps,zk,sources,charges=None,dipvec=None,
           targets=None,pg=0,pgt=0,nd=1):
     r"""
       This subroutine computes the N-body Helmholtz interactions
-      in three dimensions where the interaction kernel is given by e^{ikr}/r 
+      in three dimensions where the interaction kernel is given by e^{ikr}/(4\pi r)
       and its gradients. 
 
       .. math::
 
-          u(x) = \sum_{j=1}^{N} c_{j} \\frac{e^{ik \|x-x_{j}\|}}{\|x-x_{j}\|} - v_{j} \cdot \\nabla \left( \\frac{e^{ik \|x-x_{j}\|}}{\|x-x_{j}\|} \\right)  \, ,
+          u(x) = \sum_{j=1}^{N} c_{j} \\frac{e^{ik \|x-x_{j}\|}}{4\pi\|x-x_{j}\|} - v_{j} \cdot \\nabla \left( \\frac{e^{ik \|x-x_{j}\|}}{4\pi\|x-x_{j}\|} \\right)  \, ,
 
       where $c_{j}$ are the charge densities,  
       $v_{j}$ are the dipole orientation vectors, and 
@@ -201,13 +201,13 @@ def lfmm3d(*,eps,sources,charges=None,dipvec=None,
           targets=None,pg=0,pgt=0,nd=1):
     r"""
       This subroutine computes the N-body Laplace interactions
-      in three dimensions where the interaction kernel is given by 1/r 
+      in three dimensions where the interaction kernel is given by 1/(4\pi r)
       and its gradients. 
 
 
       .. math:: 
 
-          u(x) = \sum_{j=1}^{N} c_{j} / \|x-x_{j}\| + v_{j} \cdot \\nabla( 1/\|x-x_{j}\|)  \, ,
+          u(x) = \sum_{j=1}^{N} c_{j} / 4\pi\|x-x_{j}\| + v_{j} \cdot \\nabla( 1/4\pi\|x-x_{j}\|)  \, ,
 
       where $c_{j}$ are the charge densities, 
       $v_{j}$ are the dipole orientation vectors, and 
@@ -713,13 +713,13 @@ def h3ddir(*,zk,sources,targets,charges=None,dipvec=None,
           pgt=0,nd=1,thresh=1e-16):
     r"""
       This subroutine computes the N-body Helmholtz interactions
-      in three dimensions where the interaction kernel is given by $e^{ikr}/r$ 
+      in three dimensions where the interaction kernel is given by $e^{ikr}/(4\pi r)$ 
       and its gradients. 
 
 
       .. math::
 
-          u(x) = \sum_{j=1}^{N} c_{j} e^{ik |x-x_{j}|}/|x-x_{j}| - \\nabla( e^{ik |x-x_{j}|}/|x-x_{j}|) \cdot v_{j} \, ,
+          u(x) = \sum_{j=1}^{N} c_{j} e^{ik |x-x_{j}|}/4\pi|x-x_{j}| - \\nabla( e^{ik |x-x_{j}|}/4\pi|x-x_{j}|) \cdot v_{j} \, ,
 
       where $c_{j}$ are the charge densities,  
       $v_{j}$ are the dipole orientation vectors, and 
@@ -823,13 +823,13 @@ def l3ddir(*,sources,targets,charges=None,dipvec=None,
           pgt=0,nd=1,thresh=1e-16):
     r"""
       This subroutine computes the N-body Laplace interactions
-      in three dimensions where the interaction kernel is given by $1/r$ 
+      in three dimensions where the interaction kernel is given by $1/(4\pi r)$ 
       and its gradients. 
 
 
       .. math::
 
-          u(x) = \sum_{j=1}^{N} c_{j} /|x-x_{j}| -  \\nabla( 1/|x-x_{j}|) \cdot v_{j} \, ,
+          u(x) = \sum_{j=1}^{N} c_{j} /4\pi|x-x_{j}| -  \\nabla( 1/4\pi|x-x_{j}|) \cdot v_{j} \, ,
 
       where $c_{j}$ are the charge densities, 
       $v_{j}$ are the dipole orientation vectors, and 

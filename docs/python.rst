@@ -19,11 +19,11 @@ Laplace wrappers
 
 This subroutine computes the N-body Laplace
 interactions and its gradients in three dimensions where 
-the interaction kernel is given by $1/r$
+the interaction kernel is given by $\frac{1}/{4\pi r}$
  
 .. math::
 
-    u(x) = \sum_{j=1}^{N} \frac{c_{j}}{\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right)   
+    u(x) = \sum_{j=1}^{N} \frac{c_{j}}{4\pi\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{1}{4\pi\|x-x_{j}\|}\right)   
 
 where $c_{j}$ are the charge densities
 $v_{j}$ are the dipole orientation vectors, and
@@ -99,11 +99,11 @@ Helmholtz wrappers
 
 This subroutine computes the N-body Helmholtz
 interactions and its gradients in three dimensions where 
-the interaction kernel is given by $e^{ikr}/r$
+the interaction kernel is given by $\frac{e^{ikr}}{4\pi r}$
  
 .. math::
 
-    u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)   
+    u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|} - v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|}\right)   
 
 where $c_{j}$ are the charge densities
 $v_{j}$ are the dipole orientation vectors, and
@@ -184,7 +184,7 @@ denote the Stokeslet given by
 
 
 .. math::
-   \mathcal{G}^{\textrm{stok}}(x,y)=\frac{1}{2 \|x-y\|^3}
+   \mathcal{G}^{\textrm{stok}}(x,y)=\frac{1}{8\pi \|x-y\|^3}
    \begin{bmatrix}
    (x_{1}-y_{1})^2 + \|x-y \|^2 & (x_{1}-y_{1})(x_{2}-y_{2}) &
    (x_{1}-y_{1})(x_{3}-y_{3}) \\ 
@@ -199,7 +199,7 @@ a vector $v$ is given by
 
 .. math::
    v\cdot \mathcal{T}^{\textrm{stok}}(x,y)  = 
-   \frac{3 v \cdot (x-y)}{\|x-y \|^5}
+   \frac{3 v \cdot (x-y)}{4\pi\|x-y \|^5}
    \begin{bmatrix}
    (x_{1}-y_{1})^2 & (x_{1}-y_{1})(x_{2}-y_{2}) &
    (x_{1}-y_{1})(x_{3}-y_{3}) \\ 
@@ -299,7 +299,7 @@ given by
  
 .. math::
 
-    E(x) = \sum_{j=1}^{N} \nabla \times \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} M_{j} + \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} J_{j} +  \nabla \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} \rho_{j}       
+    E(x) = \sum_{j=1}^{N} \nabla \times \frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|} M_{j} + \frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|} J_{j} +  \nabla \frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|} \rho_{j}       
 
 where $M_{j}$ are the magnetic current densities,
 $J_{j}$ are the electric current densities, 

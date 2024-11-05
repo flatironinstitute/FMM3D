@@ -6,15 +6,15 @@ intro2 = "\n\n  .. math::\n\n"
 
 eq_start = "u(x) = "
 eq_start2 = "\sum_{j=1}^{N} "
-str1 = "c_{j} \\frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}"
-str2 = "v_{j} \cdot \\nabla \\left( \\frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\\right)" 
+str1 = "c_{j} \\frac{e^{ik\|x- x_{j}\|}}{4\pi\|x-x_{j}\|}"
+str2 = "v_{j} \cdot \\nabla \\left( \\frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|}\\right)" 
 str3 = str1+" - "+str2
 eq_cjs = [eq_start+eq_start2+str1,eq_start+"-"+eq_start2+str2,eq_start+eq_start2+str3]
 
 eq_start = "u_{\ell}(x) = "
 eq_start2 = "\sum_{j=1}^{N} "
-str1 = "c_{\ell,j} \\frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}"
-str2 = "v_{\ell,j} \cdot \\nabla \\left( \\frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\\right)" 
+str1 = "c_{\ell,j} \\frac{e^{ik\|x- x_{j}\|}}{4\pi\|x-x_{j}\|}"
+str2 = "v_{\ell,j} \cdot \\nabla \\left( \\frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|}\\right)" 
 str3 = str1+" - "+str2
 eq_nd_cjs = [eq_start+eq_start2+str1,eq_start+"-"+eq_start2+str2,eq_start+eq_start2+str3]
 
@@ -163,15 +163,15 @@ f1.close()
 #
 eq_start = "u(x) = "
 eq_start2 = "\sum_{j=1}^{N} "
-str1 = "c_{j} \\frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}"
-str2 = "v_{j} \cdot \\nabla \\left( \nc            \\frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\\right)" 
+str1 = "c_{j} \\frac{e^{ik\|x- x_{j}\|}}{4\pi\|x-x_{j}\|}"
+str2 = "v_{j} \cdot \\nabla \\left( \nc            \\frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|}\\right)" 
 str3 = str1+" - \nc            "+str2
 eq_cjs_fort = [eq_start+eq_start2+str1,eq_start+"-"+eq_start2+str2,eq_start+eq_start2+str3]
 
 eq_start = "u_{\ell}(x) = "
 eq_start2 = "\sum_{j=1}^{N} "
-str1 = "c_{\ell,j}\nc        \\frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}"
-str2 = "v_{\ell,j} \cdot \\nabla \\left( \nc        \\frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\\right)" 
+str1 = "c_{\ell,j}\nc        \\frac{e^{ik\|x- x_{j}\|}}{4\pi\|x-x_{j}\|}"
+str2 = "v_{\ell,j} \cdot \\nabla \\left( \nc        \\frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|}\\right)" 
 str3 = str1+" - \nc            "+str2
 eq_cjs_fort_nd = [eq_start+eq_start2+str1,eq_start+"-"+eq_start2+str2,eq_start+eq_start2+str3]
 
