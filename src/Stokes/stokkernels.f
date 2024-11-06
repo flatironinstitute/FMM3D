@@ -17,8 +17,8 @@ c
 c     The (Type I) stresslet, T_{ijk}, and its associated pressure
 c     tensor, PI_{jk}, are
 c     
-c     T_{ijk}(x,y) = -3/(4\pi) r_i r_j r_k/ r^5
-c     PI_{jk} = 1/(2\pi) delta_{jk} - 3/(2\pi) r_j r_k/r^5      
+c     T_{ijk}(x,y) = 3/(4\pi) r_i r_j r_k/ r^5
+c     PI_{jk} = -1/(2\pi) delta_{jk} + 3/(2\pi) r_j r_k/r^5      
 c
 
       subroutine st3ddirectstokg(nd,sources,stoklet,ns,targ,nt,
@@ -349,18 +349,18 @@ c     type I stresslet
                pl = zdiff(1)*dmu(1) + zdiff(2)*dmu(2) + zdiff(3)*dmu(3)
                pv = zdiff(1)*dnu(1) + zdiff(2)*dnu(2) + zdiff(3)*dnu(3)
 
-               temp = -3.0d0*pl*pv/r5
+               temp = 3.0d0*pl*pv/r5
                temp = temp * inv4pi
                
                pot(idim,1,i) = pot(idim,1,i) + zdiff(1)*temp
                pot(idim,2,i) = pot(idim,2,i) + zdiff(2)*temp
                pot(idim,3,i) = pot(idim,3,i) + zdiff(3)*temp
 
-               tempx1 = -3.0d0*(dmu(1)*pv + dnu(1)*pl -
+               tempx1 = 3.0d0*(dmu(1)*pv + dnu(1)*pl -
      1              5.0d0*zdiff(1)*pl*pv/r2)/ r5
-               tempx2 = -3.0d0*(dmu(2)*pv + dnu(2)*pl -
+               tempx2 = 3.0d0*(dmu(2)*pv + dnu(2)*pl -
      1              5.0d0*zdiff(2)*pl*pv/r2)/ r5
-               tempx3 = -3.0d0*(dmu(3)*pv + dnu(3)*pl -
+               tempx3 = 3.0d0*(dmu(3)*pv + dnu(3)*pl -
      1              5.0d0*zdiff(3)*pl*pv/r2)/ r5
 
                tempx1 = tempx1 * inv4pi
@@ -385,7 +385,7 @@ c     type I stresslet
                dmunu = dmu(1)*dnu(1) + dmu(2)*dnu(2) + dmu(3)*dnu(3)
                dmunu = dmunu * inv4pi
                
-               pre(idim,i) = pre(idim,i) + 2.0d0*dmunu/r3 + 2.0d0*temp
+               pre(idim,i) = pre(idim,i) - 2.0d0*dmunu/r3 + 2.0d0*temp
             enddo
             
  20         continue

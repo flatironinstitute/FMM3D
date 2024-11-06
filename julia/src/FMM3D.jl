@@ -1250,8 +1250,8 @@ The (Type I) stresslet, ``T_{ijk}``, and its associated
 pressure tensor, ``\\Pi_{jk}``, are
          
 ```math
- T_{ijk}(x,y) = -3 r_i r_j r_k/ (4\pi r^5) \\; , \\quad
- PI_{jk} = 1/2\pi \\delta_{jk} - 3 r_j r_k/(2\pi r^5)
+ T_{ijk}(x,y) = 3 r_i r_j r_k/ (4\pi r^5) \\; , \\quad
+ PI_{jk} = -1/2\pi \\delta_{jk} + 3 r_j r_k/(2\pi r^5)
 ```
 
 The output of this routine gives the velocity
@@ -1474,8 +1474,8 @@ The (Type I) stresslet, ``T_{ijk}``, and its associated
 pressure tensor, ``\\Pi_{jk}``, are
          
 ```math
- T_{ijk}(x,y) = -3 r_i r_j r_k/ (4\pi r^5) \\; , \\quad
- PI_{jk} = 1/2\pi \\delta_{jk} - 3 r_j r_k/(2\pi r^5)
+ T_{ijk}(x,y) = 3 r_i r_j r_k/ (4\pi r^5) \\; , \\quad
+ PI_{jk} = -1/2\pi \\delta_{jk} + 3 r_j r_k/(2\pi r^5)
 ```
 
 The output of this routine gives the velocity

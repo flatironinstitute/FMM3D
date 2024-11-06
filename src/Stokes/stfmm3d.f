@@ -20,8 +20,8 @@ c
 c     The (Type I) stresslet, T_{ijk}, and its associated pressure
 c     tensor, PI_{jk}, we define as
 c     
-c     T_{ijk}(x,y) = -3/(4\pi) r_i r_j r_k/ r^5
-c     PI_{jk}(x,y) = 1/(2\pi) delta_{jk}/r^3 - 3/(2\pi) r_j r_k/r^5      
+c     T_{ijk}(x,y) = 3/(4\pi) r_i r_j r_k/ r^5
+c     PI_{jk}(x,y) = -1/(2\pi) delta_{jk}/r^3 + 3/(2\pi) r_j r_k/r^5      
       
 
       subroutine stfmm3d(nd, eps, 
@@ -261,11 +261,11 @@ c$OMP$ PRIVATE(pl,pv)
                   charge(l,j,i) = charge(l,j,i) + sigma(l)/2
                endif
                if (ifstrslet .eq. 1) then
-                  dipvec(l,j,1,i) = dipvec(l,j,1,i) - (dmu(l)*dnu(1) + 
+                  dipvec(l,j,1,i) = dipvec(l,j,1,i) + (dmu(l)*dnu(1) + 
      1                 dmu(1)*dnu(l))/2
-                  dipvec(l,j,2,i) = dipvec(l,j,2,i) - (dmu(l)*dnu(2) + 
+                  dipvec(l,j,2,i) = dipvec(l,j,2,i) + (dmu(l)*dnu(2) + 
      1                 dmu(2)*dnu(l))/2
-                  dipvec(l,j,3,i) = dipvec(l,j,3,i) - (dmu(l)*dnu(3) + 
+                  dipvec(l,j,3,i) = dipvec(l,j,3,i) + (dmu(l)*dnu(3) + 
      1                 dmu(3)*dnu(l))/2
                endif
             enddo
@@ -283,11 +283,11 @@ c$OMP$ PRIVATE(pl,pv)
                pv = dnu(1)*source(1,i) + dnu(2)*source(2,i) +
      1              dnu(3)*source(3,i)
                
-               dipvec(l,j,1,i) = dipvec(l,j,1,i) -
+               dipvec(l,j,1,i) = dipvec(l,j,1,i) +
      1              (dmu(1)*pv + dnu(1)*pl)/2
-               dipvec(l,j,2,i) = dipvec(l,j,2,i) -
+               dipvec(l,j,2,i) = dipvec(l,j,2,i) +
      1              (dmu(2)*pv + dnu(2)*pl)/2
-               dipvec(l,j,3,i) = dipvec(l,j,3,i) -
+               dipvec(l,j,3,i) = dipvec(l,j,3,i) +
      1              (dmu(3)*pv + dnu(3)*pl)/2
             endif
             
