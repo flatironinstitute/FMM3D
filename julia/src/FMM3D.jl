@@ -200,13 +200,13 @@ end
 
 This function computes the N-body Helmholtz interactions
 in three dimensions where the interaction kernel is given 
-by ``e^{ikr}/r`` and its gradients. This is the 
+by ``e^{ikr}/(4\\pi r)`` and its gradients. This is the 
 ``O(N)`` fast multipole code which computes the interactions
 to the requested precision.
 
 ```math
- u(x) = \\sum_{j=1}^{N} c_{j} \\frac{e^{ik \\|x-x_{j}\\|}}{\\|x-x_{j}\\|} 
-- v_{j} \\cdot \\nabla \\left( \\frac{e^{ik \\|x-x_{j}\\|}}{\\|x-x_{j}\\|} 
+ u(x) = \\sum_{j=1}^{N} c_{j} \\frac{e^{ik \\|x-x_{j}\\|}}{4\\pi\\|x-x_{j}\\|} 
+- v_{j} \\cdot \\nabla \\left( \\frac{e^{ik \\|x-x_{j}\\|}}{4\\pi\\|x-x_{j}\\|} 
 \\right)  \\, , 
 ```
  
@@ -401,15 +401,15 @@ end
 
 This function computes the N-body Helmholtz interactions
 in three dimensions where the interaction kernel is given 
-by ``e^{ikr}/r`` and its gradients. This is the 
+by ``e^{ikr}/(4\\pi r)`` and its gradients. This is the 
 ``O(N^2)`` direct evaluation code. By convention this code only computes 
 the effect of sources on targets. If the value at sources is 
 also needed, the routine can be called again with targets equal
 to the source locations.
 
 ```math
- u(x) = \\sum_{j=1}^{N} c_{j} \\frac{e^{ik \\|x-x_{j}\\|}}{\\|x-x_{j}\\|} 
-- v_{j} \\cdot \\nabla \\left( \\frac{e^{ik \\|x-x_{j}\\|}}{\\|x-x_{j}\\|} 
+ u(x) = \\sum_{j=1}^{N} c_{j} \\frac{e^{ik \\|x-x_{j}\\|}}{4\\pi\\|x-x_{j}\\|} 
+- v_{j} \\cdot \\nabla \\left( \\frac{e^{ik \\|x-x_{j}\\|}}{4\\pi\\|x-x_{j}\\|} 
 \\right)  \\, , 
 ```
  
@@ -682,15 +682,13 @@ end
 
 This function computes the N-body Laplace interactions
 in three dimensions where the interaction kernel is given 
-by ``\$1/r\$`` and its gradients.  This is the 
+by ``\$1/(4\\pi r)\$`` and its gradients.  This is the 
 ``O(N)`` fast multipole code which computes the interactions
 to the requested precision.
 
 ```math
-u(x) = \\sum_{j=1}^{N} c_{j} / \\|x-x_{j}\\| + v_{j} 
-\\cdot \\nabla( 1/\\|x-x_{j}\\|)  \\, ,
-u(x) = \\sum_{j=1}^{N} c_{j} \\frac{1}{\\|x-x_{j}\\|} 
-- v_{j} \\cdot \\nabla \\left( \\frac{1}{\\|x-x_{j}\\|} 
+u(x) = \\sum_{j=1}^{N} c_{j} \\frac{1}{4\\pi\\|x-x_{j}\\|} 
+- v_{j} \\cdot \\nabla \\left( \\frac{1}{4\\pi\\|x-x_{j}\\|} 
 \\right)  \\, , 
 ```
  
@@ -870,15 +868,15 @@ end
 
 This function computes the N-body Laplace interactions
 in three dimensions where the interaction kernel is given 
-by ``1/r`` and its gradients.  This is the 
+by ``1/(4\\pi r)`` and its gradients.  This is the 
 ``O(N^2)`` direct evaluation code. By convention this code only computes 
 the effect of sources on targets. If the value at sources is 
 also needed, the routine can be called again with targets equal
 to the source locations.
 
 ```math
- u(x) = \\sum_{j=1}^{N} c_{j} \\frac{1}{\\|x-x_{j}\\|} 
-- v_{j} \\cdot \\nabla \\left( \\frac{1}{\\|x-x_{j}\\|} 
+ u(x) = \\sum_{j=1}^{N} c_{j} \\frac{1}{4\\pi\\|x-x_{j}\\|} 
+- v_{j} \\cdot \\nabla \\left( \\frac{1}{4\\pi\\|x-x_{j}\\|} 
 \\right)  \\, , 
 ```
  
@@ -1282,30 +1280,30 @@ The Stokeslet, ``G_{ij}``, and its associated pressure tensor,
 ``P_j``, are
 
 ```math
-G_{ij}(x,y) = (r_i r_j)/(8\pi r^3) + \\delta_{ij}/(8\pi r) \\; ,
+G_{ij}(x,y) = (r_i r_j)/(8\\pi r^3) + \\delta_{ij}/(8\\pi r) \\; ,
 \\quad
-P_j(x,y) = r_j/(4\pi r^3)
+P_j(x,y) = r_j/(4\\pi r^3)
 ```
 The (Type I) stresslet, ``T_{ijk}``, and its associated
 pressure tensor, ``\\Pi_{jk}``, are
 
 ```math
- T_{ijk}(x,y) = 3 r_i r_j r_k/ (4\pi r^5) \\; , \\quad
- PI_{jk} = -1/(2\pi) \\delta_{jk} + 3 r_j r_k/(2\pi r^5)
+ T_{ijk}(x,y) = 3 r_i r_j r_k/ (4\\pi r^5) \\; , \\quad
+ PI_{jk} = -1/(2\\pi) \\delta_{jk} + 3 r_j r_k/(2\\pi r^5)
 ```
 The rotlet, ``R_{ijk}``, and its associated pressure tensor,
 ``Q_{jk}``, are
 
 ```math
- R_{ijk}(x,y) = -\\delta_{ik} r_j/(4\pi r^3) + \\delta_{ij} r_k/(4\pi r^3)\\; , \\quad
+ R_{ijk}(x,y) = -\\delta_{ik} r_j/(4\\pi r^3) + \\delta_{ij} r_k/(4\\pi r^3)\\; , \\quad
  Q_{jk} = 0;
 ```
 The doublet, ``D_{ij}``, and its associated pressure tensor,
 ``L_{jk}``, are
 
 ```math
- D_{ij}(x,y) = -\\delta_{jk} r_i/(4\pi r^3) - \\delta_{ik} r_j/(4\pi r^3) + \\delta_{ij} r_k/(4\pi r^3) + 3 r_i r_j r_k/ (4\pi r^5)\\; , \\quad
- L_{jk} = -1/(2\pi) \\delta_{jk} + 3 r_j r_k/(2\pi r^5)
+ D_{ij}(x,y) = -\\delta_{jk} r_i/(4\\pi r^3) - \\delta_{ik} r_j/(4\\pi r^3) + \\delta_{ij} r_k/(4\\pi r^3) + 3 r_i r_j r_k/ (4\\pi r^5)\\; , \\quad
+ L_{jk} = -1/(2\\pi) \\delta_{jk} + 3 r_j r_k/(2\\pi r^5)
 ```
 
 The output of this routine gives the velocity
@@ -1538,30 +1536,30 @@ The Stokeslet, ``G_{ij}``, and its associated pressure tensor,
 ``P_j``, are
 
 ```math
-G_{ij}(x,y) = (r_i r_j)/(8\pi r^3) + \\delta_{ij}/(8\pi r) \\; ,
+G_{ij}(x,y) = (r_i r_j)/(8\\pi r^3) + \\delta_{ij}/(8\\pi r) \\; ,
 \\quad
-P_j(x,y) = r_j/(4\pi r^3)
+P_j(x,y) = r_j/(4\\pi r^3)
 ```
 The (Type I) stresslet, ``T_{ijk}``, and its associated
 pressure tensor, ``\\Pi_{jk}``, are
 
 ```math
- T_{ijk}(x,y) = 3 r_i r_j r_k/ (4\pi r^5) \\; , \\quad
- PI_{jk} = -1/(2\pi) \\delta_{jk} + 3 r_j r_k/(2\pi r^5)
+ T_{ijk}(x,y) = 3 r_i r_j r_k/ (4\\pi r^5) \\; , \\quad
+ PI_{jk} = -1/(2\\pi) \\delta_{jk} + 3 r_j r_k/(2\\pi r^5)
 ```
 The rotlet, ``R_{ijk}``, and its associated pressure tensor,
 ``Q_{jk}``, are
 
 ```math
- R_{ijk}(x,y) = -\\delta_{ik} r_j/(4\pi r^3) + \\delta_{ij} r_k/(4\pi r^3)\\; , \\quad
+ R_{ijk}(x,y) = -\\delta_{ik} r_j/(4\\pi r^3) + \\delta_{ij} r_k/(4\\pi r^3)\\; , \\quad
  Q_{jk} = 0;
 ```
 The doublet, ``D_{ij}``, and its associated pressure tensor,
 ``L_{jk}``, are
 
 ```math
- D_{ij}(x,y) = -\\delta_{jk} r_i/(4\pi r^3) - \\delta_{ik} r_j/(4\pi r^3) + \\delta_{ij} r_k/(4\pi r^3) + 3 r_i r_j r_k/ (4\pi r^5)\\; , \\quad
- L_{jk} = -1/(2\pi) \\delta_{jk} + 3 r_j r_k/(2\pi r^5)
+ D_{ij}(x,y) = -\\delta_{jk} r_i/(4\\pi r^3) - \\delta_{ik} r_j/(4\\pi r^3) + \\delta_{ij} r_k/(4\\pi r^3) + 3 r_i r_j r_k/ (4\\pi r^5)\\; , \\quad
+ L_{jk} = -1/(2\\pi) \\delta_{jk} + 3 r_j r_k/(2\\pi r^5)
 ```
 
 The output of this routine gives the velocity

@@ -539,11 +539,11 @@ c     local
       integer *8 i, j, idim, l
 
       if (istress .ne. 1) then
-         call st3ddirectstokg(nd,sources,stoklet,istress,
-     1        strslet,strsvec,ns,targ,nt,pot,pre,grad,thresh)
-      else
-         call st3ddirectstokstrsg(nd,sources,stoklet,ns,targ,nt,
+         call st3ddirectstokg(nd,sources,stoklet,ns,targ,nt,
      1        pot,pre,grad,thresh)
+      else
+         call st3ddirectstokstrsg(nd,sources,stoklet,istress,
+     1        strslet,strsvec,ns,targ,nt,pot,pre,grad,thresh)
       endif
 
       threshsq = thresh**2
