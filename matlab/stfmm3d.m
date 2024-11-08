@@ -11,13 +11,18 @@ function [U] = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
 %  This routine computes the sum for the velocity vector,
 %
 %       u_i(x) = sum_m G_{ij}(x,y^{(m)}) sigma^{(m)}_j
-%                + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k
+%              + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k
+%              + sum_m R_{ijk}(x,y^{(m)}) rd^{(m)}_j rv^{(m)}_k
+%              + sum_m D_{ijk}(x,y^{(m)}) dd^{(m)}_j dv^{(m)}_k
 %
 %  for each requested evaluation point x and i=1,2,3,
 %  where sigma^{(m)} is the Stokeslet force, mu^{(m)} is the
-%  stresslet strength, and nu^{(m)} is the stresslet orientation
+%  stresslet strength, and nu^{(m)} is the stresslet orientation,
+%  rd^{(m)} is the rotlet strength density, and rv^{(m)} is the rotlet orientation,
+%  dd^{(m)} is the doublet strength density, and dv^{(m)} is the doublet orientation
 %  (note that each of these is a 3 vector per source point y^{(m)}).
-%  The stokeslet kernel G and stresslet kernel T are defined below.
+%  The stokeslet kernel G, stresslet kernel T, rotlet kernel R and doublet kernel D
+%  are defined below.
 %  Repeated indices are taken as summed over 1,2,3, ie, Einstein
 %  convention.
 %
@@ -32,13 +37,17 @@ function [U] = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
 %  grad u(x) are returned,
 %
 %      p(x) = sum_m P_j(x,y^m) sigma^{(m)}_j
-%          + sum_m PI_{jk}(x,y{(m)}) mu^{(m)}_j nu^{(m)}_k
+%           + sum_m PI_{jk}(x,y{(m)}) mu^{(m)}_j nu^{(m)}_k
+%           + sum_m L_{jk}(x,y{(m)}) dd^{(m)}_j dv^{(m)}_k
 %
 %      grad_l u_i(x) = grad_l [sum_m G_{ij}(x,y^m) sigma^{(m)}_j
-%                + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k]
+%                + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k
+%                + sum_m R_{ijk}(x,y^{(m)}) rd^{(m)}_j rv^{(m)}_k
+%                + sum_m D_{ijk}(x,y^{(m)}) dd^{(m)}_j dv^{(m)}_k]
 %
-%  where the pressure stokeslet P and pressure stresslet PI are defined
-%  below. Note that these two may be combined to get the stress tensor.
+%  where the pressure stokeslet P, pressure stresslet PI and the pressure
+%  doublet L are defined below.
+%  Note that these two may be combined to get the stress tensor.
 %
 %  We use the following as the kernel definitions, noting that:
 %     1) The dynamic viscosity (mu) is assumed to be 1.
@@ -58,6 +67,17 @@ function [U] = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
 %   
 %     T_{ijk}(x,y) = 3 r_i r_j r_k/ (4\pi r^5)
 %     PI_{jk}(x,y) = -1/2\pi delta_{jk}/r^3 + 3 r_j r_k/ (2\pi r^5)
+%
+%  The rotlet, R_{ijk}, and its associated pressure tensor, Q_{jk}, are
+%
+%     R_{ijk}(x,y) = -delta_{ik} r_j/(4\pi r^3) + delta_{ij} r_k/(4\pi r^3)
+%     Q_{jk} = 0;
+%
+%  The doublet, D_{ijk}, and its associated pressure tensor, L_{jk}, are
+%
+%     D_{ijk}(x,y) = -delta_{jk} r_i/(4\pi r^3) - delta_{ik} r_j/(4\pi r^3)
+%                  + delta_{ij} r_k/(4\pi r^3) + 3 r_i r_j r_k/ (4\pi r^5)
+%     L_{jk} = -1/(2\pi) delta_{jk} + 3 r_j r_k/(2\pi r^5)
 % 
 %  Args:
 %
@@ -171,12 +191,48 @@ function [U] = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
     strsvec = zeros(nd*3,1);
   end
 
+  if(isfield(srcinfo,'rotlet') && isfield(srcinfo,'rotvec'))
+    ifrotlet = 1;
+    ns_rot = ns;
+    rotlet = srcinfo.rotlet;
+    rotvec = srcinfo.rotvec;
+    if(nd == 1), [a,b] = size(squeeze(rotlet)); assert(a==3 && b==ns,'Rotlet must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd == 1), [a,b] = size(squeeze(rotvec)); assert(a==3 && b==ns,'Rotvec must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(rotlet); assert(a==nd && b==3 && c==ns, 'Rotlet must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(rotvec); assert(a==nd && b==3 && c==ns, 'Rotvec must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    rotlet = reshape(rotlet,[3*nd,ns]);
+    rotvec = reshape(rotvec,[3*nd,ns]);
+  else
+    ifrotlet = 0;
+    ns_rot = 1;
+    rotlet = zeros(nd*3,1);
+    rotvec = zeros(nd*3,1);
+  end
+
+  if(isfield(srcinfo,'doublet') && isfield(srcinfo,'doubvec'))
+    ifdoublet = 1;
+    ns_doub = ns;
+    doublet = srcinfo.doublet;
+    doubvec = srcinfo.doubvec;
+    if(nd == 1), [a,b] = size(squeeze(doublet)); assert(a==3 && b==ns,'Doublet must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd == 1), [a,b] = size(squeeze(doubvec)); assert(a==3 && b==ns,'Doubvec must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(doublet); assert(a==nd && b==3 && c==ns, 'Doublet must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(doubvec); assert(a==nd && b==3 && c==ns, 'Doubvec must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    doublet = reshape(doublet,[3*nd,ns]);
+    doubvec = reshape(doubvec,[3*nd,ns]);
+  else
+    ifdoublet = 0;
+    ns_doub = 1;
+    doublet = zeros(nd*3,1);
+    doubvec = zeros(nd*3,1);
+  end
+
   nd3 = 3*nd;
   nd9 = 9*nd;
   ier = 0;
 
-  mex_id_ = 'stfmm3d(i int64_t[x], i double[x], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], io int64_t[x])';
-[pot, pre, grad, pottarg, pretarg, gradtarg, ier] = fmm3d(mex_id_, nd, eps, ns, sources, ifstoklet, stoklet, ifstrslet, strslet, strsvec, ifppreg, pot, pre, grad, nt, targ, ifppregtarg, pottarg, pretarg, gradtarg, ier, 1, 1, 1, 3, ns, 1, nd3, ns_stok, 1, nd3, ns_strs, nd3, ns_strs, 1, nd3, ns_pot, nd, ns_pre, nd9, ns_grad, 1, 3, nt, 1, nd3, nt_pot, nd, nt_pre, nd9, nt_grad, 1);
+  mex_id_ = 'stfmm3d_new(i int64_t[x], i double[x], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], io int64_t[x])';
+[pot, pre, grad, pottarg, pretarg, gradtarg, ier] = fmm3d(mex_id_, nd, eps, ns, sources, ifstoklet, stoklet, ifstrslet, strslet, strsvec, ifrotlet, rotlet, rotvec, ifdoublet, doublet, doubvec, ifppreg, pot, pre, grad, nt, targ, ifppregtarg, pottarg, pretarg, gradtarg, ier, 1, 1, 1, 3, ns, 1, nd3, ns_stok, 1, nd3, ns_strs, nd3, ns_strs, 1, nd3, ns_rot, nd3, ns_rot, 1, nd3, ns_doub, nd3, ns_doub, 1, nd3, ns_pot, nd, ns_pre, nd9, ns_grad, 1, 3, nt, 1, nd3, nt_pot, nd, nt_pre, nd9, nt_grad, 1);
 
   U.pot = [];
   U.pre = [];

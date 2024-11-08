@@ -1298,11 +1298,11 @@ The rotlet, ``R_{ijk}``, and its associated pressure tensor,
  R_{ijk}(x,y) = -\\delta_{ik} r_j/(4\\pi r^3) + \\delta_{ij} r_k/(4\\pi r^3)\\; , \\quad
  Q_{jk} = 0;
 ```
-The doublet, ``D_{ij}``, and its associated pressure tensor,
+The doublet, ``D_{ijk}``, and its associated pressure tensor,
 ``L_{jk}``, are
 
 ```math
- D_{ij}(x,y) = -\\delta_{jk} r_i/(4\\pi r^3) - \\delta_{ik} r_j/(4\\pi r^3) + \\delta_{ij} r_k/(4\\pi r^3) + 3 r_i r_j r_k/ (4\\pi r^5)\\; , \\quad
+ D_{ijk}(x,y) = -\\delta_{jk} r_i/(4\\pi r^3) - \\delta_{ik} r_j/(4\\pi r^3) + \\delta_{ij} r_k/(4\\pi r^3) + 3 r_i r_j r_k/ (4\\pi r^5)\\; , \\quad
  L_{jk} = -1/(2\\pi) \\delta_{jk} + 3 r_j r_k/(2\\pi r^5)
 ```
 
@@ -1310,7 +1310,7 @@ The output of this routine gives the velocity
 ```math
  u_i(x) = \\sum_{m=1}^{N} G_{ij}(x,x_m) \\sigma^{(m)}_j
     + T_{ijk}(x,x_m) \\mu^{(m)}_j \\nu^{(m)}_k
-    + R_{ijk}(x,x_m) rs^{(m)}_j rv^{(m)}_k
+    + R_{ijk}(x,x_m) rd^{(m)}_j rv^{(m)}_k
     + D_{ijk}(x,x_m) dd^{(m)}_j dv^{(m)}_k \\,
 ```
 and, optionally, the pressure
@@ -1322,6 +1322,8 @@ and, optionally, the pressure
 ```
 where ``\\sigma^{(m)}`` is a Stokeslet density 3-vector,
 ``\\mu^{(m)}`` and ``\\nu^{(m)}`` are the stresslet
+density and orientation 3-vectors,
+``rd^{(m)}`` and ``rv^{(m)}`` are the rotlet
 density and orientation 3-vectors,
 ``dd^{(m)}`` and ``dv^{(m)}`` are the doublet
 density and orientation 3-vectors, and
@@ -1554,11 +1556,11 @@ The rotlet, ``R_{ijk}``, and its associated pressure tensor,
  R_{ijk}(x,y) = -\\delta_{ik} r_j/(4\\pi r^3) + \\delta_{ij} r_k/(4\\pi r^3)\\; , \\quad
  Q_{jk} = 0;
 ```
-The doublet, ``D_{ij}``, and its associated pressure tensor,
+The doublet, ``D_{ijk}``, and its associated pressure tensor,
 ``L_{jk}``, are
 
 ```math
- D_{ij}(x,y) = -\\delta_{jk} r_i/(4\\pi r^3) - \\delta_{ik} r_j/(4\\pi r^3) + \\delta_{ij} r_k/(4\\pi r^3) + 3 r_i r_j r_k/ (4\\pi r^5)\\; , \\quad
+ D_{ijk}(x,y) = -\\delta_{jk} r_i/(4\\pi r^3) - \\delta_{ik} r_j/(4\\pi r^3) + \\delta_{ij} r_k/(4\\pi r^3) + 3 r_i r_j r_k/ (4\\pi r^5)\\; , \\quad
  L_{jk} = -1/(2\\pi) \\delta_{jk} + 3 r_j r_k/(2\\pi r^5)
 ```
 
@@ -1566,7 +1568,7 @@ The output of this routine gives the velocity
 ```math
  u_i(x) = \\sum_{m=1}^{N} G_{ij}(x,x_m) \\sigma^{(m)}_j
     + T_{ijk}(x,x_m) \\mu^{(m)}_j \\nu^{(m)}_k
-    + R_{ijk}(x,x_m) rs^{(m)}_j rv^{(m)}_k
+    + R_{ijk}(x,x_m) rd^{(m)}_j rv^{(m)}_k
     + D_{ijk}(x,x_m) dd^{(m)}_j dv^{(m)}_k \\,
 ```
 and, optionally, the pressure
@@ -1578,6 +1580,8 @@ and, optionally, the pressure
 ```
 where ``\\sigma^{(m)}`` is a Stokeslet density 3-vector,
 ``\\mu^{(m)}`` and ``\\nu^{(m)}`` are the stresslet
+density and orientation 3-vectors,
+``rd^{(m)}`` and ``rv^{(m)}`` are the rotlet
 density and orientation 3-vectors,
 ``dd^{(m)}`` and ``dv^{(m)}`` are the doublet
 density and orientation 3-vectors, and
