@@ -558,7 +558,7 @@ def emfmm3d(*,eps,zk,sources,h_current=None,e_current=None,e_charge=None,targets
 
     return out
 
-def stfmm3d(*,eps,sources,stoklet=None,strslet=None,strsvec=None,targets=None,ifppreg=0,ifppregtarg=0,nd=1):
+def stfmm3d(*,eps,sources,stoklet=None,strslet=None,strsvec=None,rotlet=None,rotvec=None,doublet=None,doubvec=None,targets=None,ifppreg=0,ifppregtarg=0,nd=1):
     r"""
       Stokes FMM in R^{3}: evaluate all pairwise particle
       interactions (ignoring self-interactions) and
@@ -594,6 +594,14 @@ def stfmm3d(*,eps,sources,stoklet=None,strslet=None,strsvec=None,targets=None,if
                stresslet strengths (mu vectors above)
         strsvec: float(nd,3,n) or float(3,n)
                stresslet orientations (nu vectors above)
+        rotlet: float(nd,3,n) or float(3,n)
+               rotlet strengths density (rd vectors above)
+        rotvec: float(nd,3,n) or float(3,n)
+               rotlet orientations (rv vectors above)
+        doublet: float(nd,3,n) or float(3,n)
+               doublet strengths density (dd vectors above)
+        doubvec: float(nd,3,n) or float(3,n)
+               doublet orientations (dv vectors above)
         targets: float(3,nt)
                target locations (x)
 
@@ -632,8 +640,8 @@ def stfmm3d(*,eps,sources,stoklet=None,strslet=None,strsvec=None,targets=None,if
         print("Nothing to compute, set either ifppreg or ifppregtarg to non-zero")
         return out
 
-    if(stoklet is None and strslet is None and strsvec is None):
-        print("Nothing to compute, set either stoklet or strslet+strsvec to non-None")
+    if(stoklet is None and strslet is None and strsvec is None and rotlet is None and rotvec is None and doublet is None and doubvec is None):
+        print("Nothing to compute, set stoklet or strslet+strsvec to non-None or rotlet+rotvec to non-None or doublet+doubvec to non-None")
         return out
 
     if(strslet is not None and strsvec is None):
@@ -641,6 +649,20 @@ def stfmm3d(*,eps,sources,stoklet=None,strslet=None,strsvec=None,targets=None,if
         return out
     if(strslet is None and strsvec is not None):
         print("strslet and strsvec mush be both None or both not None")
+        return out
+
+    if(rotlet is not None and rotvec is None):
+        print("rotlet and rotvec mush be both None or both not None")
+        return out
+    if(rotlet is None and rotvec is not None):
+        print("rotlet and rotvec mush be both None or both not None")
+        return out
+
+    if(doublet is not None and doubvec is None):
+        print("doublet and doubvec mush be both None or both not None")
+        return out
+    if(doublet is None and doubvec is not None):
+        print("doublet and doubvec mush be both None or both not None")
         return out
 
     assert sources.shape[0] == 3, "The first dimension of sources must be 3"
@@ -660,6 +682,8 @@ def stfmm3d(*,eps,sources,stoklet=None,strslet=None,strsvec=None,targets=None,if
 
     ifstoklet = 0
     ifstrslet = 0
+    ifrotlet = 0
+    ifdoublet = 0
 
     if(stoklet is not None):
         if(nd == 1 and ns>1):
@@ -690,7 +714,41 @@ def stfmm3d(*,eps,sources,stoklet=None,strslet=None,strsvec=None,targets=None,if
         strslet = np.zeros([nd,3,ns],dtype='double')
         strsvec = np.zeros([nd,3,ns],dtype='double')
 
-    out.pot,out.pre,out.grad,out.pottarg,out.pretarg,out.gradtarg,out.ier = stfmm.stfmm3d(eps,sources,ifstoklet,stoklet,ifstrslet,strslet,strsvec,ifppreg,targets,ifppregtarg,nd,ns,nt)
+    if(rotlet is not None and rotvec is not None):
+        if(nd == 1 and ns>1):
+            assert rotlet.shape[0] == 3 and rotlet.shape[1] == ns, "rotlet vectors must be of shape [3,number of sources]"
+            assert rotvec.shape[0] == 3 and rotvec.shape[1] == ns, "rotvec vectors must be of shape [3,number of sources]"
+        if(nd == 1 and ns==1):
+            assert rotlet.shape[0] == 3, "rotlet vectors must be of shape [3,number of sources]"
+            assert rotvec.shape[0] == 3, "rotvec vectors must be of shape [3,number of sources]"
+        if(nd>1):
+            assert rotlet.shape[0] == nd and rotlet.shape[1] == 3 and rotlet.shape[2] == ns, "rotlet vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+            assert rotvec.shape[0] == nd and rotvec.shape[1] == 3 and rotvec.shape[2] == ns, "rotvec vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+        rotlet = rotlet.reshape([nd,3,ns])
+        rotvec = rotvec.reshape([nd,3,ns])
+        ifrotlet = 1
+    else:
+        rotlet = np.zeros([nd,3,ns],dtype='double')
+        rotvec = np.zeros([nd,3,ns],dtype='double')
+
+    if(doublet is not None and doubvec is not None):
+        if(nd == 1 and ns>1):
+            assert doublet.shape[0] == 3 and doublet.shape[1] == ns, "doublet vectors must be of shape [3,number of sources]"
+            assert doubvec.shape[0] == 3 and doubvec.shape[1] == ns, "doubvec vectors must be of shape [3,number of sources]"
+        if(nd == 1 and ns==1):
+            assert doublet.shape[0] == 3, "doublet vectors must be of shape [3,number of sources]"
+            assert doubvec.shape[0] == 3, "doubvec vectors must be of shape [3,number of sources]"
+        if(nd>1):
+            assert doublet.shape[0] == nd and doublet.shape[1] == 3 and doublet.shape[2] == ns, "doublet vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+            assert doubvec.shape[0] == nd and doubvec.shape[1] == 3 and doubvec.shape[2] == ns, "doubvec vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+        doublet = doublet.reshape([nd,3,ns])
+        doubvec = doubvec.reshape([nd,3,ns])
+        ifdoublet = 1
+    else:
+        doublet = np.zeros([nd,3,ns],dtype='double')
+        doubvec = np.zeros([nd,3,ns],dtype='double')
+
+    out.pot,out.pre,out.grad,out.pottarg,out.pretarg,out.gradtarg,out.ier = stfmm.stfmm3d_new(eps,sources,ifstoklet,stoklet,ifstrslet,strslet,strsvec,ifrotlet,rotlet,rotvec,ifdoublet,doublet,doubvec,ifppreg,targets,ifppregtarg,nd,ns,nt)
 
     if(ifppreg < 3):
         out.grad = None
@@ -973,7 +1031,7 @@ def em3ddir(*,eps,zk,sources,h_current=None,e_current=None,e_charge=None,targets
     r"""
     out = Output()
 
-    if(targets == None):
+    if(targets is None):
         print("Nothing to compute, set targets")
         return out
     if(ifE == 0 and ifcurlE == 0 and ifdivE == 0):
@@ -1040,7 +1098,7 @@ def em3ddir(*,eps,zk,sources,h_current=None,e_current=None,e_charge=None,targets
 
     return out
 
-def st3ddir(*,eps,sources,stoklet=None,strslet=None,strsvec=None,targets=None,ifppreg=0,ifppregtarg=0,nd=1,thresh=1e-16):
+def st3ddir(*,eps,sources,stoklet=None,strslet=None,strsvec=None,rotlet=None,rotvec=None,doublet=None,doubvec=None,targets=None,ifppreg=0,ifppregtarg=0,nd=1,thresh=1e-16):
     r"""
       This subroutine evaluates all pairwise particle
       interactions (ignoring self-interactions) and
@@ -1116,8 +1174,8 @@ def st3ddir(*,eps,sources,stoklet=None,strslet=None,strsvec=None,targets=None,if
         print("Nothing to compute, set either ifppreg or ifppregtarg to non-zero")
         return out
 
-    if(stoklet == None and strslet == None and strsvec == None):
-        print("Nothing to compute, set either stoklet or strslet+strsvec to non-None")
+    if(stoklet is None and strslet is None and strsvec is None and rotlet is None and rotvec is None and doublet is None and doubvec is None):
+        print("Nothing to compute, set stoklet or strslet+strsvec to non-None or rotlet+rotvec to non-None or doublet+doubvec to non-None")
         return out
 
     if(strslet is not None and strsvec is None):
@@ -1125,6 +1183,20 @@ def st3ddir(*,eps,sources,stoklet=None,strslet=None,strsvec=None,targets=None,if
         return out
     if(strslet is None and strsvec is not None):
         print("strslet and strsvec mush be both None or both not None")
+        return out
+
+    if(rotlet is not None and rotvec is None):
+        print("rotlet and rotvec mush be both None or both not None")
+        return out
+    if(rotlet is None and rotvec is not None):
+        print("rotlet and rotvec mush be both None or both not None")
+        return out
+
+    if(doublet is not None and doubvec is None):
+        print("doublet and doubvec mush be both None or both not None")
+        return out
+    if(doublet is None and doubvec is not None):
+        print("doublet and doubvec mush be both None or both not None")
         return out
 
     assert sources.shape[0] == 3, "The first dimension of sources must be 3"
@@ -1144,6 +1216,8 @@ def st3ddir(*,eps,sources,stoklet=None,strslet=None,strsvec=None,targets=None,if
 
     ifstoklet = 0
     ifstrslet = 0
+    ifrotlet = 0
+    ifdoublet = 0
 
     if(stoklet is not None):
         if(nd == 1 and ns>1):
@@ -1174,12 +1248,42 @@ def st3ddir(*,eps,sources,stoklet=None,strslet=None,strsvec=None,targets=None,if
         strslet = np.zeros([nd,3,ns],dtype='double')
         strsvec = np.zeros([nd,3,ns],dtype='double')
 
-    if(ifstoklet == 1 and ifstrslet == 0): 
-        out.pot,out.pre,out.grad = stfmm.st3ddirectstokg(sources,stoklet,sources,thresh,nd,ns,nt)
-        out.pottarg,out.pretarg,out.gradtarg = stfmm.st3ddirectstokg(sources,stoklet,targets,thresh,nd,ns,nt)
+    if(rotlet is not None and rotvec is not None):
+        if(nd == 1 and ns>1):
+            assert rotlet.shape[0] == 3 and rotlet.shape[1] == ns, "rotlet vectors must be of shape [3,number of sources]"
+            assert rotvec.shape[0] == 3 and rotvec.shape[1] == ns, "rotvec vectors must be of shape [3,number of sources]"
+        if(nd == 1 and ns==1):
+            assert rotlet.shape[0] == 3, "rotlet vectors must be of shape [3,number of sources]"
+            assert rotvec.shape[0] == 3, "rotvec vectors must be of shape [3,number of sources]"
+        if(nd>1):
+            assert rotlet.shape[0] == nd and rotlet.shape[1] == 3 and rotlet.shape[2] == ns, "rotlet vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+            assert rotvec.shape[0] == nd and rotvec.shape[1] == 3 and rotvec.shape[2] == ns, "rotvec vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+        rotlet = rotlet.reshape([nd,3,ns])
+        rotvec = rotvec.reshape([nd,3,ns])
+        ifrotlet = 1
     else:
-        out.pot,out.pre,out.grad = stfmm.st3ddirectstokstrsg(sources,stoklet,1,strslet,strsvec,sources,thresh,nd,ns,nt)
-        out.pottarg,out.pretarg,out.gradtarg = stfmm.st3ddirectstokstrsg(sources,stoklet,1,strslet,strsvec,targets,thresh,nd,ns,nt)
+        rotlet = np.zeros([nd,3,ns],dtype='double')
+        rotvec = np.zeros([nd,3,ns],dtype='double')
+
+    if(doublet is not None and doubvec is not None):
+        if(nd == 1 and ns>1):
+            assert doublet.shape[0] == 3 and doublet.shape[1] == ns, "doublet vectors must be of shape [3,number of sources]"
+            assert doubvec.shape[0] == 3 and doubvec.shape[1] == ns, "doubvec vectors must be of shape [3,number of sources]"
+        if(nd == 1 and ns==1):
+            assert doublet.shape[0] == 3, "doublet vectors must be of shape [3,number of sources]"
+            assert doubvec.shape[0] == 3, "doubvec vectors must be of shape [3,number of sources]"
+        if(nd>1):
+            assert doublet.shape[0] == nd and doublet.shape[1] == 3 and doublet.shape[2] == ns, "doublet vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+            assert doubvec.shape[0] == nd and doubvec.shape[1] == 3 and doubvec.shape[2] == ns, "doubvec vectors must be of shape [nd,3,ns] where nd is number of densities, and ns is number of sources"
+        doublet = doublet.reshape([nd,3,ns])
+        doubvec = doubvec.reshape([nd,3,ns])
+        ifdoublet = 1
+    else:
+        doublet = np.zeros([nd,3,ns],dtype='double')
+        doubvec = np.zeros([nd,3,ns],dtype='double')
+
+    out.pot,out.pre,out.grad = stfmm.st3ddirectstokstrsrotdoubg(sources,stoklet,ifstrslet,strslet,strsvec,ifrotlet,rotlet,rotvec,ifdoublet,doublet,doubvec,sources,thresh,nd,ns,nt)
+    out.pottarg,out.pretarg,out.gradtarg = stfmm.st3ddirectstokstrsrotdoubg(sources,stoklet,ifstrslet,strslet,strsvec,ifrotlet,rotlet,rotvec,ifdoublet,doublet,doubvec,targets,thresh,nd,ns,nt)
 
     if(ifppreg < 3):
         out.grad = None
