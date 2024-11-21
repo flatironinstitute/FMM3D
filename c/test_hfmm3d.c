@@ -8,20 +8,20 @@
 int main(int argc, char **argv)
 {
   cprin_init("stdout", "fort.13");
-  int ns=4000;
-  int nt=3999;
+  int64_t ns=4000;
+  int64_t nt=3999;
   double *source = (double *)malloc(3*ns*sizeof(double));
   double *targ = (double *)malloc(3*nt*sizeof(double));
 
   CPX *charge = (CPX *)malloc(ns*sizeof(CPX));
   CPX *dipvec = (CPX *)malloc(3*ns*sizeof(CPX));
 
-  int ntest = 10;
+  int64_t ntest = 10;
 
-  int ntests = 36;
-  int ipass[36];
+  int64_t ntests = 36;
+  int64_t ipass[36];
 
-  for(int i=0;i<ntests;i++)
+  for(int64_t i=0;i<ntests;i++)
   {
     ipass[i] = 0;
   }
@@ -30,7 +30,7 @@ int main(int argc, char **argv)
   double thresh = 1e-15;
 
   double err=0;
-  int ier = 0;
+  int64_t ier = 0;
 
   CPX *pot = (CPX *)malloc(ns*sizeof(CPX));
   CPX *potex = (CPX *)malloc(ntest*sizeof(CPX));
@@ -42,14 +42,14 @@ int main(int argc, char **argv)
   CPX *gradtarg = (CPX *)malloc(3*nt*sizeof(CPX));
   CPX *gradtargex = (CPX *)malloc(3*ntest*sizeof(CPX));
 
-  int nd = 1;
+  int64_t nd = 1;
 
-  int pg = 0;
-  int pgt = 0;
+  int64_t pg = 0;
+  int64_t pgt = 0;
 
 
 
-  for(int i=0;i<ns;i++)
+  for(int64_t i=0;i<ns;i++)
   {
     source[3*i] = pow(rand01(),2);
     source[3*i+1] = pow(rand01(),2);
@@ -63,7 +63,7 @@ int main(int argc, char **argv)
 
   }
 
-  for(int i=0; i<nt; i++)
+  for(int64_t i=0; i<nt; i++)
   {
     targ[3*i] = rand01();
     targ[3*i+1] = rand01();
@@ -76,7 +76,7 @@ int main(int argc, char **argv)
   CPX zk = 1.1 + 0.01*I;
 
 
-  int itest = 0;
+  int64_t itest = 0;
   cprin_message("testing source to source");
   cprin_message("interaction: charges");
   cprin_message("output: potentials");
@@ -672,7 +672,7 @@ int main(int argc, char **argv)
 
 
 
-  for(int i=0;i<nd*ns;i++)
+  for(int64_t i=0;i<nd*ns;i++)
   {
 
     charge[i] = rand01() + I*rand01();

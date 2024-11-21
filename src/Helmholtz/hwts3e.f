@@ -48,6 +48,7 @@ c
 c
         subroutine hwts3e(ier,eps,rk,cxs,cws,n)
         implicit real *8 (a-h,o-z)
+        integer *8 ier,n,idomain,lxs,iprec,k,iquadtype
         complex *16 cxs(*),cws(*)
         complex *16 rk,ima
         real *8, allocatable :: xs(:),ws(:)
@@ -212,6 +213,7 @@ c
 
         subroutine hwts3dgetd(ier,rk,idomain)
         implicit real *8 (a-h,o-z)
+        integer *8 ier,nx,ny,ix,iy,idomain,i
         complex *16 ima,rk
         dimension cx(100),cy(100)
         data ima/(0.0d0,1.0d0)/
@@ -323,6 +325,7 @@ c
 c
         subroutine getrkinfo2(inum,ndomains,rkmin,rkmax)
         implicit real *8 (a-h,o-z)
+        integer *8 inum,ndomains,nx,ny,ix,iy
         complex *16 rkmin,rkmax,ima
         complex *16 cx(100),cy(100)
         data ima/(0.0d0,1.0d0)/
@@ -402,6 +405,7 @@ c
 c
         subroutine hwts3p0(idomain,xs,ws,n,iquadtype,err)
         implicit real *8 (a-h,o-z)
+        integer *8 idomain,n,iquadtype
         dimension xs(*), ws(*)
 c
         n = 0
@@ -418,6 +422,7 @@ c
 c
         subroutine hwts3p1(idomain,xs,ws,n,iquadtype,err)
         implicit real *8 (a-h,o-z)
+        integer *8 idomain,n,iquadtype
         dimension xs(*), ws(*)
 c
         n = 0
@@ -434,6 +439,7 @@ c
 c
         subroutine hwts3p2(idomain,xs,ws,n,iquadtype,err)
         implicit real *8 (a-h,o-z)
+        integer *8 idomain,n,iquadtype
         dimension xs(*), ws(*)
 c
         n = 0
@@ -450,6 +456,7 @@ c
 c
         subroutine hwts3p3(idomain,xs,ws,n,iquadtype,err)
         implicit real *8 (a-h,o-z)
+        integer *8 idomain,n,iquadtype
         dimension xs(*), ws(*)
 c
         n = 0
@@ -466,6 +473,7 @@ c
 c
         subroutine hwts3p4(idomain,xs,ws,n,iquadtype,err)
         implicit real *8 (a-h,o-z)
+        integer *8 idomain,n,iquadtype
         dimension xs(*), ws(*)
 c
         n = 0

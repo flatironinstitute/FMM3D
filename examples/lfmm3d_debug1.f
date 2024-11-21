@@ -1,5 +1,5 @@
       implicit none
-      integer ns,nt
+      integer *8 ns,nt
       double precision, allocatable :: source(:,:)
       double precision, allocatable :: targ(:,:)
       double precision, allocatable :: charge(:)
@@ -9,7 +9,7 @@
       double precision, allocatable :: pottargex(:),gradtargex(:,:)
 
       double precision eps
-      integer i,j,k,ntest
+      integer *8 i,j,k,ntest
       double precision hkrand,thet,pi,erra,ra,thresh
       double precision tmp1,tmp2,tmp3,errg,rg
       

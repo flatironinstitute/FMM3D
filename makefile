@@ -33,7 +33,7 @@ PYTHON=python
 
 # flags for MATLAB MEX compilation..
 MFLAGS=-compatibleArrayDims -DMWF77_UNDERSCORE1 "CFLAGS=$(CFLAGS)"
-MWFLAGS=-c99complex
+MWFLAGS=-c99complex -i8
 MOMPFLAGS = -D_OPENMP
 
 # location of MATLAB's mex compiler

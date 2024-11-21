@@ -36,7 +36,7 @@ c     nterms  required expansion order
 c-----------------------------------------------------------------------
 c
       implicit none
-      integer j,nterms
+      integer *8 j,nterms
       real *8 xtemp1,eps
       real *8 z1,z2,hfun,jfun
 c
@@ -84,7 +84,7 @@ c     nterms  required expansion order
 c-----------------------------------------------------------------------------
 c
       implicit none
-      integer nterms,j,ier
+      integer *8 nterms,j,ier
       real *8 eps,jfun,hfun,z1,z2,xtemp1
 c
       ier = 0
@@ -136,12 +136,12 @@ c
 c-----------------------------------------------------------------------------
 c
       implicit none
-      integer nterms,ier,ii,jj,kk,i,j,k
+      integer *8 nterms,ier,ii,jj,kk,i,j,k
       real *8 xtemp1,z1,z2,z3,jfun,hfun 
       real *8 eps,rr,dx,dy,dz
 c
-      integer nterms_table(2:3,0:3,0:3)
-      integer itable(-3:3,-3:3,-3:3)
+      integer *8 nterms_table(2:3,0:3,0:3)
+      integer *8 itable(-3:3,-3:3,-3:3)
 c
       ier = 0
 c
@@ -249,12 +249,12 @@ c                        (1 means 1000 terms is insufficient).
 c-----------------------------------------------------------------------------
 c
       implicit none
-      integer nterms,ier,ii,jj,kk,i,j,k
+      integer *8 nterms,ier,ii,jj,kk,i,j,k
       real *8 z1,z2,z3,jfun,hfun,xtemp1,eps
       real *8 rr,dx,dy,dz
 c
-      integer nterms_table(2:3,0:3,0:3)
-      integer itable(-3:3,-3:3,-3:3)
+      integer *8 nterms_table(2:3,0:3,0:3)
+      integer *8 itable(-3:3,-3:3,-3:3)
 c
       ier = 0
 c
@@ -364,12 +364,12 @@ c
 c-----------------------------------------------------------------------------
 c
       implicit none
-      integer nterms,ier,ii,jj,kk,i,j,k
+      integer *8 nterms,ier,ii,jj,kk,i,j,k
       real *8 z1,z2,z3,jfun,hfun,xtemp1,eps
       real *8 rr,dx,dy,dz
 c
-      integer nterms_table(2:7,0:7,0:7)
-      integer itable(-7:7,-7:7,-7:7)
+      integer *8 nterms_table(2:7,0:7,0:7)
+      integer *8 itable(-7:7,-7:7,-7:7)
 c
       ier = 0
 c
@@ -478,12 +478,12 @@ c                        (1 means 1000 terms is insufficient).
 c-----------------------------------------------------------------------------
 c
       implicit none
-      integer nterms,ier,ii,jj,kk,i,j,k
+      integer *8 nterms,ier,ii,jj,kk,i,j,k
       real *8 z1,z2,z3,jfun,hfun,xtemp1,eps
       real *8 rr,dx,dy,dz
 c
-      integer nterms_table(2:7,0:7,0:7)
-      integer itable(-7:7,-7:7,-7:7)
+      integer *8 nterms_table(2:7,0:7,0:7)
+      integer *8 itable(-7:7,-7:7,-7:7)
 c
       ier = 0
 c
@@ -596,7 +596,7 @@ c                        (1 means 1000 terms is insufficient).
 c-----------------------------------------------------------------------------
 c
       implicit none
-      integer itype,nterms,ier,ii,jj,kk,i,j,k
+      integer *8 itype,nterms,ier,ii,jj,kk,i,j,k
       real *8 z1,z2,z3,jfun,hfun,xtemp1,eps
       real *8 rr,dx,dy,dz
 c

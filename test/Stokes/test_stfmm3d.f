@@ -15,7 +15,9 @@ c$    use omp_lib
       real *8, allocatable :: stoklet(:,:), strslet(:,:)
       real *8, allocatable :: strsvec(:,:)
       
-      integer ipass(10)
+      integer *8 ipass(10)
+      integer *8 nd,ns,nt,ifstoklet,ifstrslet,ifppreg,ifppregtarg,ier
+      integer *8 i,j,k,ntests,istress,ntest
       complex *16 eye
 c
       data eye/(0.0d0,1.0d0)/

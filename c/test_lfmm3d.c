@@ -4,23 +4,24 @@
 #include "lfmm3d_c.h"
 #include "complex.h"
 #include "cprini.h"
+#include "stdint.h"
 
 int main(int argc, char **argv)
 {
   cprin_init("stdout", "fort.13");
-  int ns=4000;
-  int nt=3999;
+  int64_t ns=4000;
+  int64_t nt=3999;
   double *source = (double *)malloc(3*ns*sizeof(double));
   double *targ = (double *)malloc(3*nt*sizeof(double));
 
   double *charge = (double *)malloc(ns*sizeof(double));
   double *dipvec = (double *)malloc(3*ns*sizeof(double));
 
-  int ntest = 10;
+  int64_t ntest = 10;
 
-  int ntests = 54;
-  int ipass[54];
-  int ier = 0;
+  int64_t ntests = 54;
+  int64_t ipass[54];
+  int64_t ier = 0;
 
   for(int i=0;i<ntests;i++)
   {
@@ -46,10 +47,10 @@ int main(int argc, char **argv)
   double *hesstarg = (double *)malloc(6*nt*sizeof(double));
   double *hesstargex = (double *)malloc(6*ntest*sizeof(double));
 
-  int nd = 1;
+  int64_t nd = 1;
 
-  int pg = 0;
-  int pgt = 0;
+  int64_t pg = 0;
+  int64_t pgt = 0;
 
 
 
@@ -79,7 +80,7 @@ int main(int argc, char **argv)
   double eps = 0.51e-3;
 
 
-  int itest = 0;
+  int64_t itest = 0;
   cprin_message("testing source to source");
   cprin_message("interaction: charges");
   cprin_message("output: potentials");

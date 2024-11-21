@@ -1,13 +1,13 @@
       implicit none
-      integer ns
+      integer *8 ns
       double precision, allocatable :: source(:,:)
       double precision, allocatable :: charge(:)
       double precision, allocatable :: pot(:)
       double precision, allocatable :: potex(:)
 
       double precision eps
-      integer i,j,k
-      integer ntest,nd
+      integer *8 i,j,k
+      integer *8 ntest,nd
       double precision thresh,ra,erra
       double precision hkrand
       

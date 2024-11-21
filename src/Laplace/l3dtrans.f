@@ -44,9 +44,9 @@ C
 C***********************************************************************
 C
       implicit none
-      integer  nterms, lw, lused, ier, nq, nquad, nquse,ldc,nterms2
-      integer lca
-      integer idim,nd
+      integer *8  nterms, lw, lused, ier, nq, nquad, nquse,ldc,nterms2
+      integer *8 lca
+      integer *8 idim,nd
       double precision x0y0z0(3),xnynzn(3)
       double precision rshift
       double precision d,theta,ctheta,phi,sc1,sc2,rvec(3)
@@ -58,7 +58,7 @@ C
       double complex, allocatable :: ephi(:)
 c
       double complex imag
-      integer  l,m,jnew,knew
+      integer *8  l,m,jnew,knew
       data imag/(0.0d0,1.0d0)/
 C
       rvec(1) = xnynzn(1) - x0y0z0(1)
@@ -175,9 +175,9 @@ c     mpolen  (double complex)  : coefficients of shifted exp.
 c
 c-----------------------------------------------------------------------
       implicit none
-      integer l0,nmax,nterms,nterms2,nquad,ier,lmp,lmpn,ldc,nd
-      integer lca
-      integer l,m,jnew,knew,i,idim
+      integer *8 l0,nmax,nterms,nterms2,nquad,ier,lmp,lmpn,ldc,nd
+      integer *8 lca
+      integer *8 l,m,jnew,knew,i,idim
       double precision d,zshift,scale,scale2,rat
       double precision, allocatable :: rscpow(:)
       double complex mpole(nd,0:lmp,-lmp:lmp)
@@ -210,7 +210,7 @@ c
           do idim=1,nd
             mpolen(idim,jnew,knew) = 0.0d0
           enddo
-          do l=l0,jnew-iabs(knew)
+	      do l=l0,jnew-abs(knew)
             do idim=1,nd
               mpolen(idim,jnew,knew)=mpolen(idim,jnew,knew)+
      1              mpole(idim,jnew-l,knew)*fr(l)*dc(jnew-knew,l)*
@@ -268,8 +268,8 @@ C
 C     local      coefficients of shifted local expansion
 C---------------------------------------------------------------------
       implicit none
-      integer idim,nd,lca
-      integer  nterms,ier,l,m,jnew,knew,nterms2,ldc,mp
+      integer *8 idim,nd,lca
+      integer *8  nterms,ier,l,m,jnew,knew,nterms2,ldc,mp
       double precision d,theta,ctheta,phi,sc1,sc2
       double precision x0y0z0(3),xnynzn(3)
       double precision rvec(3)
@@ -389,9 +389,9 @@ c
 c     local    : coefficients of shifted local exp.
 C---------------------------------------------------------------------
       implicit none
-      integer idim,nd,lca
-      integer nterms,nterms2,nquad,ier
-      integer l,lw,m,jnew,knew,kk,ll,msign,nmax,lmpn,lmp
+      integer *8 idim,nd,lca
+      integer *8 nterms,nterms2,nquad,ier
+      integer *8 l,lw,m,jnew,knew,kk,ll,msign,nmax,lmpn,lmp
       double precision scale,scale2
       double precision zshift,d
       double precision dc(0:lca,0:lca)
@@ -425,7 +425,7 @@ c
           do idim=1,nd
             local(idim,jnew,knew) = 0.0d0
           enddo
-          kk  =iabs(knew)
+          kk  =abs(knew)
           msign = (-1)**(jnew+knew)
           do l=kk,nterms
             ll=l+jnew
@@ -493,8 +493,8 @@ C
 C***********************************************************************
 C
       implicit none
-      integer idim,lda,nd
-      integer nterms,ier,l,m,jnew,knew,nterms2,ldc,mp
+      integer *8 idim,lda,nd
+      integer *8 nterms,ier,l,m,jnew,knew,nterms2,ldc,mp
       double precision x0y0z0(3),xnynzn(3),rvec(3)
       double precision d,theta,ctheta,phi,sc1,sc2
       double precision dc(0:lda,0:lda)
@@ -612,9 +612,9 @@ c
 c     local    : coefficients of shifted local exp.
 c-----------------------------------------------------------------------
       implicit none
-      integer idim,nd,lda
-      integer nmax,nterms,nterms2,nquad,ier,l,lw,m,jnew,knew
-      integer lmp,lmpn,ll
+      integer *8 idim,nd,lda
+      integer *8 nmax,nterms,nterms2,nquad,ier,l,lw,m,jnew,knew
+      integer *8 lmp,lmpn,ll
       double precision  zshift,d
       double precision  scale,scale2
       double precision, allocatable :: fr(:),rscpow(:)

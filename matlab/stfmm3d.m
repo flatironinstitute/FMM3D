@@ -178,7 +178,7 @@ function [U] = stfmm3d(eps,srcinfo,ifppreg,targ,ifppregtarg)
   nd9 = 9*nd;
   ier = 0;
 
-  mex_id_ = 'stfmm3d(i int[x], i double[x], i int[x], i double[xx], i int[x], i double[xx], i int[x], i double[xx], i double[xx], i int[x], io double[xx], io double[xx], io double[xx], i int[x], i double[xx], i int[x], io double[xx], io double[xx], io double[xx], io int[x])';
+  mex_id_ = 'stfmm3d(i int64_t[x], i double[x], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], io int64_t[x])';
 [pot, pre, grad, pottarg, pretarg, gradtarg, ier] = fmm3d(mex_id_, nd, eps, ns, sources, ifstoklet, stoklet, ifstrslet, strslet, strsvec, ifppreg, pot, pre, grad, nt, targ, ifppregtarg, pottarg, pretarg, gradtarg, ier, 1, 1, 1, 3, ns, 1, nd3, ns_stok, 1, nd3, ns_strs, nd3, ns_strs, 1, nd3, ns_pot, nd, ns_pre, nd9, ns_grad, 1, 3, nt, 1, nd3, nt_pot, nd, nt_pre, nd9, nt_grad, 1);
 
   U.pot = [];

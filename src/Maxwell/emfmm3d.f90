@@ -35,7 +35,7 @@ implicit none
 !    
 !
 !  input:
-!    nd - integer
+!    nd - integer *8
 !      number of densities (h_current,e_current,e_charge)
 !
 !    eps - real *8
@@ -44,47 +44,47 @@ implicit none
 !    zk - complex *16
 !      Helmholtz parameter
 !
-!    ns - integer
+!    ns - integer *8
 !      number of sources
 !
 !    source - real *8 (3,ns)
 !      location of the sources
 !
-!    ifh_current - integer
+!    ifh_current - integer *8
 !     Contribution due to curl S_{k}[h_current] is included if
 !     ifh_current = 1
 !
 !    h_current - complex *16(nd,3,ns)
 !      a vector source
 !
-!    ife_current - integer
+!    ife_current - integer *8
 !      Contribution due to S_{k}[e_current] is included if
 !      ife_current = 1
 !
 !    e_current - complex *16(nd,3,ns)
 !      b vector source
 !
-!    ife_charge - integer
+!    ife_charge - integer *8
 !      Contribution due to grad S_{k} [e_charge] is included
 !      if ife_charge = 1
 !
 !    e_charge - complex *16(nd,ns)
 !      e_charge source
 !
-!    nt - integer
+!    nt - integer *8
 !      number of targets
 !
 !    targets - real *8 (3,nt)
 !      location of the targets
 !
-!    ifE - integer
+!    ifE - integer *8
 !      E is returned at the target locations if ifE = 1
 !
-!    ifcurlE - integer
+!    ifcurlE - integer *8
 !      curl E is returned at the target locations if 
 !      ifcurlE = 1
 !
-!    ifdivE - integer
+!    ifdivE - integer *8
 !      div E is returned at the target locations if 
 !      ifdivE = 1
 !
@@ -103,19 +103,19 @@ implicit none
   !List of calling arguments
   double precision, intent(in) :: eps
   double complex, intent(in) :: zk
-  integer, intent(in) :: nd,ns,nt
+  integer *8, intent(in) :: nd,ns,nt
   double precision, intent(in) :: source(3,ns)
-  integer, intent(in) :: ifh_current
+  integer *8, intent(in) :: ifh_current
   double complex, intent(in) :: h_current(nd,3,ns)
-  integer, intent(in) :: ife_current
+  integer *8, intent(in) :: ife_current
   double complex, intent(in) :: e_current(nd,3,ns)
-  integer, intent(in) :: ife_charge
+  integer *8, intent(in) :: ife_charge
   double complex, intent(in) :: e_charge(nd,ns)
-  integer, intent(in) :: ifE
+  integer *8, intent(in) :: ifE
   double complex, intent(out) :: E(nd,3,nt)
-  integer, intent(in) :: ifcurlE
+  integer *8, intent(in) :: ifcurlE
   double complex, intent(out) :: curlE(nd,3,nt)
-  integer, intent(in) :: ifdivE
+  integer *8, intent(in) :: ifdivE
   double complex, intent(out) :: divE(nd,nt)
   double precision, intent(in) :: targets(3,nt)
 
@@ -127,12 +127,12 @@ implicit none
 
   double complex, allocatable :: pot(:),grad(:,:),hess(:,:)
   double complex, allocatable :: hesstarg(:,:)
-  integer ndens
-  integer ier,iper
+  integer *8 ndens
+  integer *8 ier,iper
 
 
-  integer i,j,nd0,l,m
-  integer ifcharge,ifdipole,ifpgh,ifpghtarg
+  integer *8 i,j,nd0,l,m
+  integer *8 ifcharge,ifdipole,ifpgh,ifpghtarg
 
 !! f2py declarations
 !f2py intent(in) :: nd,eps
@@ -355,7 +355,7 @@ implicit none
 !  The subroutine also returns divE, curlE with appropriate flags
 !
 !  input:
-!    nd - integer
+!    nd - integer *8
 !      number of densities (h_current,e_current,e_charge)
 !
 !    eps - real *8
@@ -364,47 +364,47 @@ implicit none
 !    zk - complex *16
 !      Helmholtz parameter
 !
-!    ns - integer
+!    ns - integer *8
 !      number of sources
 !
 !    source - real *8 (3,ns)
 !      location of the sources
 !
-!    ifh_current - integer
+!    ifh_current - integer *8
 !     Contribution due to curl S_{k}[h_current] is included if
 !     ifh_current = 1
 !
 !    h_current - complex *16(nd,3,ns)
 !      a vector source
 !
-!    ife_current - integer
+!    ife_current - integer *8
 !      Contribution due to S_{k}[e_current] is included if
 !      ife_current = 1
 !
 !    e_current - complex *16(nd,3,ns)
 !      b vector source
 !
-!    ife_charge - integer
+!    ife_charge - integer *8
 !      Contribution due to grad S_{k} [e_charge] is included
 !      if ife_charge = 1
 !
 !    e_charge - complex *16(nd,ns)
 !      e_charge source
 !
-!    nt - integer
+!    nt - integer *8
 !      number of targets
 !
 !    targets - real *8 (3,nt)
 !      location of the targets
 !
-!    ifE - integer
+!    ifE - integer *8
 !      E is returned at the target locations if ifE = 1
 !
-!    ifcurlE - integer
+!    ifcurlE - integer *8
 !      curl E is returned at the target locations if 
 !      ifcurlE = 1
 !
-!    ifdivE - integer
+!    ifdivE - integer *8
 !      div E is returned at the target locations if 
 !      ifdivE = 1
 !
@@ -427,19 +427,19 @@ implicit none
 
   !List of calling arguments
   double complex, intent(in) :: zk
-  integer, intent(in) :: nd,ns,nt
+  integer *8, intent(in) :: nd,ns,nt
   double precision, intent(in) :: source(3,ns)
-  integer, intent(in) :: ifh_current
+  integer *8, intent(in) :: ifh_current
   double complex, intent(in) :: h_current(nd,3,ns)
-  integer, intent(in) :: ife_current
+  integer *8, intent(in) :: ife_current
   double complex, intent(in) :: e_current(nd,3,ns)
-  integer, intent(in) :: ife_charge
+  integer *8, intent(in) :: ife_charge
   double complex, intent(in) :: e_charge(nd,ns)
-  integer, intent(in) :: ifE
+  integer *8, intent(in) :: ifE
   double complex, intent(out) :: E(nd,3,nt)
-  integer, intent(in) :: ifcurlE
+  integer *8, intent(in) :: ifcurlE
   double complex, intent(out) :: curlE(nd,3,nt)
-  integer, intent(in) :: ifdivE
+  integer *8, intent(in) :: ifdivE
   double complex, intent(out) :: divE(nd,nt)
   double precision, intent(in) :: targets(3,nt)
   double precision, intent(in) :: thresh
@@ -450,9 +450,9 @@ implicit none
   double complex, allocatable :: dipvect_vect(:,:,:,:)
   double complex, allocatable :: gradE_vect(:,:,:,:)
   double complex, allocatable :: Etmp(:,:,:)
-  integer i,j,nd0,l,m
-  integer ifcharge,ifdipole,ifpot,ifgrad,ifpghtarg
-  integer ndens
+  integer *8 i,j,nd0,l,m
+  integer *8 ifcharge,ifdipole,ifpot,ifgrad,ifpghtarg
+  integer *8 ndens
 
 !! f2py declarations
 !f2py intent(in) :: nd,eps

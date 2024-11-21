@@ -52,10 +52,10 @@ c-----------------------------------------------------------------------
       
 c     INPUT:
 c     
-c     nd in: integer
+c     nd in: integer *8
 c        number of densities
 c     
-c     nsource in: integer  
+c     nsource in: integer *8  
 c        number of sources
 c
 c     source  in: double precision (3,nsource)
@@ -65,7 +65,7 @@ c
 c     stoklet in: double precision (nd,3,nsource) 
 c        Stokeslet charge strengths (sigma vectors above)
 c
-c     ntarg   in: integer  
+c     ntarg   in: integer *8  
 c        number of targs 
 c
 c     targ    in: double precision (3,ntarg)
@@ -98,7 +98,7 @@ c     TODO: implement other stresslet options
 c------------------------------------------------------------------
       implicit none
 
-      integer nd, ns, nt
+      integer *8 nd, ns, nt
       real *8 sources(3,ns),targ(3,nt)
       real *8 stoklet(nd,3,ns)
       real *8 pot(nd,3,nt),pre(nd,nt),grad(nd,3,3,nt)
@@ -111,7 +111,7 @@ c     local
       real *8 dmunu      
       real *8 threshsq
 
-      integer i, j, idim, l
+      integer *8 i, j, idim, l
 
       threshsq = thresh**2
 
@@ -223,10 +223,10 @@ c-----------------------------------------------------------------------
       
 c     INPUT:
 c     
-c     nd in: integer
+c     nd in: integer *8
 c        number of densities
 c     
-c     nsource in: integer  
+c     nsource in: integer *8  
 c        number of sources
 c
 c     source  in: double precision (3,nsource)
@@ -236,7 +236,7 @@ c
 c     stoklet in: double precision (nd,3,nsource) 
 c        Stokeslet charge strengths (sigma vectors above)
 c
-c     istress in: integer
+c     istress in: integer *8
 c        stresslet computation flag
 c           istress = 1   =>  include standard stresslet
 c                               (type I)
@@ -255,7 +255,7 @@ c
 c     strsvec  in: double precision (nd,3,nsource)   
 c        stresslet orientations (nu vectors above)
 c      
-c     ntarg   in: integer  
+c     ntarg   in: integer *8  
 c        number of targs 
 c
 c     targ    in: double precision (3,ntarg)
@@ -288,7 +288,7 @@ c     TODO: implement other stresslet options
 c------------------------------------------------------------------
       implicit none
 
-      integer nd, ns, nt, istress
+      integer *8 nd, ns, nt, istress
       real *8 sources(3,ns),targ(3,nt),strslet(nd,3,ns)
       real *8 strsvec(nd,3,ns),stoklet(nd,3,ns)
       real *8 pot(nd,3,nt),pre(nd,nt),grad(nd,3,3,nt)
@@ -301,7 +301,7 @@ c     local
       real *8 dmunu      
       real *8 threshsq
 
-      integer i, j, idim, l
+      integer *8 i, j, idim, l
 
 
       call st3ddirectstokg(nd,sources,stoklet,ns,targ,nt,

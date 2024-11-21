@@ -42,7 +42,7 @@ c
       subroutine hnumphys(eps,zk,nl,nphys)
       implicit none
       real *8 eps
-      integer iprec,idomain,nl,nphys(nl),ier
+      integer *8 iprec,idomain,nl,nphys(nl),ier
       complex *16 zk
 
       call hwts3dgetd(ier,zk,idomain)
@@ -69,7 +69,7 @@ c
 c
       subroutine hnumphys_iprec0(idomain,nl,nphys)
       implicit none
-      integer idomain,nl,nphys(nl)
+      integer *8 idomain,nl,nphys(nl)
 
         if(idomain.eq.  1) then
           nphys(  1) =   3
@@ -8273,7 +8273,7 @@ c
 c
       subroutine hnumphys_iprec1(idomain,nl,nphys)
       implicit none
-      integer idomain,nl,nphys(nl)
+      integer *8 idomain,nl,nphys(nl)
 
 
         if(idomain.eq.  1) then
@@ -17470,7 +17470,7 @@ c
 
       subroutine hnumphys_iprec2(idomain,nl,nphys)
       implicit none
-      integer idomain,nl,nphys(nl)
+      integer *8 idomain,nl,nphys(nl)
 
 
         if(idomain.eq.  1) then
@@ -29886,7 +29886,7 @@ c
 
       subroutine hnumphys_iprec3(idomain,nl,nphys)
       implicit none
-      integer idomain,nl,nphys(nl)
+      integer *8 idomain,nl,nphys(nl)
 
 
         if(idomain.eq.  1) then
@@ -46135,7 +46135,7 @@ c
 
       subroutine hnumphys_iprec4(idomain,nl,nphys)
       implicit none
-      integer idomain,nl,nphys(nl)
+      integer *8 idomain,nl,nphys(nl)
 
 
         if(idomain.eq.  1) then

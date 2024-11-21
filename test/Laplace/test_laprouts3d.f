@@ -29,7 +29,7 @@ c
       implicit real *8 (a-h,o-z)
       real *8 ztrg(3),sources(3,10)
       real *8 ztrgs(3,2)
-	  real *8 c0(3),c1(3),c2(3),c3(3)
+      real *8 c0(3),c1(3),c2(3),c3(3)
       real *8 xnodes(2000),wts(2000)
       real *8, allocatable :: dc(:,:)
 c
@@ -45,6 +45,7 @@ c
       real *8, allocatable :: wlege(:)
       integer ipass(5)
       complex *16 eye
+      integer *8 nd,ns,nt,nterms,nterms2,nterms3,nn,nlege
 c
       data eye/(0.0d0,1.0d0)/
 c
@@ -444,6 +445,7 @@ c
 c
       subroutine errprinth(nd,nt,pot,opot,fld,ofld,hess,ohess,errs)
       implicit real *8 (a-h,o-z)
+      integer *8 nd, nt, i, j, idim
       real *8 pot(nd,nt),opot(nd,nt),fld(nd,3,nt)
       real *8 ofld(nd,3,nt),hess(nd,6,nt),ohess(nd,6,nt)
       real *8 errs(3)

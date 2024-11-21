@@ -27,8 +27,9 @@ c         |       |       |       |       |       |       |
 c         -------------------------------------------------
 c
       implicit real *8 (a-h,o-z)
+      integer *8 nd,ns,nt,nterms,nterms2,nterms3,nquad,nlege
       real *8 ztrg(3),sources(3,10)
-	  real *8 c0(3),c1(3),c2(3),c3(3)
+      real *8 c0(3),c1(3),c2(3),c3(3)
       real *8 xnodes(2000),wts(2000)
 c
       complex *16 pot,fld(3),opot,ofld(3)
@@ -36,7 +37,7 @@ c
       complex *16, allocatable :: locexp1(:,:),locexp2(:,:)
       complex *16 charge(100),dipvec(3,100)
       real *8 wlege(100000),errs(2,5),err_exp(5)
-      integer ipass(5)
+      integer *8 ipass(5)
       complex *16 zk,eye
 c
       data eye/(0.0d0,1.0d0)/
@@ -148,7 +149,7 @@ c
 c       create h-expansion:
 c
       ifinit = 1
-      nquad = 2.0*max(nterms2,nterms3)
+      nquad = 2*max(nterms2,nterms3)
       call legewhts(nquad,xnodes,wts,ifinit)
       allocate(mpole1(0:nterms,-nterms:nterms))
 

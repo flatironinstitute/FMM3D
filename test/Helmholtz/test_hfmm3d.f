@@ -1,5 +1,5 @@
       implicit none
-      integer ns,nt
+      integer *8 ns,nt
       double precision, allocatable :: source(:,:),targ(:,:)
       double complex, allocatable :: charge(:)
       double complex, allocatable :: dipvec(:,:)
@@ -8,9 +8,9 @@
 
       double precision eps
       double complex eye,zk
-      integer i,j,k,ntest,ier
-      integer ifcharge,ifdipole,ifpgh,ifpghtarg
-      integer ipass(18),len1,ntests,isum
+      integer *8 i,j,k,ntest,ier
+      integer *8 ifcharge,ifdipole,ifpgh,ifpghtarg
+      integer *8 ipass(18),len1,ntests,isum
       double precision err,hkrand
       character(len=72) str1
       
@@ -691,7 +691,7 @@ c
 
       implicit none
       double complex zk
-      integer ns,nt,ifcharge,ifdipole,ifpgh,ifpghtarg
+      integer *8 ns,nt,ifcharge,ifdipole,ifpgh,ifpghtarg
       
       double precision source(3,*),targ(3,*)
       double complex dipvec(3,*)
@@ -699,7 +699,7 @@ c
 
       double complex pot(*),pottarg(*),grad(3,*),gradtarg(3,*)
 
-      integer i,j,ntest,nd
+      integer *8 i,j,ntest,nd
 
       double precision err,ra
       

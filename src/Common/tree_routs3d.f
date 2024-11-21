@@ -10,16 +10,16 @@ c
      1  ifirstbox,nbloc,centers,bs,nbctr,nlctr,
      2  ilevel,iparent,nchild,ichild)
       implicit none
-      integer nboxes,nbloc,nbctr,nlctr
+      integer *8 nboxes,nbloc,nbctr,nlctr
       real *8 centers(3,nboxes),bs
-      integer ilevel(nboxes),iparent(nboxes)
-      integer ichild(8,nboxes),nchild(nboxes)
-      integer irefinebox(nbloc)
-      integer ifirstbox
-      integer, allocatable :: isum(:)
-      integer ii
+      integer *8 ilevel(nboxes),iparent(nboxes)
+      integer *8 ichild(8,nboxes),nchild(nboxes)
+      integer *8 irefinebox(nbloc)
+      integer *8 ifirstbox
+      integer *8, allocatable :: isum(:)
+      integer *8 ii
 
-      integer i,ibox,nel0,j,l,jbox,nel1,nbl,jj
+      integer *8 i,ibox,nel0,j,l,jbox,nel1,nbl,jj
 
       allocate(isum(nbloc))
       if(nbloc.gt.0) call cumsum(nbloc,irefinebox,isum)
@@ -67,14 +67,14 @@ c
      1              centers2,ilevel2,iparent2,nchild2,ichild2)
 
        implicit none
-       integer nd,nb,npb
+       integer *8 nd,nb,npb
        real *8 centers(3,nb),centers2(3,nb)
-       integer ilevel(nb),ilevel2(nb)
-       integer iparent(nb),iparent2(nb)
-       integer nchild(nb),nchild2(nb)
-       integer ichild(8,nb),ichild2(8,nb)
+       integer *8 ilevel(nb),ilevel2(nb)
+       integer *8 iparent(nb),iparent2(nb)
+       integer *8 nchild(nb),nchild2(nb)
+       integer *8 ichild(8,nb),ichild2(8,nb)
 
-       integer i,j,nel
+       integer *8 i,j,nel
 
 
 C$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j)
@@ -115,13 +115,13 @@ c     vertex or an edge and the two boxes are at the same
 c     level in the tree
 c
 c     INPUT arguments
-c     nlevels     in: integer
+c     nlevels     in: integer *8
 c                 Number of levels
 c
-c     nboxes      in: integer
+c     nboxes      in: integer *8
 c                 Total number of boxes
 c
-c     laddr       in: integer(2,0:nlevels)
+c     laddr       in: integer *8(2,0:nlevels)
 c                 indexing array providing access to boxes at
 c                 each level. 
 c                 the first box on level i is laddr(1,i)
@@ -133,43 +133,43 @@ c
 c     centers     in: double precision(3,nboxes)
 c                 array of centers of boxes
 c   
-c     iparent     in: integer(nboxes)
+c     iparent     in: integer *8(nboxes)
 c                 iparent(i) is the box number of the parent of
 c                 box i
 c
-c     nchild      in: integer(nboxes)
+c     nchild      in: integer *8(nboxes)
 c                 nchild(i) is the number of children of box i
 c
-c     ichild      in: integer(8,nboxes)
+c     ichild      in: integer *8(8,nboxes)
 c                 ichild(j,i) is the box id of the jth child of
 c                 box i
 c
-c     iper        in: integer
+c     iper        in: integer *8
 c                 flag for periodic implementations. 
 c                 Currently not used. Feature under construction.
 c
 c----------------------------------------------------------------
 c     OUTPUT
-c     nnbors      out: integer(nboxes)
+c     nnbors      out: integer *8(nboxes)
 c                 nnbors(i) is the number of colleague boxes of
 c                 box i
 c
-c     nbors       out: integer(27,nboxes)
+c     nbors       out: integer *8(27,nboxes)
 c                 nbors(j,i) is the box id of the jth colleague
 c                 box of box i
 c---------------------------------------------------------------
       implicit none
-      integer nlevels,nboxes,iper
-      integer laddr(2,0:nlevels)
+      integer *8 nlevels,nboxes,iper
+      integer *8 laddr(2,0:nlevels)
       double precision boxsize(0:nlevels)
       double precision centers(3,nboxes)
-      integer iparent(nboxes), nchild(nboxes), ichild(8,nboxes)
-      integer nnbors(nboxes)
-      integer nbors(27,nboxes)
+      integer *8 iparent(nboxes), nchild(nboxes), ichild(8,nboxes)
+      integer *8 nnbors(nboxes)
+      integer *8 nbors(27,nboxes)
 
 c     Temp variables
-      integer ilev,ibox,jbox,kbox,dad
-      integer i,j,ifirstbox,ilastbox
+      integer *8 ilev,ibox,jbox,kbox,dad
+      integer *8 i,j,ifirstbox,ilastbox
 
 
 c     Setting parameters for level = 0
@@ -233,32 +233,32 @@ c      and that of the boxes which do not need refinement is
 c      updated to iflag(box) = 0
 c
 c      INPUT arguments
-c      curlev         in: integer
+c      curlev         in: integer *8
 c                     the level for which boxes need to be processed
 c
-c      nboxes         in: integer
+c      nboxes         in: integer *8
 c                     total number of boxes
 c
-c      nlevels        in: integer
+c      nlevels        in: integer *8
 c                     total number of levels
 c
-c      laddr          in: integer(2,0:nlevels)
+c      laddr          in: integer *8(2,0:nlevels)
 c                     boxes from laddr(1,ilev) to laddr(2,ilev)
 c                     are at level ilev
 c
-c      nchild         in: integer(nboxes)
+c      nchild         in: integer *8(nboxes)
 c                     nchild(ibox) is the number of children
 c                     of box ibox
 c
-c      ichild         in: integer(8,nboxes)
+c      ichild         in: integer *8(8,nboxes)
 c                     ichild(j,ibox) is the box id of the jth
 c                     child of box ibox
 c
-c      nnbors         in: integer(nboxes)
+c      nnbors         in: integer *8(nboxes)
 c                     nnbors(ibox) is the number of colleagues
 c                     of box ibox
 c
-c      nbors          in: integer(27,nboxes)
+c      nbors          in: integer *8(27,nboxes)
 c                     nbors(j,ibox) is the jth colleague of box
 c                     ibox
 c
@@ -268,21 +268,21 @@ c
 c      boxsize        in: double precision(0:nlevels)
 c                     boxsize(i) is the size of the box at level i
 c
-c      iflag          in/out: integer(nboxes)
+c      iflag          in/out: integer *8(nboxes)
 c                     iflag(ibox)=3 if it is flag++. iflag(ibox) =1
 c                     or 0 at the end of routine depending on
 c                     whether box needs to be subdivided or not
 c
       implicit none
 c     Calling sequence variables
-      integer curlev, nboxes, nlevels
-      integer laddr(2,0:nlevels),nchild(nboxes),ichild(8,nboxes)
-      integer nnbors(nboxes), nbors(27,nboxes)
-      integer iflag(nboxes)
+      integer *8 curlev, nboxes, nlevels
+      integer *8 laddr(2,0:nlevels),nchild(nboxes),ichild(8,nboxes)
+      integer *8 nnbors(nboxes), nbors(27,nboxes)
+      integer *8 iflag(nboxes)
       double precision centers(3,nboxes),boxsize(0:nlevels)
 
 c     Temporary variables
-      integer i,j,k,l,ibox,jbox,kbox,lbox, ict
+      integer *8 i,j,k,l,ibox,jbox,kbox,lbox, ict
       double precision distest,xdis,ydis,zdis
 
       distest = 1.05d0*(boxsize(curlev) + boxsize(curlev+1))/2.0d0
@@ -346,16 +346,16 @@ c
      1  ifirstbox,nbloc,centers,bs,nbctr,nlctr,
      2  ilevel,iparent,nchild,ichild)
       implicit none
-      integer nboxes,nbloc,nbctr,nlctr
+      integer *8 nboxes,nbloc,nbctr,nlctr
       real *8 centers(3,nboxes),bs
-      integer ilevel(nboxes),iparent(nboxes)
-      integer ichild(8,nboxes),nchild(nboxes)
-      integer iflag(nboxes)
-      integer ifirstbox
-      integer, allocatable :: isum(:),itmp(:)
+      integer *8 ilevel(nboxes),iparent(nboxes)
+      integer *8 ichild(8,nboxes),nchild(nboxes)
+      integer *8 iflag(nboxes)
+      integer *8 ifirstbox
+      integer *8, allocatable :: isum(:),itmp(:)
 
-      integer i,ibox,nel0,j,l,jbox,nel1,nbl
-      integer ii,jj
+      integer *8 i,ibox,nel0,j,l,jbox,nel1,nbl
+      integer *8 ii,jj
 
       allocate(isum(nbloc),itmp(nbloc))
       
@@ -414,21 +414,21 @@ c
      3                   mnlist2,mnlist3,mnlist4)
 c     Compute max nuber of boxes in list1,list2,list3,list4
       implicit none
-      integer nlevels,nboxes
-      integer iper
-      integer laddr(2,0:nlevels)
+      integer *8 nlevels,nboxes
+      integer *8 iper
+      integer *8 laddr(2,0:nlevels)
       double precision boxsize(0:nlevels)
       double precision centers(3,nboxes)
-      integer iparent(nboxes),nchild(nboxes),ichild(8,nboxes)
-      integer mnbors,isep
-      integer nnbors(nboxes),nbors(mnbors,nboxes)
-      integer mnlist1,mnlist2,mnlist3,mnlist4
-      integer nlist1(nboxes),nlist2(nboxes),nlist3(nboxes)
-      integer nlist4(nboxes)
+      integer *8 iparent(nboxes),nchild(nboxes),ichild(8,nboxes)
+      integer *8 mnbors,isep
+      integer *8 nnbors(nboxes),nbors(mnbors,nboxes)
+      integer *8 mnlist1,mnlist2,mnlist3,mnlist4
+      integer *8 nlist1(nboxes),nlist2(nboxes),nlist3(nboxes)
+      integer *8 nlist4(nboxes)
 
 c     Temp variables
-      integer ilev,ibox,jbox,kbox,i,j,k,l
-      integer firstbox,lastbox,dad
+      integer *8 ilev,ibox,jbox,kbox,i,j,k,l
+      integer *8 firstbox,lastbox,dad
       double precision xdis,ydis,zdis,distest
 
 
@@ -565,23 +565,23 @@ c---------------------------------------------------------------
      4                   nlist3,mnlist3,list3,nlist4,mnlist4,list4)
 c     Compute max nuber of boxes in list1,list2,list3,list4
       implicit none
-      integer nlevels,nboxes
-      integer iper
-      integer laddr(2,0:nlevels)
+      integer *8 nlevels,nboxes
+      integer *8 iper
+      integer *8 laddr(2,0:nlevels)
       double precision boxsize(0:nlevels)
       double precision centers(3,nboxes)
-      integer iparent(nboxes),nchild(nboxes),ichild(8,nboxes)
-      integer mnbors
-      integer nnbors(nboxes),nbors(mnbors,nboxes)
-      integer mnlist1,mnlist2,mnlist3,mnlist4,isep
-      integer nlist1(nboxes),nlist2(nboxes),nlist3(nboxes)
-      integer nlist4(nboxes)
-      integer list1(mnlist1,nboxes),list2(mnlist2,nboxes)
-      integer list3(mnlist3,nboxes),list4(mnlist4,nboxes)
+      integer *8 iparent(nboxes),nchild(nboxes),ichild(8,nboxes)
+      integer *8 mnbors
+      integer *8 nnbors(nboxes),nbors(mnbors,nboxes)
+      integer *8 mnlist1,mnlist2,mnlist3,mnlist4,isep
+      integer *8 nlist1(nboxes),nlist2(nboxes),nlist3(nboxes)
+      integer *8 nlist4(nboxes)
+      integer *8 list1(mnlist1,nboxes),list2(mnlist2,nboxes)
+      integer *8 list3(mnlist3,nboxes),list4(mnlist4,nboxes)
 
 c     Temp variables
-      integer ilev,ibox,jbox,kbox,i,j,k,l
-      integer firstbox,lastbox,dad
+      integer *8 ilev,ibox,jbox,kbox,i,j,k,l
+      integer *8 firstbox,lastbox,dad
       double precision xdis,ydis,zdis,distest
 
 C$OMP PARALLEL DO DEFAULT(SHARED)
@@ -717,25 +717,25 @@ c----------------------------------------------------------------
      6           ne7,e7,nw2,w2,nw4,w4,nw6,w6,nw8,w8)
 c-------------------------------------------------------------------
       implicit none
-      integer ibox
+      integer *8 ibox
       double precision boxsize,bs
-      integer nboxes,nnbors,nbors(nnbors)
-      integer nchild, ichild(8,nboxes)
+      integer *8 nboxes,nnbors,nbors(nnbors)
+      integer *8 nchild, ichild(8,nboxes)
       double precision centers(3,nboxes)
-      integer isep
-      integer nuall,ndall,nnall,nsall,neall,nwall,nu1234
-      integer nd5678,nn1256,ns3478,ne1357,nw2468
-      integer nn12,nn56,ns34,ns78,ne13,ne57,nw24,nw68
-      integer ne1,ne3,ne5,ne7,nw2,nw4,nw6,nw8
-      integer uall(1),dall(1),nall(1),sall(1),eall(1),wall(1)
-      integer u1234(1),d5678(1),n1256(1),s3478(1),e1357(1),w2468(1)
-      integer n12(1),n56(1),s34(1),s78(1),e13(1),e57(1),w24(1),w68(1)
-      integer e1(1),e3(1),e5(1),e7(1)
-      integer w2(1),w4(1),w6(1),w8(1)
+      integer *8 isep
+      integer *8 nuall,ndall,nnall,nsall,neall,nwall,nu1234
+      integer *8 nd5678,nn1256,ns3478,ne1357,nw2468
+      integer *8 nn12,nn56,ns34,ns78,ne13,ne57,nw24,nw68
+      integer *8 ne1,ne3,ne5,ne7,nw2,nw4,nw6,nw8
+      integer *8 uall(1),dall(1),nall(1),sall(1),eall(1),wall(1)
+      integer *8 u1234(1),d5678(1),n1256(1),s3478(1),e1357(1),w2468(1)
+      integer *8 n12(1),n56(1),s34(1),s78(1),e13(1),e57(1),w24(1),w68(1)
+      integer *8 e1(1),e3(1),e5(1),e7(1)
+      integer *8 w2(1),w4(1),w6(1),w8(1)
 
-      integer jbox,kbox
-      integer c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c16
-      integer i,j
+      integer *8 jbox,kbox
+      integer *8 c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c16
+      integer *8 i,j
 
       nuall = 0
       ndall = 0
@@ -959,17 +959,17 @@ c--------------------------------------------------------------------
      2           nall,nsall,sall,neall,eall,nwall,wall)
 c-------------------------------------------------------------------
       implicit none
-      integer ibox
-      integer isep
-      integer nboxes,nlist3,list3(nlist3)
+      integer *8 ibox
+      integer *8 isep
+      integer *8 nboxes,nlist3,list3(nlist3)
       double precision centers(3,nboxes)
       double precision sepdist,bs
-      integer nuall,ndall,nnall,nsall,neall,nwall
-      integer uall(1),dall(1),nall(1),sall(1),eall(1),wall(1)
+      integer *8 nuall,ndall,nnall,nsall,neall,nwall
+      integer *8 uall(1),dall(1),nall(1),sall(1),eall(1),wall(1)
 
-      integer jbox
-      integer c1,c2,c3,c4,c5,c6
-      integer j
+      integer *8 jbox
+      integer *8 c1,c2,c3,c4,c5,c6
+      integer *8 j
 
       nuall = 0
       ndall = 0
@@ -1046,7 +1046,7 @@ c--------------------------------------------------------------------
 c-------------------------------------------------------------------
       implicit none
 ccc   input/output variables
-      integer dir
+      integer *8 dir
       double precision censrc(3)
       double precision centrg(3)
       double precision boxsize
@@ -1083,7 +1083,7 @@ C      dir=0
 c-------------------------------------------------------------------
       implicit none
 ccc   input/output variables
-      integer dir
+      integer *8 dir
       double precision censrc(3)
       double precision centrg(3)
       double precision boxsize
@@ -1125,22 +1125,22 @@ c
       subroutine subdividebox(pos,npts,center,boxsize,
      1           isorted,iboxfl,subcenters)
       implicit none
-      integer npts
+      integer *8 npts
       double precision pos(3,npts)
       double precision center(3)
       double precision subcenters(3,8)
       double precision boxsize
-      integer isorted(*)
-      integer iboxfl(2,8)
+      integer *8 isorted(*)
+      integer *8 iboxfl(2,8)
 
 c     Temporary variables
-      integer isortedtmp(npts)
-      integer i,j,i12,i34,istart,jstart,kstart,ii,iii,nss,nee
-      integer jj,irefinebox,ntt
-      integer i56, i78, i1234, i5678
-      integer ibox,ifirstbox,ilastbox,nbfirst
-      integer is,it,ie
-      integer nc(8)
+      integer *8 isortedtmp(npts)
+      integer *8 i,j,i12,i34,istart,jstart,kstart,ii,iii,nss,nee
+      integer *8 jj,irefinebox,ntt
+      integer *8 i56, i78, i1234, i5678
+      integer *8 ibox,ifirstbox,ilastbox,nbfirst
+      integer *8 is,it,ie
+      integer *8 nc(8)
 
       i1234 = 0
       i5678 = 0

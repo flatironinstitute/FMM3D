@@ -1998,7 +1998,7 @@ c
 	end
 c-----------------------------------------------    
 	subroutine numthetafour(numtets,nlams)
-	integer *4 numtets(nlams),nlams 
+	integer *8 nlams,numtets(nlams)
 c
 c This routine returns the number of Fourier modes needed in the
 c phi integral for each of the discrete lambda values given
@@ -2914,7 +2914,7 @@ c
       end
 c----------------------------------      
 	subroutine numthetahalf(numtets,nlams)
-	integer *4 numtets(nlams),nlams 
+	integer *8 nlams,numtets(nlams)
 c
 c This routine returns the number of Fourier modes needed in the
 c phi integral for each of the discrete lambda values given

@@ -15,7 +15,9 @@ c
       real *8, allocatable :: strsvec(:,:)
       real *8, allocatable :: charge(:,:), dipvec(:,:,:)
       
-      integer ipass(5)
+      integer *8 ipass(5)
+      integer *8 ns,nt,nd1,ndl,istress
+      integer *8 i,j,l,ntest,isum
       complex *16 eye
 c
       data eye/(0.0d0,1.0d0)/
