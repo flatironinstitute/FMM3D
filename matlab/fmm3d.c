@@ -1090,7 +1090,7 @@ mxWrapReturnZDef_single   (mxWrapReturn_single_dcomplex, dcomplex,
 #define MWF77_l3ddirectcdh L3DDIRECTCDH
 #define MWF77_emfmm3d EMFMM3D
 #define MWF77_em3ddirect EM3DDIRECT
-#define MWF77_stfmm3d_new STFMM3D_NEW
+#define MWF77_stfmm3d STFMM3D
 #define MWF77_st3ddirectstokstrsrotdoubg ST3DDIRECTSTOKSTRSROTDOUBG
 #elif defined(MWF77_UNDERSCORE1)
 #define MWF77_hndiv hndiv_
@@ -1114,7 +1114,7 @@ mxWrapReturnZDef_single   (mxWrapReturn_single_dcomplex, dcomplex,
 #define MWF77_l3ddirectcdh l3ddirectcdh_
 #define MWF77_emfmm3d emfmm3d_
 #define MWF77_em3ddirect em3ddirect_
-#define MWF77_stfmm3d_new stfmm3d_new_
+#define MWF77_stfmm3d stfmm3d_
 #define MWF77_st3ddirectstokstrsrotdoubg st3ddirectstokstrsrotdoubg_
 #elif defined(MWF77_UNDERSCORE0)
 #define MWF77_hndiv hndiv
@@ -1138,7 +1138,7 @@ mxWrapReturnZDef_single   (mxWrapReturn_single_dcomplex, dcomplex,
 #define MWF77_l3ddirectcdh l3ddirectcdh
 #define MWF77_emfmm3d emfmm3d
 #define MWF77_em3ddirect em3ddirect
-#define MWF77_stfmm3d_new stfmm3d_new
+#define MWF77_stfmm3d stfmm3d
 #define MWF77_st3ddirectstokstrsrotdoubg st3ddirectstokstrsrotdoubg
 #else /* f2c convention */
 #define MWF77_hndiv hndiv_
@@ -1162,7 +1162,7 @@ mxWrapReturnZDef_single   (mxWrapReturn_single_dcomplex, dcomplex,
 #define MWF77_l3ddirectcdh l3ddirectcdh_
 #define MWF77_emfmm3d emfmm3d_
 #define MWF77_em3ddirect em3ddirect_
-#define MWF77_stfmm3d_new stfmm3d_new__
+#define MWF77_stfmm3d stfmm3d_
 #define MWF77_st3ddirectstokstrsrotdoubg st3ddirectstokstrsrotdoubg_
 #endif
 
@@ -1195,7 +1195,7 @@ MWF77_RETURN MWF77_l3ddirectdh(int64_t*, double*, double*, int64_t*, double*, in
 MWF77_RETURN MWF77_l3ddirectcdh(int64_t*, double*, double*, double*, int64_t*, double*, int64_t*, double*, double*, double*, double*);
 MWF77_RETURN MWF77_emfmm3d(int64_t*, double*, dcomplex*, int64_t*, double*, int64_t*, dcomplex*, int64_t*, dcomplex*, int64_t*, dcomplex*, int64_t*, double*, int64_t*, dcomplex*, int64_t*, dcomplex*, int64_t*, dcomplex*, int64_t*);
 MWF77_RETURN MWF77_em3ddirect(int64_t*, dcomplex*, int64_t*, double*, int64_t*, dcomplex*, int64_t*, dcomplex*, int64_t*, dcomplex*, int64_t*, double*, int64_t*, dcomplex*, int64_t*, dcomplex*, int64_t*, dcomplex*, double*);
-MWF77_RETURN MWF77_stfmm3d_new(int64_t*, double*, int64_t*, double*, int64_t*, double*, int64_t*, double*, double*, int64_t*, double*, double*, int64_t*, double*, double*, int64_t*, double*, double*, double*, int64_t*, double*, int64_t*, double*, double*, double*, int64_t*);
+MWF77_RETURN MWF77_stfmm3d(int64_t*, double*, int64_t*, double*, int64_t*, double*, int64_t*, double*, double*, int64_t*, double*, double*, int64_t*, double*, double*, int64_t*, double*, double*, double*, int64_t*, double*, int64_t*, double*, double*, double*, int64_t*);
 MWF77_RETURN MWF77_st3ddirectstokstrsrotdoubg(int64_t*, double*, double*, int64_t*, double*, double*, int64_t*, double*, double*, int64_t*, double*, double*, int64_t*, double*, int64_t*, double*, double*, double*, double*);
 
 #ifdef __cplusplus
@@ -6099,9 +6099,9 @@ mw_err_label:
 }
 
 /* ---- fmm3d.mw: 1134 ----
- * stfmm3d_new(int64_t[1] nd, double[1] eps, int64_t[1] ns, double[3, ns] sources, int64_t[1] ifstoklet, double[nd3, ns_stok] stoklet, int64_t[1] ifstrslet, double[nd3, ns_strs] strslet, double[nd3, ns_strs] strsvec, int64_t[1] ifrotlet, double[nd3, ns_rot] rotlet, double[nd3, ns_rot] rotvec, int64_t[1] ifdoublet, double[nd3, ns_doub] doublet, double[nd3, ns_doub] doubvec, int64_t[1] ifppreg, inout double[nd3, ns_pot] pot, inout double[nd, ns_pre] pre, inout double[nd9, ns_grad] grad, int64_t[1] nt, double[3, nt] targ, int64_t[1] ifppregtarg, inout double[nd3, nt_pot] pottarg, inout double[nd, nt_pre] pretarg, inout double[nd9, nt_grad] gradtarg, inout int64_t[1] ier);
+ * stfmm3d(int64_t[1] nd, double[1] eps, int64_t[1] ns, double[3, ns] sources, int64_t[1] ifstoklet, double[nd3, ns_stok] stoklet, int64_t[1] ifstrslet, double[nd3, ns_strs] strslet, double[nd3, ns_strs] strsvec, int64_t[1] ifrotlet, double[nd3, ns_rot] rotlet, double[nd3, ns_rot] rotvec, int64_t[1] ifdoublet, double[nd3, ns_doub] doublet, double[nd3, ns_doub] doubvec, int64_t[1] ifppreg, inout double[nd3, ns_pot] pot, inout double[nd, ns_pre] pre, inout double[nd9, ns_grad] grad, int64_t[1] nt, double[3, nt] targ, int64_t[1] ifppregtarg, inout double[nd3, nt_pot] pottarg, inout double[nd, nt_pre] pretarg, inout double[nd9, nt_grad] gradtarg, inout int64_t[1] ier);
  */
-static const char* stubids22_ = "stfmm3d_new(i int64_t[x], i double[x], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], io int64_t[x])";
+static const char* stubids22_ = "stfmm3d(i int64_t[x], i double[x], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], io int64_t[x])";
 
 void mexStub22(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -6559,7 +6559,7 @@ void mexStub22(int nlhs, mxArray* plhs[],
         in25_ = NULL;
     if (mexprofrecord_)
         mexprofrecord_[22]++;
-    MWF77_stfmm3d_new(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_, in10_, in11_, in12_, in13_, in14_, in15_, in16_, in17_, in18_, in19_, in20_, in21_, in22_, in23_, in24_, in25_);
+    MWF77_stfmm3d(in0_, in1_, in2_, in3_, in4_, in5_, in6_, in7_, in8_, in9_, in10_, in11_, in12_, in13_, in14_, in15_, in16_, in17_, in18_, in19_, in20_, in21_, in22_, in23_, in24_, in25_);
     plhs[0] = mxCreateDoubleMatrix(dim50_, dim51_, mxREAL);
     mxWrapCopy_double(plhs[0], in16_, dim50_*dim51_);
     plhs[1] = mxCreateDoubleMatrix(dim52_, dim53_, mxREAL);

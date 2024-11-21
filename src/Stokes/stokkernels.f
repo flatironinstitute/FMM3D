@@ -20,6 +20,16 @@ c
 c     T_{ijk}(x,y) = 3/(4\pi) r_i r_j r_k/ r^5
 c     PI_{jk} = -1/(2\pi) delta_{jk} + 3/(2\pi) r_j r_k/r^5      
 c
+c     The rotlet, R_{ijk}, and its associated pressure tensor, Q_{jk}, are
+c
+c     R_{ijk}(x,y) = -\delta_{ik} r_j/(4\pi r^3) + \delta_{ij} r_k/(4\pi r^3)
+c     Q_{jk} = 0;
+c
+c     The doublet, D_{ijk}, and its associated pressure tensor, L_{jk}, are
+c
+c     D_{ijk}(x,y) = -\delta_{jk} r_i/(4\pi r^3) - \delta_{ik} r_j/(4\\pi r^3) + \delta_{ij} r_k/(4\pi r^3) + 3 r_i r_j r_k/ (4\pi r^5)
+c     L_{jk} = -1/(2\pi) \delta_{jk} + 3 r_j r_k/(2\pi r^5)
+
 
       subroutine st3ddirectstokg(nd,sources,stoklet,ns,targ,nt,
      1     pot,pre,grad,thresh)
@@ -423,15 +433,22 @@ c     to existing quantities (see definitions at top of file).
 c
 c       pot(x) = pot(x) + sum_m G_{ij}(x,y^{(m)}) sigma^{(m)}_j
 c                + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k
+c                + sum_m R_{ijk}(x,y^{(m)}) rlet^{(m)}_j rvec^{(m)}_k
+c                + sum_m D_{ijk}(x,y^{(m)}) dlet^{(m)}_j dvec^{(m)}_k
 c
 c       pre(x) = sum_m P_j(x,y^m) sigma^{(m)}_j
-c          + sum_m T_{ijk}(x,y^{(m)}) PI_{jk} mu^{(m)}_j nu^{(m)}_k
+c                + sum_m PI_{jk} mu^{(m)}_j nu^{(m)}_k
+c                + sum_m L_{jk}(x,y^{(m)}) dlet^{(m)}_j dvec^{(m)}_k
 c
 c       grad(x) = Grad[sum_m G_{ij}(x,y^m) sigma^{(m)}_j
 c                + sum_m T_{ijk}(x,y^{(m)}) mu^{(m)}_j nu^{(m)}_k]
+c                + sum_m R_{ijk}(x,y^{(m)}) rlet^{(m)}_j rvec^{(m)}_k
+c                + sum_m D_{ijk}(x,y^{(m)}) dlet^{(m)}_j dvec^{(m)}_k
 c
 c     where sigma^{(m)} is the Stokeslet charge, mu^{(m)} is the
-c     stresslet charge, and nu^{(m)} is the stresslet orientation
+c     stresslet charge, nu^{(m)} is the stresslet orientation
+c     rlet^{(m)} is the rotlet strength, rvec^{(m)} is the rotlet
+c     dlet^{(m)} is the doublet strength, and dvec^{(m)} is the doublet
 c     (note that each of these is a 3 vector per source point y^{(m)}).
 c     For x a source point, the self-interaction in the sum is omitted.
 c

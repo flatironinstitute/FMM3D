@@ -1485,7 +1485,7 @@ function stfmm3d(eps::Float64,
     # $                 ifppregtarg, pottarg, pretarg, gradtarg,ier)    
 
     
-    ccall((:stfmm3d_new_,libfmm3d),Cvoid,(Fi,Fd,Fi,Fd,Fi,Fd,
+    ccall((:stfmm3d_,libfmm3d),Cvoid,(Fi,Fd,Fi,Fd,Fi,Fd,
                                     Fi,Fd,Fd,Fi,Fd,Fd,Fi,Fd,Fd,
                                     Fi,Fd,Fd,Fd,Fi,
                                     Fd,Fi,Fd,Fd,Fd,Fi),

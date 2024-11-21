@@ -1131,7 +1131,7 @@ end
   nd9 = 9*nd;
   ier = 0;
 
-  # FORTRAN stfmm3d_new(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, int[1] ifstoklet, double[nd3,ns_stok] stoklet, int[1] ifstrslet, double[nd3,ns_strs] strslet, double[nd3,ns_strs] strsvec, int[1] ifrotlet, double[nd3,ns_rot] rotlet, double[nd3,ns_rot] rotvec, int[1] ifdoublet, double[nd3,ns_doub] doublet, double[nd3,ns_doub] doubvec, int[1] ifppreg, inout double[nd3,ns_pot] pot, inout double[nd,ns_pre] pre, inout double[nd9,ns_grad] grad, int[1] nt, double[3,nt] targ, int[1] ifppregtarg, inout double[nd3,nt_pot] pottarg, inout double [nd,nt_pre] pretarg, inout double[nd9,nt_grad] gradtarg, inout int[1] ier);
+  # FORTRAN stfmm3d(int[1] nd, double[1] eps,  int[1] ns, double[3,ns] sources, int[1] ifstoklet, double[nd3,ns_stok] stoklet, int[1] ifstrslet, double[nd3,ns_strs] strslet, double[nd3,ns_strs] strsvec, int[1] ifrotlet, double[nd3,ns_rot] rotlet, double[nd3,ns_rot] rotvec, int[1] ifdoublet, double[nd3,ns_doub] doublet, double[nd3,ns_doub] doubvec, int[1] ifppreg, inout double[nd3,ns_pot] pot, inout double[nd,ns_pre] pre, inout double[nd9,ns_grad] grad, int[1] nt, double[3,nt] targ, int[1] ifppregtarg, inout double[nd3,nt_pot] pottarg, inout double [nd,nt_pre] pretarg, inout double[nd9,nt_grad] gradtarg, inout int[1] ier);
 
   U.pot = [];
   U.pre = [];

@@ -748,7 +748,7 @@ def stfmm3d(*,eps,sources,stoklet=None,strslet=None,strsvec=None,rotlet=None,rot
         doublet = np.zeros([nd,3,ns],dtype='double')
         doubvec = np.zeros([nd,3,ns],dtype='double')
 
-    out.pot,out.pre,out.grad,out.pottarg,out.pretarg,out.gradtarg,out.ier = stfmm.stfmm3d_new(eps,sources,ifstoklet,stoklet,ifstrslet,strslet,strsvec,ifrotlet,rotlet,rotvec,ifdoublet,doublet,doubvec,ifppreg,targets,ifppregtarg,nd,ns,nt)
+    out.pot,out.pre,out.grad,out.pottarg,out.pretarg,out.gradtarg,out.ier = stfmm.stfmm3d(eps,sources,ifstoklet,stoklet,ifstrslet,strslet,strsvec,ifrotlet,rotlet,rotvec,ifdoublet,doublet,doubvec,ifppreg,targets,ifppregtarg,nd,ns,nt)
 
     if(ifppreg < 3):
         out.grad = None

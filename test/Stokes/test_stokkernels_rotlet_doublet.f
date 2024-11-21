@@ -234,13 +234,13 @@ c     test gradient of rotlet formula
       errmax = 0
       ifppgreg = 1
       ifppregtarg = 3
-      call stfmm3d_new(nd1,1d-12,ns,source,istoklet,stoklet,
+      call stfmm3d(nd1,1d-12,ns,source,istoklet,stoklet,
      1     istress,strslet,strsvec,
      2     irotlet,rotstr,rotvec,
      3     idoublet,doubstr,doubvec,
      4     ifppgreg,pot_src,pre_src,grad_src,
      5     nt,targ,ifppregtarg,pot3,pre3,grad3,ier)
-      call stfmm3d_new(nd1,1d-12,ns,source,istoklet,stoklet,
+      call stfmm3d(nd1,1d-12,ns,source,istoklet,stoklet,
      1     istress,strslet,strsvec,
      2     irotlet,rotstr,rotvec,
      3     idoublet,doubstr,doubvec,

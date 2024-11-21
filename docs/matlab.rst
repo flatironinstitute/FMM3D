@@ -205,7 +205,7 @@ denote the Stokeslet given by
    (x_{3}-y_{3})^2 + \|x-y \|^2 
    \end{bmatrix} \, ,
 
-and $\mathcal{T}^{\textrm{stok}}(x,y)$ denote the Stresslet whose action on
+let $\mathcal{T}^{\textrm{stok}}(x,y)$ denote the Stresslet whose action on
 a vector $v$ is given by
 
 .. math::
@@ -218,19 +218,59 @@ a vector $v$ is given by
    (x_{2}-y_{2})(x_{3}-y_{3}) \\ 
    (x_{3}-y_{3})(x_{1}-y_{1})  & (x_{3}-y_{3})(x_{2}-y_{2}) & 
    (x_{3}-y_{3})^2  
-   \end{bmatrix} \, .
+   \end{bmatrix} \, ,
+
+let $\mathcal{R}^{\textrm{stok}}(x,y)$ denote the Rotlet whose action on
+a vector $v$ is given by
+
+.. math::
+   v\cdot \mathcal{R}^{\textrm{stok}}(x,y)  = 
+   \frac{v \cdot (x-y)}{4\pi\|x-y \|^3}
+   \begin{bmatrix}
+   1 & 0 & 0 \\ 
+   0 & 1 & 0 \\ 
+   0 & 0 & 1  
+   \end{bmatrix} \, ,
+
+and $\mathcal{D}^{\textrm{stok}}(x,y)$ denote the symmetric part of Doublet whose action on
+a vector $v$ is given by
+
+.. math::
+   v\cdot \mathcal{D}^{\textrm{stok}}(x,y)  = 
+   \frac{3 v \cdot (x-y)}{4\pi\|x-y \|^5}
+   \begin{bmatrix}
+   (x_{1}-y_{1})^2 & (x_{1}-y_{1})(x_{2}-y_{2}) &
+   (x_{1}-y_{1})(x_{3}-y_{3}) \\ 
+   (x_{2}-y_{2})(x_{1}-y_{1}) & (x_{2}-y_{2})^2 & 
+   (x_{2}-y_{2})(x_{3}-y_{3}) \\ 
+   (x_{3}-y_{3})(x_{1}-y_{1})  & (x_{3}-y_{3})(x_{2}-y_{2}) & 
+   (x_{3}-y_{3})^2  
+   \end{bmatrix} - \\
+   \frac{1}{4\pi\|x-y \|^3}
+   \begin{bmatrix}
+   v_1(x_{1}-y_{1}) & v_2(x_{1}-y_{1}) & v_3(x_{1}-y_{1}) \\
+   v_2(x_{2}-y_{2}) & v_2(x_{2}-y_{2}) & v_3(x_{2}-y_{2}) \\
+   v_3(x_{3}-y_{3}) & v_3(x_{3}-y_{3}) & v_3(x_{3}-y_{3})
+   \end{bmatrix} \, . 
 
 This subroutine computes the N-body Stokes
-interactions, its gradients and the corresponding pressure 
-in three dimensions given by 
- 
+interactions, its gradients and the corresponding pressure
+in three dimensions given by
+
 .. math::
 
-    u(x) = \sum_{m=1}^{N} \mathcal{G}^{\textrm{stok}}(x,x_{j}) \sigma_{j}  + \nu_{j} \cdot \mathcal{T}^{\textrm{stok}}(x,x_{j}) \cdot \mu_{j}   
+    u(x) = \sum_{m=1}^{N} \mathcal{G}^{\textrm{stok}}(x,x_{j}) \sigma_{j}  + \nu_{j} \cdot \mathcal{T}^{\textrm{stok}}(x,x_{j}) \cdot \mu_{j} +
+                          \nu^{r}_{j} \cdot \mathcal{R}^{\textrm{stok}}(x,x_{j}) \cdot \mu^{r}_{j} - \mu^{r}_{j} \cdot \mathcal{R}^{\textrm{stok}}(x,x_{j}) \cdot \nu^{r}_{j} + \\
+                          \nu^{d}_{j} \cdot \mathcal{R}^{\textrm{stok}}(x,x_{j}) \cdot \mu^{d}_{j} - \mu^{d}_{j} \cdot \mathcal{R}^{\textrm{stok}}(x,x_{j}) \cdot \nu^{d}_{j} +
+                          \nu^{d}_{j} \cdot \mathcal{D}^{\textrm{stok}}(x,x_{j}) \cdot \mu^{d}_{j} \, .
 
 where $\sigma_{j}$ are the Stokeslet densities,
 $\nu_{j}$ are the stresslet orientation vectors, $\mu_{j}$ 
-are the stresslet densities, and
+are the stresslet densities,
+$\nu^{r}_{j}$ are the rotlet orientation vectors, $\mu^{r}_{j}$ 
+are the rotlet densities,
+$\nu^{d}_{j}$ are the doublet orientation vectors, $\mu^{d}_{j}$ 
+are the doublet densities, and
 $x_{j}$ are the source locations.
 When $x=x_{j}$, the term corresponding to $x_{j}$ is dropped
 from the sum.
@@ -263,6 +303,19 @@ Args:
    *  srcinfo.strsvec: double(nd,3,n) 
          Stresslet orientiation vectors, $\nu_{j}$ (optional
          default - term corresponding to stresslet dropped) 
+   *  srcinfo.rotlet: double(nd,3,n) 
+         Rotlet densities, $\mu^{r}_{j}$ (optional
+         default - term corresponding to rotlet dropped) 
+   *  srcinfo.rotvec: double(nd,3,n) 
+         Rotlet orientiation vectors, $\nu^{r}_{j}$ (optional
+         default - term corresponding to rotlet dropped) 
+   *  srcinfo.doublet: double(nd,3,n) 
+         Doublet densities, $\mu^{d}_{j}$ (optional
+         default - term corresponding to doublet dropped) 
+   *  srcinfo.doubvec: double(nd,3,n) 
+         Doublet orientiation vectors, $\nu^{d}_{j}$ (optional
+         default - term corresponding to doublet dropped) 
+
 
 -  ifppreg: integer
       | source eval flag
