@@ -200,13 +200,13 @@ end
 
 This function computes the N-body Helmholtz interactions
 in three dimensions where the interaction kernel is given 
-by ``e^{ikr}/r`` and its gradients. This is the 
+by ``e^{ikr}/(4\\pi r)`` and its gradients. This is the 
 ``O(N)`` fast multipole code which computes the interactions
 to the requested precision.
 
 ```math
- u(x) = \\sum_{j=1}^{N} c_{j} \\frac{e^{ik \\|x-x_{j}\\|}}{\\|x-x_{j}\\|} 
-- v_{j} \\cdot \\nabla \\left( \\frac{e^{ik \\|x-x_{j}\\|}}{\\|x-x_{j}\\|} 
+ u(x) = \\sum_{j=1}^{N} c_{j} \\frac{e^{ik \\|x-x_{j}\\|}}{4\\pi\\|x-x_{j}\\|} 
+- v_{j} \\cdot \\nabla \\left( \\frac{e^{ik \\|x-x_{j}\\|}}{4\\pi\\|x-x_{j}\\|} 
 \\right)  \\, , 
 ```
  
@@ -401,15 +401,15 @@ end
 
 This function computes the N-body Helmholtz interactions
 in three dimensions where the interaction kernel is given 
-by ``e^{ikr}/r`` and its gradients. This is the 
+by ``e^{ikr}/(4\\pi r)`` and its gradients. This is the 
 ``O(N^2)`` direct evaluation code. By convention this code only computes 
 the effect of sources on targets. If the value at sources is 
 also needed, the routine can be called again with targets equal
 to the source locations.
 
 ```math
- u(x) = \\sum_{j=1}^{N} c_{j} \\frac{e^{ik \\|x-x_{j}\\|}}{\\|x-x_{j}\\|} 
-- v_{j} \\cdot \\nabla \\left( \\frac{e^{ik \\|x-x_{j}\\|}}{\\|x-x_{j}\\|} 
+ u(x) = \\sum_{j=1}^{N} c_{j} \\frac{e^{ik \\|x-x_{j}\\|}}{4\\pi\\|x-x_{j}\\|} 
+- v_{j} \\cdot \\nabla \\left( \\frac{e^{ik \\|x-x_{j}\\|}}{4\\pi\\|x-x_{j}\\|} 
 \\right)  \\, , 
 ```
  
@@ -682,15 +682,13 @@ end
 
 This function computes the N-body Laplace interactions
 in three dimensions where the interaction kernel is given 
-by ``\$1/r\$`` and its gradients.  This is the 
+by ``\$1/(4\\pi r)\$`` and its gradients.  This is the 
 ``O(N)`` fast multipole code which computes the interactions
 to the requested precision.
 
 ```math
-u(x) = \\sum_{j=1}^{N} c_{j} / \\|x-x_{j}\\| + v_{j} 
-\\cdot \\nabla( 1/\\|x-x_{j}\\|)  \\, ,
-u(x) = \\sum_{j=1}^{N} c_{j} \\frac{1}{\\|x-x_{j}\\|} 
-- v_{j} \\cdot \\nabla \\left( \\frac{1}{\\|x-x_{j}\\|} 
+u(x) = \\sum_{j=1}^{N} c_{j} \\frac{1}{4\\pi\\|x-x_{j}\\|} 
+- v_{j} \\cdot \\nabla \\left( \\frac{1}{4\\pi\\|x-x_{j}\\|} 
 \\right)  \\, , 
 ```
  
@@ -870,15 +868,15 @@ end
 
 This function computes the N-body Laplace interactions
 in three dimensions where the interaction kernel is given 
-by ``1/r`` and its gradients.  This is the 
+by ``1/(4\\pi r)`` and its gradients.  This is the 
 ``O(N^2)`` direct evaluation code. By convention this code only computes 
 the effect of sources on targets. If the value at sources is 
 also needed, the routine can be called again with targets equal
 to the source locations.
 
 ```math
- u(x) = \\sum_{j=1}^{N} c_{j} \\frac{1}{\\|x-x_{j}\\|} 
-- v_{j} \\cdot \\nabla \\left( \\frac{1}{\\|x-x_{j}\\|} 
+ u(x) = \\sum_{j=1}^{N} c_{j} \\frac{1}{4\\pi\\|x-x_{j}\\|} 
+- v_{j} \\cdot \\nabla \\left( \\frac{1}{4\\pi\\|x-x_{j}\\|} 
 \\right)  \\, , 
 ```
  
@@ -1120,8 +1118,9 @@ end
 
 """
 ```julia
-    anyfail, n, nt, ifstoklet, ifstrslet = (
+    anyfail, n, nt, ifstoklet, ifstrslet, ifrotlet, ifdoublet = (
         stfmm3dinputcheck(sources,stoklet,strslet,strsvec,
+                          rotlet,rotvec,doublet,doubvec,
                                 targets,ppreg,ppregt,nd) )
 ```
 
@@ -1138,8 +1137,10 @@ Output:
 * nt - integer, number of targets
 * ifstoklet - integer, is 1 if there are Stokeslets, 0 otherwise
 * ifstrslet - integer, is 1 if there are (type I) stresslets, 0 otherwise
+* ifrotlet - integer, is 1 if there are rotlet, 0 otherwise
+* ifdoublet - integer, is 1 if there are doublet, 0 otherwise
 """
-function stfmm3dinputcheck(sources,stoklet,strslet,strsvec,targets,ppreg,ppregt,nd)
+function stfmm3dinputcheck(sources,stoklet,strslet,strsvec,rotlet,rotvec,doublet,doubvec,targets,ppreg,ppregt,nd)
     anyfail = false
     
     if (size(sources,1) != 3)
@@ -1198,8 +1199,44 @@ function stfmm3dinputcheck(sources,stoklet,strslet,strsvec,targets,ppreg,ppregt,
         ifstrslet = 0
     end
 
-    if ifstoklet == 0 && ifstrslet == 0
-        @warn "no Stokeslets or stresslets provided, doing nothing"
+    if (rotlet != nothing || rotvec != nothing)
+        if (rotlet == nothing || rotvec == nothing)
+            @warn "if rotlet in calculation, need both rotlet and rotvec arrays, computing nothing"
+            anyfail = true
+        end
+        if (div(length(rotlet),nd) != n*3)
+            @warn "size of rotlet array is incompatible with sources array and nd paramter, computing nothing"
+            anyfail = true
+        end
+        if (div(length(rotvec),nd) != n*3)
+            @warn "size of rotvec array is incompatible with sources array and nd paramter, computing nothing"
+            anyfail = true
+        end
+        ifrotlet = 1
+    else
+        ifrotlet = 0
+    end
+
+    if (doublet != nothing || doubvec != nothing)
+        if (doublet == nothing || doubvec == nothing)
+            @warn "if doublet in calculation, need both doublet and doubvec arrays, computing nothing"
+            anyfail = true
+        end
+        if (div(length(doublet),nd) != n*3)
+            @warn "size of doublet array is incompatible with sources array and nd paramter, computing nothing"
+            anyfail = true
+        end
+        if (div(length(doubvec),nd) != n*3)
+            @warn "size of doubvec array is incompatible with sources array and nd paramter, computing nothing"
+            anyfail = true
+        end
+        ifdoublet = 1
+    else
+        ifdoublet = 0
+    end
+
+    if ifstoklet == 0 && ifstrslet == 0 && ifrotlet == 0 && ifdoublet == 0
+        @warn "no Stokeslets or stresslets or rotlet or doublet provided, doing nothing"
         anyfail = true
     end
 
@@ -1216,20 +1253,21 @@ function stfmm3dinputcheck(sources,stoklet,strslet,strsvec,targets,ppreg,ppregt,
         end
     end
 
-    return anyfail, n, nt, ifstoklet, ifstrslet
+    return anyfail, n, nt, ifstoklet, ifstrslet, ifrotlet, ifdoublet
 end
 
 
 """
 ```julia
     vals = stfmm3d(eps,sources;stoklet=nothing,strslet=nothing,
-                   strsvec=nothing,targets=nothing,ppreg=0,
-                   ppregt=0,nd=1)
+                   strsvec=nothing,rotlet=nothing,rotvec=nothing,
+                   doublet=nothing,doubvec=nothing,
+                   targets=nothing,ppreg=0,ppregt=0,nd=1)
 ```
 
 This function computes the N-body Stokes interactions
 in three dimensions where the interaction kernels are
-the Stokeslet and stresslet (see below). This is the 
+the Stokeslet and stresslet (see below). This is the
 ``O(N)`` fast multipole code which computes the interactions
 to the requested precision.
 
@@ -1238,35 +1276,56 @@ We take the following conventions for the Stokes kernels:
 For a source ``y`` and target ``x``, let ``r_i = x_i-y_i``
  and let ``r = \\sqrt{r_1^2 + r_2^2 + r_3^2}``
 
-The Stokeslet, ``G_{ij}``, and its associated pressure tensor, 
+The Stokeslet, ``G_{ij}``, and its associated pressure tensor,
 ``P_j``, are
 
 ```math
-G_{ij}(x,y) = (r_i r_j)/(8\pi r^3) + \\delta_{ij}/(8\pi r) \\; ,
+G_{ij}(x,y) = (r_i r_j)/(8\\pi r^3) + \\delta_{ij}/(8\\pi r) \\; ,
 \\quad
-P_j(x,y) = r_j/(4\pi r^3)
+P_j(x,y) = r_j/(4\\pi r^3)
 ```
-The (Type I) stresslet, ``T_{ijk}``, and its associated 
+The (Type I) stresslet, ``T_{ijk}``, and its associated
 pressure tensor, ``\\Pi_{jk}``, are
-         
+
 ```math
- T_{ijk}(x,y) = -3 r_i r_j r_k/ (4\pi r^5) \\; , \\quad
- PI_{jk} = 1/2\pi \\delta_{jk} - 3 r_j r_k/(2\pi r^5)
+ T_{ijk}(x,y) = 3 r_i r_j r_k/ (4\\pi r^5) \\; , \\quad
+ PI_{jk} = -1/(2\\pi) \\delta_{jk} + 3 r_j r_k/(2\\pi r^5)
+```
+The rotlet, ``R_{ijk}``, and its associated pressure tensor,
+``Q_{jk}``, are
+
+```math
+ R_{ijk}(x,y) = -\\delta_{ik} r_j/(4\\pi r^3) + \\delta_{ij} r_k/(4\\pi r^3)\\; , \\quad
+ Q_{jk} = 0;
+```
+The doublet, ``D_{ijk}``, and its associated pressure tensor,
+``L_{jk}``, are
+
+```math
+ D_{ijk}(x,y) = -\\delta_{jk} r_i/(4\\pi r^3) - \\delta_{ik} r_j/(4\\pi r^3) + \\delta_{ij} r_k/(4\\pi r^3) + 3 r_i r_j r_k/ (4\\pi r^5)\\; , \\quad
+ L_{jk} = -1/(2\\pi) \\delta_{jk} + 3 r_j r_k/(2\\pi r^5)
 ```
 
 The output of this routine gives the velocity
 ```math
- u_i(x) = \\sum_{m=1}^{N} G_{ij}(x,x_m) \\sigma^{(m)}_j 
-    + T_{ijk}(x,x_m) \\mu^{(m)}_j \\nu^{(m)}_k \\, , 
+ u_i(x) = \\sum_{m=1}^{N} G_{ij}(x,x_m) \\sigma^{(m)}_j
+    + T_{ijk}(x,x_m) \\mu^{(m)}_j \\nu^{(m)}_k
+    + R_{ijk}(x,x_m) rd^{(m)}_j rv^{(m)}_k
+    + D_{ijk}(x,x_m) dd^{(m)}_j dv^{(m)}_k \\,
 ```
 and, optionally, the pressure
 
 ```math
- p(x) = \\sum_{m=1}^{N} P_{j}(x,x_m) \\sigma^{(m)}_j 
-    + \\Pi{jk}(x,x_m) \\mu^{(m)}_j \\nu^{(m)}_k \\, , 
+ p(x) = \\sum_{m=1}^{N} P_{j}(x,x_m) \\sigma^{(m)}_j
+    + \\PI_{jk}(x,x_m) \\mu^{(m)}_j \\nu^{(m)}_k
+    + \\L_{jk}(x,x_m) dd^{(m)}_j dv^{(m)}_k \\, ,
 ```
-where ``\\sigma^{(m)}`` is a Stokeslet density 3-vector,  
-``\\mu^{(m)}`` and ``\\nu^{(m)}`` are the stresslet 
+where ``\\sigma^{(m)}`` is a Stokeslet density 3-vector,
+``\\mu^{(m)}`` and ``\\nu^{(m)}`` are the stresslet
+density and orientation 3-vectors,
+``rd^{(m)}`` and ``rv^{(m)}`` are the rotlet
+density and orientation 3-vectors,
+``dd^{(m)}`` and ``dv^{(m)}`` are the doublet
 density and orientation 3-vectors, and
 ``x_{m}`` are the source locations.
 When ``x=x_{m}``, the term corresponding to 
@@ -1283,16 +1342,20 @@ The gradient of the velocity can also be computed by request.
 * `stoklet::Array{Float64}` size (nd,3,n) or (3,n) Stokeslet densities (``\\sigma``)
 * `strslet::Array{Float64}` size (nd,3,n) or (3,n) Stresslet densities (``\\mu'')  if either strsvec or strslet is provided, the other must be as well
 * `strsvec::Array{Float64}` size (nd,3,n) or (3,n) Stresslet orientations (``\\nu``) if either strsvec or strslet is provided, the other must be as well
+* `rotlet::Array{Float64}` size (nd,3,n) or (3,n) Rotlet densities (``rd'')  if either rotvec or rotlet is provided, the other must be as well
+* `rotvec::Array{Float64}` size (nd,3,n) or (3,n) Rotlet orientations (``rv``) if either rotvec or rotlet is provided, the other must be as well
+* `doublet::Array{Float64}` size (nd,3,n) or (3,n) Doublet densities (``dd'')  if either doubvec or doublet is provided, the other must be as well
+* `doubvec::Array{Float64}` size (nd,3,n) or (3,n) Doublet orientations (``dv``) if either doubvec or doublet is provided, the other must be as well
 * `targets::Array{Float64}` size (3,nt) target locations (``x``)
-* `ppreg::Integer` source eval flag. 
-    + Velocity (``u``) at sources evaluated if `ppreg == 1`. 
+* `ppreg::Integer` source eval flag.
+    + Velocity (``u``) at sources evaluated if `ppreg == 1`.
     + Velocity and pressure (``p``) at sources evaluated if `ppreg == 2`
-    + Velocity, pressure, and velocity gradient (``\\nabla u``) 
+    + Velocity, pressure, and velocity gradient (``\\nabla u``)
     at sources evaluated if `ppreg == 3`
-* `ppregt::Integer` source eval flag. 
-    + Velocity (``u``) at targets evaluated if `ppregt == 1`. 
+* `ppregt::Integer` source eval flag.
+    + Velocity (``u``) at targets evaluated if `ppregt == 1`.
     + Velocity and pressure (``p``) at targets evaluated if `ppregt == 2`
-    + Velocity, pressure, and velocity gradient (``\\nabla u``) 
+    + Velocity, pressure, and velocity gradient (``\\nabla u``)
     at targets evaluated if `ppregt == 3`
 * `nd::Integer` number of densities of each type
 
@@ -1321,6 +1384,8 @@ function stfmm3d(eps::Float64,
                 sources::Array{Float64};
                  stoklet::TFN=nothing,strslet::TFN=nothing,
                  strsvec::TFN=nothing,
+                 rotlet::TFN=nothing,rotvec::TFN=nothing,
+                 doublet::TFN=nothing,doubvec::TFN=nothing,
                  targets::TFN=nothing,ppreg::Integer=0,
                  ppregt::Integer=0,nd::Integer=1)
 
@@ -1330,6 +1395,8 @@ function stfmm3d(eps::Float64,
     
     ifstoklet = 0
     ifstrslet = 0
+    ifrotlet = 0
+    ifdoublet = 0
 
     zero = Float64(0)
     zero3 = zeros(Float64,3)
@@ -1345,8 +1412,8 @@ function stfmm3d(eps::Float64,
 
     # check inputs
 
-    anyfail, n, nt, ifstoklet, ifstrslet = (
-        stfmm3dinputcheck(sources,stoklet,strslet,strsvec,targets,ppreg,ppregt,nd))
+    anyfail, n, nt, ifstoklet, ifstrslet, ifrotlet, ifdoublet = (
+        stfmm3dinputcheck(sources,stoklet,strslet,strsvec,rotlet,rotvec,doublet,doubvec,targets,ppreg,ppregt,nd))
 
     if anyfail
         return vals
@@ -1354,6 +1421,8 @@ function stfmm3d(eps::Float64,
 
     if (ifstoklet == 0); stoklet = zero3 end
     if (ifstrslet == 0); strslet = zero3; strsvec=zero3 end
+    if (ifrotlet == 0); rotlet = zero3; rotvec=zero3 end
+    if (ifdoublet == 0); doublet = zero3; doubvec=zero3 end
     if (nt == 0); targets = zero3 end
 
     # allocate memory for return values
@@ -1417,10 +1486,12 @@ function stfmm3d(eps::Float64,
 
     
     ccall((:stfmm3d_,libfmm3d),Cvoid,(Fi,Fd,Fi,Fd,Fi,Fd,
-                                    Fi,Fd,Fd,Fi,Fd,Fd,Fd,Fi,
+                                    Fi,Fd,Fd,Fi,Fd,Fd,Fi,Fd,Fd,
+                                    Fi,Fd,Fd,Fd,Fi,
                                     Fd,Fi,Fd,Fd,Fd,Fi),
           nd,eps,n,sources,ifstoklet,stoklet,ifstrslet,
-          strslet,strsvec,ppreg,pot,pre,grad,nt,targets,ppregt,
+          strslet,strsvec,ifrotlet,rotlet,rotvec,ifdoublet,doublet,doubvec,
+          ppreg,pot,pre,grad,nt,targets,ppregt,
           pottarg,pretarg,gradtarg,ier)
 
     # copy over error message
@@ -1446,7 +1517,8 @@ end
 """
 ```julia
     vals = st3ddir(sources,targets;stoklet=nothing,strslet=nothing,
-                   strsvec=nothing,ppregt=0,nd=1,thresh=1e-16)
+                   strsvec=nothing,rotlet=nothing,rotvec=nothing,
+                   doublet=nothing,doubvec=nothing,ppregt=0,nd=1,thresh=1e-16)
 ```
 
 This function computes the N-body Stokes interactions
@@ -1462,35 +1534,56 @@ We take the following conventions for the Stokes kernels:
 For a source ``y`` and target ``x``, let ``r_i = x_i-y_i``
  and let ``r = \\sqrt{r_1^2 + r_2^2 + r_3^2}``
 
-The Stokeslet, ``G_{ij}``, and its associated pressure tensor, 
+The Stokeslet, ``G_{ij}``, and its associated pressure tensor,
 ``P_j``, are
 
 ```math
-G_{ij}(x,y) = (r_i r_j)/(8\pi r^3) + \\delta_{ij}/(8\pi r) \\; ,
+G_{ij}(x,y) = (r_i r_j)/(8\\pi r^3) + \\delta_{ij}/(8\\pi r) \\; ,
 \\quad
-P_j(x,y) = r_j/r^3
+P_j(x,y) = r_j/(4\\pi r^3)
 ```
-The (Type I) stresslet, ``T_{ijk}``, and its associated 
+The (Type I) stresslet, ``T_{ijk}``, and its associated
 pressure tensor, ``\\Pi_{jk}``, are
-         
+
 ```math
- T_{ijk}(x,y) = -3 r_i r_j r_k/ (4\pi r^5) \\; , \\quad
- PI_{jk} = 1/2\pi \\delta_{jk} - 3 r_j r_k/(2\pi r^5)
+ T_{ijk}(x,y) = 3 r_i r_j r_k/ (4\\pi r^5) \\; , \\quad
+ PI_{jk} = -1/(2\\pi) \\delta_{jk} + 3 r_j r_k/(2\\pi r^5)
+```
+The rotlet, ``R_{ijk}``, and its associated pressure tensor,
+``Q_{jk}``, are
+
+```math
+ R_{ijk}(x,y) = -\\delta_{ik} r_j/(4\\pi r^3) + \\delta_{ij} r_k/(4\\pi r^3)\\; , \\quad
+ Q_{jk} = 0;
+```
+The doublet, ``D_{ijk}``, and its associated pressure tensor,
+``L_{jk}``, are
+
+```math
+ D_{ijk}(x,y) = -\\delta_{jk} r_i/(4\\pi r^3) - \\delta_{ik} r_j/(4\\pi r^3) + \\delta_{ij} r_k/(4\\pi r^3) + 3 r_i r_j r_k/ (4\\pi r^5)\\; , \\quad
+ L_{jk} = -1/(2\\pi) \\delta_{jk} + 3 r_j r_k/(2\\pi r^5)
 ```
 
 The output of this routine gives the velocity
 ```math
- u_i(x) = \\sum_{m=1}^{N} G_{ij}(x,x_m) \\sigma^{(m)}_j 
-    + T_{ijk}(x,x_m) \\mu^{(m)}_j \\nu^{(m)}_k \\, , 
+ u_i(x) = \\sum_{m=1}^{N} G_{ij}(x,x_m) \\sigma^{(m)}_j
+    + T_{ijk}(x,x_m) \\mu^{(m)}_j \\nu^{(m)}_k
+    + R_{ijk}(x,x_m) rd^{(m)}_j rv^{(m)}_k
+    + D_{ijk}(x,x_m) dd^{(m)}_j dv^{(m)}_k \\,
 ```
 and, optionally, the pressure
 
 ```math
- p(x) = \\sum_{m=1}^{N} P_{j}(x,x_m) \\sigma^{(m)}_j 
-    + \\Pi{jk}(x,x_m) \\mu^{(m)}_j \\nu^{(m)}_k \\, , 
+ p(x) = \\sum_{m=1}^{N} P_{j}(x,x_m) \\sigma^{(m)}_j
+    + \\PI_{jk}(x,x_m) \\mu^{(m)}_j \\nu^{(m)}_k
+    + \\L_{jk}(x,x_m) dd^{(m)}_j dv^{(m)}_k \\, ,
 ```
-where ``\\sigma^{(m)}`` is a Stokeslet density 3-vector,  
-``\\mu^{(m)}`` and ``\\nu^{(m)}`` are the stresslet 
+where ``\\sigma^{(m)}`` is a Stokeslet density 3-vector,
+``\\mu^{(m)}`` and ``\\nu^{(m)}`` are the stresslet
+density and orientation 3-vectors,
+``rd^{(m)}`` and ``rv^{(m)}`` are the rotlet
+density and orientation 3-vectors,
+``dd^{(m)}`` and ``dv^{(m)}`` are the doublet
 density and orientation 3-vectors, and
 ``x_{m}`` are the source locations.
 When ``x=x_{m}``, the term corresponding to 
@@ -1507,6 +1600,10 @@ The gradient of the velocity can also be computed by request.
 * `stoklet::Array{Float64}` size (nd,3,n) or (3,n) Stokeslet densities (``\\sigma``)
 * `strslet::Array{Float64}` size (nd,3,n) or (3,n) Stresslet densities (``\\mu'')  if either strsvec or strslet is provided, the other must be as well
 * `strsvec::Array{Float64}` size (nd,3,n) or (3,n) Stresslet orientations (``\\nu``) if either strsvec or strslet is provided, the other must be as well
+* `rotlet::Array{Float64}` size (nd,3,n) or (3,n) Rotlet densities (``rd'')  if either rotvec or rotlet is provided, the other must be as well
+* `rotvec::Array{Float64}` size (nd,3,n) or (3,n) Rotlet orientations (``rv``) if either rotvec or rotlet is provided, the other must be as well
+* `doublet::Array{Float64}` size (nd,3,n) or (3,n) Doublet densities (``dd'')  if either doubvec or doublet is provided, the other must be as well
+* `doubvec::Array{Float64}` size (nd,3,n) or (3,n) Doublet orientations (``dv``) if either doubvec or doublet is provided, the other must be as well
 * `ppregt::Integer` source eval flag. 
     + Velocity (``u``) at targets evaluated if `ppregt == 1`. 
     + Velocity and pressure (``p``) at targets evaluated if `ppregt == 2`
@@ -1530,6 +1627,8 @@ for the l-th density at the k-th target location
 function st3ddir(sources::Array{Float64},targets::Array{Float64};
                  stoklet::TFN=nothing,strslet::TFN=nothing,
                  strsvec::TFN=nothing,
+                 rotlet::TFN=nothing,rotvec::TFN=nothing,
+                 doublet::TFN=nothing,doubvec::TFN=nothing,
                  ppregt::Integer=0,nd::Integer=1,thresh=1e-16)
 
     # default values
@@ -1551,15 +1650,17 @@ function st3ddir(sources::Array{Float64},targets::Array{Float64};
     # check inputs
 
     ppreg=0
-    anyfail, n, nt, ifstoklet, ifstrslet = (
-        stfmm3dinputcheck(sources,stoklet,strslet,strsvec,targets,ppreg,ppregt,nd))
+    anyfail, n, nt, ifstoklet, ifstrslet, ifrotlet, ifdoublet = (
+        stfmm3dinputcheck(sources,stoklet,strslet,strsvec,rotlet,rotvec,doublet,doubvec,targets,ppreg,ppregt,nd))
 
     if anyfail
         return vals
     end
 
     if (ifstoklet == 0); stoklet = zero3 end
-    if (ifstrslet == 0); strslet = zero3 end
+    if (ifstrslet == 0); strslet = zero3; strsvec=zero3 end
+    if (ifrotlet == 0); rotlet = zero3; rotvec=zero3 end
+    if (ifdoublet == 0); doublet = zero3; doubvec=zero3 end
     if (nt == 0); targets = zero3 end
 
     # allocate memory for return values
@@ -1588,26 +1689,20 @@ function st3ddir(sources::Array{Float64},targets::Array{Float64};
     # dispatch to appropriate wrapper
     
     if ifstoklet == 1
-        if ifstrslet == 1
-            istress = 1
-            st3ddirectstokstrsg!(nd,sources,stoklet,
-                                 istress,strslet,strsvec,
-                                 n,targets,nt,pottarg,
-                                 pretarg,gradtarg,thresh)
-        else
-            st3ddirectstokg!(nd,sources,stoklet,
+        st3ddirectstokstrsrotdoubg!(nd,sources,stoklet,
+                             ifstrslet,strslet,strsvec,
+                             ifrotlet,rotlet,rotvec,
+                             ifdoublet,doublet,doubvec,
                              n,targets,nt,pottarg,
                              pretarg,gradtarg,thresh)
-        end
     else
-        if ifstrslet == 1
-            istress = 1
-            stoklet = zeros(Float64,nd,3,n)
-            st3ddirectstokstrsg!(nd,sources,stoklet,
-                             istress,strslet,strsvec,
+        stoklet = zeros(Float64,nd,3,n)
+        st3ddirectstokstrsrotdoubg!(nd,sources,stoklet,
+                             ifstrslet,strslet,strsvec,
+                             ifrotlet,rotlet,rotvec,
+                             ifdoublet,doublet,doubvec,
                              n,targets,nt,pottarg,
                              pretarg,gradtarg,thresh)
-        end
     end
     
     if ppregt == 1 || ppregt == 2 || ppregt == 3; vals.pottarg = pottarg end
@@ -1619,6 +1714,17 @@ function st3ddir(sources::Array{Float64},targets::Array{Float64};
 
 end
 
+function st3ddirectstokstrsrotdoubg!(nd,sources,stoklet,istress,
+                              strslet,strsvec,irotlet,rotlet,rotvec,idoublet,doublet,doubvec,
+                              n,targets,nt,pottarg,pretarg,gradtarg,thresh)
+    ccall((:st3ddirectstokstrsrotdoubg_,libfmm3d),Cvoid,(Fi,Fd,Fd,Fi,Fd,Fd,
+                                                         Fi,Fd,Fd,Fi,Fd,Fd,Fi,
+                                                         Fd,Fi,Fd,Fd,Fd,Fd),
+          nd,sources,stoklet,istress,
+          strslet,strsvec,irotlet,rotlet,rotvec,idoublet,doublet,doubvec,
+          n,targets,nt,pottarg,pretarg,gradtarg,thresh)
+    return
+end
 
 function st3ddirectstokstrsg!(nd,sources,stoklet,istress,
                               strslet,strsvec,n,targets,nt,pottarg,

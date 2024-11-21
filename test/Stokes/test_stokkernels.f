@@ -384,9 +384,9 @@ c     convert to equivalent vector of laplace charges
          dnu(3) = strsvec(3,i)
          do l = 1,3
             charge(l,i) = stoklet(l,i)/2
-            dipvec(l,1,i) = -(dmu(l)*dnu(1) + dmu(1)*dnu(l))/2
-            dipvec(l,2,i) = -(dmu(l)*dnu(2) + dmu(2)*dnu(l))/2
-            dipvec(l,3,i) = -(dmu(l)*dnu(3) + dmu(3)*dnu(l))/2
+            dipvec(l,1,i) = (dmu(l)*dnu(1) + dmu(1)*dnu(l))/2
+            dipvec(l,2,i) = (dmu(l)*dnu(2) + dmu(2)*dnu(l))/2
+            dipvec(l,3,i) = (dmu(l)*dnu(3) + dmu(3)*dnu(l))/2
          enddo
          l = 4
          pl = stoklet(1,i)*source(1,i) + stoklet(2,i)*source(2,i) +
@@ -398,9 +398,9 @@ c     convert to equivalent vector of laplace charges
          pv = (dnu(1)*source(1,i) + dnu(2)*source(2,i)
      1        + dnu(3)*source(3,i))
 
-         dipvec(l,1,i) = -(dmu(1)*pv + dnu(1)*pl)/2
-         dipvec(l,2,i) = -(dmu(2)*pv + dnu(2)*pl)/2
-         dipvec(l,3,i) = -(dmu(3)*pv + dnu(3)*pl)/2
+         dipvec(l,1,i) = (dmu(1)*pv + dnu(1)*pl)/2
+         dipvec(l,2,i) = (dmu(2)*pv + dnu(2)*pl)/2
+         dipvec(l,3,i) = (dmu(3)*pv + dnu(3)*pl)/2
          
       enddo
 

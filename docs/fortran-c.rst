@@ -330,7 +330,7 @@ denote the Stokeslet given by
    (x_{3}-y_{3})^2 + \|x-y \|^2 
    \end{bmatrix} \, ,
 
-and $\mathcal{T}^{\textrm{stok}}(x,y)$ denote the Stresslet whose action on
+let $\mathcal{T}^{\textrm{stok}}(x,y)$ denote the Stresslet whose action on
 a vector $v$ is given by
 
 .. math::
@@ -343,19 +343,60 @@ a vector $v$ is given by
    (x_{2}-y_{2})(x_{3}-y_{3}) \\ 
    (x_{3}-y_{3})(x_{1}-y_{1})  & (x_{3}-y_{3})(x_{2}-y_{2}) & 
    (x_{3}-y_{3})^2  
-   \end{bmatrix} \, .
+   \end{bmatrix} \, ,
+
+let $\mathcal{R}^{\textrm{stok}}(x,y)$ denote the Rotlet whose action on
+a vector $v$ is given by
+
+.. math::
+   v\cdot \mathcal{R}^{\textrm{stok}}(x,y)  = 
+   \frac{v \cdot (x-y)}{4\pi\|x-y \|^3}
+   \begin{bmatrix}
+   1 & 0 & 0 \\ 
+   0 & 1 & 0 \\ 
+   0 & 0 & 1  
+   \end{bmatrix} \, ,
+
+and $\mathcal{D}^{\textrm{stok}}(x,y)$ denote the symmetric part of Doublet whose action on
+a vector $v$ is given by
+
+.. math::
+   v\cdot \mathcal{D}^{\textrm{stok}}(x,y)  = 
+   \frac{3 v \cdot (x-y)}{4\pi\|x-y \|^5}
+   \begin{bmatrix}
+   (x_{1}-y_{1})^2 & (x_{1}-y_{1})(x_{2}-y_{2}) &
+   (x_{1}-y_{1})(x_{3}-y_{3}) \\ 
+   (x_{2}-y_{2})(x_{1}-y_{1}) & (x_{2}-y_{2})^2 & 
+   (x_{2}-y_{2})(x_{3}-y_{3}) \\ 
+   (x_{3}-y_{3})(x_{1}-y_{1})  & (x_{3}-y_{3})(x_{2}-y_{2}) & 
+   (x_{3}-y_{3})^2  
+   \end{bmatrix} - \\
+   \frac{1}{4\pi\|x-y \|^3}
+   \begin{bmatrix}
+   v_1(x_{1}-y_{1}) & v_2(x_{1}-y_{1}) & v_3(x_{1}-y_{1}) \\
+   v_2(x_{2}-y_{2}) & v_2(x_{2}-y_{2}) & v_3(x_{2}-y_{2}) \\
+   v_3(x_{3}-y_{3}) & v_3(x_{3}-y_{3}) & v_3(x_{3}-y_{3})
+   \end{bmatrix} \, . 
 
 The Stokes FMM evaluates the following velocity, its gradient
 and the associated pressure
 
 .. math::
 
-    u(x) = \sum_{m=1}^{N} \mathcal{G}^{\textrm{stok}}(x,x_{j}) \sigma_{j}  + \nu_{j} \cdot \mathcal{T}^{\textrm{stok}}(x,x_{j}) \cdot \mu_{j}  \, . 
+    u(x) = \sum_{m=1}^{N} \mathcal{G}^{\textrm{stok}}(x,x_{j}) \sigma_{j}  + \nu_{j} \cdot \mathcal{T}^{\textrm{stok}}(x,x_{j}) \cdot \mu_{j} +
+                          \nu^{r}_{j} \cdot \mathcal{R}^{\textrm{stok}}(x,x_{j}) \cdot \mu^{r}_{j} - \mu^{r}_{j} \cdot \mathcal{R}^{\textrm{stok}}(x,x_{j}) \cdot \nu^{r}_{j} + \\
+                          \nu^{d}_{j} \cdot \mathcal{R}^{\textrm{stok}}(x,x_{j}) \cdot \mu^{d}_{j} - \mu^{d}_{j} \cdot \mathcal{R}^{\textrm{stok}}(x,x_{j}) \cdot \nu^{d}_{j} +
+                          \nu^{d}_{j} \cdot \mathcal{D}^{\textrm{stok}}(x,x_{j}) \cdot \mu^{d}_{j} \, .
 
 Here $x_{j}$ are the source locations,
 $\sigma_{j}$ are the Stokeslet densities,
 $\nu_{j}$ are the stresslet orientation vectors, $\mu_{j}$ 
-are the stresslet densities, and the locations $x$ 
+are the stresslet densities,
+$\nu^{r}_{j}$ are the rotlet orientation vectors, $\mu^{r}_{j}$ 
+are the rotlet densities,
+$\nu^{d}_{j}$ are the doublet orientation vectors, $\mu^{d}_{j}$ 
+are the doublet densities,
+and the locations $x$ 
 at which the velocity and its gradient are evaluated are referred to
 as the evaluation points.
 
@@ -370,7 +411,7 @@ gradients at the evaluation points.
 
 .. code::
 
-   subroutine stfmm3d(nd,eps,nsource,source,ifstoklet,stoklet,ifstrslet,strslet,strsvec,ifppreg,pot,pre,grad,ntarg,targ,ifppregtarg,pottarg,pretarg,gradtarg,ier) 
+   subroutine stfmm3d(nd,eps,nsource,source,ifstoklet,stoklet,ifstrslet,strslet,strsvec,ifrotlet,rotlet,rotvec,ifdoublet,doublet,doubvec,ifppreg,pot,pre,grad,ntarg,targ,ifppregtarg,pottarg,pretarg,gradtarg,ier) 
 
 Input arguments:
 
@@ -396,6 +437,22 @@ Input arguments:
           Stresslet strengths, $\mu_{j}$
   -    strsvec: double precision(nd,3,nsource)
           Stresslet orientation vectors, $\nu_{j}$
+  -    ifrotlet: integer
+          Flag for including Rotlet ($\mu^{r}_{j},\nu^{r}_{j}$) term in interaction kernel
+          Rotlet term will be included if ifrotlet
+          = 1
+  -    rotlet: double precision(nd,3,nsource)
+          Rotlet strengths, $\mu^{r}_{j}$
+  -    rotvec: double precision(nd,3,nsource)
+          Rotlet orientation vectors, $\nu^{r}_{j}$
+  -    ifdoublet: integer
+          Flag for including Doublet ($\mu^{d}_{j},\nu^{d}_{j}$) term in interaction kernel
+          Doublet term will be included if ifdoublet
+          = 1
+  -    doublet: double precision(nd,3,nsource)
+          Doublet strengths, $\mu^{d}_{j}$
+  -    doubvec: double precision(nd,3,nsource)
+          Doublet orientation vectors, $\nu^{d}_{j}$
   -    ifppreg: integer
           | Flag for computing velocity, pressure and/or gradients at source locations
           | ifppreg = 1, compute velocity

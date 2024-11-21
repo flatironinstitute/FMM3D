@@ -50,8 +50,8 @@ function [U] = st3ddir(srcinfo,targ,ifppregtarg)
     stoklet = reshape(stoklet,[3*nd,ns]);
   else
     ifstoklet = 0;
-    ns_stok = 1;
-    stoklet = zeros(nd*3,1);
+    ns_stok = ns;
+    stoklet = zeros(nd*3,ns_stok);
   end
 
   if(isfield(srcinfo,'strslet') && isfield(srcinfo,'strsvec'))
@@ -72,18 +72,48 @@ function [U] = st3ddir(srcinfo,targ,ifppregtarg)
     strsvec = zeros(nd*3,1);
   end
 
+  if(isfield(srcinfo,'rotlet') && isfield(srcinfo,'rotvec'))
+    ifrotlet = 1;
+    ns_rot = ns;
+    rotlet = srcinfo.rotlet;
+    rotvec = srcinfo.rotvec;
+    if(nd == 1), [a,b] = size(squeeze(rotlet)); assert(a==3 && b==ns,'Rotlet must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd == 1), [a,b] = size(squeeze(rotvec)); assert(a==3 && b==ns,'Rotvec must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(rotlet); assert(a==nd && b==3 && c==ns, 'Rotlet must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(rotvec); assert(a==nd && b==3 && c==ns, 'Rotvec must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    rotlet = reshape(rotlet,[3*nd,ns]);
+    rotvec = reshape(rotvec,[3*nd,ns]);
+  else
+    ifrotlet = 0;
+    ns_rot = 1;
+    rotlet = zeros(nd*3,1);
+    rotvec = zeros(nd*3,1);
+  end
+
+  if(isfield(srcinfo,'doublet') && isfield(srcinfo,'doubvec'))
+    ifdoublet = 1;
+    ns_doub = ns;
+    doublet = srcinfo.doublet;
+    doubvec = srcinfo.doubvec;
+    if(nd == 1), [a,b] = size(squeeze(doublet)); assert(a==3 && b==ns,'Doublet must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd == 1), [a,b] = size(squeeze(doubvec)); assert(a==3 && b==ns,'Doubvec must be of shape[3,ns], where ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(doublet); assert(a==nd && b==3 && c==ns, 'Doublet must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    if(nd>1), [a,b,c] = size(doubvec); assert(a==nd && b==3 && c==ns, 'Doubvec must be of shape[nd,3,ns], where nd is number of densities, and ns is the number of sources'); end;
+    doublet = reshape(doublet,[3*nd,ns]);
+    doubvec = reshape(doubvec,[3*nd,ns]);
+  else
+    ifdoublet = 0;
+    ns_doub = 1;
+    doublet = zeros(nd*3,1);
+    doubvec = zeros(nd*3,1);
+  end
+
   nd3 = 3*nd;
   nd9 = 9*nd;
   ier = 0;
 
-  if(ifstoklet == 1 && ifstrslet == 0)
-    mex_id_ = 'st3ddirectstokg(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])';
-[pottarg, pretarg, gradtarg] = fmm3d(mex_id_, nd, sources, stoklet, ns, targ, nt, pottarg, pretarg, gradtarg, thresh, 1, 3, ns, nd3, ns_stok, 1, 3, nt, 1, nd3, nt, nd, nt, nd9, nt, 1);
-  else
-    istress = 1;
-    mex_id_ = 'st3ddirectstokstrsg(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])';
-[pottarg, pretarg, gradtarg] = fmm3d(mex_id_, nd, sources, stoklet, istress, strslet, strsvec, ns, targ, nt, pottarg, pretarg, gradtarg, thresh, 1, 3, ns, nd3, ns_stok, 1, nd3, ns_strs, nd3, ns_strs, 1, 3, nt, 1, nd3, nt, nd, nt, nd9, nt, 1);
-  end
+  mex_id_ = 'st3ddirectstokstrsrotdoubg(i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i double[xx], i int64_t[x], i double[xx], i int64_t[x], io double[xx], io double[xx], io double[xx], i double[x])';
+[pottarg, pretarg, gradtarg] = fmm3d(mex_id_, nd, sources, stoklet, ifstrslet, strslet, strsvec, ifrotlet, rotlet, rotvec, ifdoublet, doublet, doubvec, ns, targ, nt, pottarg, pretarg, gradtarg, thresh, 1, 3, ns, nd3, ns_stok, 1, nd3, ns_strs, nd3, ns_strs, 1, nd3, ns_rot, nd3, ns_rot, 1, nd3, ns_doub, nd3, ns_doub, 1, 3, nt, 1, nd3, nt, nd, nt, nd9, nt, 1);
 
   U.pottarg = [];
   U.pretarg = [];
