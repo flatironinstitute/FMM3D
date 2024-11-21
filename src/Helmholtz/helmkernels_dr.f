@@ -1,6 +1,7 @@
       implicit real *8 (a-h,o-z)
-      parameter (nd = 1)
-      parameter (nt = 3)
+      integer *8, parameter :: nd = 1
+      integer *8, parameter :: nt = 3
+      integer *8 i,icomp,ns
       real *8 ztarg(3,nt),sources(3,10)
       complex *16 charge(nd,10),pot(nd,nt),grad(nd,3,nt)
       complex *16 hess(nd,6,nt)
@@ -287,7 +288,8 @@ c
       end
 
       subroutine setzero(pot,grad,hess,nd,nt)
-      implicit real *8 (a-h,o-z)
+      implicit none
+      integer *8 nd,nt,ii,jj
       complex *16 pot(nd,nt),grad(nd,3,nt)
       complex *16 hess(nd,6,nt)
 

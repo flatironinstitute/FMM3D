@@ -79,11 +79,11 @@ tic
 total_time=toc
 
 
-if( ifpot ), U.pot=U.pot/(4*pi); end
-if( iffld ), U.fld=U.fld/(4*pi); end
+if( ifpot ), U.pot=U.pot; end
+if( iffld ), U.fld=U.fld; end
 
-if( ifpot ), F.pot=F.pot/(4*pi); end
-if( iffld ), F.fld=F.fld/(4*pi); end
+if( ifpot ), F.pot=F.pot; end
+if( iffld ), F.fld=F.fld; end
 
 if( ifpot ),
 %rms_pot = norm((F.pot),2)/sqrt(nsource)
@@ -98,11 +98,11 @@ rel_error_fld = norm(U.fld - F.fld,2)/norm(F.fld,2)
 end
 %%%break;
 
-if( ifpottarg ), U.pottarg=U.pottarg/(4*pi); end
-if( iffldtarg ), U.fldtarg=U.fldtarg/(4*pi); end
+if( ifpottarg ), U.pottarg=U.pottarg; end
+if( iffldtarg ), U.fldtarg=U.fldtarg; end
 
-if( ifpottarg ), F.pottarg=F.pottarg/(4*pi); end
-if( iffldtarg ), F.fldtarg=F.fldtarg/(4*pi); end
+if( ifpottarg ), F.pottarg=F.pottarg; end
+if( iffldtarg ), F.fldtarg=F.fldtarg; end
 
 if( ifpottarg ),
 %rms_pottarg = norm((F.pottarg),2)/sqrt(nsource)

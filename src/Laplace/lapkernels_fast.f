@@ -49,7 +49,7 @@ c     This subroutine evaluates the potential due to a collection
 c     of sources and adds to existing
 c     quantities.
 c
-c     pot(x) = pot(x) + sum  q_{j} /|x-x_{j}| 
+c     pot(x) = pot(x) + sum 1/(4\pi) q_{j} /|x-x_{j}| 
 c                        j
 c                 
 c      where q_{j} is the charge strength
@@ -109,10 +109,10 @@ c
 c     This subroutine evaluates the potential and gradient due to a 
 c     collection of sources and adds to existing quantities.
 c
-c     pot(x) = pot(x) + sum  q_{j} /|x-x_{j}| 
+c     pot(x) = pot(x) + sum 1/(4\pi) q_{j} /|x-x_{j}| 
 c                        j
 c                 
-c     grad(x) = grad(x) + Gradient(sum  q_{j} /|x-x_{j}|) 
+c     grad(x) = grad(x) + Gradient(sum 1/(4\pi) q_{j} /|x-x_{j}|) 
 c                                   j
 c      where q_{j} is the charge strength
 c      If |r| < thresh 
@@ -174,12 +174,12 @@ c
 c     This subroutine evaluates the potential and gradient due to a
 c     collection of sources and adds to existing quantities.
 c
-c     pot(x) = pot(x) + sum  q_{j} /|x-x_{j}|
+c     pot(x) = pot(x) + sum 1/(4\pi) q_{j} /|x-x_{j}|
 c                        j
 c
-c     grad(x) = grad(x) + Gradient(sum  q_{j} /|x-x_{j}|)
+c     grad(x) = grad(x) + Gradient(sum 1/(4\pi) q_{j} /|x-x_{j}|)
 c
-c     hess(x) = hess(x) + Hessian(sum  q_{j} /|x-x_{j}|)
+c     hess(x) = hess(x) + Hessian(sum 1/(4\pi) q_{j} /|x-x_{j}|)
 c                                   j
 c      where q_{j} is the charge strength
 c      If |r| < thresh
@@ -244,7 +244,7 @@ c     This subroutine evaluates the potential due to a collection
 c     of sources and adds to existing
 c     quantities.
 c
-c     pot(x) = pot(x) + sum   \nabla 1/|x-x_{j}| \cdot v_{j} 
+c     pot(x) = pot(x) + sum  1/(4\pi) \nabla 1/|x-x_{j}| \cdot v_{j} 
 c   
 c      where v_{j} is the dipole orientation vector, 
 c      \nabla denotes the gradient is with respect to the x_{j} 
@@ -305,13 +305,13 @@ c
 c     This subroutine evaluates the potential and gradient due to a 
 c     collection of sources and adds to existing quantities.
 c
-c     pot(x) = pot(x) + sum  d_{j} \nabla 1/|x-x_{j}| \cdot v_{j}
+c     pot(x) = pot(x) + sum 1/(4\pi) d_{j} \nabla 1/|x-x_{j}| \cdot v_{j}
 c                        j
 c   
 c     grad(x) = grad(x) + Gradient( sum  
 c                                    j
 c
-c                            \nabla 1|/|x-x_{j}| \cdot v_{j}
+c                            1/(4\pi) \nabla 1|/|x-x_{j}| \cdot v_{j}
 c                            )
 c                                   
 c      where v_{j} is the dipole orientation vector, 
@@ -374,19 +374,19 @@ c
 c     This subroutine evaluates the potential and gradient due to a 
 c     collection of sources and adds to existing quantities.
 c
-c     pot(x) = pot(x) + sum  d_{j} \nabla 1/|x-x_{j}| \cdot v_{j}
+c     pot(x) = pot(x) + sum 1/(4\pi) d_{j} \nabla 1/|x-x_{j}| \cdot v_{j}
 c                        j
 c   
 c     grad(x) = grad(x) + Gradient( sum  
 c                                    j
 c
-c                            \nabla 1|/|x-x_{j}| \cdot v_{j}
+c                            1/(4\pi) \nabla 1|/|x-x_{j}| \cdot v_{j}
 c                            )
 c                                   
 c     hess(x) = hess(x) + Hessian( sum  
 c                                    j
 c
-c                            \nabla 1|/|x-x_{j}| \cdot v_{j}
+c                            1/(4\pi) \nabla 1|/|x-x_{j}| \cdot v_{j}
 c                            )
 c                                   
 c      where v_{j} is the dipole orientation vector, 
@@ -451,10 +451,10 @@ c     This subroutine evaluates the potential due to a collection
 c     of sources and adds to existing
 c     quantities.
 c
-c     pot(x) = pot(x) + sum  q_{j} 1/|x-x_{j}| +  
+c     pot(x) = pot(x) + sum 1/(4\pi) q_{j} 1/|x-x_{j}| +  
 c                        j
 c
-c                            \nabla 1/|x-x_{j}| \cdot v_{j}
+c                            1/(4\pi) \nabla 1/|x-x_{j}| \cdot v_{j}
 c   
 c      where q_{j} is the charge strength, 
 c      and v_{j} is the dipole orientation vector, 
@@ -518,15 +518,15 @@ c
 c     This subroutine evaluates the potential and gradient due to a 
 c     collection of sources and adds to existing quantities.
 c
-c     pot(x) = pot(x) + sum  q_{j} 1/|x-x_{j}| +  
+c     pot(x) = pot(x) + sum 1/(4\pi) q_{j} 1/|x-x_{j}| +  
 c                        j
 c
-c                            \nabla 1/|x-x_{j}| \cdot v_{j}
+c                            1/(4\pi) \nabla 1/|x-x_{j}| \cdot v_{j}
 c   
-c     grad(x) = grad(x) + Gradient( sum  q_{j} 1/|x-x_{j}| +  
+c     grad(x) = grad(x) + Gradient( sum 1/(4\pi) q_{j} 1/|x-x_{j}| +  
 c                                    j
 c
-c                            \nabla 1/|x-x_{j}| \cdot v_{j}
+c                            1/(4\pi) \nabla 1/|x-x_{j}| \cdot v_{j}
 c                            )
 c                                   
 c      where q_{j} is the charge strength, 
@@ -591,15 +591,15 @@ c
 c     This subroutine evaluates the potential and gradient due to a 
 c     collection of sources and adds to existing quantities.
 c
-c     pot(x) = pot(x) + sum  q_{j} 1/|x-x_{j}| +  
+c     pot(x) = pot(x) + sum 1/(4\pi) q_{j} 1/|x-x_{j}| +  
 c                        j
 c
-c                            \nabla 1/|x-x_{j}| \cdot v_{j}
+c                            1/(4\pi) \nabla 1/|x-x_{j}| \cdot v_{j}
 c   
-c     grad(x) = grad(x) + Gradient( sum  q_{j} 1/|x-x_{j}| +  
+c     grad(x) = grad(x) + Gradient( sum 1/(4\pi) q_{j} 1/|x-x_{j}| +  
 c                                    j
 c
-c                            \nabla 1/|x-x_{j}| \cdot v_{j}
+c                            1/(4\pi) \nabla 1/|x-x_{j}| \cdot v_{j}
 c                            )
 c                                   
 c      where q_{j} is the charge strength, 

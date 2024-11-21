@@ -4,8 +4,7 @@ c       Generalized helmholtz FMM in R^3: evaluate all pairwise particle
 c       interactions (ignoring self-interaction) 
 c       and interactions with targets 
 c
-c       We use exp(ikr)/r for the Green's function., without
-c       the 1/(4\pi ) scaling.
+c       We use 1/(4\pi) * exp(ikr)/r for the Green's function.
 c
 c   
 c-----------------------------------------------------------

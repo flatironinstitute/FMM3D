@@ -66,7 +66,7 @@ and field
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} \frac{1}{\|x-x_{j}\|} - d_{j}\left(v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right) \right)
+      u(x) = \sum_{j=1}^{N} c_{j} \frac{1}{4\pi\|x-x_{j}\|} - d_{j}\left(v_{j} \cdot \nabla \left( \frac{1}{4\pi\|x-x_{j}\|}\right) \right)
 
 at the source locations $x=x_{j}$. When $x=x_{m}$, the term 
 corresponding to $x_{m}$ is dropped from the sum.
@@ -144,7 +144,7 @@ and field
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} \frac{1}{\|x-x_{j}\|} - d_{j}\left(v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right) \right)
+      u(x) = \sum_{j=1}^{N} c_{j} \frac{1}{4\pi\|x-x_{j}\|} - d_{j}\left(v_{j} \cdot \nabla \left( \frac{1}{4\pi\|x-x_{j}\|}\right) \right)
 
 at the source locations $x=x_{j}$/target locations $x=t_{j}$/
 source and target locations. When $x=x_{m}$, the term 
@@ -252,7 +252,7 @@ and field
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} \frac{1}{\|x-x_{j}\|} - d_{j}\left(v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right) \right)
+      u(x) = \sum_{j=1}^{N} c_{j} \frac{1}{4\pi\|x-x_{j}\|} - d_{j}\left(v_{j} \cdot \nabla \left( \frac{1}{4\pi\|x-x_{j}\|}\right) \right)
 
 at the source locations $x=x_{j}$/target locations $x=t_{j}$/
 source and target locations. When $x=x_{m}$, the term 
@@ -356,7 +356,7 @@ and field
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} - d_{j}\left(v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right) \right)
+      u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|} - d_{j}\left(v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|}\right) \right)
 
 at the source locations $x=x_{j}$. When $x=x_{m}$, the term 
 corresponding to $x_{m}$ is dropped from the sum.
@@ -436,7 +436,7 @@ and field
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|} - d_{j}\left(v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right) \right)
+      u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|} - d_{j}\left(v_{j} \cdot \nabla \left( \frac{e^{ik\|x-x_{j}\|}}{4\pi\|x-x_{j}\|}\right) \right)
 
 at the source locations $x=x_{j}$/target locations $x=t_{j}$/
 source and target locations. When $x=x_{m}$, the term 
@@ -546,7 +546,7 @@ and field
 
   .. math::
 
-      u(x) = \sum_{j=1}^{N} c_{j} \frac{1}{\|x-x_{j}\|} - d_{j}\left(v_{j} \cdot \nabla \left( \frac{1}{\|x-x_{j}\|}\right) \right)
+      u(x) = \sum_{j=1}^{N} c_{j} \frac{1}{4\pi\|x-x_{j}\|} - d_{j}\left(v_{j} \cdot \nabla \left( \frac{1}{4\pi\|x-x_{j}\|}\right) \right)
 
 at the source locations $x=x_{j}$/target locations $x=t_{j}$/
 source and target locations. When $x=x_{m}$, the term 

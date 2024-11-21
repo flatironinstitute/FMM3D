@@ -9,16 +9,16 @@ c     For a source y and target x, let r_i = x_i-y_i
 c     and let r = sqrt(r_1^2 + r_2^2 + r_3^2)
 c
 c     The Stokeslet, G_{ij}, and its associated pressure tensor, P_j,
-c     (without the 1/4pi scaling) are
+c     are
 c
-c     G_{ij}(x,y) = (r_i r_j)/(2r^3) + delta_{ij}/(2r)
-c     P_j(x,y) = r_j/r^3
+c     G_{ij}(x,y) = 1/(8\pi)*(r_i r_j)/r^3 + 1/(8\pi)*delta_{ij}/r
+c     P_j(x,y) = 1/(4\pi) * r_j/r^3
 c
 c     The (Type I) stresslet, T_{ijk}, and its associated pressure
-c     tensor, PI_{jk}, (without the 1/4pi scaling) are
+c     tensor, PI_{jk}, are
 c     
-c     T_{ijk}(x,y) = -3 r_i r_j r_k/ r^5
-c     PI_{jk} = -2 delta_{jk} + 6 r_j r_k/r^5      
+c     T_{ijk}(x,y) = -3/(4\pi) r_i r_j r_k/ r^5
+c     PI_{jk} = 1/(2\pi) delta_{jk} - 3/(2\pi) r_j r_k/r^5      
 c
 
       subroutine st3ddirectstokg(nd,sources,stoklet,ns,targ,nt,
@@ -110,6 +110,7 @@ c     local
       real *8 pl, pv, dmu(3), dnu(3), temp, r, r2, r3, r5
       real *8 dmunu      
       real *8 threshsq
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
 
       integer *8 i, j, idim, l
 
@@ -132,14 +133,18 @@ c     stokeslet contribution
             
             do idim = 1,nd
 
-               pot(idim,1,i) = pot(idim,1,i) + stoklet(idim,1,j)/(2*r)
-               pot(idim,2,i) = pot(idim,2,i) + stoklet(idim,2,j)/(2*r)
-               pot(idim,3,i) = pot(idim,3,i) + stoklet(idim,3,j)/(2*r)
+               pot(idim,1,i) = pot(idim,1,i) +
+     1                         stoklet(idim,1,j)/(2*r)*inv4pi
+               pot(idim,2,i) = pot(idim,2,i) +
+     1                         stoklet(idim,2,j)/(2*r)*inv4pi
+               pot(idim,3,i) = pot(idim,3,i) +
+     1                         stoklet(idim,3,j)/(2*r)*inv4pi
                
                pl = (zdiff(1)*stoklet(idim,1,j) +
      1              zdiff(2)*stoklet(idim,2,j) +
      2              zdiff(3)*stoklet(idim,3,j))/(r3*2)
                
+               pl = pl * inv4pi
                pot(idim,1,i) = pot(idim,1,i) + zdiff(1)*pl
                pot(idim,2,i) = pot(idim,2,i) + zdiff(2)*pl
                pot(idim,3,i) = pot(idim,3,i) + zdiff(3)*pl
@@ -148,9 +153,12 @@ c     stokeslet contribution
                grad(idim,2,2,i) = grad(idim,2,2,i) + pl
                grad(idim,3,3,i) = grad(idim,3,3,i) + pl               
 
-               d1 = stoklet(idim,1,j)/(r3*2) - zdiff(1)*pl*3.0d0/r2
-               d2 = stoklet(idim,2,j)/(r3*2) - zdiff(2)*pl*3.0d0/r2
-               d3 = stoklet(idim,3,j)/(r3*2) - zdiff(3)*pl*3.0d0/r2
+               d1 = stoklet(idim,1,j)/(r3*2)*inv4pi -
+     1              zdiff(1)*pl*3.0d0/r2
+               d2 = stoklet(idim,2,j)/(r3*2)*inv4pi -
+     1              zdiff(2)*pl*3.0d0/r2
+               d3 = stoklet(idim,3,j)/(r3*2)*inv4pi -
+     1              zdiff(3)*pl*3.0d0/r2
                
                grad(idim,1,1,i) = grad(idim,1,1,i) + d1*zdiff(1)
                grad(idim,2,1,i) = grad(idim,2,1,i) + d2*zdiff(1)
@@ -162,9 +170,9 @@ c     stokeslet contribution
                grad(idim,2,3,i) = grad(idim,2,3,i) + d2*zdiff(3)
                grad(idim,3,3,i) = grad(idim,3,3,i) + d3*zdiff(3)
 
-               d1 = -stoklet(idim,1,j)/(2*r3)
-               d2 = -stoklet(idim,2,j)/(2*r3)
-               d3 = -stoklet(idim,3,j)/(2*r3)               
+               d1 = -stoklet(idim,1,j)/(2*r3)*inv4pi
+               d2 = -stoklet(idim,2,j)/(2*r3)*inv4pi
+               d3 = -stoklet(idim,3,j)/(2*r3)*inv4pi               
                
                grad(idim,1,1,i) = grad(idim,1,1,i) + zdiff(1)*d1
                grad(idim,2,1,i) = grad(idim,2,1,i) + zdiff(2)*d1
@@ -300,6 +308,7 @@ c     local
       real *8 pl, pv, dmu(3), dnu(3), temp, r, r2, r3, r5
       real *8 dmunu      
       real *8 threshsq
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
 
       integer *8 i, j, idim, l
 
@@ -341,6 +350,7 @@ c     type I stresslet
                pv = zdiff(1)*dnu(1) + zdiff(2)*dnu(2) + zdiff(3)*dnu(3)
 
                temp = -3.0d0*pl*pv/r5
+               temp = temp * inv4pi
                
                pot(idim,1,i) = pot(idim,1,i) + zdiff(1)*temp
                pot(idim,2,i) = pot(idim,2,i) + zdiff(2)*temp
@@ -352,6 +362,10 @@ c     type I stresslet
      1              5.0d0*zdiff(2)*pl*pv/r2)/ r5
                tempx3 = -3.0d0*(dmu(3)*pv + dnu(3)*pl -
      1              5.0d0*zdiff(3)*pl*pv/r2)/ r5
+
+               tempx1 = tempx1 * inv4pi
+               tempx2 = tempx2 * inv4pi
+               tempx3 = tempx3 * inv4pi
 
                grad(idim,1,1,i) = grad(idim,1,1,i) + temp
                grad(idim,1,1,i) = grad(idim,1,1,i) + zdiff(1)*tempx1
@@ -369,8 +383,9 @@ c     type I stresslet
                grad(idim,3,3,i) = grad(idim,3,3,i) + zdiff(3)*tempx3
 
                dmunu = dmu(1)*dnu(1) + dmu(2)*dnu(2) + dmu(3)*dnu(3)
+               dmunu = dmunu * inv4pi
                
-               pre(idim,i) = pre(idim,i) + 2.0d0*dmunu/r3-6.0d0*pl*pv/r5
+               pre(idim,i) = pre(idim,i) + 2.0d0*dmunu/r3 + 2.0d0*temp
             enddo
             
  20         continue

@@ -38,8 +38,8 @@ c
 c         Using our standard definition, the addition theorem takes 
 c         the simple form 
 c
-c         e^( i k r}/(ikr) = 
-c         \sum_n \sum_m  j_n(k|S|) Y_l^m*(S) h_n(k|T|) Y_l^m(T)
+c         1/(4\pi) e^( i k r}/(ikr) = 
+c         \sum_n \sum_m 1/(4\pi) j_n(k|S|) Y_l^m*(S) h_n(k|T|) Y_l^m(T)
 c
 c
 c-----------------------------------------------------------------------
@@ -454,6 +454,7 @@ c
       real *8, allocatable :: ynm(:,:)
       real *8 r,theta,phi
       real *8 ctheta,stheta,cphi,sphi
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
       complex *16, allocatable :: fjs(:),fjder(:),ephi(:)
       complex *16 ephi1,ephi1inv
       complex *16 z,ztmp,zkeye,eye
@@ -465,7 +466,7 @@ c
       allocate(fjs(0:nterms),fjder(0:nterms),ephi(-nterms:nterms))
       allocate(ynm(0:nterms,0:nterms))
 
-      zkeye = eye*zk
+      zkeye = eye*zk*inv4pi
 
 
       do isrc=1,ns
@@ -514,10 +515,10 @@ c     Recall that there are multiple definitions of scaling for
 c     Ylm. Using our standard definition, 
 c     the addition theorem takes the simple form 
 c
-c        e^( i k r}/r = 
-c         (ik) \sum_n \sum_m  j_n(k|S|) Ylm*(S) h_n(k|T|)Ylm(T)
+c       1/(4\pi) e^( i k r}/r = 
+c         (ik) \sum_n \sum_m 1/(4\pi) j_n(k|S|) Ylm*(S) h_n(k|T|)Ylm(T)
 c
-c     so contribution is j_n(k|S|) times
+c     so contribution is 1/(4\pi) j_n(k|S|) times
 c   
 c       Ylm*(S)  = P_l,m * dconjg(ephi(m))               for m > 0   
 c       Yl,m*(S)  = P_l,|m| * dconjg(ephi(m))            for m < 0
@@ -600,6 +601,7 @@ c
       real *8 r,theta,phi
       real *8 ctheta,stheta,cphi,sphi
       real *8 rx,thetax,phix,ry,thetay,phiy,rz,thetaz,phiz
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
       complex *16 ux,uy,uz,ur,utheta,uphi,zzz
       data eye/(0.0d0,1.0d0)/
 
@@ -610,7 +612,7 @@ c
       allocate(fjs(0:nterms+1),fjder(0:nterms+1),ephi(-nterms:nterms))
       allocate(ynm(0:nterms,0:nterms),ynmd(0:nterms,0:nterms))
 
-      zkeye = eye*zk
+      zkeye = eye*zk*inv4pi
 
 
       do isrc=1,ns
@@ -693,10 +695,10 @@ c     Recall that there are multiple definitions of scaling for
 c     Ylm. Using our standard definition, 
 c     the addition theorem takes the simple form 
 c
-c        e^( i k r}/r = 
-c         (ik) \sum_n \sum_m  j_n(k|S|) Ylm*(S) h_n(k|T|)Ylm(T)
+c       1/(4\pi) e^( i k r}/r = 
+c         (ik) \sum_n \sum_m 1/(4\pi) j_n(k|S|) Ylm*(S) h_n(k|T|)Ylm(T)
 c
-c     so contribution is j_n(k|S|) times
+c     so contribution is 1/(4\pi) j_n(k|S|) times
 c   
 c       Ylm*(S)  = P_l,m * dconjg(ephi(m))               for m > 0   
 c       Yl,m*(S)  = P_l,|m| * dconjg(ephi(m))            for m < 0
@@ -814,6 +816,7 @@ c
       real *8 r,theta,phi
       real *8 ctheta,stheta,cphi,sphi
       real *8 rx,thetax,phix,ry,thetay,phiy,rz,thetaz,phiz
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
       complex *16 ux,uy,uz,ur,utheta,uphi,zzz
       data eye/(0.0d0,1.0d0)/
 
@@ -824,7 +827,7 @@ c
       allocate(fjs(0:nterms+1),fjder(0:nterms+1),ephi(-nterms:nterms))
       allocate(ynm(0:nterms,0:nterms),ynmd(0:nterms,0:nterms))
 
-      zkeye = eye*zk
+      zkeye = eye*zk*inv4pi
 
 
       do isrc=1,ns
@@ -907,10 +910,10 @@ c     Recall that there are multiple definitions of scaling for
 c     Ylm. Using our standard definition, 
 c     the addition theorem takes the simple form 
 c
-c        e^( i k r}/r = 
-c         (ik) \sum_n \sum_m  j_n(k|S|) Ylm*(S) h_n(k|T|)Ylm(T)
+c        1/(4\pi) e^( i k r}/r = 
+c         (ik) \sum_n \sum_m 1/(4\pi) j_n(k|S|) Ylm*(S) h_n(k|T|)Ylm(T)
 c
-c     so contribution is j_n(k|S|) times
+c     so contribution is 1/(4\pi) j_n(k|S|) times
 c   
 c       Ylm*(S)  = P_l,m * dconjg(ephi(m))               for m > 0   
 c       Yl,m*(S)  = P_l,|m| * dconjg(ephi(m))            for m < 0
@@ -1340,6 +1343,7 @@ c
       real *8, allocatable :: ynm(:,:)
       real *8 r,theta,phi
       real *8 ctheta,stheta,cphi,sphi
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
       complex *16, allocatable :: fhs(:),fhder(:),ephi(:)
       complex *16 ephi1,ephi1inv
       complex *16 z,ztmp,zkeye,eye
@@ -1351,7 +1355,7 @@ c
       allocate(fhs(0:nterms),fhder(0:nterms),ephi(-nterms:nterms))
       allocate(ynm(0:nterms,0:nterms))
 
-      zkeye = eye*zk
+      zkeye = eye*zk*inv4pi
 
 
       do isrc=1,ns
@@ -1387,7 +1391,7 @@ c
         call h3dall(nterms,z,rscale,fhs,ifder,fhder)
 c
 c
-c     multiply all hn by charge strength and (i*k).
+c     multiply all hn by charge strength and 1/(4\pi)*(i*k).
 c
         do n = 0,nterms
           fhs(n) = fhs(n)*zkeye
@@ -1469,6 +1473,7 @@ c
       real *8 r,theta,phi
       real *8 ctheta,stheta,cphi,sphi
       real *8 rx,thetax,phix,ry,thetay,phiy,rz,thetaz,phiz
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
       complex *16 ux,uy,uz,ur,utheta,uphi,zzz
       integer *8 idim
       data eye/(0.0d0,1.0d0)/
@@ -1480,7 +1485,7 @@ c
       allocate(fhs(0:nterms),fhder(0:nterms),ephi(-nterms:nterms))
       allocate(ynm(0:nterms,0:nterms),ynmd(0:nterms,0:nterms))
 
-      zkeye = eye*zk
+      zkeye = eye*zk*inv4pi
 
 
       do isrc=1,ns
@@ -1538,7 +1543,7 @@ c
         call h3dall(nterms,z,rscale,fhs,ifder,fhder)
 c
 c
-c     multiply all hn by  (i*k).
+c     multiply all hn by 1/(4\pi) (i*k).
 c
         do n = 0,nterms
           fhs(n) = fhs(n)*zkeye
@@ -1552,10 +1557,10 @@ c     Recall that there are multiple definitions of scaling for
 c     Ylm. Using our standard definition, 
 c     the addition theorem takes the simple form 
 c
-c        e^( i k r}/r = 
-c         (ik) \sum_n \sum_m  j_n(k|T|) Ylm*(T) h_n(k|S|)Ylm(S)
+c        1/(4\pi) e^( i k r}/r = 
+c         (ik) \sum_n \sum_m 1/(4\pi) j_n(k|T|) Ylm*(T) h_n(k|S|)Ylm(S)
 c
-c     so contribution is j_n(k|S|) times
+c     so contribution is 1/(4\pi) j_n(k|S|) times
 c   
 c       Ylm*(S)  = P_l,m * dconjg(ephi(m))               for m > 0   
 c       Yl,m*(S)  = P_l,|m| * dconjg(ephi(m))            for m < 0
@@ -1668,6 +1673,7 @@ c
       real *8 r,theta,phi
       real *8 ctheta,stheta,cphi,sphi
       real *8 rx,thetax,phix,ry,thetay,phiy,rz,thetaz,phiz
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
       complex *16 ux,uy,uz,ur,utheta,uphi,zzz
       integer *8 idim
       data eye/(0.0d0,1.0d0)/
@@ -1679,7 +1685,7 @@ c
       allocate(fhs(0:nterms),fhder(0:nterms),ephi(-nterms:nterms))
       allocate(ynm(0:nterms,0:nterms),ynmd(0:nterms,0:nterms))
 
-      zkeye = eye*zk
+      zkeye = eye*zk*inv4pi
 
 
       do isrc=1,ns
@@ -1737,7 +1743,7 @@ c
         call h3dall(nterms,z,rscale,fhs,ifder,fhder)
 c
 c
-c     multiply all hn by  (i*k).
+c     multiply all hn by 1/(4\pi) (i*k).
 c
         do n = 0,nterms
           fhs(n) = fhs(n)*zkeye
@@ -1751,10 +1757,10 @@ c     Recall that there are multiple definitions of scaling for
 c     Ylm. Using our standard definition, 
 c     the addition theorem takes the simple form 
 c
-c        e^( i k r}/r = 
-c         (ik) \sum_n \sum_m  j_n(k|T|) Ylm*(T) h_n(k|S|)Ylm(S)
+c        1/(4\pi) e^( i k r}/r = 
+c         (ik) \sum_n \sum_m 1/(4\pi) j_n(k|T|) Ylm*(T) h_n(k|S|)Ylm(S)
 c
-c     so contribution is j_n(k|S|) times
+c     so contribution is 1/(4\pi) j_n(k|S|) times
 c   
 c       Ylm*(S)  = P_l,m * dconjg(ephi(m))               for m > 0   
 c       Yl,m*(S)  = P_l,|m| * dconjg(ephi(m))            for m < 0

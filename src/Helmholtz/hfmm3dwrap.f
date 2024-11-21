@@ -3,8 +3,8 @@ c
 c  The Helmholtz FMM evaluates the following potential
 c  and its gradient
 c    
-c     u(x) = \sum_{j=1}^{N} c_{j}e^{ik|x-x_{j}|}/|x-x_{j}| 
-c               - v_{j}.\nabla (e^{ik|x-x_{j}|}/|x-x_{j}|)
+c     u(x) = \sum_{j=1}^{N} 1/(4\pi) c_{j}e^{ik|x-x_{j}|}/|x-x_{j}| 
+c               - 1/(4\pi) v_{j}.\nabla (e^{ik|x-x_{j}|}/|x-x_{j}|)
 c
 c  Here x_{j} are the source locations, c_{j} are the charge strengths,
 c  v_{j} are the dipole strengths. We refer to the collection of 
@@ -133,7 +133,7 @@ cf2py  intent(out) pot,ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential 
-c      u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
+c      u(x) = \sum_{j=1}^{N} 1/(4\pi) c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
 c
 c  at the source locations $x=x_{j}$.
 c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
@@ -215,7 +215,7 @@ cf2py  intent(out) pot,grad,ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
-c      u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
+c      u(x) = \sum_{j=1}^{N} 1/(4\pi) c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
 c
 c  at the source locations $x=x_{j}$.
 c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
@@ -298,7 +298,7 @@ cf2py  intent(out) pot,ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential 
-c      u(x) = -\sum_{j=1}^{N} v_{j} \cdot \nabla \left( 
+c      u(x) = -\sum_{j=1}^{N} 1/(4\pi) v_{j} \cdot \nabla \left( 
 c            \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 c
 c  at the source locations $x=x_{j}$.
@@ -381,7 +381,7 @@ cf2py  intent(out) pot,grad,ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
-c      u(x) = -\sum_{j=1}^{N} v_{j} \cdot \nabla \left( 
+c      u(x) = -\sum_{j=1}^{N} 1/(4\pi) v_{j} \cdot \nabla \left( 
 c            \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 c
 c  at the source locations $x=x_{j}$.
@@ -465,8 +465,8 @@ cf2py  intent(out) pot,ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential 
-c      u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - 
-c            v_{j} \cdot \nabla \left( 
+c      u(x) = \sum_{j=1}^{N} 1/(4\pi) c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - 
+c            1/(4\pi) v_{j} \cdot \nabla \left( 
 c            \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 c
 c  at the source locations $x=x_{j}$.
@@ -555,8 +555,8 @@ cf2py  intent(out) pot,grad,ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
-c      u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - 
-c            v_{j} \cdot \nabla \left( 
+c      u(x) = \sum_{j=1}^{N} 1/(4\pi) c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - 
+c            1/(4\pi) v_{j} \cdot \nabla \left( 
 c            \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 c
 c  at the source locations $x=x_{j}$.
@@ -643,7 +643,7 @@ cf2py  intent(out) pottarg,ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential 
-c      u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
+c      u(x) = \sum_{j=1}^{N} 1/(4\pi) c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
 c
 c  at the target locations $x=t_{i}$.
 c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
@@ -729,7 +729,7 @@ cf2py  intent(out) pottarg,gradtarg,ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
-c      u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
+c      u(x) = \sum_{j=1}^{N} 1/(4\pi) c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
 c
 c  at the target locations $x=t_{i}$.
 c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
@@ -814,7 +814,7 @@ cf2py  intent(out) pottarg,ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential 
-c      u(x) = -\sum_{j=1}^{N} v_{j} \cdot \nabla \left( 
+c      u(x) = -\sum_{j=1}^{N} 1/(4\pi) v_{j} \cdot \nabla \left( 
 c            \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 c
 c  at the target locations $x=t_{i}$.
@@ -901,7 +901,7 @@ cf2py  intent(out) pottarg,gradtarg,ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
-c      u(x) = -\sum_{j=1}^{N} v_{j} \cdot \nabla \left( 
+c      u(x) = -\sum_{j=1}^{N} 1/(4\pi) v_{j} \cdot \nabla \left( 
 c            \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 c
 c  at the target locations $x=t_{i}$.
@@ -988,8 +988,8 @@ cf2py  intent(out) pottarg,ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential 
-c      u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - 
-c            v_{j} \cdot \nabla \left( 
+c      u(x) = \sum_{j=1}^{N} 1/(4\pi) c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - 
+c            1/(4\pi) v_{j} \cdot \nabla \left( 
 c            \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 c
 c  at the target locations $x=t_{i}$.
@@ -1078,8 +1078,8 @@ cf2py  intent(out) pottarg,gradtarg,ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
-c      u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - 
-c            v_{j} \cdot \nabla \left( 
+c      u(x) = \sum_{j=1}^{N} 1/(4\pi) c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - 
+c            1/(4\pi) v_{j} \cdot \nabla \left( 
 c            \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 c
 c  at the target locations $x=t_{i}$.
@@ -1168,7 +1168,7 @@ cf2py  intent(out) pottarg,ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential 
-c      u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
+c      u(x) = \sum_{j=1}^{N} 1/(4\pi) c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
 c
 c  at the source and target locations $x=x_{j},t_{i}$.
 c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
@@ -1256,7 +1256,7 @@ cf2py  intent(out) pottarg,gradtarg,ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
-c      u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
+c      u(x) = \sum_{j=1}^{N} 1/(4\pi) c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|}
 c
 c  at the source and target locations $x=x_{j},t_{i}$.
 c  When $x=x_{j}$, the term corresponding to $x_{j}$ is 
@@ -1347,7 +1347,7 @@ cf2py  intent(out) pottarg,ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential 
-c      u(x) = -\sum_{j=1}^{N} v_{j} \cdot \nabla \left( 
+c      u(x) = -\sum_{j=1}^{N} 1/(4\pi) v_{j} \cdot \nabla \left( 
 c            \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 c
 c  at the source and target locations $x=x_{j},t_{i}$.
@@ -1437,7 +1437,7 @@ cf2py  intent(out) pottarg,gradtarg,ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
-c      u(x) = -\sum_{j=1}^{N} v_{j} \cdot \nabla \left( 
+c      u(x) = -\sum_{j=1}^{N} 1/(4\pi) v_{j} \cdot \nabla \left( 
 c            \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 c
 c  at the source and target locations $x=x_{j},t_{i}$.
@@ -1528,8 +1528,8 @@ cf2py  intent(out) pottarg,ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential 
-c      u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - 
-c            v_{j} \cdot \nabla \left( 
+c      u(x) = \sum_{j=1}^{N} 1/(4\pi) c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - 
+c            1/(4\pi) v_{j} \cdot \nabla \left( 
 c            \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 c
 c  at the source and target locations $x=x_{j},t_{i}$.
@@ -1620,8 +1620,8 @@ cf2py  intent(out) pottarg,gradtarg,ier
 c-------------------------------------
 c
 c  This subroutine evaluates the potential and its gradient 
-c      u(x) = \sum_{j=1}^{N} c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - 
-c            v_{j} \cdot \nabla \left( 
+c      u(x) = \sum_{j=1}^{N} 1/(4\pi) c_{j} \frac{e^{ik\|x- x_{j}\|}}{\|x-x_{j}\|} - 
+c            1/(4\pi) v_{j} \cdot \nabla \left( 
 c            \frac{e^{ik\|x-x_{j}\|}}{\|x-x_{j}\|}\right)
 c
 c  at the source and target locations $x=x_{j},t_{i}$.

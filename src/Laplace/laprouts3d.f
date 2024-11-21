@@ -42,13 +42,13 @@ c
 c         using our standard definition, the addition theorem takes 
 c         the simple form 
 c
-c         1/r = 
-c         \sum_n 1/(2n+1) \sum_m  |s|^n ylm*(s) ylm(t)/ (|t|^(n+1)) 
+c         1/(4\pi) 1/r = 
+c         \sum_n 1/(2n+1) \sum_m 1/(4\pi) |s|^n ylm*(s) ylm(t)/ (|t|^(n+1)) 
 c
-c         1/r = 
-c         \sum_n \sum_m  |s|^n  ylm*(s)    ylm(t)     / (|t|^(n+1)) 
-c                               -------    ------
-c                               sqrt(2n+1) sqrt(2n+1)
+c         1/(4\pi) 1/r = 
+c         \sum_n \sum_m 1/(4\pi) |s|^n  ylm*(s)    ylm(t)     / (|t|^(n+1)) 
+c                                       -------    ------
+c                                      sqrt(2n+1) sqrt(2n+1)
 c
 c        in the laplace library (this library), we incorporate the
 c        sqrt(2n+1) factor in both forming and evaluating multipole
@@ -478,6 +478,7 @@ c
       real *8 zdiff(3)
       real *8, allocatable :: ynm(:,:),fr(:),rfac(:)
       real *8 theta,stheta,ctheta,phi,sphi,cphi,dtmp,d,r
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
       complex *16, allocatable :: ephi(:)
       complex *16 ephi1
       complex *16 eye
@@ -508,9 +509,9 @@ c
         ephi(0)=1.0d0
         ephi(1)=ephi1
         ephi(-1)=dconjg(ephi1)
-        fr(0) = 1.0d0
+        fr(0) = inv4pi
         d = r/rscale
-        fr(1) = d
+        fr(1) = inv4pi*d
         do i=2,nterms+1
           fr(i) = fr(i-1)*d
           ephi(i)=ephi(i-1)*ephi1
@@ -535,10 +536,10 @@ c     Recall that there are multiple definitions of scaling for
 c     Ylm. Using our standard definition, 
 c     the addition theorem takes the simple form 
 c
-c        1/r =  
-c          \sum_n 1/(2n+1) \sum_m  |S|^n Ylm*(S) Ylm(T)  / (|T|)^{n+1}
+c        1/(4\pi) 1/r =  
+c          \sum_n 1/(2n+1) \sum_m 1/(4\pi) |S|^n Ylm*(S) Ylm(T)  / (|T|)^{n+1}
 c
-c     so contribution is |S|^n times
+c     so contribution is 1/(4\pi) |S|^n times
 c   
 c       Ylm*(S)  = P_l,m * dconjg(ephi(m))               for m > 0   
 c       Yl,m*(S)  = P_l,|m| * dconjg(ephi(m))            for m < 0
@@ -624,6 +625,7 @@ c
       real *8 stheta,sphi,rx,ry,rz,r
       real *8 ctheta,cphi
       real *8 phix,phiy,phiz,phi,fruse,d
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
 
       complex *16 ur,utheta,uphi,ux,uy,uz,zzz
       complex *16, allocatable :: ephi(:)
@@ -657,9 +659,9 @@ c
         ephi(0)=1.0d0
         ephi(1)=ephi1
         ephi(-1)=dconjg(ephi1)
-        fr(0) = 1.0d0
+        fr(0) = inv4pi
         d = r/rscale
-        fr(1) = d
+        fr(1) = inv4pi*d
         do i=2,nterms+1
           fr(i) = fr(i-1)*d
           ephi(i)=ephi(i-1)*ephi1
@@ -711,10 +713,10 @@ c     Recall that there are multiple definitions of scaling for
 c     Ylm. Using our standard definition, 
 c     the addition theorem takes the simple form 
 c
-c        1/r = 
-c         \sum_n 1/(2n+1) \sum_m  |S|^n Ylm*(S) Ylm(T)/ (|T|^(n+1))
+c        1/(4\pi) 1/r = 
+c         \sum_n 1/(2n+1) \sum_m 1/(4\pi) |S|^n Ylm*(S) Ylm(T)/ (|T|^(n+1))
 c
-c     so contribution is |S|^n times
+c     so contribution is 1/(4\pi) |S|^n times
 c   
 c       Ylm*(S)  = P_l,m * dconjg(ephi(m))               for m > 0   
 c       Yl,m*(S)  = P_l,|m| * dconjg(ephi(m))            for m < 0
@@ -831,6 +833,7 @@ c
       real *8 stheta,sphi,rx,ry,rz,r
       real *8 ctheta,cphi
       real *8 phix,phiy,phiz,phi,fruse,d,dtmp
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
 
       complex *16 ur,utheta,uphi,ux,uy,uz,zzz
       complex *16, allocatable :: ephi(:)
@@ -863,9 +866,9 @@ c
         ephi(0)=1.0d0
         ephi(1)=ephi1
         ephi(-1)=dconjg(ephi1)
-        fr(0) = 1.0d0
+        fr(0) = inv4pi
         d = r/rscale
-        fr(1) = d
+        fr(1) = inv4pi*d
         do i=2,nterms+1
           fr(i) = fr(i-1)*d
           ephi(i)=ephi(i-1)*ephi1
@@ -917,10 +920,10 @@ c     Recall that there are multiple definitions of scaling for
 c     Ylm. Using our standard definition, 
 c     the addition theorem takes the simple form 
 c
-c        1/r = 
-c         \sum_n 1/(2n+1) \sum_m  |S|^n Ylm*(S) Ylm(T)/ (|T|^(n+1))
+c        1/(4\pi) 1/r = 
+c         \sum_n 1/(2n+1) \sum_m 1/(4\pi) |S|^n Ylm*(S) Ylm(T)/ (|T|^(n+1))
 c
-c     so contribution is |S|^n times
+c     so contribution is 1/(4\pi) |S|^n times
 c   
 c       Ylm*(S)  = P_l,m * dconjg(ephi(m))               for m > 0   
 c       Yl,m*(S)  = P_l,|m| * dconjg(ephi(m))            for m < 0
@@ -1342,6 +1345,7 @@ c
       real *8 zdiff(3)
       real *8, allocatable :: ynm(:,:),fr(:),rfac(:)
       real *8 theta,stheta,ctheta,phi,sphi,cphi,dtmp,d,r
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
       complex *16, allocatable :: ephi(:)
       complex *16 ephi1
       complex *16 eye
@@ -1373,7 +1377,7 @@ c
         ephi(1)=ephi1
         ephi(-1)=dconjg(ephi1)
         d = 1.0d0/r
-        fr(0) = d
+        fr(0) = inv4pi
         d = d*rscale
         fr(1) = fr(0)*d
         do i=2,nterms+1
@@ -1400,10 +1404,10 @@ c     Recall that there are multiple definitions of scaling for
 c     Ylm. Using our standard definition, 
 c     the addition theorem takes the simple form 
 c
-c        1/r =  
-c          \sum_n 1/(2n+1) \sum_m  |S|^n Ylm*(S) Ylm(T)  / (|T|)^{n+1}
+c        1/(4\pi) 1/r =  
+c          \sum_n 1/(2n+1) \sum_m 1/(4\pi) |S|^n Ylm*(S) Ylm(T)  / (|T|)^{n+1}
 c
-c     so contribution is |S|^n times
+c     so contribution is 1/(4\pi) |S|^n times
 c   
 c       Ylm*(S)  = P_l,m * dconjg(ephi(m))               for m > 0   
 c       Yl,m*(S)  = P_l,|m| * dconjg(ephi(m))            for m < 0
@@ -1489,6 +1493,7 @@ c
       real *8 stheta,sphi,rx,ry,rz,r
       real *8 ctheta,cphi
       real *8 phix,phiy,phiz,phi,d
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
 
       complex *16 ur,utheta,uphi,ux,uy,uz,zzz
       complex *16, allocatable :: ephi(:)
@@ -1522,7 +1527,7 @@ c
         ephi(1)=ephi1
         ephi(-1)=dconjg(ephi1)
         d = 1.0d0/r
-        fr(0) = d
+        fr(0) = inv4pi*d
         d = d*rscale
         fr(1) = fr(0)*d
         do i=2,nterms+1
@@ -1569,10 +1574,10 @@ c     Recall that there are multiple definitions of scaling for
 c     Ylm. Using our standard definition, 
 c     the addition theorem takes the simple form 
 c
-c        1/r = 
-c         \sum_n 1/(2n+1) \sum_m  |S|^n Ylm*(S) Ylm(T)/ (|T|^(n+1))
+c        1/(4\pi) 1/r = 
+c         \sum_n 1/(2n+1) \sum_m 1/(4\pi) |S|^n Ylm*(S) Ylm(T)/ (|T|^(n+1))
 c
-c     so contribution is |S|^n times
+c     so contribution is 1/(4\pi) |S|^n times
 c   
 c       Ylm*(S)  = P_l,m * dconjg(ephi(m))               for m > 0   
 c       Yl,m*(S)  = P_l,|m| * dconjg(ephi(m))            for m < 0
@@ -1688,6 +1693,7 @@ c
       real *8 stheta,sphi,rx,ry,rz,r
       real *8 ctheta,cphi
       real *8 phix,phiy,phiz,phi,fruse,d,dtmp
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
 
       complex *16 ur,utheta,uphi,ux,uy,uz,zzz
       complex *16, allocatable :: ephi(:)
@@ -1721,7 +1727,7 @@ c
         ephi(1)=ephi1
         ephi(-1)=dconjg(ephi1)
         d = 1.0d0/r
-        fr(0) = d
+        fr(0) = inv4pi*d
         d = d*rscale
         fr(1) = fr(0)*d
         do i=2,nterms+1
@@ -1774,10 +1780,10 @@ c     Recall that there are multiple definitions of scaling for
 c     Ylm. Using our standard definition, 
 c     the addition theorem takes the simple form 
 c
-c        1/r = 
-c         \sum_n 1/(2n+1) \sum_m  |S|^n Ylm*(S) Ylm(T)/ (|T|^(n+1))
+c        1/(4\pi) 1/r = 
+c         \sum_n 1/(2n+1) \sum_m 1/(4\pi) |S|^n Ylm*(S) Ylm(T)/ (|T|^(n+1))
 c
-c     so contribution is |S|^n times
+c     so contribution is 1/(4\pi) |S|^n times
 c   
 c       Ylm*(S)  = P_l,m * dconjg(ephi(m))               for m > 0   
 c       Yl,m*(S)  = P_l,|m| * dconjg(ephi(m))            for m < 0

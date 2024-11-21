@@ -20,8 +20,8 @@ function [U]=lfmm3dpart(iprec,nsource,source,ifcharge,charge,ifdipole,dipstr,dip
 %
 %
 % This subroutine evaluates the Laplace potential and field due
-% to a collection of charges and dipoles. We use (1/r) for the 
-% Green's function, without the (1/4 pi) scaling. 
+% to a collection of charges and dipoles. We use (1/(4\pi r)) for the 
+% Green's function.
 % Self-interactions are not-included.
 %
 % Input parameters:

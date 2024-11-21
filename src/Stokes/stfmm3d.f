@@ -6,10 +6,7 @@ c
 c     We take the following conventions for the Stokes kernels.
 c
 c     1) The dynamic viscosity (mu) is assumed to be 1.
-c     2) All kernels are a factor 4pi larger than standard definitions
-c        (this is for historical reasons).
-c     Thus, in general, divide the velocity (potential or grad) outputs
-c     by 4pi.mu, and pressure by 4pi, to recover standard definitions.
+c     2) All kernels are using standard definitions.
 c
 c     For a source y and target x, let r_i = x_i-y_i     (note sign)
 c     and let r = sqrt(r_1^2 + r_2^2 + r_3^2)
@@ -17,14 +14,14 @@ c
 c     The Stokeslet, G_{ij}, and its associated pressure tensor, P_j,
 c     we define as
 c
-c     G_{ij}(x,y) = ( delta_{ij}/r  + r_i r_j / r^3 )/2
-c     P_j(x,y) = r_j/r^3
+c     G_{ij}(x,y) = ( delta_{ij}/r  + r_i r_j / r^3 )/(8\pi)
+c     P_j(x,y) = 1/(4\pi) * r_j/r^3
 c
 c     The (Type I) stresslet, T_{ijk}, and its associated pressure
 c     tensor, PI_{jk}, we define as
 c     
-c     T_{ijk}(x,y) = -3 r_i r_j r_k/ r^5
-c     PI_{jk}(x,y) = -2 delta_{jk}/r^3 + 6 r_j r_k/r^5      
+c     T_{ijk}(x,y) = -3/(4\pi) r_i r_j r_k/ r^5
+c     PI_{jk}(x,y) = 1/(2\pi) delta_{jk}/r^3 - 3/(2\pi) r_j r_k/r^5      
       
 
       subroutine stfmm3d(nd, eps, 

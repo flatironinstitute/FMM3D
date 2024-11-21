@@ -20,8 +20,8 @@ function [U]=hfmm3dpart(iprec,zk,nsource,source,ifcharge,charge,ifdipole,dipstr,
 %
 %
 % This subroutine evaluates the Helmholtz potential and field due
-% to a collection of charges and dipoles. We use (exp(ikr)/r) for the 
-% Green's function, without the (1/4 pi) scaling. 
+% to a collection of charges and dipoles. We use (exp(ikr)/(4\pi r)) for the 
+% Green's function.
 % Self-interactions are not-included.
 %
 % Input parameters:

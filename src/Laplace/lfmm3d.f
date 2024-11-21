@@ -7,8 +7,7 @@ c        Laplace FMM in R^{3}: evaluate all pairwise particle
 c        interactions (ignoring self-interactions) and interactions
 c        with targs.
 c
-c        We use (1/r) for the Green's function, without the
-c        1/(4 \pi) scaling.
+c        We use 1/(4\pi)*(1/r) for the Green's function.
 c
 c
 c        Input parameters:

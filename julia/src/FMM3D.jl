@@ -1239,20 +1239,19 @@ For a source ``y`` and target ``x``, let ``r_i = x_i-y_i``
  and let ``r = \\sqrt{r_1^2 + r_2^2 + r_3^2}``
 
 The Stokeslet, ``G_{ij}``, and its associated pressure tensor, 
-``P_j``, (without the ``1/4\\pi`` scaling) are
+``P_j``, are
 
 ```math
-G_{ij}(x,y) = (r_i r_j)/(2r^3) + \\delta_{ij}/(2r) \\; ,
+G_{ij}(x,y) = (r_i r_j)/(8\pi r^3) + \\delta_{ij}/(8\pi r) \\; ,
 \\quad
-P_j(x,y) = r_j/r^3
+P_j(x,y) = r_j/(4\pi r^3)
 ```
 The (Type I) stresslet, ``T_{ijk}``, and its associated 
-pressure tensor, ``\\Pi_{jk}``, (without the ``1/4\\pi``
- scaling) are
+pressure tensor, ``\\Pi_{jk}``, are
          
 ```math
- T_{ijk}(x,y) = -3 r_i r_j r_k/ r^5 \\; , \\quad
- PI_{jk} = -2 \\delta_{jk} + 6 r_j r_k/r^5   
+ T_{ijk}(x,y) = -3 r_i r_j r_k/ (4\pi r^5) \\; , \\quad
+ PI_{jk} = 1/2\pi \\delta_{jk} - 3 r_j r_k/(2\pi r^5)
 ```
 
 The output of this routine gives the velocity
@@ -1464,20 +1463,19 @@ For a source ``y`` and target ``x``, let ``r_i = x_i-y_i``
  and let ``r = \\sqrt{r_1^2 + r_2^2 + r_3^2}``
 
 The Stokeslet, ``G_{ij}``, and its associated pressure tensor, 
-``P_j``, (without the ``1/4\\pi`` scaling) are
+``P_j``, are
 
 ```math
-G_{ij}(x,y) = (r_i r_j)/(2r^3) + \\delta_{ij}/(2r) \\; ,
+G_{ij}(x,y) = (r_i r_j)/(8\pi r^3) + \\delta_{ij}/(8\pi r) \\; ,
 \\quad
 P_j(x,y) = r_j/r^3
 ```
 The (Type I) stresslet, ``T_{ijk}``, and its associated 
-pressure tensor, ``\\Pi_{jk}``, (without the ``1/4\\pi``
- scaling) are
+pressure tensor, ``\\Pi_{jk}``, are
          
 ```math
- T_{ijk}(x,y) = -3 r_i r_j r_k/ r^5 \\; , \\quad
- PI_{jk} = -2 \\delta_{jk} + 6 r_j r_k/r^5   
+ T_{ijk}(x,y) = -3 r_i r_j r_k/ (4\pi r^5) \\; , \\quad
+ PI_{jk} = 1/2\pi \\delta_{jk} - 3 r_j r_k/(2\pi r^5)
 ```
 
 The output of this routine gives the velocity
@@ -1753,10 +1751,10 @@ the Helmholtz kernel and its curl and gradient (see below). This is the
 ``O(N)`` fast multipole code which computes the interactions
 to the requested precision.
 
-The Helmholtz Green's function (without the ``1/4 \\pi`` scaling)
+The Helmholtz Green's function
 is
 ```math
- G_k(x,y) = \\frac{e^{ik \\|x-y\\|}}{\\|x-y\\|} \\, , 
+ G_k(x,y) = \\frac{e^{ik \\|x-y\\|}}{4\\pi\\|x-y\\|} \\, , 
 ```
 
 This routine computes the sum 
@@ -1962,10 +1960,10 @@ the effect of sources on targets. If the value at sources is
 also needed, the routine can be called again with targets equal
 to the source locations.
 
-The Helmholtz Green's function (without the ``1/4 \\pi`` scaling)
+The Helmholtz Green's function
 is
 ```math
- G_k(x,y) = \\frac{e^{ik \\|x-y\\|}}{\\|x-y\\|} \\, , 
+ G_k(x,y) = \\frac{e^{ik \\|x-y\\|}}{4\\pi\\|x-y\\|} \\, , 
 ```
 
 This routine computes the sum 

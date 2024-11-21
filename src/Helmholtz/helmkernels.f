@@ -36,7 +36,7 @@ c     This subroutine evaluates the potential due to a collection
 c     of sources and adds to existing
 c     quantities.
 c
-c     pot(x) = pot(x) + sum  q_{j} e^{i k |x-x_{j}|}/|x-x_{j}| 
+c     pot(x) = pot(x) + sum 1/(4\pi) q_{j} e^{i k |x-x_{j}|}/|x-x_{j}| 
 c                        j
 c                 
 c      where q_{j} is the charge strength
@@ -84,6 +84,7 @@ c
 cc     temporary variables
 c
       real *8 zdiff(3),dd,d
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
       complex *16 zkeye,eye,ztmp
       integer *8 i,j,idim
       data eye/(0.0d0,1.0d0)/
@@ -102,7 +103,7 @@ c$omp$     private(i, zdiff, j, dd, d, ztmp, idim)
           d = sqrt(dd)
           if(d.lt.thresh) goto 1000
 
-          ztmp = exp(zkeye*d)/d
+          ztmp = exp(zkeye*d)/d*inv4pi
           do idim=1,nd
             pot(idim,i) = pot(idim,i) + charge(idim,j)*ztmp
           enddo
@@ -125,13 +126,13 @@ C***********************************************************************
      1            pot,grad,thresh)
 c**********************************************************************
 c
-c     This subroutine evaluates the potential and gradient due to a 
+c     This subroutine evaluates the potential and gradient due to a
 c     collection of sources and adds to existing quantities.
 c
-c     pot(x) = pot(x) + sum  q_{j} e^{i k |x-x_{j}|}/|x-x_{j}| 
+c     pot(x) = pot(x) + sum 1/(4\pi) q_{j} e^{i k |x-x_{j}|}/|x-x_{j}|
 c                        j
 c                 
-c     grad(x) = grad(x) + Gradient(sum  q_{j} e^{i k |x-x_{j}|}/|x-x_{j}|) 
+c     grad(x) = grad(x) + Gradient(sum 1/(4\pi) q_{j} e^{i k |x-x_{j}|}/|x-x_{j}|)
 c                                   j
 c      where q_{j} is the charge strength
 c      If |r| < thresh 
@@ -179,6 +180,7 @@ c
 cc     temporary variables
 c
       real *8 zdiff(3),dd,d
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
       complex *16 zkeye,eye,cd,cd1,ztmp
       complex *16 ztmp1,ztmp2,ztmp3
       integer *8 i,j,idim
@@ -198,7 +200,7 @@ c$omp$    private(ztmp2, ztmp3, idim)
           dd = zdiff(1)**2 + zdiff(2)**2 + zdiff(3)**2
           d = sqrt(dd)
           if(d.lt.thresh) goto 1000
-          cd = exp(zkeye*d)/d
+          cd = exp(zkeye*d)/d*inv4pi
           cd1 = (zkeye*d-1)*cd/dd
           ztmp1 = cd1*zdiff(1)
           ztmp2 = cd1*zdiff(2)
@@ -233,7 +235,7 @@ c     This subroutine evaluates the potential due to a collection
 c     of sources and adds to existing
 c     quantities.
 c
-c     pot(x) = pot(x) + sum   \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j} 
+c     pot(x) = pot(x) + sum  1/(4\pi) \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j} 
 c                        j
 c
 c                            
@@ -286,6 +288,7 @@ c
 cc     temporary variables
 c
       real *8 zdiff(3),dd,d,dinv
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
       complex *16 zkeye,eye,cd,cd1,dotprod
       integer *8 i,j,idim
       data eye/(0.0d0,1.0d0)/
@@ -305,7 +308,7 @@ c$omp$   private(i, j, zdiff, dd, d, dinv, cd, cd1, idim, dotprod)
           if(d.lt.thresh) goto 1000
 
           dinv = 1/d
-          cd = exp(zkeye*d)*dinv
+          cd = exp(zkeye*d)*dinv*inv4pi
           cd1 = (1-zkeye*d)*cd/dd
 
           do idim=1,nd
@@ -337,7 +340,7 @@ c
 c     This subroutine evaluates the potential and gradient due to a 
 c     collection of sources and adds to existing quantities.
 c
-c     pot(x) = pot(x) + sum  d_{j} \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
+c     pot(x) = pot(x) + sum 1/(4\pi) d_{j} \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
 c                        j
 c
 c                            
@@ -345,7 +348,7 @@ c
 c     grad(x) = grad(x) + Gradient( sum  
 c                                    j
 c
-c                            \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
+c                            1/(4\pi) \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
 c                            )
 c                                   
 c      where v_{j} is the dipole orientation vector, 
@@ -398,6 +401,7 @@ c
 cc     temporary variables
 c
       real *8 zdiff(3),dd,d,dinv,dinv2
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
       complex *16 zkeye,eye,cd,cd2,cd3,cd4,dotprod
       integer *8 i,j,idim
       data eye/(0.0d0,1.0d0)/
@@ -419,7 +423,7 @@ c$omp$   private(cd3, idim, dotprod, cd4)
 
           dinv = 1/d
           dinv2 = dinv**2
-          cd = exp(zkeye*d)*dinv
+          cd = exp(zkeye*d)*dinv*inv4pi
           cd2 = (zkeye*d-1)*cd*dinv2
           cd3 = cd*dinv2*(-zkeye*zkeye-3*dinv2+3*zkeye*dinv)
 
@@ -459,10 +463,10 @@ c     This subroutine evaluates the potential due to a collection
 c     of sources and adds to existing
 c     quantities.
 c
-c     pot(x) = pot(x) + sum  q_{j} e^{i k |x-x_{j}|}/|x-x_{j}| +  
+c     pot(x) = pot(x) + sum 1/(4\pi) q_{j} e^{i k |x-x_{j}|}/|x-x_{j}| +  
 c                        j
 c
-c                            \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
+c                            1/(4\pi) \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
 c   
 c      where q_{j} is the charge strength, 
 c      and v_{j} is the dipole orientation vector, 
@@ -514,6 +518,7 @@ c
 cc     temporary variables
 c
       real *8 zdiff(3),dd,d,dinv
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
       complex *16 zkeye,eye,cd,cd1,dotprod
       integer *8 i,j,idim
       data eye/(0.0d0,1.0d0)/
@@ -533,7 +538,7 @@ c$omp$    private(i, j, zdiff, dd, d, dinv, cd, cd1, idim, dotprod)
           if(d.lt.thresh) goto 1000
 
           dinv = 1/d
-          cd = exp(zkeye*d)*dinv
+          cd = exp(zkeye*d)*dinv*inv4pi
           cd1 = (1-zkeye*d)*cd/dd
 
           do idim=1,nd
@@ -568,15 +573,15 @@ c
 c     This subroutine evaluates the potential and gradient due to a 
 c     collection of sources and adds to existing quantities.
 c
-c     pot(x) = pot(x) + sum  q_{j} e^{i k |x-x_{j}|}/|x-x_{j}| +  
+c     pot(x) = pot(x) + sum 1/(4\pi) q_{j} e^{i k |x-x_{j}|}/|x-x_{j}| +  
 c                        j
 c
-c                            \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
+c                            1/(4\pi) \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
 c   
-c     grad(x) = grad(x) + Gradient( sum  q_{j} e^{i k |x-x_{j}|}/|x-x_{j}| +  
+c     grad(x) = grad(x) + Gradient( sum 1/(4\pi) q_{j} e^{i k |x-x_{j}|}/|x-x_{j}| +  
 c                                    j
 c
-c                            d_{j} \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
+c                            1/(4\pi) d_{j} \nabla e^{ik |x-x_{j}|/|x-x_{j}| \cdot v_{j}
 c                            )
 c                                   
 c      where q_{j} is the charge strength
@@ -630,6 +635,7 @@ c
 cc     temporary variables
 c
       real *8 zdiff(3),dd,d,dinv,dinv2
+      real *8, parameter :: inv4pi = 7.957747154594766788444188168626d-2
       complex *16 zkeye,eye,cd,cd2,cd3,cd4,dotprod
       integer *8 i,j,idim
       data eye/(0.0d0,1.0d0)/
@@ -651,7 +657,7 @@ c$omp$   private(idim, dotprod, cd4)
 
           dinv = 1/d
           dinv2 = dinv**2
-          cd = exp(zkeye*d)*dinv
+          cd = exp(zkeye*d)*dinv*inv4pi
           cd2 = (zkeye*d-1)*cd*dinv2
           cd3 = cd*dinv2*(-zkeye*zkeye-3*dinv2+3*zkeye*dinv)
 

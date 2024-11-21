@@ -218,7 +218,7 @@ template <class Real, sctl::Integer VecLen_, sctl::Integer chrg, sctl::Integer d
   VecType zk[2];
 
   static constexpr Real uKerScaleFactor() {
-    return 1;
+    return 1 / (4 * sctl::template const_pi<Real>());
   }
   template <sctl::Integer digits, class CtxType> static inline void uKerMatrix(VecType (&M)[chrg+dipo][poten+grad][2], const VecType (&dX)[3], const CtxType& ctx) {
     using RealType = typename VecType::ScalarType;
@@ -341,7 +341,7 @@ template <class Real, sctl::Integer VecLen_, sctl::Integer chrg, sctl::Integer d
   VecType thresh2;
 
   static constexpr Real uKerScaleFactor() {
-    return 1;
+    return 1 / (4 * sctl::template const_pi<Real>());
   }
   template <sctl::Integer digits, class CtxType> static inline void uKerMatrix(VecType (&M)[chrg+dipo][poten+grad][1], const VecType (&dX)[3], const CtxType& ctx) {
     using RealType = typename VecType::ScalarType;
@@ -444,6 +444,8 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
 
 
 
+template <class Real> inline constexpr Real const_inv4pi() { return 1 / (4 * sctl::template const_pi<Real>()); }
+
 template <class Real> void h3ddirectcp_cpp(const int64_t* nd, const Real* zk, const Real* sources, const Real* charge, const int64_t* ns, const Real* ztarg, const int64_t* nt, Real* pot, const Real* thresh) {
   static constexpr sctl::Integer COORD_DIM = 3;
   static constexpr sctl::Integer KDIM0 = 2;
@@ -467,6 +469,7 @@ template <class Real> void h3ddirectcp_cpp(const int64_t* nd, const Real* zk, co
        Real Rinv = (R2 > thresh2 ? 1/sqrt(R2) : 0);
 
        Real R = R2 * Rinv;
+       Rinv = Rinv * const_inv4pi<Real>();
        Real G0 = cos(zk[0]*R) * exp(-zk[1]*R) * Rinv;
        Real G1 = sin(zk[0]*R) * exp(-zk[1]*R) * Rinv;
 
@@ -559,6 +562,7 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
       Vec sin_izkR, cos_izkR, exp_izkR;
       sctl::approx_sincos<-1>(sin_izkR, cos_izkR, izkR[1]);
       exp_izkR = sctl::approx_exp<-1>(izkR[0]);
+      Rinv = Rinv * const_inv4pi<Real>();
       Vec G0 = cos_izkR * exp_izkR * Rinv;
       Vec G1 = sin_izkR * exp_izkR * Rinv;
 
@@ -667,6 +671,7 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
 
       Vec R = R2 * Rinv;
       Vec Rinv2 = Rinv * Rinv;
+      Rinv = Rinv * const_inv4pi<Real>();
       Vec izkR[2] = {-zk[1]*R, zk[0]*R};
       Vec sin_izkR, cos_izkR, exp_izkR;
       sctl::approx_sincos<-1>(sin_izkR, cos_izkR, izkR[1]);
@@ -817,8 +822,8 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
       sctl::approx_sincos<-1>(sin_izkR, cos_izkR, izkR[1]);
       exp_izkR = sctl::approx_exp<-1>(izkR[0]);
       // exp(ikr)/r
-      Vec G0 = cos_izkR * exp_izkR * Rinv;
-      Vec G1 = sin_izkR * exp_izkR * Rinv;
+      Vec G0 = cos_izkR * exp_izkR * Rinv * const_inv4pi<Real>();
+      Vec G1 = sin_izkR * exp_izkR * Rinv * const_inv4pi<Real>();
       // (ikr-1)*exp(ikr)/r^3
       Vec H0 = (izkR[0] - (1.0))*G0 - izkR[1]*G1;
       Vec H1 = izkR[1]*G0 + (izkR[0] - (1.0))*G1;
@@ -987,12 +992,13 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
       Vec sin_izkR, cos_izkR, exp_izkR;
       sctl::approx_sincos<-1>(sin_izkR, cos_izkR, izkR[1]);
       exp_izkR = sctl::approx_exp<-1>(izkR[0]);
-      // exp(ikr)/r
+      // 1/4\pi * exp(ikr)/r
+      Rinv = Rinv * const_inv4pi<Real>();
       Vec G0 = cos_izkR * exp_izkR * Rinv;
       Vec G1 = sin_izkR * exp_izkR * Rinv;
       Vec tmp0 = (1.0)-izkR[0];
       Vec tmp1 = -izkR[1];
-      // (1-ikr)*exp(ikr)/r^3
+      // 1/4\pi * (1-ikr)*exp(ikr)/r^3
       Vec H0 = (tmp0*G0 - tmp1*G1) * Rinv2;
       Vec H1 = (tmp1*G0 + tmp0*G1) * Rinv2;
 
@@ -1116,8 +1122,8 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
       sctl::approx_sincos<-1>(sin_izkR, cos_izkR, izkR[1]);
       exp_izkR = sctl::approx_exp<-1>(izkR[0]);
       // exp(ikr)/r
-      Vec G0 = cos_izkR * exp_izkR * Rinv;
-      Vec G1 = sin_izkR * exp_izkR * Rinv;
+      Vec G0 = cos_izkR * exp_izkR * Rinv * const_inv4pi<Real>();
+      Vec G1 = sin_izkR * exp_izkR * Rinv * const_inv4pi<Real>();
       Vec tmp0 = (1.0) - izkR[0];
       Vec tmp1 = -izkR[1];
       // (1-ikr)*exp(ikr)/r^3
@@ -1281,8 +1287,8 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
       sctl::approx_sincos<-1>(sin_izkR, cos_izkR, izkR[1]);
       exp_izkR = sctl::approx_exp<-1>(izkR[0]);
       // exp(ikr)/r
-      Vec G0 = cos_izkR * exp_izkR * Rinv;
-      Vec G1 = sin_izkR * exp_izkR * Rinv;
+      Vec G0 = cos_izkR * exp_izkR * Rinv * const_inv4pi<Real>();
+      Vec G1 = sin_izkR * exp_izkR * Rinv * const_inv4pi<Real>();
       Vec zf1[2];
       zf1[0] = izkR[0]-(1.0);
       zf1[1] = izkR[1];
@@ -1518,6 +1524,7 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
       sctl::approx_sincos<-1>(sin_izkR, cos_izkR, izkR[1]);
       exp_izkR = sctl::approx_exp<-1>(izkR[0]);
       // exp(ikr)/r
+      Rinv = Rinv * const_inv4pi<Real>();
       Vec G0 = cos_izkR * exp_izkR * Rinv;
       Vec G1 = sin_izkR * exp_izkR * Rinv;
       Vec tmp0 = (1.0)-izkR[0];
@@ -1656,8 +1663,8 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
       sctl::approx_sincos<-1>(sin_izkR, cos_izkR, izkR[1]);
       exp_izkR = sctl::approx_exp<-1>(izkR[0]);
       // exp(ikr)/r
-      Vec G0 = cos_izkR * exp_izkR * Rinv;
-      Vec G1 = sin_izkR * exp_izkR * Rinv;
+      Vec G0 = cos_izkR * exp_izkR * Rinv * const_inv4pi<Real>();
+      Vec G1 = sin_izkR * exp_izkR * Rinv * const_inv4pi<Real>();
       Vec tmp0 = (1.0)-izkR[0];
       Vec tmp1 = -izkR[1];
       // (1-ikr)*exp(ikr)/r^3
@@ -1847,8 +1854,8 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
       sctl::approx_sincos<-1>(sin_izkR, cos_izkR, izkR[1]);
       exp_izkR = sctl::approx_exp<-1>(izkR[0]);
       // exp(ikr)/r
-      Vec G0 = cos_izkR * exp_izkR * Rinv;
-      Vec G1 = sin_izkR * exp_izkR * Rinv;
+      Vec G0 = cos_izkR * exp_izkR * Rinv * const_inv4pi<Real>();
+      Vec G1 = sin_izkR * exp_izkR * Rinv * const_inv4pi<Real>();
       Vec zf1[2];
       zf1[0] = izkR[0]-(1.0);
       zf1[1] = izkR[1];
@@ -2101,7 +2108,7 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
         R2 += dX[k]*dX[k];
       }
 
-      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
+      Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2)) * const_inv4pi<Real>();
 
       for (long i = 0; i < nd_; i++) {
         Vtrg[i] += Vsrc[s*nd_+i]*Rinv;
@@ -2199,8 +2206,9 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
 
       Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
-      Vec nRinv3 = -Rinv*Rinv*Rinv;
+      Vec nRinv3 = -Rinv*Rinv*Rinv * const_inv4pi<Real>();
       Vec ztmp[COORD_DIM] = {nRinv3*dX[0], nRinv3*dX[1], nRinv3*dX[2]};
+      Rinv = Rinv * const_inv4pi<Real>();
       for (long i = 0; i < nd_; i++) {
         Vtrg[i] += Vsrc[s*nd_+i]*Rinv;
         Gtrg[i][0] += Vsrc[s*nd_+i]*ztmp[0];
@@ -2311,7 +2319,7 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
 
       Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
-      Vec nRinv3 = -Rinv*Rinv*Rinv;
+      Vec nRinv3 = -Rinv*Rinv*Rinv * const_inv4pi<Real>();
       Vec Rinv5 = -nRinv3*Rinv*Rinv;
       Vec htmp1 = Rinv5*(3.0*dX[0]*dX[0]-R2);
       Vec htmp2 = Rinv5*(3.0*dX[1]*dX[1]-R2);
@@ -2320,6 +2328,7 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
       Vec htmp5 = 3.0*Rinv5*dX[0]*dX[2];
       Vec htmp6 = 3.0*Rinv5*dX[1]*dX[2];
       Vec ztmp[COORD_DIM] = {nRinv3*dX[0], nRinv3*dX[1], nRinv3*dX[2]};
+      Rinv = Rinv * const_inv4pi<Real>();
       for (long i = 0; i < nd_; i++) {
         Vtrg[i] += Vsrc[s*nd_+i]*Rinv;
         Gtrg[i][0] += Vsrc[s*nd_+i]*ztmp[0];
@@ -2434,7 +2443,7 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
 
       Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
-      Vec Rinv3 = Rinv * Rinv * Rinv;
+      Vec Rinv3 = Rinv * Rinv * Rinv * const_inv4pi<Real>();
       // TODO: test move Dprod out, faster?
       for (long i = 0; i < nd_; i++) {
         Vec Dprod = dX[0]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+0] + dX[1]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+1] + dX[2]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+2];
@@ -2538,6 +2547,8 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
       Vec Rinv2 = Rinv * Rinv;
       Vec Rinv3 = Rinv * Rinv2;
       Vec Rinv5 =  -3.0*Rinv2*Rinv3;
+      Rinv3 = Rinv3 * const_inv4pi<Real>();
+      Rinv5 = Rinv5 * const_inv4pi<Real>();
       for (long i = 0; i < nd_; i++) {
         Vec Dprod = dX[0]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+0] + dX[1]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+1] + dX[2]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+2];
         Vec RinvDprod = Rinv5*Dprod;
@@ -2655,6 +2666,8 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
       Vec Rinv2 = Rinv * Rinv;
       Vec Rinv3 = Rinv * Rinv2;
       Vec Rinv5 = Rinv2 * Rinv3;
+      Rinv3 = Rinv3 * const_inv4pi<Real>();
+      Rinv5 = Rinv5 * const_inv4pi<Real>();
       Vec nRinv5 =  -3.0*Rinv5;
       Vec dx = dX[0]*Rinv;
       Vec dy = dX[1]*Rinv;
@@ -2786,6 +2799,8 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
       Vec Rinv = sctl::approx_rsqrt<-1>(R2, (R2 > thresh2));
 
       Vec Rinv3 = Rinv * Rinv * Rinv;
+      Rinv = Rinv * const_inv4pi<Real>();
+      Rinv3 = Rinv3 * const_inv4pi<Real>();
       for (long i = 0; i < nd_; i++) {
         Vec Dprod = dX[0]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+0] + dX[1]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+1] + dX[2]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+2];
         Vtrg[i] += Dprod*Rinv3;
@@ -2892,8 +2907,11 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
 
       Vec Rinv2 = Rinv * Rinv;
       Vec Rinv3 = Rinv * Rinv2;
-      Vec nRinv3 = -Rinv*Rinv*Rinv;
       Vec Rinv5 =  -3.0*Rinv2*Rinv3;
+      Rinv = Rinv * const_inv4pi<Real>();
+      Rinv3 = Rinv3 * const_inv4pi<Real>();
+      Rinv5 = Rinv5 * const_inv4pi<Real>();
+      Vec nRinv3 = -Rinv3;
       Vec ztmp[COORD_DIM] = {nRinv3*dX[0], nRinv3*dX[1], nRinv3*dX[2]};
       for (long i = 0; i < nd_; i++) {
         Vec Dprod = dX[0]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+0] + dX[1]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+1] + dX[2]*Gsrc[s*nd_*COORD_DIM+i*COORD_DIM+2];
@@ -3016,13 +3034,16 @@ template <class Real, sctl::Integer MaxVecLen=sctl::DefaultVecLen<Real>()> void 
 
       Vec Rinv2 = Rinv * Rinv;
       Vec Rinv3 = Rinv * Rinv2;
-      Vec nRinv3 = -Rinv*Rinv*Rinv;
       Vec Rinv5 = Rinv2*Rinv3;
+      Rinv3 = Rinv3 * const_inv4pi<Real>();
+      Rinv5 = Rinv5 * const_inv4pi<Real>();
+      Vec nRinv3 = -Rinv3;
       Vec nRinv5 =  -3.0*Rinv5;
       Vec ztmp[COORD_DIM] = {nRinv3*dX[0], nRinv3*dX[1], nRinv3*dX[2]};
       Vec dx = dX[0]*Rinv;
       Vec dy = dX[1]*Rinv;
       Vec dz = dX[2]*Rinv;
+      Rinv = Rinv * const_inv4pi<Real>();
       Vec htmp1 = Rinv5*(3.0*dX[0]*dX[0]-R2);
       Vec htmp2 = Rinv5*(3.0*dX[1]*dX[1]-R2);
       Vec htmp3 = Rinv5*(3.0*dX[2]*dX[2]-R2);
