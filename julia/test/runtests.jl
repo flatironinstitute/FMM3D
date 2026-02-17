@@ -38,6 +38,8 @@ using LinearAlgebra
                     pg=2,pgt=2)
     vals2dc = hfmm3d(eps,zk,sources,targets=targets,charges=charges,
                      dipvecs=dipvecs,pg=2,pgt=2)
+    vals2dc_ndiv = hfmm3d_ndiv(eps,zk,sources,50,targets=targets,charges=charges,
+                               dipvecs=dipvecs,pg=2,pgt=2)
 
     @test norm(vals2c.pot-vals1cs.pottarg)/norm(vals1cs.pottarg) < eps
     @test norm(vals2c.grad-vals1cs.gradtarg)/norm(vals1cs.gradtarg) < eps
@@ -53,6 +55,11 @@ using LinearAlgebra
     @test norm(vals2dc.grad-vals1dcs.gradtarg)/norm(vals1dcs.gradtarg) < eps
     @test norm(vals2dc.pottarg-vals1dc.pottarg)/norm(vals1dc.pottarg) < eps
     @test norm(vals2dc.gradtarg-vals1dc.gradtarg)/norm(vals1dc.gradtarg) < eps    
+    @test norm(vals2dc_ndiv.pot-vals1dcs.pottarg)/norm(vals1dcs.pottarg) < eps
+    @test norm(vals2dc_ndiv.grad-vals1dcs.gradtarg)/norm(vals1dcs.gradtarg) < eps
+    @test norm(vals2dc_ndiv.pottarg-vals1dc.pottarg)/norm(vals1dc.pottarg) < eps
+    @test norm(vals2dc_ndiv.gradtarg-vals1dc.gradtarg)/norm(vals1dc.gradtarg) < eps
+    @test vals2dc_ndiv.ier == 0
     
 
 end
@@ -91,6 +98,8 @@ end
                     pg=2,pgt=2)
     vals2dc = lfmm3d(eps,sources,targets=targets,charges=charges,
                      dipvecs=dipvecs,pg=2,pgt=2)
+    vals2dc_ndiv = lfmm3d_ndiv(eps,sources,50,targets=targets,charges=charges,
+                               dipvecs=dipvecs,pg=2,pgt=2)
 
     @test norm(vals2c.pot-vals1cs.pottarg)/norm(vals1cs.pottarg) < eps
     @test norm(vals2c.grad-vals1cs.gradtarg)/norm(vals1cs.gradtarg) < eps
@@ -106,6 +115,11 @@ end
     @test norm(vals2dc.grad-vals1dcs.gradtarg)/norm(vals1dcs.gradtarg) < eps
     @test norm(vals2dc.pottarg-vals1dc.pottarg)/norm(vals1dc.pottarg) < eps
     @test norm(vals2dc.gradtarg-vals1dc.gradtarg)/norm(vals1dc.gradtarg) < eps    
+    @test norm(vals2dc_ndiv.pot-vals1dcs.pottarg)/norm(vals1dcs.pottarg) < eps
+    @test norm(vals2dc_ndiv.grad-vals1dcs.gradtarg)/norm(vals1dcs.gradtarg) < eps
+    @test norm(vals2dc_ndiv.pottarg-vals1dc.pottarg)/norm(vals1dc.pottarg) < eps
+    @test norm(vals2dc_ndiv.gradtarg-vals1dc.gradtarg)/norm(vals1dc.gradtarg) < eps
+    @test vals2dc_ndiv.ier == 0
     
 
 end
