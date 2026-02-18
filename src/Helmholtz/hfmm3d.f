@@ -573,6 +573,9 @@ cc      tree variables
 c
       integer *8 isep,iper
       integer *8 laddr(2,0:nlevels)
+      integer *8 nboxesperlevel(0:nlevels)
+      integer *8 nboxesoffset(0:nlevels)
+      integer *8 iboxlev
       integer *8 nterms(0:nlevels)
       integer *8 ipointer(8),ltree
       integer *8 itree(ltree)
@@ -840,6 +843,13 @@ c
 ccc       set scjsort
 c
       do ilev=0,nlevels
+         nboxesperlevel(ilev) = laddr(2,ilev)-laddr(1,ilev)+1
+         if(ilev.eq.0) then
+            nboxesoffset(ilev) = 0
+         else
+            nboxesoffset(ilev) = nboxesoffset(ilev-1)+
+     1                           nboxesperlevel(ilev-1)
+         endif
 C$OMP PARALLEL DO DEFAULT(SHARED)
 C$OMP$PRIVATE(ibox,nchild,istart,iend,i)
          do ibox=laddr(1,ilev),laddr(2,ilev)
@@ -1093,14 +1103,16 @@ c             get new pw quadrature
      1          mexppall(nd,nexptotp,16,nthd))
 
           bigint = 0
-          bigint = nboxes
+c          bigint = nboxes
+          bigint = nboxesperlevel(ilev)
           bigint = bigint*6
           bigint = bigint*nexptotp*nd
 
           if(ifprint.ge.1) print *, "mexp memory=",bigint/1.0d9
 
 
-          allocate(mexp(nd,nexptotp,nboxes,6),stat=iert)
+c          allocate(mexp(nd,nexptotp,nboxes,6),stat=iert)
+          allocate(mexp(nd,nexptotp,nboxesperlevel(ilev),6),stat=iert)
           if(iert.ne.0) then
             print *, "Cannot allocate pw expansion workspace"
             print *, "bigint=", bigint
@@ -1133,7 +1145,8 @@ c
 C$OMP PARALLEL DO DEFAULT(SHARED)
 C$OMP$PRIVATE(idim,i,j,k)
           do k=1,6
-            do i=1,nboxes
+c            do i=1,nboxes
+            do i=1,nboxesperlevel(ilev)
               do j=1,nexptotp
                 do idim=1,nd
                   mexp(idim,j,i,k) = 0.0d0
@@ -1180,7 +1193,7 @@ cc         create multipole to plane wave expansion for
 c          all boxes at this level
 c
 C$OMP PARALLEL DO DEFAULT (SHARED)
-C$OMP$PRIVATE(ibox,istart,iend,npts)
+C$OMP$PRIVATE(ibox,istart,iend,npts,iboxlev)
 C$OMP$PRIVATE(ithd)
           do ibox = laddr(1,ilev),laddr(2,ilev)
             ithd = 0
@@ -1199,11 +1212,12 @@ c           rescale multipole expansion
      1          nterms(ilev),nlams,nfourier,nexptot,mexpf1(1,1,ithd),
      2          mexpf2(1,1,ithd),rlsc) 
 
+              iboxlev = ibox - nboxesoffset(ilev)
               call hftophys(nd,mexpf1(1,1,ithd),nlams,nfourier,
-     1             nphysical,mexp(1,1,ibox,1),fexp)           
+     1             nphysical,mexp(1,1,iboxlev,1),fexp)           
 
               call hftophys(nd,mexpf2(1,1,ithd),nlams,nfourier,
-     1             nphysical,mexp(1,1,ibox,2),fexp)
+     1             nphysical,mexp(1,1,iboxlev,2),fexp)
 
 
 c          form mexpnorth, mexpsouth for current box
@@ -1219,10 +1233,10 @@ c          mexpsouth
      3                  mexpf2(1,1,ithd),rlsc)
 
               call hftophys(nd,mexpf1(1,1,ithd),nlams,nfourier,
-     1                 nphysical,mexp(1,1,ibox,3),fexp)           
+     1                 nphysical,mexp(1,1,iboxlev,3),fexp)           
 
               call hftophys(nd,mexpf2(1,1,ithd),nlams,nfourier,
-     1                 nphysical,mexp(1,1,ibox,4),fexp)   
+     1                 nphysical,mexp(1,1,iboxlev,4),fexp)   
 
 
 c         Rotate mpole for computing mexpeast, mexpwest
@@ -1234,10 +1248,10 @@ c         Rotate mpole for computing mexpeast, mexpwest
      3                  mexpf2(1,1,ithd),rlsc)
 
               call hftophys(nd,mexpf1(1,1,ithd),nlams,nfourier,
-     1                 nphysical,mexp(1,1,ibox,5),fexp)
+     1                 nphysical,mexp(1,1,iboxlev,5),fexp)
 
               call hftophys(nd,mexpf2(1,1,ithd),nlams,nfourier,
-     1                 nphysical,mexp(1,1,ibox,6),fexp)           
+     1                 nphysical,mexp(1,1,iboxlev,6),fexp)           
 
             endif
           enddo
@@ -1321,7 +1335,8 @@ C$          ithd=omp_get_thread_num()
      9            mexppall(1,1,4,ithd),
      9            xshift,yshift,zshift,fexpback,rlsc,
      9            pgboxwexp,cntlist4,list4ct,
-     9            nlist4,list4,mnlist4)
+     9            nlist4,list4,mnlist4,
+     9            nboxesperlevel(ilev),nboxesoffset(ilev))
 
 
               call hprocessnsexp(nd,zk2,ibox,ilev,nboxes,centers,
@@ -1342,7 +1357,8 @@ C$          ithd=omp_get_thread_num()
      9            mexppall(1,1,8,ithd),rdplus,xshift,yshift,zshift,
      9            fexpback,rlsc,
      9            pgboxwexp,cntlist4,list4ct,
-     9            nlist4,list4,mnlist4)
+     9            nlist4,list4,mnlist4,
+     9            nboxesperlevel(ilev),nboxesoffset(ilev))
 
               call hprocessewexp(nd,zk2,ibox,ilev,nboxes,centers,
      1            itree(ipointer(5)),rscales(ilev),boxsize(ilev),
@@ -1370,7 +1386,8 @@ C$          ithd=omp_get_thread_num()
      9            mexppall(1,1,15,ithd),
      9            mexppall(1,1,16,ithd),rdminus,xshift,yshift,zshift,
      9            fexpback,rlsc,pgboxwexp,cntlist4,list4ct,
-     9            nlist4,list4,mnlist4)
+     9            nlist4,list4,mnlist4,
+     9            nboxesperlevel(ilev),nboxesoffset(ilev))
             endif
 
 
@@ -1399,7 +1416,8 @@ c
      5               mexpf1(1,1,ithd),mexpf2(1,1,ithd),mexpp1(1,1,ithd),
      6               mexpp2(1,1,ithd),
      7               mexppall(1,1,1,ithd),mexppall(1,1,2,ithd),
-     8               xshift,yshift,zshift,fexpback,rlsc)
+     8               xshift,yshift,zshift,fexpback,rlsc,
+     9               nboxesperlevel(ilev),nboxesoffset(ilev))
 
               call hprocesslist3nsexplong(nd,zk2,ibox,nboxes,centers,
      1           boxsize(ilev),nterms(ilev),iboxlexp(1,1,ithd),rlams,
@@ -1408,7 +1426,8 @@ c
      4           mexpf1(1,1,ithd),mexpf2(1,1,ithd),mexpp1(1,1,ithd),
      5           mexpp2(1,1,ithd),
      6           mexppall(1,1,1,ithd),mexppall(1,1,2,ithd),rdplus,
-     7           xshift,yshift,zshift,fexpback,rlsc)
+     7           xshift,yshift,zshift,fexpback,rlsc,
+     9           nboxesperlevel(ilev),nboxesoffset(ilev))
 
               call hprocesslist3ewexplong(nd,zk2,ibox,nboxes,centers,
      1              boxsize(ilev),nterms(ilev),iboxlexp(1,1,ithd),
@@ -1417,7 +1436,8 @@ c
      4              mexpf1(1,1,ithd),mexpf2(1,1,ithd),mexpp1(1,1,ithd),
      6              mexpp2(1,1,ithd),
      7              mexppall(1,1,1,ithd),mexppall(1,1,2,ithd),rdminus,
-     8              xshift,yshift,zshift,fexpback,rlsc)
+     8              xshift,yshift,zshift,fexpback,rlsc,
+     9              nboxesperlevel(ilev),nboxesoffset(ilev))
 
               if(ifpgh.eq.1) then
                 istart = isrcse(1,ibox)

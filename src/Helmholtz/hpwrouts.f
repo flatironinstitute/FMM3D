@@ -798,7 +798,8 @@ c----------------------------------------------------------
      3           nu1234,u1234,ndall,dall,nd5678,d5678,mexpup,mexpdown,
      4           mexpupphys,mexpdownphys,mexpuall,mexpu5678,mexpdall,
      5           mexpd1234,xs,ys,zs,fexpback,rlsc,
-     6           pgboxwexp,cntlist4,list4,nlist4s,ilist4,mnlist4)
+     6           pgboxwexp,cntlist4,list4,nlist4s,ilist4,mnlist4,
+     7           nboxesilev,mexpoffset)
 c--------------------------------------------------------------------
 c      process up down expansions for box ibox
 c-------------------------------------------------------------------
@@ -815,7 +816,10 @@ c-------------------------------------------------------------------
        complex *16 zk2
        complex *16 rlams(*),whts(*)
        complex *16 tloc(nd,0:nterms,-nterms:nterms)
-       complex *16 mexp(nd,nexptotp,nboxes,6)
+       integer *8 nboxesilev
+       integer *8 mexpoffset
+       complex *16 mexp(nd,nexptotp,nboxesilev,6)
+c       complex *16 mexp(nd,nexptotp,nboxes,6)
        real *8 rmlexp(*),centers(3,*)
        complex *16 mexpup(nd,nexptot),mexpdown(nd,nexptot)
        complex *16 mexpupphys(nd,nexptotp),mexpdownphys(nd,nexptotp)
@@ -857,6 +861,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(iz,j)*xs(ix,j)*ys(iy,j)
              do idim=1,nd
@@ -872,6 +877,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
 
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(iz,j)*xs(ix,j)*ys(iy,j)
              do idim=1,nd
@@ -889,6 +895,7 @@ c      temp variables
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
 
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(-iz,j)*xs(-ix,j)*ys(-iy,j)
              do idim=1,nd
@@ -904,6 +911,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(-iz,j)*xs(-ix,j)*ys(-iy,j)
              do idim=1,nd
@@ -1219,7 +1227,8 @@ c--------------------------------------------------------------------
      6           mexpnall,mexpn3478,mexpn34,mexpn78,mexpsall,
      7           mexps1256,mexps12,mexps56,rdplus,
      8           xs,ys,zs,fexpback,rlsc,
-     9           pgboxwexp,cntlist4,list4,nlist4s,ilist4,mnlist4)
+     9           pgboxwexp,cntlist4,list4,nlist4s,ilist4,mnlist4,
+     9           nboxesilev,mexpoffset)
 c--------------------------------------------------------------------
 c      process north south expansions for box ibox
 c-------------------------------------------------------------------
@@ -1238,7 +1247,10 @@ c-------------------------------------------------------------------
        complex *16 rlams(*),whts(*)
        complex *16 tloc(nd,0:nterms,-nterms:nterms)
        complex *16, allocatable :: tloc2(:,:,:)
-       complex *16 mexp(nd,nexptotp,nboxes,6)
+       integer *8 nboxesilev
+       integer *8 mexpoffset
+       complex *16 mexp(nd,nexptotp,nboxesilev,6)
+c       complex *16 mexp(nd,nexptotp,nboxes,6)
        real *8 rdplus(0:nterms,0:nterms,-nterms:nterms)
        real *8 rmlexp(*),centers(3,*)
        complex *16 mexpup(nd,nexptot),mexpdown(nd,nexptot)
@@ -1288,6 +1300,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(iy,j)*xs(iz,j)*ys(ix,j)
              do idim=1,nd
@@ -1304,6 +1317,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(iy,j)*xs(iz,j)*ys(ix,j)
              do idim=1,nd
@@ -1319,6 +1333,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(iy,j)*xs(iz,j)*ys(ix,j)
              do idim=1,nd
@@ -1335,6 +1350,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(iy,j)*xs(iz,j)*ys(ix,j)
              do idim=1,nd
@@ -1353,6 +1369,7 @@ c      temp variables
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
 
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(-iy,j)*xs(-iz,j)*ys(-ix,j)
              do idim=1,nd
@@ -1368,6 +1385,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(-iy,j)*xs(-iz,j)*ys(-ix,j)
              do idim=1,nd
@@ -1383,6 +1401,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(-iy,j)*xs(-iz,j)*ys(-ix,j)
              do idim=1,nd
@@ -1398,6 +1417,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(-iy,j)*xs(-iz,j)*ys(-ix,j)
              do idim=1,nd
@@ -1726,7 +1746,8 @@ c--------------------------------------------------------------------
      8           mexpe6,mexpe8,mexpwall,mexpw1357,mexpw13,mexpw57,
      9           mexpw1,mexpw3,mexpw5,mexpw7,rdminus,
      9           xs,ys,zs,fexpback,rlsc,
-     9           pgboxwexp,cntlist4,list4,nlist4s,ilist4,mnlist4)
+     9           pgboxwexp,cntlist4,list4,nlist4s,ilist4,mnlist4,
+     9           nboxesilev,mexpoffset)
 c--------------------------------------------------------------------
 c      process east west expansions for box ibox
 c-------------------------------------------------------------------
@@ -1747,7 +1768,10 @@ c-------------------------------------------------------------------
        complex *16 rlams(*),whts(*)
        complex *16 tloc(nd,0:nterms,-nterms:nterms)
        complex *16, allocatable :: tloc2(:,:,:)
-       complex *16 mexp(nd,nexptotp,nboxes,6)
+       integer *8 nboxesilev
+       integer *8 mexpoffset
+       complex *16 mexp(nd,nexptotp,nboxesilev,6)
+c       complex *16 mexp(nd,nexptotp,nboxes,6)
        real *8 rdminus(0:nterms,0:nterms,-nterms:nterms)
        real *8 rmlexp(*),centers(3,*)
        complex *16 mexpup(nd,nexptot),mexpdown(nd,nexptot)
@@ -1809,6 +1833,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(ix,j)*xs(-iz,j)*ys(iy,j)
              do idim=1,nd
@@ -1824,6 +1849,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(ix,j)*xs(-iz,j)*ys(iy,j)
              do idim=1,nd
@@ -1839,6 +1865,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(ix,j)*xs(-iz,j)*ys(iy,j)
              do idim=1,nd
@@ -1855,6 +1882,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(ix,j)*xs(-iz,j)*ys(iy,j)
              do idim=1,nd
@@ -1870,6 +1898,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(ix,j)*xs(-iz,j)*ys(iy,j)
              do idim=1,nd
@@ -1886,6 +1915,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(ix,j)*xs(-iz,j)*ys(iy,j)
              do idim=1,nd
@@ -1901,6 +1931,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(ix,j)*xs(-iz,j)*ys(iy,j)
              do idim=1,nd
@@ -1917,6 +1948,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(ix,j)*xs(-iz,j)*ys(iy,j)
              do idim=1,nd
@@ -1934,6 +1966,7 @@ c      temp variables
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
 
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(-ix,j)*xs(iz,j)*ys(-iy,j)
              do idim=1,nd
@@ -1949,6 +1982,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(-ix,j)*xs(iz,j)*ys(-iy,j)
              do idim=1,nd
@@ -1964,6 +1998,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(-ix,j)*xs(iz,j)*ys(-iy,j)
              do idim=1,nd
@@ -1982,6 +2017,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(-ix,j)*xs(iz,j)*ys(-iy,j)
              do idim=1,nd
@@ -1997,6 +2033,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(-ix,j)*xs(iz,j)*ys(-iy,j)
              do idim=1,nd
@@ -2013,6 +2050,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(-ix,j)*xs(iz,j)*ys(-iy,j)
              do idim=1,nd
@@ -2028,6 +2066,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(-ix,j)*xs(iz,j)*ys(-iy,j)
              do idim=1,nd
@@ -2043,6 +2082,7 @@ c      temp variables
           iy = 1.05d0*(centers(2,jbox)-ctmp(2))/bs
           iz = 1.05d0*(centers(3,jbox)-ctmp(3))/bs
          
+          jbox = jbox - mexpoffset
           do j=1,nexptotp
              zmul = zs(-ix,j)*xs(iz,j)*ys(-iy,j)
              do idim=1,nd
@@ -3800,7 +3840,8 @@ c--------------------------------------------------------------------
      2           nphysical,nthmax,nexptot,nexptotp,mexp,nuall,uall,
      3           ndall,dall,mexpup,mexpdown,
      4           mexpupphys,mexpdownphys,mexpuall,mexpdall,
-     5           xs,ys,zs,fexpback,rlsc)
+     5           xs,ys,zs,fexpback,rlsc,
+     6           nboxesilev,mexpoffset)
 c--------------------------------------------------------------------
 c      process up down expansions for box ibox
 c-------------------------------------------------------------------
@@ -3814,7 +3855,10 @@ c-------------------------------------------------------------------
       double precision rscale
       double complex rlams(*),whts(*)
       double complex, allocatable :: tloc(:,:,:)  
-      double complex mexp(nd,nexptotp,nboxes,6)
+      integer *8 nboxesilev
+      integer *8 mexpoffset
+      double complex mexp(nd,nexptotp,nboxesilev,6)
+c      double complex mexp(nd,nexptotp,nboxes,6)
       double complex rmlexp(nd*(nterms+1)*(2*nterms+1),8)
       double precision centers(3,*)
       double complex mexpup(nd,nexptot),mexpdown(nd,nexptot)
@@ -3855,6 +3899,7 @@ C        print *,"ulist j: ",jbox
         iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
         iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
          
+        jbox = jbox - mexpoffset
         do j=1,nexptotp
           zmul = zs(iz,j)*xs(ix,j)*ys(iy,j)
           do idim=1,nd
@@ -3871,6 +3916,7 @@ C        print *,"dlist j: ",jbox
         iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
         iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
 
+        jbox = jbox - mexpoffset
         do j=1,nexptotp
           zmul = zs(-iz,j)*xs(-ix,j)*ys(-iy,j)
           do idim=1,nd
@@ -4115,7 +4161,8 @@ c--------------------------------------------------------------------
      2           nphysical,nthmax,nexptot,nexptotp,mexp,nnall,nall,
      3           nsall,sall,mexpup,mexpdown,
      4           mexpupphys,mexpdownphys,mexpnall,mexpsall,
-     5           rdplus,xs,ys,zs,fexpback,rlsc)
+     5           rdplus,xs,ys,zs,fexpback,rlsc,
+     6           nboxesilev,mexpoffset)
 c--------------------------------------------------------------------
 c      create up down expansions for box ibox
 c-------------------------------------------------------------------
@@ -4130,7 +4177,10 @@ c-------------------------------------------------------------------
       double complex rlams(*),whts(*)
       double complex, allocatable :: tloc(:,:,:)
       double complex, allocatable :: tloc2(:,:,:)
-      double complex mexp(nd,nexptotp,nboxes,6)
+      integer *8 nboxesilev
+      integer *8 mexpoffset
+      double complex mexp(nd,nexptotp,nboxesilev,6)
+c      double complex mexp(nd,nexptotp,nboxes,6)
       double precision rdplus(0:nterms,0:nterms,-nterms:nterms)
       double complex rmlexp(nd*(nterms+1)*(2*nterms+1),8)
       double precision centers(3,*)
@@ -4171,6 +4221,7 @@ c      temp variables
         iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
         iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
          
+        jbox = jbox - mexpoffset
         do j=1,nexptotp
            zmul = zs(iy,j)*xs(iz,j)*ys(ix,j)
            do idim=1,nd
@@ -4188,6 +4239,7 @@ c      temp variables
         iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
         iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
          
+        jbox = jbox - mexpoffset
         do j=1,nexptotp
           zmul = zs(-iy,j)*xs(-iz,j)*ys(-ix,j)
           do idim=1,nd
@@ -4437,7 +4489,8 @@ c--------------------------------------------------------------------
      2           nphysical,nthmax,nexptot,nexptotp,mexp,neall,eall,
      3           nwall,wall,mexpup,mexpdown,
      4           mexpupphys,mexpdownphys,mexpeall,mexpwall,
-     5           rdminus,xs,ys,zs,fexpback,rlsc)
+     5           rdminus,xs,ys,zs,fexpback,rlsc,
+     6           nboxesilev,mexpoffset)
 c--------------------------------------------------------------------
 c      create up down expansions for box ibox
 c-------------------------------------------------------------------
@@ -4451,7 +4504,10 @@ c-------------------------------------------------------------------
       double precision rscale
       double complex rlams(*),whts(*)
       double complex, allocatable :: tloc(:,:,:),tloc2(:,:,:)
-      double complex mexp(nd,nexptotp,nboxes,6)
+      integer *8 nboxesilev
+      integer *8 mexpoffset
+      double complex mexp(nd,nexptotp,nboxesilev,6)
+c      double complex mexp(nd,nexptotp,nboxes,6)
       double precision rdminus(0:nterms,0:nterms,-nterms:nterms)
       double complex rmlexp(nd*(nterms+1)*(2*nterms+1),8)
       double precision centers(3,*)
@@ -4492,6 +4548,7 @@ c      temp variables
         iy = 1.05d0*(centers(2,jbox)-ctmp(2))/rscale
         iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
          
+        jbox = jbox - mexpoffset
         do j=1,nexptotp
           zmul = zs(ix,j)*xs(-iz,j)*ys(iy,j)
           do idim=1,nd
@@ -4509,6 +4566,7 @@ c      temp variables
         iz = 1.05d0*(centers(3,jbox)-ctmp(3))/rscale
 
          
+        jbox = jbox - mexpoffset
         do j=1,nexptotp
           zmul = zs(-ix,j)*xs(iz,j)*ys(-iy,j)
           do idim=1,nd

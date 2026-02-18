@@ -405,6 +405,9 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
   integer *8 :: isep,iper
   integer *8 :: ltree
   integer *8 :: laddr(2,0:nlevels)
+  integer *8 :: nboxesperlevel(0:nlevels)
+  integer *8 :: nboxesoffset(0:nlevels)
+  integer *8 :: iboxlev
   integer *8 :: nterms(0:nlevels)
   integer *8 :: ipointer(8)
   integer *8 :: itree(ltree)
@@ -599,6 +602,13 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
   ! ... set all multipole and local expansions to zero
   !
   do ilev = 0,nlevels
+    nboxesperlevel(ilev) = laddr(2,ilev)-laddr(1,ilev)+1
+    if(ilev.eq.0) then
+      nboxesoffset(ilev) = 0
+    else
+      nboxesoffset(ilev) = nboxesoffset(ilev-1) + &
+                           nboxesperlevel(ilev-1)
+    endif
     !$omp parallel do default(shared) private(ibox)
     do ibox = laddr(1,ilev),laddr(2,ilev)
       call mpzero(nd,rmlexp(iaddr(1,ibox)),nterms(ilev))
@@ -858,14 +868,16 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
 
         ! NOTE: there can be some additional memory savings here
         bigint = 0
-        bigint = nboxes
+        bigint = nboxesperlevel(ilev)
+        !bigint = nboxes
         bigint = bigint*6
         bigint = bigint*nexptotp*nd
 
         !if(ifprint.ge.1) print *, "mexp memory=",bigint/1.0d9
 
 
-        allocate(mexp(nd,nexptotp,nboxes,6),stat=iert)
+        !allocate(mexp(nd,nexptotp,nboxes,6),stat=iert)
+        allocate(mexp(nd,nexptotp,nboxesperlevel(ilev),6),stat=iert)
         if(iert.ne.0) then
           print *, "Cannot allocate pw expansion workspace"
           print *, "bigint=", bigint
@@ -897,7 +909,8 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
         !
         !$omp parallel do default(shared) private(idim,i,j,k)
         do k=1,6
-          do i=1,nboxes
+          do i=1,nboxesperlevel(ilev)
+          !do i=1,nboxes
             do j=1,nexptotp
               do idim=1,nd
                 mexp(idim,j,i,k) = 0.0d0
@@ -923,7 +936,7 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
         ! level
         !
         !$omp parallel do default (shared) &
-        !$omp    private(ibox,istart,iend,npts,tmp,mexpf1,mexpf2,tmp2)
+        !$omp    private(ibox,iboxlev,istart,iend,npts,tmp,mexpf1,mexpf2,tmp2)
         do ibox = laddr(1,ilev),laddr(2,ilev)
           istart = isrcse(1,ibox) 
           iend = isrcse(2,ibox) 
@@ -937,11 +950,12 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
             call hmpoletoexp(nd,tmp,nterms(ilev), &
                 nlams,nfourier,nexptot,mexpf1,mexpf2,rlsc) 
 
+            iboxlev = ibox - nboxesoffset(ilev)
             call hftophys(nd,mexpf1,nlams,nfourier,nphysical, &
-                mexp(1,1,ibox,1),fexp)           
+                mexp(1,1,iboxlev,1),fexp)           
 
             call hftophys(nd,mexpf2,nlams,nfourier,nphysical, &
-                mexp(1,1,ibox,2),fexp)
+                mexp(1,1,iboxlev,2),fexp)
 
 
             ! form mexpnorth, mexpsouth for current box
@@ -955,10 +969,10 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
                 nfourier,nexptot,mexpf1,mexpf2,rlsc)
 
             call hftophys(nd,mexpf1,nlams,nfourier, &
-                nphysical,mexp(1,1,ibox,3),fexp)           
+                nphysical,mexp(1,1,iboxlev,3),fexp)           
 
             call hftophys(nd,mexpf2,nlams,nfourier, &
-                nphysical,mexp(1,1,ibox,4),fexp)   
+                nphysical,mexp(1,1,iboxlev,4),fexp)   
 
 
             ! Rotate mpole for computing mexpeast, mexpwest
@@ -968,10 +982,10 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
                 nfourier,nexptot,mexpf1,mexpf2,rlsc)
 
             call hftophys(nd,mexpf1,nlams,nfourier, &
-                nphysical,mexp(1,1,ibox,5),fexp)
+                nphysical,mexp(1,1,iboxlev,5),fexp)
 
             call hftophys(nd,mexpf2,nlams,nfourier, &
-                nphysical,mexp(1,1,ibox,6),fexp)           
+                nphysical,mexp(1,1,iboxlev,6),fexp)           
 
           endif
         enddo
@@ -1026,7 +1040,8 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
                 mexpf1,mexpf2,mexpp1,mexpp2,mexppall(1,1,1), &
                 mexppall(1,1,2),mexppall(1,1,3),mexppall(1,1,4), &
                 xshift,yshift,zshift,fexpback,rlsc,pgboxwexp,cntlist4, &
-                list4ct,nlist4tmp,list4,mnlist4)
+                list4ct,nlist4tmp,list4,mnlist4, &
+                nboxesperlevel(ilev),nboxesoffset(ilev))
 
 
             call hprocessnsexp(nd,zk2,ibox,ilev,nboxes,centers,&
@@ -1041,7 +1056,8 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
                 mexppall(1,1,5),mexppall(1,1,6),mexppall(1,1,7),&
                 mexppall(1,1,8),rdplus,xshift,yshift,zshift, &
                 fexpback,rlsc,pgboxwexp,cntlist4, list4ct, &
-                nlist4tmp,list4,mnlist4)
+                nlist4tmp,list4,mnlist4, &
+                nboxesperlevel(ilev),nboxesoffset(ilev))
 
             call hprocessewexp(nd,zk2,ibox,ilev,nboxes,centers,&
                 itree(ipointer(5)),rscales(ilev),boxsize(ilev),&
@@ -1060,7 +1076,8 @@ subroutine hfmm3dmain_mps(nd, eps, zk, &
                 mexppall(1,1,13),mexppall(1,1,14),mexppall(1,1,15),&
                 mexppall(1,1,16),rdminus,xshift,yshift,zshift,&
                 fexpback,rlsc,pgboxwexp,cntlist4,list4ct, &
-                nlist4tmp,list4,mnlist4)
+                nlist4tmp,list4,mnlist4, &
+                nboxesperlevel(ilev),nboxesoffset(ilev))
           endif
         enddo
         !$omp end parallel do        
