@@ -178,6 +178,12 @@
 
   ndiv = 400;
   idivflag = 0;
+
+  xyzmin = min(sources.');
+  xyzmax = max(sources.');
+  
+  bsize = max(xyzmax - xyzmin);
+  dbsize = bsize*real(zk)/2/pi;
   # FORTRAN hndiv(double[1] eps,int[1] ns,int[1] nt,int[1] ifcharge,int[1] ifdipole,int[1] pg, int[1] pgt, inout int[1] ndiv, inout int[1] idivflag); 
   if(isfield(opts,'ndiv'))
     ndiv = opts.ndiv;
