@@ -94,6 +94,8 @@ c       Tree variables
       double precision, allocatable :: treecenters(:,:),boxsize(:)
       double precision b0,b0inv,b0inv2,b0inv3
       integer *8 mnlist1,mnlist2,mnlist3,mnlist4
+      double precision xmin, xmax, ymin, ymax, zmin, zmax, dbsize
+      double precision bs0, sizey, sizez
       
 
 
@@ -153,9 +155,55 @@ c
       ifnear = 1
 
 c
+c  Determine the computational boxsize
+c
+
+      xmin = source(1,1)
+      xmax = source(1,1)
+      ymin = source(2,1)
+      ymax = source(2,1)
+      zmin = source(3,1)
+      zmax = source(3,1)
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$REDUCTION(min:xmin,ymin,zmin)
+C$OMP$REDUCTION(max:xmax,ymax,zmax)
+      do i=1,nsource
+        if(source(1,i).lt.xmin) xmin = source(1,i)
+        if(source(1,i).gt.xmax) xmax = source(1,i)
+        if(source(2,i).lt.ymin) ymin = source(2,i)
+        if(source(2,i).gt.ymax) ymax = source(2,i)
+        if(source(3,i).lt.zmin) zmin = source(3,i)
+        if(source(3,i).gt.zmax) zmax = source(3,i)
+      enddo
+C$OMP END PARALLEL DO      
+
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$REDUCTION(min:xmin,ymin,zmin)
+C$OMP$REDUCTION(max:xmax,ymax,zmax)
+      do i=1,ntarg
+        if(targ(1,i).lt.xmin) xmin = targ(1,i)
+        if(targ(1,i).gt.xmax) xmax = targ(1,i)
+        if(targ(2,i).lt.ymin) ymin = targ(2,i)
+        if(targ(2,i).gt.ymax) ymax = targ(2,i)
+        if(targ(3,i).lt.zmin) zmin = targ(3,i)
+        if(targ(3,i).gt.zmax) zmax = targ(3,i)
+      enddo
+C$OMP END PARALLEL DO      
+
+      bs0 = (xmax - xmin)
+      sizey = (ymax - ymin)
+      sizez = (zmax - zmin)
+      if(sizey.gt.bs0) bs0 = sizey
+      if(sizez.gt.bs0) bs0 = sizez
+
+      pi = atan(1.0d0)*4.0d0
+
+      dbsize = real(zk)*bs0/2/pi
+      
+c
 cc        set criterion for box subdivision
 c
-      call hndiv(eps,nsource,ntarg,ifcharge,ifdipole,ifpgh,
+      call hndiv(dbsize,eps,nsource,ntarg,ifcharge,ifdipole,ifpgh,
      1   ifpghtarg,ndiv,idivflag) 
 
       nexpc = 0

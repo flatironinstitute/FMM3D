@@ -177,8 +177,14 @@ function [U,varargout] = hfmm3d(eps,zk,srcinfo,pg,varargin)
 
   ndiv = 400;
   idivflag = 0;
-  mex_id_ = 'hndiv(i double[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], io int64_t[x], io int64_t[x])';
-[ndiv, idivflag] = fmm3d(mex_id_, eps, ns, nt, ifcharge, ifdipole, pg, pgt, ndiv, idivflag, 1, 1, 1, 1, 1, 1, 1, 1, 1);
+
+  xyzmin = min(sources.');
+  xyzmax = max(sources.');
+
+  bsize = max(xyzmax - xyzmin);
+  dbsize = bsize*real(zk)/2/pi;
+  mex_id_ = 'hndiv(i double[x], i double[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], io int64_t[x], io int64_t[x])';
+[ndiv, idivflag] = fmm3d(mex_id_, dbsize, eps, ns, nt, ifcharge, ifdipole, pg, pgt, ndiv, idivflag, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
   if(isfield(opts,'ndiv'))
     ndiv = opts.ndiv;
   end
