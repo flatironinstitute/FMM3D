@@ -35,7 +35,7 @@ module FMM3D
 
 using FMM3D_jll
 
-export FMMVals, hfmm3d, lfmm3d, h3ddir, l3ddir, lowerlevel_routs
+export FMMVals, hfmm3d, hfmm3d_ndiv, lfmm3d, lfmm3d_ndiv, h3ddir, l3ddir, lowerlevel_routs
 export stfmm3d, st3ddir, emfmm3d, em3ddir
 export besseljs3d
 
@@ -262,11 +262,11 @@ in the order: ``\\partial_{xx}``, ``\\partial_{yy}``,
 Non-zero values may indicate insufficient memory available. See the documentation for the FMM3D library. 
 If not set (`nothing`), then FMM3D library was never called.
 """
-function hfmm3d(eps::Float64,zk::Union{Float64,ComplexF64},
-                sources::Array{Float64};
-                charges::TCN=nothing,dipvecs::TCN=nothing,
-                targets::TFN=nothing,pg::Integer=0,pgt::Integer=0,
-                nd::Integer=1)
+function _hfmm3d_impl(eps::Float64,zk::Union{Float64,ComplexF64},
+                      sources::Array{Float64};
+                      charges::TCN=nothing,dipvecs::TCN=nothing,
+                      targets::TFN=nothing,pg::Integer=0,pgt::Integer=0,
+                      nd::Integer=1,ndiv::Union{Integer,Nothing}=nothing)
 
     zk = complex(zk)
     
@@ -301,6 +301,10 @@ function hfmm3d(eps::Float64,zk::Union{Float64,ComplexF64},
         scalarfmm3dinputcheck(sources,charges,dipvecs,targets,pg,pgt,nd))
 
     if anyfail
+        return vals
+    end
+    if ndiv !== nothing && ndiv < 1
+        @warn "ndiv must be a positive integer, computing nothing"
         return vals
     end
 
@@ -369,12 +373,27 @@ function hfmm3d(eps::Float64,zk::Union{Float64,ComplexF64},
     ier = Integer(0)
     iper = Integer(0)
     
-    ccall((:hfmm3d_,libfmm3d),Cvoid,(Fi,Fd,Fc,Fi,Fd,Fi,Fc,
-                                    Fi,Fc,Fi,Fi,Fc,Fc,Fc,Fi,
-                                    Fd,Fi,Fc,Fc,Fc,Fi),
-          nd,eps,zk,n,sources,ifcharge,charges,ifdipole,
-          dipvecs,iper,pg,pot,grad,hess,nt,targets,pgt,
-          pottarg,gradtarg,hesstarg,ier)
+    if ndiv === nothing
+        ccall((:hfmm3d_,libfmm3d),Cvoid,(Fi,Fd,Fc,Fi,Fd,Fi,Fc,
+                                        Fi,Fc,Fi,Fi,Fc,Fc,Fc,Fi,
+                                        Fd,Fi,Fc,Fc,Fc,Fi),
+              nd,eps,zk,n,sources,ifcharge,charges,ifdipole,
+              dipvecs,iper,pg,pot,grad,hess,nt,targets,pgt,
+              pottarg,gradtarg,hesstarg,ier)
+    else
+        ndiv64 = Int64(ndiv)
+        idivflag = Int64(0)
+        ifnear = Int64(1)
+        timeinfo = zeros(Float64,6)
+        ccall((:hfmm3d_ndiv_,libfmm3d),Cvoid,(Fi,Fd,Fc,Fi,Fd,Fi,Fc,
+                                             Fi,Fc,Fi,Fi,Fc,Fc,Fc,Fi,
+                                             Fd,Fi,Fc,Fc,Fc,Fi,Fi,Fi,
+                                             Fd,Fi),
+              nd,eps,zk,n,sources,ifcharge,charges,ifdipole,
+              dipvecs,iper,pg,pot,grad,hess,nt,targets,pgt,
+              pottarg,gradtarg,hesstarg,ndiv64,idivflag,ifnear,
+              timeinfo,ier)
+    end
 
     vals.ier = ier
     if (ier != 0); @warn "libfmm3d had an error, see vals.ier"; end    
@@ -390,6 +409,24 @@ function hfmm3d(eps::Float64,zk::Union{Float64,ComplexF64},
     
     return vals
 
+end
+
+function hfmm3d(eps::Float64,zk::Union{Float64,ComplexF64},
+                sources::Array{Float64};
+                charges::TCN=nothing,dipvecs::TCN=nothing,
+                targets::TFN=nothing,pg::Integer=0,pgt::Integer=0,
+                nd::Integer=1)
+    return _hfmm3d_impl(eps,zk,sources,charges=charges,dipvecs=dipvecs,
+                        targets=targets,pg=pg,pgt=pgt,nd=nd)
+end
+
+function hfmm3d_ndiv(eps::Float64,zk::Union{Float64,ComplexF64},
+                     sources::Array{Float64},ndiv::Integer;
+                     charges::TCN=nothing,dipvecs::TCN=nothing,
+                     targets::TFN=nothing,pg::Integer=0,pgt::Integer=0,
+                     nd::Integer=1)
+    return _hfmm3d_impl(eps,zk,sources,charges=charges,dipvecs=dipvecs,
+                        targets=targets,pg=pg,pgt=pgt,nd=nd,ndiv=ndiv)
 end
 
 """
@@ -739,9 +776,10 @@ in the order: ``\\partial_{xx}``, ``\\partial_{yy}``,
 Non-zero values may indicate insufficient memory available. See the documentation for the FMM3D library. 
 If not set (`nothing`), then FMM3D library was never called.
 """
-function lfmm3d(eps::Float64,sources::Array{Float64};charges::TFN=nothing,
-                dipvecs::TFN=nothing,targets::TFN=nothing,
-                pg::Integer=0,pgt::Integer=0,nd::Integer=1)
+function _lfmm3d_impl(eps::Float64,sources::Array{Float64};charges::TFN=nothing,
+                      dipvecs::TFN=nothing,targets::TFN=nothing,
+                      pg::Integer=0,pgt::Integer=0,nd::Integer=1,
+                      ndiv::Union{Integer,Nothing}=nothing)
 
     # default values
 
@@ -765,6 +803,10 @@ function lfmm3d(eps::Float64,sources::Array{Float64};charges::TFN=nothing,
         scalarfmm3dinputcheck(sources,charges,dipvecs,targets,pg,pgt,nd))
 
     if anyfail
+        return vals
+    end
+    if ndiv !== nothing && ndiv < 1
+        @warn "ndiv must be a positive integer, computing nothing"
         return vals
     end
 
@@ -835,12 +877,27 @@ function lfmm3d(eps::Float64,sources::Array{Float64};charges::TFN=nothing,
     ier = Integer(0)
     iper = Integer(0)
     
-    ccall((:lfmm3d_,libfmm3d),Cvoid,(Fi,Fd,Fi,Fd,Fi,Fd,
-                                    Fi,Fd,Fi,Fi,Fd,Fd,Fd,Fi,
-                                    Fd,Fi,Fd,Fd,Fd,Fi),
-          nd,eps,n,sources,ifcharge,charges,ifdipole,
-          dipvecs,iper,pg,pot,grad,hess,nt,targets,pgt,
-          pottarg,gradtarg,hesstarg,ier)
+    if ndiv === nothing
+        ccall((:lfmm3d_,libfmm3d),Cvoid,(Fi,Fd,Fi,Fd,Fi,Fd,
+                                        Fi,Fd,Fi,Fi,Fd,Fd,Fd,Fi,
+                                        Fd,Fi,Fd,Fd,Fd,Fi),
+              nd,eps,n,sources,ifcharge,charges,ifdipole,
+              dipvecs,iper,pg,pot,grad,hess,nt,targets,pgt,
+              pottarg,gradtarg,hesstarg,ier)
+    else
+        ndiv64 = Int64(ndiv)
+        idivflag = Int64(0)
+        ifnear = Int64(1)
+        timeinfo = zeros(Float64,6)
+        ccall((:lfmm3d_ndiv_,libfmm3d),Cvoid,(Fi,Fd,Fi,Fd,Fi,Fd,
+                                             Fi,Fd,Fi,Fi,Fd,Fd,Fd,Fi,
+                                             Fd,Fi,Fd,Fd,Fd,Fi,Fi,Fi,
+                                             Fd,Fi),
+              nd,eps,n,sources,ifcharge,charges,ifdipole,
+              dipvecs,iper,pg,pot,grad,hess,nt,targets,pgt,
+              pottarg,gradtarg,hesstarg,ndiv64,idivflag,ifnear,
+              timeinfo,ier)
+    end
 
     if (ier != 0); @warn "libfmm3d had an error, see vals.ier"; end
     vals.ier = ier
@@ -856,6 +913,21 @@ function lfmm3d(eps::Float64,sources::Array{Float64};charges::TFN=nothing,
     
     return vals
 
+end
+
+function lfmm3d(eps::Float64,sources::Array{Float64};charges::TFN=nothing,
+                dipvecs::TFN=nothing,targets::TFN=nothing,
+                pg::Integer=0,pgt::Integer=0,nd::Integer=1)
+    return _lfmm3d_impl(eps,sources,charges=charges,dipvecs=dipvecs,
+                        targets=targets,pg=pg,pgt=pgt,nd=nd)
+end
+
+function lfmm3d_ndiv(eps::Float64,sources::Array{Float64},ndiv::Integer;
+                     charges::TFN=nothing,dipvecs::TFN=nothing,
+                     targets::TFN=nothing,pg::Integer=0,pgt::Integer=0,
+                     nd::Integer=1)
+    return _lfmm3d_impl(eps,sources,charges=charges,dipvecs=dipvecs,
+                        targets=targets,pg=pg,pgt=pgt,nd=nd,ndiv=ndiv)
 end
 
 
