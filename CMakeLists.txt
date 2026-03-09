@@ -41,6 +41,7 @@ execute_process(
   OUTPUT_VARIABLE F2PY_INCLUDE_DIR
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
+file(TO_CMAKE_PATH "${F2PY_INCLUDE_DIR}" F2PY_INCLUDE_DIR)
 
 # build static lib libfmm3d.a
 # source files for libfmm3d.a
