@@ -1,7 +1,6 @@
 [build-system]
 requires = [
     "scikit-build-core >= 0.4.3",
-    "cmake >= 3.19",
     "numpy >= 1.12.0",
 ]
 
@@ -22,6 +21,7 @@ minimum-version = "0.4"
 build-dir = "build/{wheel_tag}"
 
 cmake.targets = ["fmm3d", "hfmm3d_fortran", "lfmm3d_fortran", "emfmm3d_fortran", "stfmm3d_fortran"]
+cmake.args = ["-G Ninja"]
 
 wheel.packages = ["python/fmm3dpy"]
 
@@ -32,3 +32,23 @@ input = "python/fmm3dpy/__init__.py"
 [tool.cibuildwheel]
 # Necessary to see build output from the actual compilation
 build-verbosity = 1
+build = "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-* cp314-*"
+skip = "*-manylinux_i686 *_ppc64le *_s390x *_universal2"
+test-requires = ["pytest"]
+test-command = "pytest -q {project}/python/test/test_hfmm.py {project}/python/test/test_lfmm.py"
+config-settings = {"cmake.define.FMM3D_ARCH_FLAGS" = "-march=x86-64", "cmake.define.FMM3D_FAST_KER" = "ON", "cmake.define.CMAKE_VERBOSE_MAKEFILE" = "ON"}
+
+[tool.cibuildwheel.linux]
+manylinux-x86_64-image = "manylinux2014"
+
+[tool.cibuildwheel.windows]
+before-build = "pip install delvewheel"
+repair-wheel-command = "delvewheel repair -v --analyze-existing -w {dest_dir} {wheel}"
+
+[[tool.cibuildwheel.overrides]]
+select = "*-win_*"
+config-settings = {"cmake.define.FMM3D_ARCH_FLAGS" = "-march=x86-64", "cmake.define.FMM3D_FAST_KER" = "OFF", "cmake.define.CMAKE_VERBOSE_MAKEFILE" = "ON"}
+
+[[tool.cibuildwheel.overrides]]
+select = "*arm64*"
+config-settings = {"cmake.define.FMM3D_ARCH_FLAGS" = "", "cmake.define.FMM3D_FAST_KER" = "ON", "cmake.define.CMAKE_VERBOSE_MAKEFILE" = "ON"}
