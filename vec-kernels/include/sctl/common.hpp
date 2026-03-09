@@ -38,6 +38,24 @@
 
 #include <cstddef>
 #include <cstdint>
+#if defined(_WIN32)
+// MinGW lacks the POSIX drand48/srand48 API used by SCTL.
+inline uint64_t& sctl_drand48_state() {
+  static uint64_t state = 0x1234abcd330eULL;
+  return state;
+}
+
+inline void srand48(long seedval) {
+  sctl_drand48_state() = ((static_cast<uint64_t>(seedval) << 16) + 0x330eULL) & ((1ULL << 48) - 1);
+}
+
+inline double drand48() {
+  uint64_t& state = sctl_drand48_state();
+  state = (0x5deece66dULL * state + 0xbULL) & ((1ULL << 48) - 1);
+  return static_cast<double>(state) / static_cast<double>(1ULL << 48);
+}
+#endif
+
 namespace SCTL_NAMESPACE {
 typedef long Integer;  // bounded numbers < 32k
 typedef int64_t Long;  // problem size
