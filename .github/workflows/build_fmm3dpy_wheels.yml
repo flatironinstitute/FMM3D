@@ -42,7 +42,7 @@ jobs:
         if: ${{ runner.os == 'macOS' }}
         shell: bash
         run: |
-          echo "CIBW_ENVIRONMENT_MACOS=CC=$(ls $(brew --prefix gcc)/bin/gcc-[0-9]* | head -n1) CXX=$(ls $(brew --prefix gcc)/bin/g++-[0-9]* | head -n1) FC=$(ls $(brew --prefix gcc)/bin/gfortran-[0-9]* | head -n1) MACOSX_DEPLOYMENT_TARGET=${{ matrix.buildplat[1] == 'macosx_arm64' && '14.0' || '13.0' }}" >> "$GITHUB_ENV"
+          echo "CIBW_ENVIRONMENT_MACOS=CC=$(ls $(brew --prefix gcc)/bin/gcc-[0-9]* | head -n1) CXX=$(ls $(brew --prefix gcc)/bin/g++-[0-9]* | head -n1) FC=$(ls $(brew --prefix gcc)/bin/gfortran-[0-9]* | head -n1) MACOSX_DEPLOYMENT_TARGET=${{ matrix.buildplat[1] == 'macosx_x86_64' && '15.0' || '14.0' }}" >> "$GITHUB_ENV"
 
       - name: Install Windows build dependencies
         if: ${{ runner.os == 'Windows' }}
