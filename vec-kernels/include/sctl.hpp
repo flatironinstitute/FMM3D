@@ -76,8 +76,10 @@
 #include SCTL_INCLUDE(profile.hpp)
 
 // Print stack trace
+#ifndef _WIN32
 #include SCTL_INCLUDE(stacktrace.h)
 const int sgh = SCTL_NAMESPACE::SetSigHandler(); // Set signal handler
+#endif
 
 // Boundary quadrature, Kernel functions
 #include SCTL_INCLUDE(kernel_functions.hpp)
