@@ -33,7 +33,7 @@ input = "python/fmm3dpy/__init__.py"
 # Necessary to see build output from the actual compilation
 build-verbosity = 1
 build = "cp38-* cp39-* cp310-* cp311-* cp312-* cp313-* cp314-*"
-skip = "*-manylinux_i686 *_ppc64le *_s390x *_universal2"
+skip = "*-manylinux_i686 *_ppc64le *_s390x *_universal2 cp314t-*"
 test-requires = ["pytest"]
 test-command = "pytest -q {project}/python/test/test_hfmm.py {project}/python/test/test_lfmm.py"
 config-settings = {"cmake.define.FMM3D_ARCH_FLAGS" = "-march=x86-64", "cmake.define.FMM3D_FAST_KER" = "ON", "cmake.define.CMAKE_VERBOSE_MAKEFILE" = "ON"}
