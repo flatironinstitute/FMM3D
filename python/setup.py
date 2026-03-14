@@ -83,7 +83,7 @@ ext_st = Extension(
 setup(
     name=pkg_name,
     python_requires='>=3.0.0',
-    version="1.0.0",
+    version="2.1.0",
     author="Zydrunas Gimbutas, Leslie Greengard, Libin Lu, Jeremy Magland, Dhairya Malhotra, Michael O'Neil, Manas Rachh, and Vladimir Rokhlin",
     author_email="mrachh@flatironinstitute.org",
     description="This pacakge contains basic routines for Laplace, Helmholtz, Stokes and Maxwell fast multipole methods in three dimensions",
