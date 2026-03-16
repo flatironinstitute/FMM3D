@@ -28,7 +28,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Build and install
-        working-directory: python
         run: pip install ".[test]"
 
       - name: Run tests
@@ -61,8 +60,6 @@ jobs:
 
       - name: Build wheels
         uses: pypa/cibuildwheel@v3.4.0
-        with:
-          package-dir: python
         env:
           CIBW_BUILD: 'cp310-* cp311-* cp312-* cp313-* cp314-*'
           CIBW_SKIP: '*-musllinux* *i686 *-win32'
@@ -95,6 +92,28 @@ jobs:
         with:
           name: wheels-${{ matrix.os }}
           path: wheelhouse/*.whl
+
+  build-sdist:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Install build
+        run: pip install build
+
+      - name: Build sdist
+        run: python -m build --sdist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sdist
+          path: dist/*.tar.gz
 
   publish:
     needs: [build-wheels, build-sdist]
