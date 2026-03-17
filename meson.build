@@ -1,37 +1,44 @@
 project('fmm3dpy', 'c', 'fortran',
   version: '2.1.0',
   license: 'Apache-2.0',
-  default_options: ['warning_level=1']
+  default_options: [
+    'optimization=3',
+    'fortran_std=legacy'
+  ]
 )
 
 py = import('python').find_installation(pure: false)
 py_dep = py.dependency()
-np_dep = dependency('numpy', required: true)
 
-incdir_numpy = run_command(py, ['-c', 'import sys; sys.path = [p for p in sys.path if p != "."]; import numpy; print(numpy.get_include())'], check: true).stdout().strip()
+incdir_numpy = run_command(py,
+  ['-c', 'import os; os.chdir(".."); import numpy; print(numpy.get_include())'],
+  check : true
+).stdout().strip()
+
+incdir_f2py = run_command(py,
+    ['-c', 'import os; os.chdir(".."); import numpy.f2py; print(numpy.f2py.get_include())'],
+    check : true
+).stdout().strip()
+
 inc_np = include_directories(incdir_numpy)
-incdir_f2py = incdir_numpy / '..' / '..' / 'f2py' / 'src'
 inc_f2py = include_directories(incdir_f2py)
 
-fortranobject_c = incdir_f2py / 'fortranobject.c'
-fortranobject_lib = static_library('_fortranobject',
-  fortranobject_c,
-  c_args: ['-DNPY_NO_DEPRECATED_API=NPY_1_9_API_VERSION'],
+f2py_lib = static_library('_f2py',
+  incdir_f2py / 'fortranobject.c',
   dependencies: py_dep,
   include_directories: [inc_np, inc_f2py],
-  gnu_symbol_visibility: 'hidden',
 )
-fortranobject_dep = declare_dependency(
-  link_with: fortranobject_lib,
+f2py_dep = declare_dependency(
   include_directories: [inc_np, inc_f2py],
+  link_with: f2py_lib,
+  dependencies: py_dep
 )
+f2py_prog = find_program('f2py', 'f2py3', required: true)
 
 fmm_src = [
-  'src/Helmholtz/hfmm3dwrap_legacy.f',
   'src/Helmholtz/h3dcommon.f',
   'src/Helmholtz/hnumfour.f',
   'src/Helmholtz/hfmm3dwrap.f',
-  'src/Helmholtz/hfmm3d_memest.f',
   'src/Helmholtz/hwts3e.f',
   'src/Helmholtz/hfmm3d_ndiv.f',
   'src/Helmholtz/h3dtrans.f',
@@ -39,20 +46,15 @@ fmm_src = [
   'src/Helmholtz/helmrouts3d.f',
   'src/Helmholtz/h3dterms.f',
   'src/Helmholtz/projections.f',
-  'src/Helmholtz/helmkernels_hess.f',
   'src/Helmholtz/hfmm3dwrap_vec.f',
   'src/Helmholtz/hfmm3d.f',
   'src/Helmholtz/hndiv.f',
-  'src/Helmholtz/helmkernels_dr.f',
   'src/Helmholtz/helmkernels.f',
-  'src/Helmholtz/hfmm3d_mps.f90',
   'src/Helmholtz/hnumphys.f',
   'src/Laplace/lfmm3d_ndiv.f',
-  'src/Laplace/lfmm3dwrap_legacy.f',
   'src/Laplace/l3dterms.f',
   'src/Laplace/l3dtrans.f',
   'src/Laplace/lpwrouts.f',
-  'src/Laplace/lapkernels_dr.f',
   'src/Laplace/lapkernels.f',
   'src/Laplace/lwtsexp_sep2.f',
   'src/Laplace/lfmm3d.f',
@@ -110,12 +112,13 @@ stfmm_src = [
 
 fmm3d_lib = static_library('fmm3d',
   fmm_src,
-  fortran_args: ['-fPIC', '-O3', '-funroll-loops', '-std=legacy', '-w'],
+  fortran_args: ['-w'],
   gnu_symbol_visibility: 'hidden'
 )
 
-f2py_prog = find_program('f2py', 'f2py3', required: true)
-
+# These source lists are passed to f2py only for signature extraction.
+# They are NOT compiled separately -- all Fortran compilation happens
+# through fmm_src -> fmm3d_lib above.
 modules_to_build = {
   'hfmm': hfmm_src,
   'lfmm': lfmm_src,
@@ -128,26 +131,25 @@ foreach name, sources : modules_to_build
 
   # Generate C and Fortran wrappers with f2py
   gen_pyf = custom_target(
-    name + '_genpyf',
-    output: [mod_name + 'module.c', mod_name + '-f2pywrappers.f'],
+    '@0@_gen'.format(name),
+    output: ['@0@module.c'.format(mod_name), '@0@-f2pywrappers.f'.format(mod_name)],
     input: sources,
-    command: [f2py_prog, '-m', mod_name, '@INPUT@', '--lower']
+    command: [f2py_prog, '-m', mod_name, '@INPUT@', '--lower', '--quiet']
   )
 
   # Compile the Python extension module
   py.extension_module(
     mod_name,
     gen_pyf,
+    dependencies: [f2py_dep],
     link_with: [fmm3d_lib],
-    dependencies: [np_dep, fortranobject_dep],
-    link_language: 'fortran',
+    c_args: ['-Wno-format'],
     install: true,
     subdir: 'fmm3dpy'
   )
 endforeach
 
-py.install_sources([
-  'python/fmm3dpy/__init__.py',
-  'python/fmm3dpy/fmm3d.py',
-], subdir: 'fmm3dpy'
+py.install_sources(
+  ['python/fmm3dpy/__init__.py', 'python/fmm3dpy/fmm3d.py'],
+  subdir: 'fmm3dpy'
 )
