@@ -1,0 +1,27 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /Users/srimanachanta/Developer/research/vcubiomag/FMM3D -maxdepth 3 -name *.py -not -path ./.venv/* -not -path ./dist/* -type f)",
+      "Bash(grep -r f2py /Users/srimanachanta/Developer/research/vcubiomag/FMM3D --include=*.py --include=*.build --include=*.ini --include=*.cfg --include=*.toml --exclude-dir=.venv --exclude-dir=dist)",
+      "Bash(.venv/bin/f2py --help)",
+      "Bash(.venv/bin/f2py)",
+      "Bash(.venv/bin/python -c \"import numpy.f2py; import inspect; src = inspect.getsource\\(numpy.f2py.crackfortran\\); lines = src.split\\(''\\\\n''\\);:*)",
+      "Bash(.venv/bin/python -c \"import numpy.f2py.rules; import inspect; src = inspect.getsource\\(numpy.f2py.rules\\); lines = src.split\\(''\\\\n''\\);:*)",
+      "Bash(.venv/bin/python -c \"import numpy.f2py.auxfuncs; import inspect; src = inspect.getsource\\(numpy.f2py.auxfuncs\\); lines = src.split\\(''\\\\n''\\);:*)",
+      "Bash(.venv/bin/python -c \"import numpy.f2py.auxfuncs; import inspect; src = inspect.getsource\\(numpy.f2py.auxfuncs.outmess\\); print\\(src\\)\")",
+      "Bash(.venv/bin/python -c \":*)",
+      "Bash(find /Users/srimanachanta/Developer/research/vcubiomag/FMM3D -maxdepth 3 -type f -name meson* -o -name setup.py -o -name pyproject.toml -o -name CLAUDE.md -o -name Makefile)",
+      "Bash(du -sh /Users/srimanachanta/Developer/research/vcubiomag/FMM3D/src/*/)",
+      "Bash(ls -lh /Users/srimanachanta/Developer/research/vcubiomag/FMM3D/src/Helmholtz/*.f /Users/srimanachanta/Developer/research/vcubiomag/FMM3D/src/Helmholtz/*.f90)",
+      "Read(//Users/srimanachanta/Developer/research/vcubiomag/FMM3D/**)",
+      "Bash(ls -lh /Users/srimanachanta/Developer/research/vcubiomag/FMM3D/src/Laplace/*.f /Users/srimanachanta/Developer/research/vcubiomag/FMM3D/src/Laplace/*.f90)",
+      "Bash(ls -lh /Users/srimanachanta/Developer/research/vcubiomag/FMM3D/src/Common/*.f /Users/srimanachanta/Developer/research/vcubiomag/FMM3D/src/Common/*.f90)",
+      "Bash(ls -lh /Users/srimanachanta/Developer/research/vcubiomag/FMM3D/src/Stokes/*.f /Users/srimanachanta/Developer/research/vcubiomag/FMM3D/src/Stokes/*.f90)",
+      "Bash(ls -lh /Users/srimanachanta/Developer/research/vcubiomag/FMM3D/src/Maxwell/*.f /Users/srimanachanta/Developer/research/vcubiomag/FMM3D/src/Maxwell/*.f90)",
+      "Bash(xargs ls:*)",
+      "Bash(git -C /Users/srimanachanta/Developer/research/vcubiomag/FMM3D log --oneline -10)",
+      "Bash(__NEW_LINE_57e33b342a9d082c__ echo:*)",
+      "Bash(do echo:*)"
+    ]
+  }
+}
