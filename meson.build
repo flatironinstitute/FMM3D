@@ -2,8 +2,7 @@ project('fmm3dpy', 'c', 'fortran',
   version: '2.1.0',
   license: 'Apache-2.0',
   default_options: [
-    'optimization=3',
-    'fortran_std=legacy'
+    'optimization=3'
   ]
 )
 
@@ -110,9 +109,15 @@ stfmm_src = [
   'src/Stokes/stokkernels.f'
 ]
 
+cc = meson.get_compiler('c')
+fc = meson.get_compiler('fortran')
+
+c_args = cc.get_supported_arguments(['-Wno-format'])
+f_args = fc.get_supported_arguments(['-w', '-std=legacy'])
+
 fmm3d_lib = static_library('fmm3d',
   fmm_src,
-  fortran_args: ['-w'],
+  fortran_args: f_args,
   gnu_symbol_visibility: 'hidden'
 )
 
@@ -143,7 +148,7 @@ foreach name, sources : modules_to_build
     gen_pyf,
     dependencies: [f2py_dep],
     link_with: [fmm3d_lib],
-    c_args: ['-Wno-format'],
+    c_args: c_args,
     install: true,
     subdir: 'fmm3dpy'
   )
