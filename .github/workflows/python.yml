@@ -1,222 +1,104 @@
-name: Python Build
+name: Python
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+      - 'py_v*'
 
 jobs:
-  Linux:
-    runs-on: ubuntu-latest
-    container: quay.io/pypa/manylinux2014_x86_64:latest
+  build-wheels:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            gcc_version: latest
+          - os: macos-15
+            arch: arm64
+            macos_deployment_target: '11.0'
+          - os: macos-15-intel
+            arch: x86_64
+            macos_deployment_target: '10.15'
+          - os: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
-    
-    - name: install gfortran-7
-      run: |
-        yum install -y devtoolset-7-toolchain
-        echo "FFLAGS += -march=x86-64" >> make.inc
-        echo "CFLAGS += -march=x86-64" >> make.inc
-        echo "CXXFLAGS += -march=x86-64" >> make.inc
+      - uses: actions/checkout@v6
 
-    - name: Compile python bindings
-      run: |
-        scl enable devtoolset-7 bash
-        .github/workflows/python_build_posix.sh /opt/python/cp36-cp36m/bin/python
-        .github/workflows/python_build_posix.sh /opt/python/cp37-cp37m/bin/python
-        .github/workflows/python_build_posix.sh /opt/python/cp38-cp38/bin/python
-        .github/workflows/python_build_posix.sh /opt/python/cp39-cp39/bin/python
-        .github/workflows/python_build_posix.sh /opt/python/cp310-cp310/bin/python
-        .github/workflows/python_build_posix.sh /opt/python/cp311-cp311/bin/python
-        ls python/dist/*.whl | xargs -n1 auditwheel repair
+      - uses: fortran-lang/setup-fortran@v1
+        if: runner.os == 'Linux' || runner.os == 'Windows'
+        with:
+          compiler: gcc
 
-    - name: Test python bindings
-      run: |
-        .github/workflows/python_test_posix.sh /opt/python/cp36-cp36m/bin/python
-        .github/workflows/python_test_posix.sh /opt/python/cp37-cp37m/bin/python
-        .github/workflows/python_test_posix.sh /opt/python/cp38-cp38/bin/python
-        .github/workflows/python_test_posix.sh /opt/python/cp39-cp39/bin/python
-        .github/workflows/python_test_posix.sh /opt/python/cp310-cp310/bin/python
-        .github/workflows/python_test_posix.sh /opt/python/cp311-cp311/bin/python
-
-    - name: Upload wheels
-      uses: actions/upload-artifact@v3
-      with:
-        name: linux-wheels
-        path: wheelhouse/*.whl
-
-  MacOS:
-    runs-on: macos-11
-    env:
-      MACOSX_DEPLOYMENT_TARGET: 10.9
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Install gcc-10
-      run: |
-        brew install gcc@10
-        ln -s `which gfortran-10` /usr/local/bin/gfortran
-        cp make.inc.macos.gnu make.inc
-        echo "FC=gfortran-10" >> make.inc
-        echo "CC=gcc-10" >> make.inc
-        echo "CXX=g++-10" >> make.inc
-        echo "FFLAGS += -march=x86-64" >> make.inc
-        echo "CFLAGS += -march=x86-64" >> make.inc
-        echo "CXXFLAGS += -march=x86-64" >> make.inc
-        # link statically to libgcc, libgfortran and libquadmath
-        # otherwise binaries are incompatible with older systems
-        echo "LIBS += -static-libgfortran -static-libgcc -static-libstdc++" >> make.inc
-        # hack to make libquadmath link statically
-        sudo rm /usr/local/opt/gcc@10/lib/gcc/10/libquadmath.*dylib
-
-    
-    # Download and install Python instead of using the setup_python
-    # as the python interpreters in the Github machines
-    # were compiled in 10.14, the wheels built with them
-    # are incompatible with older MacOS versions
-    - name: Download and install Python
-      run: |
-        curl \
-          https://www.python.org/ftp/python/3.6.8/python-3.6.8-macosx10.9.pkg \
-          --output python_installer.pkg
-        sudo installer -pkg python_installer.pkg -target /
-
-        curl \
-          https://www.python.org/ftp/python/3.7.7/python-3.7.7-macosx10.9.pkg \
-          --output python_installer.pkg
-        sudo installer -pkg python_installer.pkg -target /
-
-        curl \
-          https://www.python.org/ftp/python/3.8.3/python-3.8.3-macosx10.9.pkg \
-          --output python_installer.pkg
-        sudo installer -pkg python_installer.pkg -target /
-
-        curl \
-          https://www.python.org/ftp/python/3.9.9/python-3.9.9-macosx10.9.pkg \
-          --output python_installer.pkg
-        sudo installer -pkg python_installer.pkg -target /
-
-        curl \
-          https://www.python.org/ftp/python/3.10.9/python-3.10.9-macos11.pkg \
-          --output python_installer.pkg
-        sudo installer -pkg python_installer.pkg -target /
-
-        curl \
-          https://www.python.org/ftp/python/3.11.1/python-3.11.1-macos11.pkg \
-          --output python_installer.pkg
-        sudo installer -pkg python_installer.pkg -target /
-
-    - name: Compile python bindings
-      run: |
-        .github/workflows/python_build_posix.sh /Library/Frameworks/Python.framework/Versions/3.6/bin/python3
-        .github/workflows/python_build_posix.sh /Library/Frameworks/Python.framework/Versions/3.7/bin/python3
-        .github/workflows/python_build_posix.sh /Library/Frameworks/Python.framework/Versions/3.8/bin/python3
-        .github/workflows/python_build_posix.sh /Library/Frameworks/Python.framework/Versions/3.9/bin/python3
-        .github/workflows/python_build_posix.sh /Library/Frameworks/Python.framework/Versions/3.10/bin/python3
-        .github/workflows/python_build_posix.sh /Library/Frameworks/Python.framework/Versions/3.11/bin/python3
-        PYTHON_BIN=/Library/Frameworks/Python.framework/Versions/3.7/bin/
-        $PYTHON_BIN/python3 -m pip install delocate==0.10.7
-        ls python/dist/*.whl | xargs -n1 $PYTHON_BIN/delocate-wheel -w wheelhouse/
-
-    - name: Test python bindings
-      run: |
-        .github/workflows/python_test_posix.sh /Library/Frameworks/Python.framework/Versions/3.6/bin/python3
-        .github/workflows/python_test_posix.sh /Library/Frameworks/Python.framework/Versions/3.7/bin/python3
-        .github/workflows/python_test_posix.sh /Library/Frameworks/Python.framework/Versions/3.8/bin/python3
-        .github/workflows/python_test_posix.sh /Library/Frameworks/Python.framework/Versions/3.9/bin/python3
-        .github/workflows/python_test_posix.sh /Library/Frameworks/Python.framework/Versions/3.10/bin/python3
-        .github/workflows/python_test_posix.sh /Library/Frameworks/Python.framework/Versions/3.11/bin/python3
-
-    - name: Upload wheels
-      uses: actions/upload-artifact@v3
-      with:
-        name: macos-wheels
-        path: wheelhouse/*.whl
-
-  Windows:
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Install GCC and make
-      run: C:\msys64\usr\bin\bash.exe -lc "pacman -Sy --noconfirm make mingw-w64-x86_64-toolchain mingw-w64-x86_64-gcc-fortran mingw-w64-x86_64-gcc-libgfortran mingw-w64-x86_64-gcc-libs mingw-w64-x86_64-gcc-lto-dump  mingw-w64-x86_64-gcc-objc"
-
-    - name: Build and Test Python 3.6
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.6'
-        architecture: 'x64'
-    - run: |
-        .\.github\workflows\python_build_win.ps1
-        .\.github\workflows\python_test_win.ps1
-
-    - name: Build and Test Python 3.7
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.7'
-        architecture: 'x64'
-    - run: |
-        .\.github\workflows\python_build_win.ps1
-        .\.github\workflows\python_test_win.ps1
-
-    - name: Build and Test Python 3.8
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.8'
-        architecture: 'x64'
-    - run: |
-        .\.github\workflows\python_build_win.ps1
-        .\.github\workflows\python_test_win.ps1
-
-    - name: Build and Test Python 3.9
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.9'
-        architecture: 'x64'
-    - run: |
-        .\.github\workflows\python_build_win.ps1
-        .\.github\workflows\python_test_win.ps1
-
-    - name: Build and Test Python 3.10
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.10'
-        architecture: 'x64'
-    - run: |
-        .\.github\workflows\python_build_win.ps1
-        .\.github\workflows\python_test_win.ps1
-
-    - name: Build and Test Python 3.11
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.11'
-        architecture: 'x64'
-    - run: |
-        .\.github\workflows\python_build_win.ps1
-        .\.github\workflows\python_test_win.ps1
-
-    - name: Upload wheels
-      uses: actions/upload-artifact@v3
-      with:
-        name: windows-wheels
-        path: wheelhouse\*.whl
-
-
-  PyPI:
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags') }}
-    needs: [Linux, MacOS, Windows]
-    
-    steps:
-      - name: Setup Python
-        uses: actions/setup-python@v3
-        
-      - name: Download Artifacts
-        uses: actions/download-artifact@v3
-        
-      - name: Upload to PyPI
-        run: |
-          python -m pip install twine
-          python -m twine upload ./**/*.whl -u __token__ -p "$PASSWORD"
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v3.4.0
         env:
-          PASSWORD: ${{ secrets.PYPI_TOKEN }}
+          CIBW_BUILD: 'cp310-* cp311-* cp312-* cp313-* cp314-*'
+          CIBW_SKIP: '*-musllinux* *i686 *-win32'
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
+          CIBW_BEFORE_ALL_LINUX: dnf install -y gcc-gfortran
+          CIBW_BEFORE_ALL_MACOS: >
+            ARCH=$(uname -m) &&
+            curl -L https://github.com/isuruf/gcc/releases/download/gcc-11.3.0-2/gfortran-darwin-${ARCH}-native.tar.gz -o /tmp/gfortran.tar.gz &&
+            sudo tar -xzf /tmp/gfortran.tar.gz -C /opt &&
+            sudo mkdir -p /usr/local/bin /usr/local/lib &&
+            sudo ln -sf /opt/gfortran-darwin-${ARCH}-native/bin/gfortran /usr/local/bin/gfortran &&
+            sudo ln -sf /opt/gfortran-darwin-${ARCH}-native/lib/libgfortran.5.dylib /usr/local/lib/ &&
+            sudo ln -sf /opt/gfortran-darwin-${ARCH}-native/lib/libgfortran.dylib /usr/local/lib/ &&
+            sudo ln -sf /opt/gfortran-darwin-${ARCH}-native/lib/libquadmath.0.dylib /usr/local/lib/ &&
+            sudo ln -sf /opt/gfortran-darwin-${ARCH}-native/lib/libquadmath.dylib /usr/local/lib/ &&
+            sudo ln -sf /opt/gfortran-darwin-${ARCH}-native/lib/libgcc_s.1.dylib /usr/local/lib/ &&
+            sudo ln -sf /opt/gfortran-darwin-${ARCH}-native/lib/libgcc_s.1.1.dylib /usr/local/lib/
+          CIBW_ARCHS_MACOS: ${{ matrix.arch }}
+          CIBW_ENVIRONMENT_MACOS: >
+            MACOSX_DEPLOYMENT_TARGET=${{ matrix.macos_deployment_target }}
+            SDKROOT=$(xcrun --show-sdk-path)
+            LIBRARY_PATH=$(xcrun --show-sdk-path)/usr/lib
+          CIBW_BEFORE_BUILD_WINDOWS: pip install delvewheel
+          CIBW_REPAIR_WHEEL_COMMAND_WINDOWS: >
+            delvewheel repair --add-path C:\msys64\mingw64\bin -w {dest_dir} {wheel}
+          CIBW_TEST_REQUIRES: pytest
+          CIBW_TEST_COMMAND: python -m pytest -s {project}/python/test
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: wheels-${{ matrix.os }}
+          path: wheelhouse/*.whl
+
+  build-sdist:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+
+      - name: Install build
+        run: pip install build
+
+      - name: Build sdist
+        run: python -m build --sdist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sdist
+          path: dist/*.tar.gz
+
+  publish:
+    needs: [build-wheels, build-sdist]
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
