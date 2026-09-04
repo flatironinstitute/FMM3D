@@ -150,7 +150,7 @@ function [U] = emfmm3d(eps,zk,srcinfo,targ,ifE,ifcurlE,ifdivE)
   nd3 = 3*nd;
   ier = 0;
 
-  mex_id_ = 'emfmm3d(i int64_t[x], i double[x], i dcomplex[x], i int64_t[x], i double[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], i int64_t[x], io dcomplex[xx], i int64_t[x], io dcomplex[xx], io int64_t[x])';
+  mex_id_ = 'emfmm3d(c i int64_t[x], c i double[x], c i dcomplex[x], c i int64_t[x], c i double[xx], c i int64_t[x], c i dcomplex[xx], c i int64_t[x], c i dcomplex[xx], c i int64_t[x], c i dcomplex[xx], c i int64_t[x], c i double[xx], c i int64_t[x], c io dcomplex[xx], c i int64_t[x], c io dcomplex[xx], c i int64_t[x], c io dcomplex[xx], c io int64_t[x])';
 [E, curlE, divE, ier] = fmm3d(mex_id_, nd, eps, zk, ns, sources, ifh_current, h_current, ife_current, e_current, ife_charge, e_charge, nt, targ, ifE, E, ifcurlE, curlE, ifdivE, divE, ier, 1, 1, 1, 1, 3, ns, 1, nd3, ns_h_current, 1, nd3, ns_e_current, 1, nd, ns_e_charge, 1, 3, nt, 1, nd3, nt_E, 1, nd3, nt_curlE, 1, nd, nt_divE, 1);
 
   if(ifE == 1)

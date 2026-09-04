@@ -183,7 +183,7 @@ function [U,varargout] = hfmm3d(eps,zk,srcinfo,pg,varargin)
 
   bsize = max(xyzmax - xyzmin);
   dbsize = bsize*real(zk)/2/pi;
-  mex_id_ = 'hndiv(i double[x], i double[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], i int64_t[x], io int64_t[x], io int64_t[x])';
+  mex_id_ = 'hndiv(c i double[x], c i double[x], c i int64_t[x], c i int64_t[x], c i int64_t[x], c i int64_t[x], c i int64_t[x], c i int64_t[x], c io int64_t[x], c io int64_t[x])';
 [ndiv, idivflag] = fmm3d(mex_id_, dbsize, eps, ns, nt, ifcharge, ifdipole, pg, pgt, ndiv, idivflag, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
   if(isfield(opts,'ndiv'))
     ndiv = opts.ndiv;
@@ -199,7 +199,7 @@ function [U,varargout] = hfmm3d(eps,zk,srcinfo,pg,varargin)
   end
   iper = 1;
   timeinfo = zeros(6,1);
-  mex_id_ = 'hfmm3d_ndiv(i int64_t[x], i double[x], i dcomplex[x], i int64_t[x], i double[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i dcomplex[xx], i int64_t[x], i int64_t[x], io dcomplex[xx], io dcomplex[xx], io dcomplex[xx], i int64_t[x], i double[xx], i int64_t[x], io dcomplex[xx], io dcomplex[xx], io dcomplex[xx], i int64_t[x], i int64_t[x], i int64_t[x], io double[x], io int64_t[x])';
+  mex_id_ = 'hfmm3d_ndiv(c i int64_t[x], c i double[x], c i dcomplex[x], c i int64_t[x], c i double[xx], c i int64_t[x], c i dcomplex[xx], c i int64_t[x], c i dcomplex[xx], c i int64_t[x], c i int64_t[x], c io dcomplex[xx], c io dcomplex[xx], c io dcomplex[xx], c i int64_t[x], c i double[xx], c i int64_t[x], c io dcomplex[xx], c io dcomplex[xx], c io dcomplex[xx], c i int64_t[x], c i int64_t[x], c i int64_t[x], c io double[x], c io int64_t[x])';
 [pot, grad, hess, pottarg, gradtarg, hesstarg, timeinfo, ier] = fmm3d(mex_id_, nd, eps, zk, ns, sources, ifcharge, charges, ifdipole, dipoles, iper, pg, pot, grad, hess, nt, targ, pgt, pottarg, gradtarg, hesstarg, ndiv, idivflag, ifnear, timeinfo, ier, 1, 1, 1, 1, 3, ns, 1, nd, ns, 1, nd3, ns, 1, 1, nd, ns, nd3, ns, nd6, ns, 1, 3, ntuse, 1, nd, ntuse, nd3, ntuse, nd6, ntuse, 1, 1, 1, 6, 1);
 
   U.pot = [];
