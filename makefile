@@ -32,7 +32,7 @@ PYTHON=python
 
 
 # flags for MATLAB MEX compilation..
-MFLAGS=-compatibleArrayDims -DMWF77_UNDERSCORE1 "CFLAGS=$(CFLAGS)"
+MFLAGS=-compatibleArrayDims -DMWF77_UNDERSCORE1 "CFLAGS=-std=gnu17 -Wno-implicit-function-declaration -fPIC -O3 -funroll-loops"
 MWFLAGS=-c99complex -i8
 MOMPFLAGS = -D_OPENMP
 
