@@ -289,6 +289,8 @@ implicit none
 
   nd0 = ndens*nd
 
+  iper = 0
+
   allocate(pot(nd0),grad(nd0,3),hess(nd0,6),hesstarg(nd0,6))
 
   call hfmm3d(nd0,eps,zk,ns,source,ifcharge,sigmh_current,ifdipole, &

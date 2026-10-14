@@ -111,6 +111,7 @@ c------------------------------------------------------------------
       integer *8 ifpgh,ifpghtarg
 
       integer *8 nsource,ntarg
+      integer *8 int8_3
 
       double precision source(3,nsource),targ(3,ntarg)
       double complex charge(nd,nsource)
@@ -184,6 +185,7 @@ c     Suppressed if ifprint=0.
 c     Prints timing breakdown and other things if ifprint=1.
 c      
       ifprint=0
+      int8_3 = 3
       nexpc = 0
       nadd = 0
       ntj = 0
@@ -376,7 +378,8 @@ C$OMP END PARALLEL DO
 c
 cc       reorder sources
 c
-      call dreorderf(int8(3),nsource,source,sourcesort,isrc)
+      call dreorderf(int8_3,nsource,source,sourcesort,
+     1     isrc)
       call drescale(3*nsource,sourcesort,b0inv)
       if(ifcharge.eq.1) then
         call dreorderf(2*nd,nsource,charge,chargesort,isrc)
@@ -391,7 +394,7 @@ c
 c
 cc      reorder targs
 c
-      call dreorderf(int8(3),ntarg,targ,targsort,itarg)
+      call dreorderf(int8_3,ntarg,targ,targsort,itarg)
       call drescale(3*ntarg,targsort,b0inv)
 c
 c  update tree centers and boxsize

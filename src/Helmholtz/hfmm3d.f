@@ -716,6 +716,7 @@ c     temp variables
       double precision, allocatable :: xnodes(:),wts(:)
       double precision radius
       integer *8 nquad2
+      integer *8 int8_6
       integer *8 maX_nodes
       double precision pi
       
@@ -761,6 +762,7 @@ C$    nthd=omp_get_max_threads()
       allocate(rlams(ntmax),whts(ntmax))
 
       pi = 4.0d0*atan(1.0d0)
+      int8_6 = 6
 c     ifprint is an internal information printing flag. 
 c     Suppressed if ifprint=0.
 c     Prints timing breakdown and other things if ifprint=1.
@@ -1023,7 +1025,7 @@ c
       do ilev=nlevels-1,1,-1
         if(ilev.gt.ilevcutoff) then
           nquad2 = nterms(ilev)*2.5
-          nquad2 = max(6,nquad2)
+          nquad2 = max(int8_6,nquad2)
           ifinit2 = 1
           call legewhts(nquad2,xnodes,wts,ifinit2)
           radius = boxsize(ilev)/2*sqrt(3.0d0)
@@ -1635,7 +1637,7 @@ C$OMP END PARALLEL DO
      1            and.ilev.gt.ilevcutoff) then
           nquad2 = nterms(ilev)*2.2
           if(ifprint.ge.1) print *, "In point and shoot regime"
-          nquad2 = max(6,nquad2)
+          nquad2 = max(int8_6,nquad2)
 
           ifinit2 = 1
           ier = 0
@@ -1906,7 +1908,7 @@ C$        time1=omp_get_wtime()
       do ilev = 1,nlevels-1
         if(ilev.gt.ilevcutoff) then
           nquad2 = nterms(ilev)*2
-          nquad2 = max(6,nquad2)
+          nquad2 = max(int8_6,nquad2)
           ifinit2 = 1
           call legewhts(nquad2,xnodes,wts,ifinit2)
           radius = boxsize(ilev+1)/2*sqrt(3.0d0)
@@ -1961,7 +1963,7 @@ c     ... step 5, evaluate all local expansions
 c
 
       nquad2 = 2*ntj
-      nquad2 = max(6,nquad2)
+      nquad2 = max(int8_6,nquad2)
       ifinit2 = 1
 
       call legewhts(nquad2,xnodes,wts,ifinit2)

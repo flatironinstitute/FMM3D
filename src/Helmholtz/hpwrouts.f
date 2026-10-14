@@ -511,7 +511,7 @@ c     Temporary variables
       real *8 done
 
       done = 1
-      ima = cmplx(0,done)
+      ima = dcmplx(0,done)
       zk2 = 1/(ima*zk)
 
       rscale(0) = 1
@@ -3165,9 +3165,11 @@ cccccc scoped function variables
       double complex, allocatable :: gboxcgsort(:,:)
       double complex, allocatable :: gboxdpsort(:,:,:)
       integer *8 nthd,ithd
+      integer *8 int8_3
       integer *8 omp_get_max_threads,omp_get_thread_num
       nthd = 1
 C$    nthd=omp_get_max_threads()
+      int8_3 = 3
       
       call cpu_time(time1)
 C$    time1=omp_get_wtime()
@@ -3195,7 +3197,7 @@ C$      ithd=omp_get_thread_num()
             call subdividebox(sourcesort(1,istart),npts,
      1           centers(1,ibox),boxsize,
      2           gboxind,gboxfl,gboxsubcenters)
-            call dreorderf(int8(3),npts,sourcesort(1,istart),
+            call dreorderf(int8_3,npts,sourcesort(1,istart),
      1           gboxsort,gboxind)
             if(ifcharge.eq.1) then
               allocate(gboxcgsort(nd,npts))

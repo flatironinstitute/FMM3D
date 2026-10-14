@@ -111,6 +111,8 @@ C---------------------------------------------------------------------
       implicit none
       integer *8 ld1,ld2,nterms,m1,m2,ldc
       integer *8 ier,ij,im,imp,m,mp
+      integer *8 int8_2
+      parameter (int8_2 = 2)
       double precision theta
       double precision ww,done,ctheta,stheta,hsthta,cthtap,cthtan,d
       double precision precis,scale
@@ -181,7 +183,7 @@ c
 c         
         do im=1,ij
 	      rd2(0,im)=rd2(0,-im)
-          if( mod(im,2) .eq. 0 ) then
+          if( mod(im,int8_2) .eq. 0 ) then
             rd2(im,0)=+rd2(0,im)
           else
             rd2(im,0)=-rd2(0,im)
@@ -214,7 +216,7 @@ c
             rd2(imp,-im)=rd2(imp,-im)*scale
 c
             if (im.gt.imp) then
-              if( mod(imp+im,2) .eq. 0 ) then
+              if( mod(imp+im,int8_2) .eq. 0 ) then
                 rd2(im,+imp)=+rd2(imp,+im)
                 rd2(im,-imp)=+rd2(imp,-im)
               else
@@ -363,6 +365,8 @@ C---------------------------------------------------------------------
       implicit none
       integer *8 ld1,ld2,nterms,m1,m2,ldc,nd,idim
       integer *8 ij,im,imp,m,mp
+      integer *8 int8_2
+      parameter (int8_2 = 2)
       double precision theta
       double precision rd1(0:ldc,-ldc:ldc)
       double precision rd2(0:ldc,-ldc:ldc)
@@ -428,7 +432,7 @@ c
 c         
         do im=1,ij
           rd2(0,im)=rd2(0,-im)
-          if( mod(im,2) .eq. 0 ) then
+          if( mod(im,int8_2) .eq. 0 ) then
             rd2(im,0)=+rd2(0,im)
           else
             rd2(im,0)=-rd2(0,im)
@@ -462,7 +466,7 @@ c
             rd2(imp,-im)=rd2(imp,-im)*scale
 c
             if (im.gt.imp) then
-              if( mod(imp+im,2) .eq. 0 ) then
+              if( mod(imp+im,int8_2) .eq. 0 ) then
                 rd2(im,+imp)=+rd2(imp,+im)
                 rd2(im,-imp)=+rd2(imp,-im)
               else
@@ -551,6 +555,8 @@ C---------------------------------------------------------------------
       implicit none
       integer *8 ld1,ld2,nterms,m1,m2,ldc,nd,idim
       integer *8 ij,im,imp,m,mp
+      integer *8 int8_2
+      parameter (int8_2 = 2)
       double precision theta
       double precision ww,done,ctheta,stheta,hsthta,cthtap,cthtan,d
       double precision precis,scale
@@ -615,7 +621,7 @@ c
 c         
         do im=1,ij
           rd2(0,im)=rd2(0,-im)
-          if( mod(im,2) .eq. 0 ) then
+          if( mod(im,int8_2) .eq. 0 ) then
             rd2(im,0)=+rd2(0,im)
           else
             rd2(im,0)=-rd2(0,im)
@@ -648,7 +654,7 @@ c
             rd2(imp,-im)=rd2(imp,-im)*scale
 c
             if (im.gt.imp) then
-              if( mod(imp+im,2) .eq. 0 ) then
+              if( mod(imp+im,int8_2) .eq. 0 ) then
                 rd2(im,+imp)=+rd2(imp,+im)
                 rd2(im,-imp)=+rd2(imp,-im)
               else

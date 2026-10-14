@@ -726,7 +726,7 @@ c-------------------------------------------------------
         len1 = len1 + 18
       endif
 
-      if(ipgh.eq.3.or.ifpghtarg.eq.3) then
+      if(ifpgh.eq.3.or.ifpghtarg.eq.3) then
         str5=" pot, grad, and hess test"
         len1 = len1+25
       endif

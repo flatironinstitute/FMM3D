@@ -103,6 +103,7 @@ c
        integer *8 ifpgh,ifpghtarg
 
        integer *8 ntarg,nsource
+       integer *8 int8_3
        
 
        double precision source(3,*),targ(3,*)
@@ -176,6 +177,7 @@ c     Prints timing breakdown and other things if ifprint=1.
 c       
       ifprint=0
 
+       int8_3 = 3
        nexpc = 0
        nadd = 0
        ntj = 0
@@ -392,7 +394,8 @@ c
 c
 cc     reorder sources 
 c
-      call dreorderf(int8(3),nsource,source,sourcesort,isrc)
+      call dreorderf(int8_3,nsource,source,sourcesort,
+     1     isrc)
 
 c
 c       rescale sources to be contained in unit box
@@ -415,7 +418,7 @@ c
 c
 cc      reorder and rescale targs
 c
-      call dreorderf(int8(3),ntarg,targ,targsort,itarg)
+      call dreorderf(int8_3,ntarg,targ,targsort,itarg)
       call drescale(3*ntarg,targsort,b0inv)
 
 

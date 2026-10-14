@@ -230,6 +230,8 @@ C***********************************************************************
       integer *8 nd,idim,lmp,nterms
       integer *8 jj,i,jjr
       integer *8 ndeg,morder, nquad,nquad2,nquad4
+      integer *8 int8_2
+      parameter (int8_2 = 2)
       double precision cthetas(nquad),cphis(nquad)
       double precision sthetas(nquad),sphis(nquad)
       double precision ynm(0:nterms,0:nterms)
@@ -249,8 +251,8 @@ C
       sbeta = -sin(beta)
       call ylgndrini(nterms,rat1,rat2)
       nquad2=nquad/2
-      if( mod(nquad2,2) .eq. 0 ) nquad4=nquad2/2+1
-      if( mod(nquad2,2) .eq. 1 ) nquad4=nquad2/2+1
+      if( mod(nquad2,int8_2) .eq. 0 ) nquad4=nquad2/2+1
+      if( mod(nquad2,int8_2) .eq. 1 ) nquad4=nquad2/2+1
 c
       do jj=1,nquad4
          ctheta = cthetas(jj)
@@ -297,11 +299,11 @@ c       ... apply the periodizing operator
 c
                 uval(idim,jj,ndeg) = uv
                 uder(idim,jj,ndeg) = (utheta*proj2+uphi*ima*proj1)
-                if( mod(ndeg,2) .eq. 0 ) then
+                if( mod(ndeg,int8_2) .eq. 0 ) then
                    uval(idim,jj+nquad/2,ndeg) = +uval(idim,jj,ndeg)
                    uder(idim,jj+nquad/2,ndeg) = -uder(idim,jj,ndeg)
                 endif
-                if( mod(ndeg,2) .eq. 1 ) then
+                if( mod(ndeg,int8_2) .eq. 1 ) then
                    uval(idim,jj+nquad/2,ndeg) = -uval(idim,jj,ndeg)
                    uder(idim,jj+nquad/2,ndeg) = +uder(idim,jj,ndeg)
                 endif
@@ -310,7 +312,8 @@ c
 
           if_reflect=1
           if( jj .eq. 1 ) if_reflect=0
-          if( jj .eq. nquad4 .and. mod(nquad2,2) .eq. 0 ) if_reflect=0
+          if( jj .eq. nquad4 .and. mod(nquad2,int8_2) .eq. 0 )
+     1        if_reflect=0
 c
           if( if_reflect .eq. 1 ) then
              jjr=nquad2 - jj + 2
@@ -358,11 +361,11 @@ c       ... apply the periodizing operator
 c
                    uval(idim,jjr,ndeg) = uv
                    uder(idim,jjr,ndeg) = (utheta*proj2+uphi*ima*proj1)
-                   if( mod(ndeg,2) .eq. 0 ) then
+                   if( mod(ndeg,int8_2) .eq. 0 ) then
                       uval(idim,jjr+nquad/2,ndeg) = +uval(idim,jjr,ndeg)
                       uder(idim,jjr+nquad/2,ndeg) = -uder(idim,jjr,ndeg)
                    endif
-                   if( mod(ndeg,2) .eq. 1 ) then
+                   if( mod(ndeg,int8_2) .eq. 1 ) then
                       uval(idim,jjr+nquad/2,ndeg)=-uval(idim,jjr,ndeg)
                       uder(idim,jjr+nquad/2,ndeg)=+uder(idim,jjr,ndeg)
                    endif

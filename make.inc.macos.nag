@@ -17,14 +17,15 @@ LIB_NAG = /usr/local/lib/NAG_Fortran
 # -w=unreffed: suppresses warning messages about variables set but never referenced.
 # -w=unused: suppresses warning messages about unused entities. 
 # -ieee=full: set the mode of IEEE arithmetic operation according to full mode.
+# -mismatch_all: downgrade consistency checking of procedure argument lists so that calls to routines in the same file which are incorrect will produce warnings instead of error messages.
 
 # Main compile command for NAG Fortran compiler
-FFLAGS = -PIC -O2 -Ounroll=1 -f90_sign -dcfuns -dusty -w=obs -w=x77 -w=unreffed -w=unused -ieee=full 
+FFLAGS = -PIC -O2 -Ounroll=1 -f90_sign -dcfuns -dusty -w=obs -w=x77 -w=unreffed -w=unused -ieee=full -mismatch_all
 
 # Flags overwritten in makefile
 OMPFLAGS = -openmp
-# OMPLIBS = -lf71omp64 -L$(LIB_NAG)
-OMPLIBS = -lf71omp64 -lf71rts -L$(LIB_NAG)
-LIBS = -lf71rts -L$(LIB_NAG)
+OMPLIBS = -L$(LIB_NAG)
+LOCAL_OMPLIBS = -openmp -lf71omp64
+LIBS = -lf71rts -L$(LIB_NAG) $(LOCAL_OMPLIBS)
 CLIBS = -lm -ldl -L$(LIB_NAG)
-FFLAGS_DYN = -PIC
+FFLAGS_DYN = -PIC -Wl,-dynamiclib
