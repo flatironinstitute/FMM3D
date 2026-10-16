@@ -144,7 +144,7 @@ c
       complex *16 ephi1,ur,utheta,uphi
       complex *16 eye
       complex *16 ztmp1,ztmp2,ztmp3,ztmpsum,z
-      complex *16 fhder
+      complex *16, allocatable :: fhder(:)
       integer *8 itarg,i,m,n,ifder
       data eye/(0.0d0,1.0d0)/
 
@@ -152,7 +152,7 @@ c
       ifder = 0
 
       allocate(ephi(-nterms-1:nterms+1))
-      allocate(fhs(0:nterms))
+      allocate(fhs(0:nterms),fhder(0:nterms))
       allocate(ynm(0:nterms,0:nterms))
 
       do itarg=1,ntarg
@@ -1043,7 +1043,7 @@ c
       complex *16 ephi1,ur,utheta,uphi
       complex *16 eye
       complex *16 ztmp1,ztmp2,ztmp3,ztmpsum,z
-      complex *16 fjder
+      complex *16, allocatable :: fjder(:)
       integer *8 itarg,i,m,n,ifder,idim
       data eye/(0.0d0,1.0d0)/
 
@@ -1051,7 +1051,7 @@ c
       ifder = 0
 
       allocate(ephi(-nterms-1:nterms+1))
-      allocate(fjs(0:nterms))
+      allocate(fjs(0:nterms),fjder(0:nterms))
       allocate(ynm(0:nterms,0:nterms))
 
       do itarg=1,ntarg

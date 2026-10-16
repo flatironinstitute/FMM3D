@@ -1286,8 +1286,7 @@ c
       d(0,0)=0
       do m=0, nmax
 	 if (m.gt.0)  y(m,m)=y(m-1,m-1)*u*rat1(m,m)
-	 if (m.gt.0)  d(m,m)=(d(m-1,m-1)*u+du)*rat1(m,m)
-ccc	 if (m.gt.0)  d(m,m)=y(m,m)*(-m)*z/u**2
+	 if (m.gt.0)  d(m,m)=y(m,m)*(-m)*z/u**2
 	 if (m.lt.nmax)  y(m+1,m)=z*y(m,m)*rat1(m+1,m)
 	 if (m.lt.nmax)  d(m+1,m)=(z*d(m,m)+y(m,m))*rat1(m+1,m)
 	 do n=m+2, nmax
@@ -1823,13 +1822,15 @@ c
         subroutine ylgndrpm(nterms,y)
         implicit none
         integer *8 n,m,nterms
+        integer *8 int8_2
         double precision y(0:nterms,0:nterms)
 c
 c       Given Y_nm(x), return Y_nm(-x)
 c
+        int8_2 = 2
         do n=0,nterms
            do m=0,n
-              if( mod(n+m,2) .eq. 1 ) y(n,m)=-y(n,m)
+              if( mod(n+m,int8_2) .eq. 1 ) y(n,m)=-y(n,m)
            enddo       
         enddo
 c
@@ -1843,6 +1844,7 @@ c
         subroutine ylgndr2pm(nterms,y,d)
         implicit none
         integer *8 nterms,n,m
+        integer *8 int8_2
         double precision y(0:nterms,0:nterms)
         double precision d(0:nterms,0:nterms)
 c
@@ -1852,10 +1854,11 @@ c
 cf2py intent(in) nterms, y
 cf2py intent(out) d
 c
+        int8_2 = 2
         do n=0,nterms
            do m=0,n
-              if( mod(n+m,2) .eq. 1 ) y(n,m)=-y(n,m)
-              if( mod(n+m,2) .eq. 0 ) d(n,m)=-d(n,m)
+              if( mod(n+m,int8_2) .eq. 1 ) y(n,m)=-y(n,m)
+              if( mod(n+m,int8_2) .eq. 0 ) d(n,m)=-d(n,m)
            enddo       
         enddo
 c

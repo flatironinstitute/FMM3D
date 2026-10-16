@@ -346,15 +346,15 @@ c
       bigint0 = ntarg*nd
       if(ifpghtarg.eq.1) then
         bigint = bigint0*4
-        lmem8 = lmem8 + bigint 
+        lmem8 = lmem8 + bigint
       endif
-      if(ifpghtarg.eq.1) then
+      if(ifpghtarg.eq.2) then
         bigint = bigint0*12
-        lmem8 = lmem8 + bigint 
+        lmem8 = lmem8 + bigint
       endif
-      if(ifpghtarg.eq.1) then
+      if(ifpghtarg.eq.3) then
         bigint = bigint0*24
-        lmem8 = lmem8 + bigint 
+        lmem8 = lmem8 + bigint
       endif
 
       nthread = 1
