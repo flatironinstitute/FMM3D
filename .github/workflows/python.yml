@@ -38,9 +38,12 @@ jobs:
           CIBW_BUILD: 'cp310-* cp311-* cp312-* cp313-* cp314-*'
           CIBW_BUILD_VERBOSITY: 1
           CIBW_CONFIG_SETTINGS: compile-args=-v
+          # a wheel's bundled libomp starts its own openmp runtime, which
+          # crashes next to other extensions' runtimes, so macos stays serial
+          CIBW_CONFIG_SETTINGS_MACOS: compile-args=-v setup-args=-Dopenmp=disabled
           CIBW_SKIP: '*-musllinux* *i686 *-win32'
           CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
-          CIBW_BEFORE_ALL_LINUX: dnf install -y gcc-gfortran
+          CIBW_BEFORE_ALL_LINUX: dnf install -y gcc-gfortran libgomp
           CIBW_BEFORE_ALL_MACOS: >
             ARCH=$(uname -m) &&
             curl -L https://github.com/isuruf/gcc/releases/download/gcc-11.3.0-2/gfortran-darwin-${ARCH}-native.tar.gz -o /tmp/gfortran.tar.gz &&

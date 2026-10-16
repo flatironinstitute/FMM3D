@@ -115,6 +115,37 @@ fc = meson.get_compiler('fortran')
 c_args = cc.get_supported_arguments(['-Wno-format'])
 f_args = fc.get_supported_arguments(['-w', '-std=legacy'])
 
+# openmp is used when the fortran compiler supports it (-Dopenmp=disabled
+# turns it off). clang links the extensions on macos and has no -fopenmp, so
+# there the runtime, and libgcc with the aarch64 atomics helpers the openmp
+# code calls, come from gfortran's library search path
+openmp = get_option('openmp')
+omp_deps = []
+link_args = []
+omp_found = false
+if not openmp.disabled() and fc.has_argument('-fopenmp')
+  if host_machine.system() == 'darwin'
+    omp_lib = fc.find_library('omp', required: false)
+    if not omp_lib.found()
+      omp_lib = fc.find_library('gomp', required: false)
+    endif
+    omp_found = omp_lib.found()
+    omp_deps = [omp_lib, fc.find_library('gcc',
+      required: omp_found and host_machine.cpu_family() == 'aarch64')]
+  else
+    omp_found = true
+    link_args = ['-fopenmp']
+  endif
+endif
+if openmp.enabled() and not omp_found
+  error('openmp is enabled, but no openmp runtime was found for the fortran compiler')
+endif
+if omp_found
+  f_args += '-fopenmp'
+else
+  omp_deps = []
+endif
+
 fmm3d_lib = static_library('fmm3d',
   fmm_src,
   fortran_args: f_args,
@@ -146,9 +177,10 @@ foreach name, sources : modules_to_build
   py.extension_module(
     mod_name,
     gen_pyf,
-    dependencies: [f2py_dep],
+    dependencies: [f2py_dep] + omp_deps,
     link_with: [fmm3d_lib],
     c_args: c_args,
+    link_args: link_args,
     install: true,
     subdir: 'fmm3dpy'
   )
