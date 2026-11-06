@@ -203,6 +203,8 @@ c------------------------------------------------------------------
      1     gradtarg(nd, 3, 3, ntarg)
 
 c     local
+      double precision, allocatable :: source0(:,:), targ0(:,:)
+      double precision :: lower(3), upper(3), center(3)
       double precision, allocatable :: charge(:,:,:), dipvec(:,:,:,:)
       double precision, allocatable :: potl(:,:,:), gradl(:,:,:,:),
      1     hessl(:,:,:,:), pottargl(:,:,:), gradtargl(:,:,:,:),
@@ -213,6 +215,7 @@ c     local
 
       integer *8 ndl, ifchargel, ifdipolel, ifpghl, ifpghtargl
       integer *8 ndper, loffset
+      integer *8 nsout, ntarg0, nshess, nthess
 
       integer *8 i, j, ii, ifppreg1, l, npt, ier,iper
 
@@ -250,16 +253,34 @@ c     local
 
       ndl = ndper*nd
 
-      ifpghl = 3
-      ifpghtargl = 3
+c     Stokes velocity/pressure need Laplace gradients (flag 2).
+c     Only Stokes velocity gradients need Laplace Hessians (flag 3).
+c     A disabled evaluation must also be disabled in the Laplace call.
+      ifpghl = 0
+      if (ifppreg .ge. 1) ifpghl = 2
+      if (ifppreg .eq. 3) ifpghl = 3
+      ifpghtargl = 0
+      if (ifppregtarg .ge. 1) ifpghtargl = 2
+      if (ifppregtarg .eq. 3) ifpghtargl = 3
+
+c     Use dummy storage for unrequested fields, and omit unused targets
+c     from the Laplace tree as well as from evaluation.
+      nsout = 1
+      if (ifpghl .gt. 0) nsout = nsource
+      ntarg0 = 0
+      if (ifpghtargl .gt. 0) ntarg0 = ntarg
+      nshess = 1
+      if (ifpghl .eq. 3) nshess = nsource
+      nthess = 1
+      if (ifpghtargl .eq. 3) nthess = ntarg0
 
 c     allocate necessary arrays
 
       allocate(charge(ndper,nd,nsource),dipvec(ndper,nd,3,nsource),
-     1     potl(ndper,nd,nsource),pottargl(ndper,nd,ntarg),
-     2     gradl(ndper,nd,3,nsource),gradtargl(ndper,nd,3,ntarg),
-     3     hessl(ndper,nd,6,nsource),hesstargl(ndper,nd,6,ntarg),
-     4     stat=ier)
+     1     potl(ndper,nd,nsout),pottargl(ndper,nd,ntarg0),
+     2     gradl(ndper,nd,3,nsout),gradtargl(ndper,nd,3,ntarg0),
+     3     hessl(ndper,nd,6,nshess),hesstargl(ndper,nd,6,nthess),
+     4     source0(3,nsource),targ0(3,ntarg0),stat=ier)
       if(ier .ne. 0) then
          print *, "In stfmm3d: cannot allocate Laplace call storage"
          print *, "ndper =",ndper
@@ -268,6 +289,28 @@ c     allocate necessary arrays
          print *, "ntarg =",ntarg
          stop
       endif
+
+c     Shift to the source/active-target bounding-box midpoint, as in
+c     stfmm3d_laplace.m. Use the same coordinates for packing, LFMM3D
+c     and unpacking: the coordinate-dependent terms cancel exactly,
+c     but large absolute coordinates amplify their roundoff errors.
+c     Local copies preserve the caller's source and target arrays.
+      center = 0
+      if (nsource .gt. 0) then
+         lower = minval(source,dim=2)
+         upper = maxval(source,dim=2)
+         if (ntarg0 .gt. 0) then
+            lower = min(lower,minval(targ(:,1:ntarg0),dim=2))
+            upper = max(upper,maxval(targ(:,1:ntarg0),dim=2))
+         endif
+         center = lower/2 + upper/2
+      endif
+      do i = 1,nsource
+         source0(:,i) = source(:,i) - center
+      enddo
+      do i = 1,ntarg0
+         targ0(:,i) = targ(:,i) - center
+      enddo
 
 c     set-up appropriate vector charge and dipole arrays
 
@@ -361,15 +404,15 @@ c$OMP$ PRIVATE(pl,pv,rlet,rvec,dlet,dvec)
             l = 4
 
             if (ifstoklet .eq. 1) then
-               pl = sigma(1)*source(1,i) + sigma(2)*source(2,i) +
-     1              sigma(3)*source(3,i)
+               pl = sigma(1)*source0(1,i) + sigma(2)*source0(2,i) +
+     1              sigma(3)*source0(3,i)
                charge(l,j,i) = charge(l,j,i) + pl/2
             endif
             if (ifstrslet .eq. 1) then
-               pl = dmu(1)*source(1,i) + dmu(2)*source(2,i) +
-     1              dmu(3)*source(3,i)
-               pv = dnu(1)*source(1,i) + dnu(2)*source(2,i) +
-     1              dnu(3)*source(3,i)
+               pl = dmu(1)*source0(1,i) + dmu(2)*source0(2,i) +
+     1              dmu(3)*source0(3,i)
+               pv = dnu(1)*source0(1,i) + dnu(2)*source0(2,i) +
+     1              dnu(3)*source0(3,i)
 
                dipvec(l,j,1,i) = dipvec(l,j,1,i) +
      1              (dmu(1)*pv + dnu(1)*pl)/2
@@ -382,10 +425,10 @@ c$OMP$ PRIVATE(pl,pv,rlet,rvec,dlet,dvec)
                pl = dlet(1)*dvec(1) + dlet(2)*dvec(2) + dlet(3)*dvec(3)
                charge(l,j,i) = charge(l,j,i) + pl
 
-               pl = dlet(1)*source(1,i) + dlet(2)*source(2,i) +
-     1              dlet(3)*source(3,i)
-               pv = dvec(1)*source(1,i) + dvec(2)*source(2,i) +
-     1              dvec(3)*source(3,i)
+               pl = dlet(1)*source0(1,i) + dlet(2)*source0(2,i) +
+     1              dlet(3)*source0(3,i)
+               pv = dvec(1)*source0(1,i) + dvec(2)*source0(2,i) +
+     1              dvec(3)*source0(3,i)
 
                dipvec(l,j,1,i) = dipvec(l,j,1,i) +
      1              (dlet(1)*pv + dvec(1)*pl)/2
@@ -405,18 +448,22 @@ c     call Laplace FMM
 
       iper = 0
       ier = 0
-      call lfmm3d(ndl,eps,nsource,source,ifchargel,charge,
-     1     ifdipolel,dipvec,iper,ifpghl,potl,gradl,hessl,ntarg,
-     2     targ,ifpghtargl,pottargl,gradtargl,hesstargl,ier)
+      call lfmm3d(ndl,eps,nsource,source0,ifchargel,charge,
+     1     ifdipolel,dipvec,iper,ifpghl,potl,gradl,hessl,ntarg0,
+     2     targ0,ifpghtargl,pottargl,gradtargl,hesstargl,ier)
+      if (ier .ne. 0) return
 
 
-      npt = ntarg + nsource
+      npt = ntarg0 + nsource
 
 c     unpack stacked Laplace FMM calls
 
 c$OMP PARALLEL DO DEFAULT(SHARED) PRIVATE(i,j,l,ifppreg1,ii)
 c$OMP$ PRIVATE(pt,pl,gl,hl,vel,velgrad,press)
       do i = 1,npt
+
+c        Disabled source outputs have only dummy storage.
+         if (i .gt. ntarg0 .and. ifppreg .eq. 0) cycle
 
          do j = 1,nd
 
@@ -436,38 +483,42 @@ c$OMP$ PRIVATE(pt,pl,gl,hl,vel,velgrad,press)
 
             do l = 1,ndper
 
-               if (i .gt. ntarg) then
+               if (i .gt. ntarg0) then
                   ifppreg1 = ifppreg
-                  ii = i-ntarg
-                  pt(1) = source(1,ii)
-                  pt(2) = source(2,ii)
-                  pt(3) = source(3,ii)
+                  ii = i-ntarg0
+                  pt(1) = source0(1,ii)
+                  pt(2) = source0(2,ii)
+                  pt(3) = source0(3,ii)
                   pl = potl(l,j,ii)
                   gl(1) = gradl(l,j,1,ii)
                   gl(2) = gradl(l,j,2,ii)
                   gl(3) = gradl(l,j,3,ii)
-                  hl(1) = hessl(l,j,1,ii)
-                  hl(2) = hessl(l,j,2,ii)
-                  hl(3) = hessl(l,j,3,ii)
-                  hl(4) = hessl(l,j,4,ii)
-                  hl(5) = hessl(l,j,5,ii)
-                  hl(6) = hessl(l,j,6,ii)
+                  if (ifppreg1 .eq. 3) then
+                     hl(1) = hessl(l,j,1,ii)
+                     hl(2) = hessl(l,j,2,ii)
+                     hl(3) = hessl(l,j,3,ii)
+                     hl(4) = hessl(l,j,4,ii)
+                     hl(5) = hessl(l,j,5,ii)
+                     hl(6) = hessl(l,j,6,ii)
+                  endif
                else
                   ifppreg1 = ifppregtarg
                   ii = i
-                  pt(1) = targ(1,ii)
-                  pt(2) = targ(2,ii)
-                  pt(3) = targ(3,ii)
+                  pt(1) = targ0(1,ii)
+                  pt(2) = targ0(2,ii)
+                  pt(3) = targ0(3,ii)
                   pl = pottargl(l,j,ii)
                   gl(1) = gradtargl(l,j,1,ii)
                   gl(2) = gradtargl(l,j,2,ii)
                   gl(3) = gradtargl(l,j,3,ii)
-                  hl(1) = hesstargl(l,j,1,ii)
-                  hl(2) = hesstargl(l,j,2,ii)
-                  hl(3) = hesstargl(l,j,3,ii)
-                  hl(4) = hesstargl(l,j,4,ii)
-                  hl(5) = hesstargl(l,j,5,ii)
-                  hl(6) = hesstargl(l,j,6,ii)
+                  if (ifppreg1 .eq. 3) then
+                     hl(1) = hesstargl(l,j,1,ii)
+                     hl(2) = hesstargl(l,j,2,ii)
+                     hl(3) = hesstargl(l,j,3,ii)
+                     hl(4) = hesstargl(l,j,4,ii)
+                     hl(5) = hesstargl(l,j,5,ii)
+                     hl(6) = hesstargl(l,j,6,ii)
+                  endif
                endif
 
 
@@ -533,7 +584,7 @@ c     confirm hessian ordering convention
                endif
             enddo
 
-            if (i .gt. ntarg) then
+            if (i .gt. ntarg0) then
                if (ifppreg1 .ge. 1) then
                   pot(j,1,ii) = vel(1)
                   pot(j,2,ii) = vel(2)
