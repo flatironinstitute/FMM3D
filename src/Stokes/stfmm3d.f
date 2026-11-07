@@ -290,8 +290,8 @@ c     allocate necessary arrays
          stop
       endif
 
-c     Shift to the source/active-target bounding-box midpoint, as in
-c     stfmm3d_laplace.m. Use the same coordinates for packing, LFMM3D
+c     Shift to the source/active-target bounding-box midpoint.
+c     Use the same coordinates for packing, LFMM3D
 c     and unpacking: the coordinate-dependent terms cancel exactly,
 c     but large absolute coordinates amplify their roundoff errors.
 c     Local copies preserve the caller's source and target arrays.
