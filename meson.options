@@ -1,0 +1,2 @@
+option('openmp', type: 'feature', value: 'auto',
+  description: 'build the fortran code with openmp')
